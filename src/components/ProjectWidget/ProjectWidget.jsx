@@ -15,7 +15,7 @@ class ProjectWidget extends React.Component {
 
     return (
         <Card className={classes.root} >
-          <CardActionArea style={{minHeight: "320px"}}>
+          <CardActionArea>
             <Link to={this.props.link} target="_blank" rel="noopener noreferrer" style={{textDecoration: "none"}}>
               <CardContent style={{padding: "40px 50px"}}>
                 <Typography gutterBottom variant="h5" component="h2">
