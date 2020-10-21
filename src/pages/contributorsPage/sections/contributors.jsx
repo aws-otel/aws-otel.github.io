@@ -122,6 +122,10 @@ const Contributors = (props) => {
       <div style={{marginLeft: "4vw"}}>
         <img src="https://contributors-img.web.app/image?repo=aws-observability/aws-otel-test-framework" />
         <img src="https://contributors-img.web.app/image?repo=aws-observability/aws-otel-playground" />
+        <img src="https://contributors-img.web.app/image?repo=aws-observability/aws-otel-community" />
+        <img src="https://contributors-img.web.app/image?repo=aws-observability/aws-otel-collector" />
+        <img src="https://contributors-img.web.app/image?repo=aws-observability/aws-otel-js" />
+        <img src="https://contributors-img.web.app/image?repo=aws-observability/aws-otel-java-instrumentation" />
       </div>
     </div>
   )

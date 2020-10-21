@@ -14,20 +14,22 @@ class ProjectWidget extends React.Component {
     const { classes, ...rest } = this.props
 
     return (
-        <Card className={classes.root} >
+        <div style={{margin: "50px 0"}}>
           <CardActionArea>
-            <Link to={this.props.link} target="_blank" rel="noopener noreferrer" style={{textDecoration: "none"}}>
-              <CardContent style={{padding: "40px 50px"}}>
-                <Typography gutterBottom variant="h5" component="h2">
-                  {this.props.title}
-                </Typography>
-                <Typography variant="body1" color="textSecondary" component="p">
-                  {this.props.description}
-                </Typography>
-              </CardContent>
-            </Link>
+            <Card className={classes.root} >
+                <Link to={this.props.link} target="_blank" rel="noopener noreferrer" style={{textDecoration: "none"}}>
+                  <CardContent style={{padding: "40px 50px"}}>
+                    <Typography gutterBottom variant="h5" component="h2">
+                      {this.props.title}
+                    </Typography>
+                    <Typography variant="body1" color="textSecondary" component="p">
+                      {this.props.description}
+                    </Typography>
+                  </CardContent>
+                </Link>
+            </Card>
           </CardActionArea>
-        </Card>
+        </div>
     )
   }
 }
