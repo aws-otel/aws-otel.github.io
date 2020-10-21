@@ -1,9 +1,9 @@
 ---
-title: 'Run AWS Distro for OpenTelemetry Demo Application in Docker'
+title: 'Run AWS OTel Collector Examples with Docker'
 description:
-    This example will introduce how to install AOC to collect metrics/traces data from a sample application running in
+    This example will introduce how to install AWS OTel Collector to collect metrics/traces data from a sample application running in
     the Docker container. The sample application will generate Open Telemetry Protocol (OTLP) format based metrics and
-    traces data and send to AWS CloudWatch and X-Ray consoles. Please follow the steps below to try AWS Observability Collector Beta.
+    traces data and send to AWS CloudWatch and X-Ray consoles. Please follow the steps below to try AWS OTel Collector.
 path: '/docs/setup/aot-docker-images'
 ---
 
@@ -12,11 +12,11 @@ import img5 from "assets/img/docs/img5.png"
 import img6 from "assets/img/docs/img6.png"
 import img7 from "assets/img/docs/img7.png"
 
-This example will introduce how to install AOC to collect metrics/traces data from a sample application running in the
+This example will introduce how to install AWS OTel Collector to collect metrics/traces data from a sample application running in the
 Docker container. The sample application will generate Open Telemetry Protocol (OTLP) format based metrics and traces data
 and send to AWS CloudWatch and X-Ray consoles.
 
-Please follow the steps below to try AWS Observability Collector Beta.
+Please follow the steps below to try AWS OTel Collector.
 
 <SectionSeparator />
 
@@ -37,7 +37,7 @@ The region is where the data will be sent to.
 `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and `AWS_REGION` with the expected values.
 
 ```yaml
-image: aottestbed/awscollector:v0.1.11
+image: amazon/aws-otel-collector:latest
 command: ["--config=/etc/otel-agent-config.yaml", "--log-level=DEBUG"]
 environment:
   - AWS_ACCESS_KEY_ID=<to_be_added>
@@ -55,11 +55,11 @@ ports:
 
 2. Once AWS credential has been updated in the `docker-compose.yaml` file, run the following command within the same folder where the `docker-compose.yaml` file is located.
 ```
-docker-compose up -d
+cd examples; docker-compose up -d
 ```
 <img src={img5} alt="Diagram" style="margin: 30px 0;" />
 
-3. Once AOC and Sample application docker images are up and running. We can check the monitoring data in CloudWatch and X-Ray consoles.
+3. Once AWS OTel Collector and Sample application docker images are up and running. We can check the monitoring data in CloudWatch and X-Ray consoles.
 
 4. CloudWatch Metrics console - (AOCDockerDemo/AOCDockerDemoService)
 <img src={img6} alt="Diagram" style="margin: 30px 0;" />
@@ -67,7 +67,7 @@ docker-compose up -d
 5. AWS X-Ray Console
 <img src={img7} alt="Diagram" style="margin: 30px 0;" />
 
-6. To stop this demo with AOC, please run the following command.
+6. To stop this demo with AWS OTel Collector, please run the following command.
 ```
 docker stop $(docker ps -aq)
 ```

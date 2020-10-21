@@ -25,11 +25,17 @@ AWS X-Ray for sending traces.
         {
             "Effect": "Allow",
             "Action": [
+                "logs:PutLogEvents",
                 "logs:CreateLogGroup",
                 "logs:CreateLogStream",
-                "logs:PutLogEvents",
                 "logs:DescribeLogStreams",
-                "xray:PutTraceSegments"
+                "logs:DescribeLogGroups",
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries",
+                "ssm:GetParameters"
             ],
             "Resource": "*"
         }

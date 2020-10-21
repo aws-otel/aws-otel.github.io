@@ -44,7 +44,7 @@ definition templates for these two modes to set up AWS OTel Collector.
     * `{{ecsTaskRoleArn}} - AWSObservabilityRole ARN defined above`
     * `{{ecsExecutionRoleArn}} - AWSObservabilityRole ARN defined above`
 3. Follow the [ECS EC2 setup instructions](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/getting-started-ecs-ec2.html)
-to setup the AWS OTel Collector as a sidecar.
+to setup ECS Cluster and the task definition. Then run AWS OTel Collector as a sidecar.
 4. After ECS is set up and running, you should see AWS OTel Collector running as sidecar process along with your sample application.
 <img src={img8} alt="Diagram" style="margin: 30px 0;" />
 
@@ -66,7 +66,7 @@ To Install AWS OTel Collector by using CloudFormation, you have to manually crea
 ### Setup for ECS EC2
 1. Download the CloudFormation template file for installing AWS OTel Collector for ECS EC2. Run the following curl command.
 ```
-curl -O https://raw.githubusercontent.com/aws-observability/aws-otel-collector/master/deployment-template/ecs/aoc-ec2-sidecar-deployment-cfn.template?token=ABIVU6IHIEDE4TOICLQDZGK7Q4ZAA
+curl -O https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/deployment-template/ecs/aws-otel-ec2-sidecar-deployment-cfn.yaml
 ```
 2. Replace the parameters below and run the following CloudFormation command
     * `Cluster_Name - ECS Cluster name setup in Prerequisite step`
@@ -86,7 +86,7 @@ aws cloudformation create-stack --stack-name AOCECS-${ClusterName}-${Region} \
 ### Setup for ECS Fargate
 1. Download CloudFormation template file for installing AWS OTel Collector on ECS Fargate mode on GitHub.
 ```
-curl -O https://raw.githubusercontent.com/aws-observability/aws-otel-collector/master/deployment-template/ecs/aoc-fargate-sidecar-deployment-cfn.template?token=ABIVU6P2QZZKCJV7SALSLLS7Q4Y6M
+curl -O https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/deployment-template/ecs/aws-otel-fargate-sidecar-deployment-cfn.yaml
 ```
 2. Export the following parameters, and then run CloudFormation command.
     * `Cluster_Name` - ECS Cluster name setup in Prerequisite step

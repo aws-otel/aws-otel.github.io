@@ -26,7 +26,7 @@ In this doc, we will introduce how to use OpenTelemetry Java SDK for metric inst
 
 [OTel SDK](https://github.com/open-telemetry/opentelemetry-java)
 
-[AOT with application metrics sample application](https://github.com/aws-observability/aws-otel-collector-test-framework/blob/master/java-sdk-emitter/src/main/java/com/amazon/aocagent/MetricEmitter.java)
+[AOT with application metrics sample application](https://github.com/aws-observability/aws-otel-test-framework/blob/terraform/sample-apps/java-sdk-emitter/src/main/java/com/amazon/aocagent/MetricEmitter.java)
 
 <SectionSeparator />
 
@@ -58,7 +58,7 @@ With Maven
 </dependency>
 ```
 
-1. Create `OtlpGrpcMetricExporter` to send application metrics data to AOC.
+1. Create `OtlpGrpcMetricExporter` to send application metrics data to AWS OTel Collector.
 ```java
 MetricExporter metricExporter =
                 OtlpGrpcMetricExporter.newBuilder()
@@ -94,7 +94,7 @@ LongValueRecorder apiLatencyRecorder = meter
         .build();
 ```
 
-4. Record Metric measurements and wait for IntervalMetricReader to send the batched Metrics to AOC.
+4. Record Metric measurements and wait for IntervalMetricReader to send the batched Metrics to AWS OTel Collector.
 ```java
 apiLatencyRecorder.record("120",
     Labels.of("apiName", apiName, "statusCode", statusCode));
@@ -104,9 +104,9 @@ apiBytesSentCounter.add("2048",
 
 These steps provided the sample code for applications to create application metrics.
 
-Please follow <Link to="/docs/getting-started/aot-cloudwatch-metrics">Getting Started Sending CloudWatch Metrics with AWS OpenTelemetry</Link>
-to setup AWS OTel Collector for sending metrics to CloudWatch. Once AOC is installed to collect the metrics data. You should see the following
-metrics present on your CloudWatch Console.
+Please follow <Link to="/docs/getting-started/cloudwatch-metrics">Getting Started Sending CloudWatch Metrics with AWS OpenTelemetry</Link>
+ to setup AWS OTel Collector for sending metrics to CloudWatch. Once AWS OTel Collector is installed to collect the metrics data.
+ You should see the following metrics present on your CloudWatch Console.
 
 <img src={img2} alt="Diagram" style="margin: 30px 0;" />
 

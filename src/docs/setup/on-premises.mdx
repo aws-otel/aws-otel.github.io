@@ -16,9 +16,11 @@ for on-premises hosts. For supported platforms, see the [AWS OTel Collector READ
 
 ## Install the AWS OTel Collector
 1. Set up the required [AWS credential file](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html).
-2. Log in to the host and download AWS OTel Collector RPM with the following command.
+2. Logon your on-premise host and download AWS OTel Collector source code
+from [AWS Observability GitHub Repository](https://github.com/aws-observability/aws-otel-collector) and build RPM file with the following command.
 ```
-wget https://aws-observability-collector-release.s3.amazonaws.com/amazon_linux/amd64/v0.1.11/aws-observability-collector-0.1.13.rpm
+git clone https://github.com/aws-observability/aws-otel-collector.git
+make package-rpm
 ```
 3. Install the AWS OTel Collector RPM by the following command on the host.
 ```

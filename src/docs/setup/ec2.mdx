@@ -38,9 +38,9 @@ See the <Link to="/docs/setup/permissions">Permissions</Link> section for the pe
 <SectionSeparator />
 
 ## Install AWS Distro for OpenTelemetry Collector on EC2 instance using CloudFormation
-1. Download the CloudFormation template file `aoc-ec2-deployment-cfn.template` for installing AWS OTel Collector on  Amazon EC2.
+1. Download the CloudFormation template file `aws-otel-ec2-deployment-cfn.yaml` for installing AWS OTel Collector on  Amazon EC2.
 ```
-curl -O https://raw.githubusercontent.com/aws-observability/aws-otel-collector/master/deployment-template/ec2/aoc-ec2-deployment-cfn.template?token=ABIVU6M6N367QIKL7XZU2FK7RHBNO
+curl -O https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/deployment-template/ec2/aws-otel-ec2-deployment-cfn.yaml
 ```
 2. Replace the below parameters and then run AWS CloudFormation CLI command. It will launch one EC2 instance with AWS OTel collector installed.
     * `ec2-ssh-key-name` - the key pair name for login to EC2 instance
@@ -50,7 +50,7 @@ Region=us-west-2
 IAMRole=AWSDistroOpenTelemetryRole
 EC2Key=<*ec2**-**ssh**-**key**-**name*>
 aws cloudformation create-stack --stack-name AOCEC2-Test \
-    --template-body file://<*template_path*>/aoc-ec2-deployment-cfn.template \
+    --template-body file://<*template_path*>/aws-otel-ec2-deployment-cfn.yaml \
     --parameters ParameterKey=IAMRole,ParameterValue=${IAMRole} \
                  ParameterKey=KeyName,ParameterValue=${EC2Key} \
     --capabilities CAPABILITY_NAMED_IAM \
@@ -61,7 +61,7 @@ aws cloudformation create-stack --stack-name AOCEC2-Test \
 ```
 ssh -i "<ec2-ssh-key-name>.pem" ec2-user@ec2-<instance_id>.us-west-2.compute.amazonaws.com (mailto:ec2-user@ec2-34-221-1-180.us-west-2.compute.amazonaws.com)
 ```
-5. Check if  AWS Observability Collector is set up and running on the new EC2 instance. If it is, you’ll see the following status.
+5. Check if  AWS OTel Collector is set up and running on the new EC2 instance. If it is, you’ll see the following status.
 ```
 sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -a status
 ```

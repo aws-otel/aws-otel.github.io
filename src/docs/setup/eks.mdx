@@ -36,7 +36,7 @@ see the <Link to="/docs/setup/permissions">Permissions</Link> section.
 <SectionSeparator />
 
 ## Deploy AWS OTel Collector on Amazon EKS as sidecar
-Sidecar is a microservices design pattern where a companion service runs next to your primary microservice, augmenting its
+Sidecar is a microservice design pattern where a companion service runs next to your primary microservice, augmenting its
 abilities or intercepting resources it is utilizing. We recommend deploying AWS OTel Collector on Amazon EKS as a sidecar,
 defining it in the same task definition as your application. This allows the AWS OTel Collector to collect the metric and
 trace data for the application.
@@ -50,7 +50,7 @@ Replace `{{aws-otelImage}}` with the name of the AWS OTel Collector Docker image
 (For example, `aottestbed/awscollector:v0.1.12`), and `{{region}}` with the name of the Region where the logs are published (For example, `us-west-2`).
 3. Deploy the application.
 ```
-kubectl apply -f examples/eks/eks-sidecar.yaml
+kubectl apply -f https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/examples/eks/eks-sidecar.yaml
 ```
 4. View the resources in the `aws-otel-eks` namespace.
 ```
