@@ -31,11 +31,11 @@ const DownloadItems = (props) => {
     }
   `)
 
-  if(props.version === 'All Versions'){
+  if(props.version === 'All Downloads'){
     return (
       <div className={classes.section}>
         <GridContainer justify="center">
-          <GridItem xs={12} sm={12} md={8}>
+          <GridItem xs={12} sm={12} md={10}>
             {data.allDownloadsYaml.edges.map((downloadItem, index) =>
                 <DownloadItem key={index}
                     version={downloadItem.node.version}
@@ -58,7 +58,7 @@ const DownloadItems = (props) => {
     return (
         <div className={classes.section}>
           <GridContainer justify="center">
-            <GridItem xs={12} sm={12} md={8}>
+            <GridItem xs={12} sm={12} md={10}>
               {data.allDownloadsYaml.edges.map((downloadItem, index) => {
                 if(downloadItem.node.version === props.version) {
                   return <DownloadItem key={index}

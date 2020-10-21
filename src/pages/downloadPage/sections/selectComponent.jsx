@@ -11,7 +11,7 @@ import selectComponentStyle from "../../../assets/jss/material-kit-react/views/d
 const SelectComponent = (props) => {
 
   const { classes } = props
-  const [version, setVersion] = React.useState('All Versions')
+  const [version, setVersion] = React.useState('All Downloads')
 
   const handleChange = (event) => {
     setVersion(event.target.value)
@@ -36,14 +36,14 @@ const SelectComponent = (props) => {
     <div className={classes.section}>
       <GridContainer justify="center">
         <FormControl className={classes.formControl}>
-          <InputLabel id="demo-simple-select-label">Select Version</InputLabel>
+          <InputLabel id="demo-simple-select-label">Select Download</InputLabel>
           <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               value={version}
               onChange={handleChange}
           >
-            <MenuItem value="All Versions">All Versions</MenuItem>
+            <MenuItem value="All Downloads">All Downloads</MenuItem>
             {data.allDownloadsYaml.edges.map((obj, index) =>
                 <MenuItem key={index} value={obj.node.version}>{obj.node.version}</MenuItem>
             )}

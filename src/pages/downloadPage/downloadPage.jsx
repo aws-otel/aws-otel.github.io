@@ -14,7 +14,7 @@ class DownloadPage extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      version: "All Versions"
+      version: "All Downloads"
     };
   }
 

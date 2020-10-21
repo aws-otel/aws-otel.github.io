@@ -43,7 +43,7 @@ class DownloadItem extends React.Component {
           <CardContent>
             <a href={this.props.dockerHub} style={{textDecoration: "none"}} target="_blank">
               <Button size="small" color="primary" variant="outlined" className={classes.button}>
-                Docker
+                Download Now
               </Button>
             </a>
             {/*<a href={this.props.RPM} style={{textDecoration: "none"}} target="_blank">*/}
