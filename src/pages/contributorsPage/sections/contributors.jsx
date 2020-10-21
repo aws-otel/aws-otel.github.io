@@ -101,7 +101,7 @@ const Contributors = (props) => {
 
   return (
     <div className={classes.section} style={{textAlign: "left"}}>
-      {/*<h2 className={classes.title}>Special thanks to all our contributors</h2>*/}
+      <h2 className={classes.title}>Special thanks to all our contributors</h2>
       <div style={{height: "70px"}} />
       {/*<div>*/}
       {/*  <GridContainer>*/}
