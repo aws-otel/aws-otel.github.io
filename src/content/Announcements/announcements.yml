@@ -10,11 +10,12 @@ announcements:
       Today, we are announcing the availability in preview of AWS Distro for OpenTelemetry,
       a secure, production-ready, AWS-supported distribution of the OpenTelemetry project.
     link: 'https://www.google.com/'
-#  - title: OpenTelemetry releases Trace Specification RC
-#    date: '21-Oct-2020'
-#    blurb:
-#      xxx
-#    link: 'https://www.google.com/'
+  - title: OpenTelemetry announces its Tracing Specification Release Candidate
+    date: '21-Oct-2020'
+    blurb:
+      Today marks another milestone in the journey towards OpenTelemetry’s first GA release. The tracing
+      spec is now frozen and considered to be a release candidate.
+    link: 'https://www.google.com/'
 
 searchIndex:
   '
@@ -22,4 +23,9 @@ searchIndex:
   21-Oct-2020
   Today, we are announcing the availability in preview of AWS Distro for OpenTelemetry,
   a secure, production-ready, AWS-supported distribution of the OpenTelemetry project.
+
+  OpenTelemetry announces its Tracing Specification Release Candidate
+  21-Oct-2020
+  Today marks another milestone in the journey towards OpenTelemetry’s first GA release. The tracing
+  spec is now frozen and considered to be a release candidate.
   '
