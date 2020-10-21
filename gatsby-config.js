@@ -3,7 +3,7 @@ require("dotenv").config({
 })
 
 module.exports = {
-  pathPrefix: "/",
+  // pathPrefix: "/",
   siteMetadata: {
     title: 'Gatsby Default Starter',
     siteTitle: `AWS Open Distro for OpenTelemetry`,
