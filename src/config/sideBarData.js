@@ -46,9 +46,10 @@ export const sideBarData = [
       id: nextId(),
       label: "Getting started",
       items: [
-        {label: "Java Auto-Instrumentation Agent", link: "/docs/getting-started/java-auto-instrumentation-agent"},
+        {label: "Collector", link: "/docs/getting-started/collector"},
         {label: "Java SDK", link: "/docs/getting-started/java-sdk"},
         {label: "JavaScript SDK", link: "/docs/getting-started/javascript-sdk"},
+        {label: "Tracing With the Java SDK", link: "/docs/getting-started/java-auto-instrumentation-agent"},
         {label: "Using CloudWatch Metrics", link: "/docs/getting-started/cloudwatch-metrics"},
         // {label: "ECS Container Metrics Receiver", link: "/docs/getting-started/ecs-metrics-receiver"}
       ],
@@ -65,7 +66,10 @@ export const sideBarData = [
         {label: "For ECS", link: "/docs/setup/ecs"},
         {label: "For EC2", link: "/docs/setup/ec2"},
         {label: "For EKS", link: "/docs/setup/eks"},
-        {label: "On-Premises", link: "/docs/setup/on-premises"}
+        {label: "On-Premises", link: "/docs/setup/on-premises"},
+        {label: "Build Collector on MS-Windows", link: "/docs/setup/build-collector-on-windows"},
+        {label: "Build Collector as an RPM", link: "/docs/setup/build-collector-as-rpm"},
+        {label: "Build Collector as Debian", link: "/docs/setup/build-collector-as-debian"}
       ],
       link: "/docs/null"
     }

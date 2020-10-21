@@ -17,7 +17,7 @@ class DownloadItem extends React.Component {
           <div style={{height: "20px"}} />
           <CardContent>
             <Typography gutterBottom variant="h5" component="h2">
-              Version {this.props.version}
+              {this.props.version}
             </Typography>
             <Typography variant="body1" color="textSecondary" component="p">
               Release Date: {this.props.releaseDate}

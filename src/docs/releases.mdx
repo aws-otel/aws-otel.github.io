@@ -7,8 +7,25 @@ path: '/docs/releases'
 ---
 
 import { Link } from "gatsby"
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
 
 | Component Name                                                      | Link |
 |---------------------------------------------------------------------|---------------|
-| AWS Otel Collector                                                  | <Link to="/download">Download</Link> |
+| AWS OTel Collector                                                  | <Link to="/download">Download</Link> |
 | Sample application for AWS X-Ray SDK with support for OpenTelemetry | <Link to="/download">Download</Link> |
+
+<SectionSeparator />
+
+## Whats Included in the AWS Distro for OpenTelemetry Collector
+
+| Receiver             | Processor                     | Exporter           | Extensions             |
+|----------------------|-------------------------------|--------------------|------------------------|
+| prometheusreceiver   | attributesprocessor           | awsxrayexporter    | healthcheckextension   |
+| otlpreceiver         | resourceprocessor             | awsemfexporter     | pprofextension         |
+| statsdreceiver       | queuedprocessor               | prometheusexporter | zpagesextension        |
+| xrayreceiver         | batchprocessor                | loggingexporter    |                        |
+| ecsmetadatareceiver  | memorylimite                  | otlpexporter       |                        |
+|                      | tailsamplingprocessor         | fileexporter       |                        |
+|                      | probabilisticsamplerprocessor |                    |                        |
+|                      | spanprocessor                 |                    |                        |
+|                      | filterprocessor               |                    |                        |
