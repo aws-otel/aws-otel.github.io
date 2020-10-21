@@ -24,10 +24,10 @@ infoSection:
 
   leftHeading: Benefits
   benefits:
-    "AWS Distro for OpenTelemetry empowers you to implement broad, while efficient, secure, while flexible, observability
-    solutions. It helps you optimize your production environments by ensuring predictable resource utilization and it can
-    sharpen your analytical expertise while protecting your investment in standardized observability tools. And even AWS Premium
-    support is just a click away."
+    "AWS Distro for OpenTelemetry empowers you to implement broad yet efficient, secure yet flexible, observability
+    solutions. It helps you optimize your production environments by ensuring predictable resource utilization, and
+    can increase your analytical visibility while protecting your investment in standardized observability tools.
+    It is backed by AWS Support, testing, and certification."
 
   middleHeading: Use Cases
   useCases:

@@ -5,7 +5,7 @@ require("dotenv").config({
 module.exports = {
   // pathPrefix: "/",
   siteMetadata: {
-    title: 'Gatsby Default Starter',
+    title: 'AWS Open Distro for OpenTelemetry',
     siteTitle: `AWS Open Distro for OpenTelemetry`,
     defaultTitle: `AWS Open Distro for OpenTelemetry`,
     siteTitleShort: `AWS Distro OpenTelemetry`,
@@ -14,7 +14,8 @@ module.exports = {
     siteImage: `/banner.png`,
     siteLanguage: `en`,
     themeColor: `#F5A880`,
-    basePath: `/docs`,
+    basePath: `/`,
+    siteUrl: `https://www.aws-otel.github.io`,
   },
   plugins: [
     {
