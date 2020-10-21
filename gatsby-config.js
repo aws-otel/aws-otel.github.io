@@ -62,6 +62,22 @@ module.exports = {
                 }
               }
             }
+            repo5: repository(owner: "aws-observability", name: "aws-otel-test-framework") {
+              collaborators {
+                nodes {
+                  name
+                  avatarUrl
+                }
+              }
+            }
+            repo6: repository(owner: "aws-observability", name: "aws-otel-playground") {
+              collaborators {
+                nodes {
+                  name
+                  avatarUrl
+                }
+              }
+            }
           }
         `
       },

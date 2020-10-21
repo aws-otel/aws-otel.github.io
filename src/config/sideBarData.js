@@ -68,7 +68,7 @@ export const sideBarData = [
         {label: "For EKS", link: "/docs/setup/eks"},
         {label: "On-Premises", link: "/docs/setup/on-premises"},
         {label: "Build Collector on MS-Windows", link: "/docs/setup/build-collector-on-windows"},
-        {label: "Build Collector as an RPM", link: "/docs/setup/build-collector-as-rpm"},
+        {label: "Build Collector as RPM", link: "/docs/setup/build-collector-as-rpm"},
         {label: "Build Collector as Debian", link: "/docs/setup/build-collector-as-debian"}
       ],
       link: "/docs/null"

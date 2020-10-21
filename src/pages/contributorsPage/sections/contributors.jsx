@@ -69,6 +69,22 @@ const Contributors = (props) => {
                   }
                 }
               }
+              repo5 {
+                collaborators {
+                  nodes {
+                    avatarUrl
+                    name
+                  }
+                }
+              }
+              repo6 {
+                collaborators {
+                  nodes {
+                    avatarUrl
+                    name
+                  }
+                }
+              }
             }
           }
         }
@@ -80,26 +96,32 @@ const Contributors = (props) => {
   addCollaborators(data.allGithubData.edges[0].node.data.repo2.collaborators.nodes)
   addCollaborators(data.allGithubData.edges[0].node.data.repo3.collaborators.nodes)
   addCollaborators(data.allGithubData.edges[0].node.data.repo4.collaborators.nodes)
+  addCollaborators(data.allGithubData.edges[0].node.data.repo5.collaborators.nodes)
+  addCollaborators(data.allGithubData.edges[0].node.data.repo6.collaborators.nodes)
 
   return (
-    <div className={classes.section}>
-      <h2 className={classes.title}>Special thanks to all our contributors</h2>
+    <div className={classes.section} style={{textAlign: "left"}}>
+      {/*<h2 className={classes.title}>Special thanks to all our contributors</h2>*/}
       <div style={{height: "70px"}} />
-      <div>
-        <GridContainer>
-          {allCollaborators.map((node, index) =>
-            <GridItem xs={12} sm={12} md={4}>
-              <Card plain>
-                <GridItem xs={12} sm={12} md={6} className={classes.itemGrid}>
-                  <img src={node.avatarUrl} alt="..." className={imageClasses} />
-                </GridItem>
-                <h4 className={classes.cardTitle}>
-                  {node.name}
-                </h4>
-              </Card>
-            </GridItem>
-          )}
-        </GridContainer>
+      {/*<div>*/}
+      {/*  <GridContainer>*/}
+      {/*    {allCollaborators.map((node, index) =>*/}
+      {/*      <GridItem xs={12} sm={12} md={4}>*/}
+      {/*        <Card plain>*/}
+      {/*          <GridItem xs={12} sm={12} md={6} className={classes.itemGrid}>*/}
+      {/*            <img src={node.avatarUrl} alt="..." className={imageClasses} />*/}
+      {/*          </GridItem>*/}
+      {/*          <h4 className={classes.cardTitle}>*/}
+      {/*            {node.name}*/}
+      {/*          </h4>*/}
+      {/*        </Card>*/}
+      {/*      </GridItem>*/}
+      {/*    )}*/}
+      {/*  </GridContainer>*/}
+      {/*</div>*/}
+      <div style={{marginLeft: "4vw"}}>
+        <img src="https://contributors-img.web.app/image?repo=aws-observability/aws-otel-test-framework" />
+        <img src="https://contributors-img.web.app/image?repo=aws-observability/aws-otel-playground" />
       </div>
     </div>
   )

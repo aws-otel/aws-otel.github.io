@@ -36,9 +36,10 @@ infoSection:
 
   rightHeading: Open Source
   openSource:
-    We are proud to be a part of the OpenTelemetry developer community upstream. As part of the community,
-    AWS follows an upstream-first approach where all our enhancements are contributed upstream. Our
-    distribution is built using this upstreamed code.
+    We are proud to be a part of the OpenTelemetry developer community upstream. As part of the open source community, we
+    follow an “upstream-first” approach where we contribute all our enhancements, changes and bug fixes upstream.
+    Our open source distribution is built using this upstreamed code. We participate in the open standards discussions in
+    the OpenTelemetry Specification SIG and W3C Tracing Specification.
 
 getInvolvedSection:
   heading: Get Involved
