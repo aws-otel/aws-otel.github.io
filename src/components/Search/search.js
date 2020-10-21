@@ -32,7 +32,7 @@ const styles = {
   },
 }
 
-const baseUrl = 'https://aws-observability.github.io/otel.aws'
+const baseUrl = 'https://aws-otel.github.io'
 
 // Search component
 class Search extends Component {

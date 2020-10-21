@@ -13,6 +13,7 @@ jobs:
       - uses: enriikke/gatsby-gh-pages-action@v2
         env:
           GH_API_KEY: ${{ secrets.demo }}
+          GA_KEY: ${{ secrets.ga }}
         with:
           access-token: ${{ secrets.demo }}
           deploy-branch: gh-pages

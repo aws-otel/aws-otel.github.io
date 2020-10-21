@@ -18,6 +18,12 @@ module.exports = {
   },
   plugins: [
     {
+      resolve: `gatsby-plugin-google-analytics`,
+      options: {
+        trackingId: process.env.GA_KEY || "none",
+      }
+    },
+    {
       resolve: `gatsby-source-github-api`,
       options: {
         token: process.env.GH_API_KEY,
