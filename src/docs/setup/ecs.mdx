@@ -1,0 +1,114 @@
+---
+title: 'Setting up AWS Distro for OpenTelemetry Collector in Amazon Elastic Container Service'
+description:
+    In this tutorial, we will demonstrate how to run AWS Distro for OpenTelemetry Collector (AWS Otel Collector) as a
+    sidecar on the Amazon Elastic Container Service (Amazon ECS) in Fargate and in Amazon Elastic Compute Cloud
+    (Amazon EC2) mode. We provide a sample application within the same Amazon ECS task to send monitoring data to
+    AWS OTel Collector.
+path: '/docs/setup/ecs'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import { Link } from "gatsby"
+import img8 from "assets/img/docs/img8.png"
+import img9 from "assets/img/docs/img9.png"
+
+In this tutorial, we will demonstrate how to run AWS Distro for OpenTelemetry Collector (AWS Otel Collector) as a
+sidecar on the Amazon Elastic Container Service (Amazon ECS) in Fargate and in Amazon Elastic Compute Cloud
+(Amazon EC2) mode. We provide a sample application within the same Amazon ECS task to send monitoring data to AWS
+OTel Collector.
+
+<SectionSeparator />
+
+## Create IAM policy
+For the required permissions and setup,
+see the <Link to="/docs/setup/permissions">Permissions</Link> section.
+
+<SectionSeparator />
+
+## Setup the AWS OTel Collector
+There are two options to get started by installing AWS OTel Collector as a sidecar in ECS.
+1. Install the AWS Otel Collector by using a Task Definition template.
+2. Install the AWS Otel Collector by using CloudFormation template.
+
+<SectionSeparator />
+
+## Option 1: Install AWS OTel Collector by using a task definition template
+For AWS ECS, you can run ECS tasks in Fargate mode or in EC2 mode. In the following steps, we provide ECS task
+definition templates for these two modes to set up AWS OTel Collector.
+
+### Setup for ECS EC2
+1. [Download the ECS EC2 task definition template](https://github.com/aws-observability/aws-otel-collector/blob/master/examples/ecs/ecs-ec2-sidecar.json) on GitHub.
+2. Fill the following parameters in the task definition templates:
+    * `{{region}} - the region the data will be sent to`
+    * `{{ecsTaskRoleArn}} - AWSObservabilityRole ARN defined above`
+    * `{{ecsExecutionRoleArn}} - AWSObservabilityRole ARN defined above`
+3. Follow the [ECS EC2 setup instructions](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/getting-started-ecs-ec2.html)
+to setup ECS Cluster and the task definition. Then run AWS OTel Collector as a sidecar.
+4. After ECS is set up and running, you should see AWS OTel Collector running as sidecar process along with your sample application.
+<img src={img8} alt="Diagram" style="margin: 30px 0;" />
+
+### Setup for ECS Fargate
+1. [Download the ECS Fargate task definition template](https://github.com/aws-observability/aws-otel-collector/blob/master/examples/ecs/ecs-fargate-sidecar.json) on Github.
+2. Fill the following parameters in the task definition templates:
+    * `{{region}} - the region the data will be sent to`
+    * `{{ecsTaskRoleArn}} - AWSObservabilityRole ARN defined above`
+    * `{{ecsExecutionRoleArn}} - AWSObservabilityRole ARN defined above`
+3. Follow the [ECS Fargate setup instructions](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/getting-started-fargate.html) to setup the AWS OTel Collector as a sidecar.
+4. After ECS is set up and running, you should see AWS OTel Collector running as sidecar process along with your sample application.
+<img src={img9} alt="Diagram" style="margin: 30px 0;" />
+
+<SectionSeparator />
+
+## Option 2: Install AWS OTel Collector using CloudFormation template
+To Install AWS OTel Collector by using CloudFormation, you have to manually create an ECS cluster on your AWS console first.
+
+### Setup for ECS EC2
+1. Download the CloudFormation template file for installing AWS OTel Collector for ECS EC2. Run the following curl command.
+```
+curl -O https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/deployment-template/ecs/aws-otel-ec2-sidecar-deployment-cfn.yaml
+```
+2. Replace the parameters below and run the following CloudFormation command
+    * `Cluster_Name - ECS Cluster name setup in Prerequisite step`
+    * `AWS_Region - Region the data will be sent`
+    * `CFN_File_Downloaded - CFN template path downloaded in Step 1`
+```console lineNumbers=true
+ClusterName=<Cluster_Name>
+Region=<AWS_Region>
+aws cloudformation create-stack --stack-name AOCECS-${ClusterName}-${Region} \
+    --template-body file://<CFN_File_Downloaded> \
+    --parameters ParameterKey=ClusterName,ParameterValue=${ClusterName} \
+                 ParameterKey=CreateIAMRoles,ParameterValue=false \
+    --capabilities CAPABILITY_NAMED_IAM \
+    --region ${Region}
+```
+
+### Setup for ECS Fargate
+1. Download CloudFormation template file for installing AWS OTel Collector on ECS Fargate mode on GitHub.
+```
+curl -O https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/deployment-template/ecs/aws-otel-fargate-sidecar-deployment-cfn.yaml
+```
+2. Export the following parameters, and then run CloudFormation command.
+    * `Cluster_Name` - ECS Cluster name setup in Prerequisite step
+    * `AWS_Region` - Region the data will be sent
+    * `CFN_File_Downloaded` - CFN template path downloaded in Step 1
+    * `Security_Groups` - the security group your ECS Fargate Task is running
+    * `Subnets` - the subnet your ECS Fargate task is running
+```console lineNumbers=true
+ClusterName=<Cluster_Name>
+Region=<AWS_Region>
+SecurityGroups=<Security_Groups>
+Subnets=<Subnets>
+aws cloudformation create-stack --stack-name AOCECS-${ClusterName}-${Region} \
+    --template-body file:///<CFN_File_Downloaded> \
+    --parameters ParameterKey=ClusterName,ParameterValue=${ClusterName} \
+                 ParameterKey=CreateIAMRoles,ParameterValue=False \
+                 ParameterKey=SecurityGroups,ParameterValue=${SecurityGroups} \
+                 ParameterKey=Subnets,ParameterValue=${Subnets} \
+    --capabilities CAPABILITY_NAMED_IAM \
+    --region ${Region}
+```
+**Note**
+After you finished the tutorial, remember to shut down the new ECS cluster created in the tutorial in order to avoid any charges.
+
+

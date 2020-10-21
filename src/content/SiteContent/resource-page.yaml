@@ -1,0 +1,96 @@
+title: Resources Page
+description:
+  This page includes information and links to other important open-source projects
+path: /resources
+
+projects:
+  - title: Amazon Corretto
+    description:
+      Amazon Corretto is a no-cost, multiplatform, production-ready distribution of the Open Java Development Kit (OpenJDK).
+      Corretto is used internally at Amazon for production services. With Corretto, you can develop and run Java applications
+      on operating systems such as Linux, Windows, and macOS.
+    link: https://github.com/corretto
+  - title: Bottlerocket-os
+    description:
+      Bottlerocket is a free and open-source Linux-based operating system meant for hosting containers.
+      Bottlerocket focuses on security and maintainability, providing a reliable, consistent, and safe platform for
+      container-based workloads. This is a reflection of what we've learned building operating systems and
+      services at Amazon.
+    link: https://github.com/bottlerocket-os
+  - title: Cortex
+    description:
+      Cortex provides horizontally scalable, highly available, multi-tenant, long term storage for Prometheus. Cortex is
+      horizontally scalable, highly available, multi-tenant and provides long term storage.
+    link: https://cortexmetrics.io/
+  - title: Open Distro for Elasticsearch
+    description:
+      Open Distro for ElasticSearch is an Apache 2.0-licensed distribution of Elasticsearch enhanced with enterprise
+      security, alerting, and more. It allows you to keep your data secure, get notified automatically, query with
+      familiar tools and get deep diagnostic insights.
+    link: https://opendistro.github.io/for-elasticsearch/
+  - title: OpenTelemetry
+    description:
+      OpenTelemetry is a collection of tools, APIs, and SDKs. You use it to instrument, generate, collect, and export
+      telemetry data (metrics, logs, and traces) for analysis in order to understand your software's performance
+      and behavior.
+    link: https://opentelemetry.io/
+  - title: Prometheus
+    description:
+      Prometheus is an open-source systems monitoring and alerting toolkit originally built at SoundCloud. Since its
+      inception in 2012, many companies and organizations have adopted Prometheus, and the project has a very active developer
+      and user community. It is now a standalone open source project and maintained independently of any company.
+    link: https://prometheus.io/
+
+blogs:
+  - title: AWS Open Source
+    link: https://aws.amazon.com/blogs/opensource/
+  - title: OpenDistro for Elasticsearch
+    link: https://opendistro.github.io/for-elasticsearch/blog/
+  - title: OpenTelemetry
+    link: https://medium.com/opentelemetry
+
+searchIndex:
+  "
+  Related Projects
+
+  Amazon Corretto
+
+  Amazon Corretto is a no-cost, multiplatform, production-ready distribution of the Open Java Development Kit (OpenJDK).
+  Corretto is used internally at Amazon for production services. With Corretto, you can develop and run Java applications
+  on operating systems such as Linux, Windows, and macOS.
+
+  Bottlerocket-os
+
+  Bottlerocket is a free and open-source Linux-based operating system meant for hosting containers.
+  Bottlerocket focuses on security and maintainability, providing a reliable, consistent, and safe platform for
+  container-based workloads. This is a reflection of what we've learned building operating systems and
+  services at Amazon.
+
+  Cortex
+
+  Cortex provides horizontally scalable, highly available, multi-tenant, long term storage for Prometheus. Cortex is
+  horizontally scalable, highly available, multi-tenant and provides long term storage.
+
+  Open Distro for Elasticsearch
+
+  Open Distro for ElasticSearch is an Apache 2.0-licensed distribution of Elasticsearch enhanced with enterprise
+  security, alerting, and more. It allows you to keep your data secure, get notified automatically, query with
+  familiar tools and get deep diagnostic insights.
+
+  OpenTelemetry
+
+  OpenTelemetry is a collection of tools, APIs, and SDKs. You use it to instrument, generate, collect, and export
+  telemetry data (metrics, logs, and traces) for analysis in order to understand your software's performance
+  and behavior.
+
+  Prometheus
+
+  Prometheus is an open-source systems monitoring and alerting toolkit originally built at SoundCloud. Since its
+  inception in 2012, many companies and organizations have adopted Prometheus, and the project has a very active developer
+  and user community. It is now a standalone open source project and maintained independently of any company.
+
+  Related Blogs
+  AWS Open Source
+  OpenDistro for Elasticsearch
+  OpenTelemetry
+  "

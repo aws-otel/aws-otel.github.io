@@ -1,0 +1,38 @@
+title: Contributing
+description:
+  This page is about contributing to the AWS Distro for OpenTelemetry
+path: /contributing
+
+paragraph1:
+  Many open source projects follow a similar organizational structure. AWS Distro for OpenTelementry implements the
+  best of breed of large scale multi-discipline, intensely collaborative projects. It is the downstream packaging
+  of the upstream observability OpenTelemetry project. The distribution emphasizes and is focused on seamlessly
+  integrating components of OpenTelemetry into cloud computing services, especially, but not limited to, services
+  offered by AWS.
+
+paragraph2:
+  Contributors to the OpenTelemetry project come from a very large community of authors, maintainers and other
+  contributors. The project also includes a large community of users who present a rich variety of use cases and
+  provide a vibrant discussion of issues related to the project. Many contributors are from large and heavily
+  invested organizations. Other contributors are concerned and passionate individuals.
+
+paragraph3:
+  The AWS Distro for OpenTelemetry maintainers participate heavily in the technical SIGs of the upstream
+  OpenTelemetry project. It also abides by the Code of Conduct of the upstream project.
+
+searchIndex:
+  '
+  Many open source projects follow a similar organizational structure. AWS Distro for OpenTelementry implements the
+  best of breed of large scale multi-discipline, intensely collaborative projects. It is the downstream packaging
+  of the upstream observability OpenTelemetry project. The distribution emphasizes and is focused on seamlessly
+  integrating components of OpenTelemetry into cloud computing services, especially, but not limited to, services
+  offered by AWS.
+
+  Contributors to the OpenTelemetry project come from a very large community of authors, maintainers and other
+  contributors. The project also includes a large community of users who present a rich variety of use cases and
+  provide a vibrant discussion of issues related to the project. Many contributors are from large and heavily
+  invested organizations. Other contributors are concerned and passionate individuals.
+
+  The AWS Distro for OpenTelemetry maintainers participate heavily in the technical SIGs of the upstream
+  OpenTelemetry project. It also abides by the Code of Conduct of the upstream project.
+  '

@@ -1,0 +1,68 @@
+title: Get Involved
+description:
+  This page is about how to get involved with AWS Open Distro for OpenTelemetry
+path: /get-involved
+
+paragraph1:
+  Whether you are a newcomer or an expert in observability, we welcome you to get involved in the AWS Distro for
+  OpenTelemetry project.
+
+paragraph2:
+  Being an open source distribution, AWS Distro for OpenTelemetry provides a great way for customers to find out
+  more about using the distribution, requesting features they need, for newcomers to learn more about observability
+  and for experts to teach and contribute.
+
+paragraph3:
+  "If you’re an open source observability user or contributor, we invite you to get involved. You can contribute in
+  the following ways:"
+
+list:
+  - item: Write a blog post which we would be happy to review and broadcast in AWS communities
+  - item: Present a talk on AWS Distro for OpenTelemetry at an open source conference and AWS conferences
+  - item:
+      Plan an online event in your organization or a meetup about open source observability. Present on topics
+      including AWS Distro for OpenTelemetry and upstream projects like Prometheus and OpenTelemetry.
+  - item:
+      Join our Gitter channel to help other users having similar questions and network with stakeholders in
+      AWS Distro for OpenTelemetry.
+  - item: Ask a question by filing an issue on our GitHub repos.
+  - item: File a bug by filing a PR on our GitHub repos.
+  - item:
+      Contribute an enhancement or a feature which you need and maintainers will be happy to code review.
+      You can open an issue to discuss the design of your proposed enhancement and then file a PR.
+  - item:
+      If you’re just getting started, we welcome you to get started with issues tagged as “good first issues” and
+      join Gitter to ask maintainers and other developers any questions you may have
+  - item:
+      Join the awesome upstream community on the OpenTelemetry project. Join the OpenTelemetry SIG meetings where
+      observability experts meet and discuss the OpenTelemetry specification and implementation of observability
+      components. And the code base is open source - so contribute to OpenTelemetry!
+
+searchIndex:
+  '
+  Whether you are a newcomer or an expert in observability, we welcome you to get involved in the AWS Distro for
+  OpenTelemetry project.
+
+  Being an open source distribution, AWS Distro for OpenTelemetry provides a great way for customers to find out
+  more about using the distribution, requesting features they need, for newcomers to learn more about observability
+  and for experts to teach and contribute.
+
+  "If you’re an open source observability user or contributor, we invite you to get involved. You can contribute in
+  the following ways:"
+
+  Write a blog post which we would be happy to review and broadcast in AWS communities
+  Present a talk on AWS Distro for OpenTelemetry at an open source conference and AWS conferences
+  Plan an online event in your organization or a meetup about open source observability. Present on topics
+  including AWS Distro for OpenTelemetry and upstream projects like Prometheus and OpenTelemetry.
+  Join our Gitter channel to help other users having similar questions and network with stakeholders in
+  AWS Distro for OpenTelemetry.
+  Ask a question by filing an issue on our GitHub repos.
+  File a bug by filing a PR on our GitHub repos.
+  Contribute an enhancement or a feature which you need and maintainers will be happy to code review.
+  You can open an issue to discuss the design of your proposed enhancement and then file a PR.
+  If you’re just getting started, we welcome you to get started with issues tagged as “good first issues” and
+  join Gitter to ask maintainers and other developers any questions you may have
+  Join the awesome upstream community on the OpenTelemetry project. Join the OpenTelemetry SIG meetings where
+  observability experts meet and discuss the OpenTelemetry specification and implementation of observability
+  components. And the code base is open source - so contribute to OpenTelemetry!
+  '

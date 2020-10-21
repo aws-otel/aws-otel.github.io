@@ -1,0 +1,75 @@
+---
+title: 'Setting up AWS Distro for OpenTelemetry Collector in Amazon Elastic Computer Cloud'
+description:
+    'In this tutorial, we will demonstrate how to set up  AWS Distro for OpenTelemetry Collector (AWS OTel Collector)
+    on Amazon Elastic Computer Cloud(EC2) to collect application metrics. Note: This tutorial will set up AWS OTel
+    Collector on an Amazon EC2 instance in _us-west-2_ with a provided CloudFormation template. if you want to run the
+    example in the other AWS regions, please replace AMI ID in CloudFormation template we provided. '
+path: '/docs/setup/ec2'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import { Link } from "gatsby"
+import img10 from "assets/img/docs/img10.png"
+
+In this tutorial, we will demonstrate how to set up  AWS Distro for OpenTelemetry Collector (AWS OTel Collector) on
+Amazon Elastic Computer Cloud(EC2) to collect application metrics.
+
+**Note**
+This tutorial will set up AWS OTel Collector on an Amazon EC2 instance in _us-west-2_ with a provided CloudFormation
+template. if you want to run the example in the other AWS regions, please replace AMI ID in CloudFormation template we provided.
+
+<SectionSeparator />
+
+## Create IAM Policy
+See the <Link to="/docs/setup/permissions">Permissions</Link> section for the permissions required and IAM policy setup steps.
+
+<SectionSeparator />
+
+## Attach the IAM Policy
+1. Open the [IAM console](https://console.aws.amazon.com/iam/).
+2. In the navigation pane, choose **Roles**, and then choose **Create role**.
+3. In the Select type of trusted entity section, choose **AWS service**.
+4. For **Choose a use case**, select **EC2**, then choose **Next: Permission**.
+5. For **Attach permissions policies**, choose the policy `AWSDistroOpenTelemetryPolicy`, and then choose **Next: Tags**.
+6. Choose **Next: Review**.
+7. On the Review page, type `AWSDistroOpenTelemetryRole` for the Name, and then choose **Create role**.
+
+<SectionSeparator />
+
+## Install AWS Distro for OpenTelemetry Collector on EC2 instance using CloudFormation
+1. Download the CloudFormation template file `aws-otel-ec2-deployment-cfn.yaml` for installing AWS OTel Collector on  Amazon EC2.
+```
+curl -O https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/deployment-template/ec2/aws-otel-ec2-deployment-cfn.yaml
+```
+2. Replace the below parameters and then run AWS CloudFormation CLI command. It will launch one EC2 instance with AWS OTel collector installed.
+    * `ec2-ssh-key-name` - the key pair name for login to EC2 instance
+    * `template_path` - the local location where CloudFormation template file is downloaded in step 1
+```console lineNumbers=true
+Region=us-west-2
+IAMRole=AWSDistroOpenTelemetryRole
+EC2Key=<*ec2**-**ssh**-**key**-**name*>
+aws cloudformation create-stack --stack-name AOCEC2-Test \
+    --template-body file://<*template_path*>/aws-otel-ec2-deployment-cfn.yaml \
+    --parameters ParameterKey=IAMRole,ParameterValue=${IAMRole} \
+                 ParameterKey=KeyName,ParameterValue=${EC2Key} \
+    --capabilities CAPABILITY_NAMED_IAM \
+    --region ${Region}
+```
+3. Go to AWS EC2 Console and verify there is a new EC2 instance that has been launched.
+4. Select the instance, and then choose *Connect. *You can login to the EC2 host with the example command below.
+```
+ssh -i "<ec2-ssh-key-name>.pem" ec2-user@ec2-<instance_id>.us-west-2.compute.amazonaws.com (mailto:ec2-user@ec2-34-221-1-180.us-west-2.compute.amazonaws.com)
+```
+5. Check if  AWS OTel Collector is set up and running on the new EC2 instance. If it is, you’ll see the following status.
+```
+sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -a status
+```
+<img src={img10} alt="Diagram" style="margin: 30px 0;" />
+<div style="height: 40px" />
+
+**Notes**
+After you finished the tutorial, remember to shut down the new EC2 instance we created in the tutorial in order to avoid additional charges.
+
+
+

@@ -1,0 +1,34 @@
+---
+title: 'Releases'
+description:
+    This page includes links to download for releases... AWS Distro for OpenTelemetry ...
+    Sample application for AWS X-Ray SDK with support for OpenTelemetry ... AWS Test Framework Sample Application for OpenTelemetry
+path: '/docs/releases'
+---
+
+import { Link } from "gatsby"
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+
+| Component Name                                                      | Link |
+|---------------------------------------------------------------------|---------------|
+| AWS Distro for OpenTelemetry Collector Version 0.1.0                | <Link to="/download">Download</Link> |
+| AWS X-Ray Playground for OpenTelemetry Version 0.1.0                | <Link to="/download">Download</Link> |
+| AWS Distro for OpenTelemetry Integeration Test Framework 0.1.0      | <Link to="https://github.com/aws-observability/aws-otel-test-framework/releases">Release</Link> |
+
+<SectionSeparator />
+
+## Whats Included in the AWS Distro for OpenTelemetry Collector
+
+| Receiver               | Processor                     | Exporter             | Extensions             |
+|----------------------  |-------------------------------|--------------------  |------------------------|
+| prometheusreceiver     | attributesprocessor           | *awsxrayexporter*    | healthcheckextension   |
+| otlpreceiver           | resourceprocessor             | *awsemfexporter*     | pprofextension         |
+|                        | queuedprocessor               | prometheusexporter   | zpagesextension        |
+|                        | batchprocessor                | loggingexporter      |                        |
+|                        | memorylimite                  | otlpexporter         |                        |
+|                        | tailsamplingprocessor         | fileexporter         |                        |
+|                        | probabilisticsamplerprocessor |                      |                        |
+|                        | spanprocessor                 |                      |                        |
+|                        | filterprocessor               |                      |                        |
+
+Note: Components in italics are AWS developed

@@ -1,0 +1,91 @@
+title: Homepage
+description:
+  This page introduces the AWS Distro for OpenTelemetry and talks about the benefits, use cases and open source
+  component to this project. There are also the latest announcements on this page and info on how to get involved.
+path: /
+
+infoSection:
+  heading: Introduction
+  introduction:
+    AWS Distro for OpenTelemetry is a secure, production-ready, AWS-supported
+    distribution of the OpenTelemetry project. Part of the Cloud Native Computing
+    Foundation (CNCF), OpenTelemetry provides open source APIs, libraries, and agents to
+    collect distributed traces and metrics for application monitoring. With AWS Distro
+    for OpenTelemetry, you can instrument your applications just once to send
+    correlated metrics and traces to multiple monitoring solutions and use auto-
+    instrumentation agents to collect traces without changing your code. AWS Distro
+    for OpenTelemetry also collects metadata from your AWS resources and
+    managed services, so you can correlate application performance data with
+    underlying infrastructure data, reducing the mean time to problem resolution.
+    Use AWS Distro for OpenTelemetry to instrument your applications running on
+    Amazon Elastic Compute Cloud (EC2), Amazon Elastic Container Service (ECS), and
+    Amazon Elastic Kubernetes Service (EKS) on EC2, and AWS Fargate, as well as on-
+    premises.
+
+  leftHeading: Benefits
+  benefits:
+    "AWS Distro for OpenTelemetry empowers you to implement broad yet efficient, secure yet flexible, observability
+    solutions. It helps you optimize your production environments by ensuring predictable resource utilization, and
+    can increase your analytical visibility while protecting your investment in standardized observability tools.
+    It is backed by AWS Support, testing, and certification."
+
+  middleHeading: Use Cases
+  useCases:
+    AWS Distro for OpenTelemetry automates the deep collection and direct exposure of correlated application and infrastructure
+    data needed for AWS monitoring and visualization services.
+
+  rightHeading: Open Source
+  openSource:
+    We are proud to be a part of the OpenTelemetry developer community upstream. As part of the open source community, we
+    follow an “upstream-first” approach where we contribute all our enhancements, changes and bug fixes upstream.
+    Our open source distribution is built using this upstreamed code. We participate in the open standards discussions in
+    the OpenTelemetry Specification SIG and W3C Tracing Specification.
+
+getInvolvedSection:
+  heading: Get Involved
+  subtitle:
+    AWS Distro for OpenTelemetry is committed to being an open, collaborative, community-driven project.
+    Join the community to participate and contribute.
+
+searchIndex:
+  "
+  Introduction
+
+  AWS Distro for OpenTelemetry is a secure, production-ready, AWS-supported
+  distribution of the OpenTelemetry project. Part of the Cloud Native Computing
+  Foundation (CNCF), OpenTelemetry provides open source APIs, libraries, and agents to
+  collect distributed traces and metrics for application monitoring. With AWS Distro
+  for OpenTelemetry, you can instrument your applications just once to send
+  correlated metrics and traces to multiple monitoring solutions and use auto-
+  instrumentation agents to collect traces without changing your code. AWS Distro
+  for OpenTelemetry also collects metadata from your AWS resources and
+  managed services, so you can correlate application performance data with
+  underlying infrastructure data, reducing the mean time to problem resolution.
+  Use AWS Distro for OpenTelemetry to instrument your applications running on
+  Amazon Elastic Compute Cloud (EC2), Amazon Elastic Container Service (ECS), and
+  Amazon Elastic Kubernetes Service (EKS) on EC2, and AWS Fargate, as well as on-
+  premises.
+
+  Benefits
+
+  AWS Distro for OpenTelemetry empowers you to implement broad, while efficient, secure, while flexible, observability
+  solutions. It helps you optimize your production environments by ensuring predictable resource utilization and it can
+  sharpen your analytical expertise while protecting your investment in standardized observability tools. And even AWS Premium
+  support is just a click away.
+
+  Use Cases
+
+  AWS Distro for OpenTelemetry automates the deep collection and direct exposure of correlated application and infrastructure
+  data needed for AWS monitoring and visualization services.
+
+  Open Source
+
+  We are proud to be a part of the OpenTelemetry developer community upstream. As part of the community,
+  AWS follows an upstream-first approach where all our enhancements are contributed upstream. Our
+  distribution is built using this upstreamed code.
+
+  Get Involved
+
+  AWS Distro for OpenTelemetry is committed to being an open, collaborative, community-driven project.
+  Join the community to participate and contribute.
+  "
