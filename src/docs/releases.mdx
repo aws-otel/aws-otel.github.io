@@ -11,22 +11,24 @@ import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.js
 
 | Component Name                                                      | Link |
 |---------------------------------------------------------------------|---------------|
-| AWS OTel Collector                                                  | <Link to="/download">Download</Link> |
-| Sample application for AWS X-Ray SDK with support for OpenTelemetry | <Link to="/download">Download</Link> |
+| AWS Distro for OpenTelemetry Collector Version 0.1.0                | <Link to="/download">Download</Link> |
+| AWS X-Ray Playground for OpenTelemetry Version 0.1.0                | <Link to="/download">Download</Link> |
 | AWS Distro for OpenTelemetry Integeration Test Framework 0.1.0      | <Link to="https://github.com/aws-observability/aws-otel-test-framework/releases">Release</Link> |
 
 <SectionSeparator />
 
 ## Whats Included in the AWS Distro for OpenTelemetry Collector
 
-| Receiver             | Processor                     | Exporter           | Extensions             |
-|----------------------|-------------------------------|--------------------|------------------------|
-| prometheusreceiver   | attributesprocessor           | awsxrayexporter    | healthcheckextension   |
-| otlpreceiver         | resourceprocessor             | awsemfexporter     | pprofextension         |
-| statsdreceiver       | queuedprocessor               | prometheusexporter | zpagesextension        |
-| xrayreceiver         | batchprocessor                | loggingexporter    |                        |
-| ecsmetadatareceiver  | memorylimite                  | otlpexporter       |                        |
-|                      | tailsamplingprocessor         | fileexporter       |                        |
-|                      | probabilisticsamplerprocessor |                    |                        |
-|                      | spanprocessor                 |                    |                        |
-|                      | filterprocessor               |                    |                        |
+| Receiver               | Processor                     | Exporter           | Extensions             |
+|----------------------  |-------------------------------|--------------------|------------------------|
+| prometheusreceiver     | attributesprocessor           | awsxrayexporter    | healthcheckextension   |
+| otlpreceiver           | resourceprocessor             | awsemfexporter     | pprofextension         |
+| *statsdreceiver*       | queuedprocessor               | prometheusexporter | zpagesextension        |
+| *xrayreceiver*         | batchprocessor                | loggingexporter    |                        |
+| *ecsmetadatareceiver*  | memorylimite                  | otlpexporter       |                        |
+|                        | tailsamplingprocessor         | fileexporter       |                        |
+|                        | probabilisticsamplerprocessor |                    |                        |
+|                        | spanprocessor                 |                    |                        |
+|                        | filterprocessor               |                    |                        |
+
+Note: Components in italics are AWS developed
