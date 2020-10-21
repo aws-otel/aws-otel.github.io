@@ -9,7 +9,7 @@ const styles = {
 
 const Announcements = (props) => {
 
-  const { classes } = props;
+  // const { classes } = props;
   const numAnnouncementsToShow = 3;
 
   const data = useStaticQuery(graphql`

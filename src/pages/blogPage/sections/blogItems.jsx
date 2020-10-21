@@ -9,7 +9,7 @@ const styles = {
 
 const BlogWidgets = (props) => {
 
-  const { classes } = props;
+  // const { classes } = props;
 
   const data = useStaticQuery(graphql`
     query {

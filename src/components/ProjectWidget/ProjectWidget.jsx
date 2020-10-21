@@ -11,7 +11,7 @@ class ProjectWidget extends React.Component {
 
   render() {
 
-    const { classes, ...rest } = this.props
+    const { classes } = this.props
 
     return (
         <div style={{margin: "50px 0"}}>

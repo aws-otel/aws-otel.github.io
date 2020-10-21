@@ -4,11 +4,11 @@ import { MDXRenderer } from 'gatsby-plugin-mdx';
 
 import Layout from '../Layout';
 import SEO from '../SEO';
-import PostNav from './PostNav';
-import EditGithub from './EditGithub';
+// import PostNav from './PostNav';
+// import EditGithub from './EditGithub';
 
 export default function Docs({ mdx, pageContext }) {
-  const { prev, next, githubEditUrl } = pageContext;
+  // const { prev, next, githubEditUrl } = pageContext;
   const { title, description, image, disableTableOfContents } = mdx.frontmatter;
   const { headings, body } = mdx;
   const { slug } = mdx.fields;

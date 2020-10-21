@@ -1,6 +1,5 @@
 import imagesStyle from "assets/jss/material-kit-react/imagesStyles.jsx"
 import { cardTitle, title } from "assets/jss/material-kit-react.jsx"
-import mainBodyStyle from "../contributingPageSections/mainBodyStyle"
 
 const contributorsStyle = {
   section: {

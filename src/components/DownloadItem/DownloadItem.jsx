@@ -10,7 +10,7 @@ class DownloadItem extends React.Component {
 
   render() {
 
-    const { classes, ...rest } = this.props
+    const { classes } = this.props
 
     return (
         <Card className={classes.root}>

@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useStaticQuery, graphql, Link } from 'gatsby';
+// import { useStaticQuery, graphql } from 'gatsby';
 // import { useSidebar } from '@rocketseat/gatsby-theme-docs-core';
 import { sideBarData } from "../../../../config/sideBarData"
 
 import {
     Container,
-    LogoContainer,
+    // LogoContainer,
     List,
     Heading,
     Item,
@@ -14,7 +14,7 @@ import {
 } from './styles';
 import ExternalLink from './ExternalLink';
 import InternalLink from './InternalLink';
-import Logo from '../Logo';
+// import Logo from '../Logo';
 
 function ListWithSubItems({ children, text }) {
     return (
@@ -30,19 +30,19 @@ function isExternalUrl(url) {
 }
 
 export default function Sidebar({ isMenuOpen }) {
-    const {
-        site: {
-            siteMetadata: { basePath },
-        },
-    } = useStaticQuery(graphql`
-    {
-      site {
-        siteMetadata {
-          basePath
-        }
-      }
-    }
-  `);
+  //   const {
+  //       site: {
+  //           siteMetadata: { basePath },
+  //       },
+  //   } = useStaticQuery(graphql`
+  //   {
+  //     site {
+  //       siteMetadata {
+  //         basePath
+  //       }
+  //     }
+  //   }
+  // `);
 
     // const data = useSidebar();
     const data = sideBarData;

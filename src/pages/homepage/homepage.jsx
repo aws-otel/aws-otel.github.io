@@ -16,16 +16,13 @@ import HowItWorksSection from "./sections/howItWorksSection"
 import {Link} from "gatsby";
 
 class HomePage extends React.Component {
-    constructor(props){
-        super(props);
-    }
 
     render() {
         const { classes, ...rest } = this.props;
         return (
             <div className={classes.coloredBackground}>
                 <Header
-                    brand={require("assets/img/logo-16.svg")}
+                    brand={require("assets/img/himalia-logo.png")}
                     rightLinks={<HeaderLinks />}
                     fixed
                     color="transparent"

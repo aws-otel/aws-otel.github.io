@@ -1,5 +1,5 @@
 /* @jsx jsx */
-import React, { useState, useRef } from 'react'
+import { useState, useRef } from 'react'
 import { jsx, css } from '@emotion/core'
 import PropTypes from 'prop-types'
 
@@ -31,7 +31,7 @@ export default function Layout({
   return (
     <div style={{backgroundColor: "white"}}>
       <MyHeader
-        brand={require("assets/img/logo-16.svg")}
+        brand={require("assets/img/himalia-logo.png")}
         rightLinks={<HeaderLinks />}
         color="dark"
       />

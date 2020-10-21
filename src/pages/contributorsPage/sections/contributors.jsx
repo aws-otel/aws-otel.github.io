@@ -1,103 +1,103 @@
 import React from "react"
 import PropTypes from "prop-types"
-import { useStaticQuery, graphql } from "gatsby"
+// import { useStaticQuery, graphql } from "gatsby"
 import withStyles from "@material-ui/core/styles/withStyles"
-import classNames from "classnames"
-import GridContainer from "components/Grid/GridContainer.jsx"
-import GridItem from "components/Grid/GridItem.jsx"
-import Card from "components/Card/Card.jsx"
+// import classNames from "classnames"
+// import GridContainer from "components/Grid/GridContainer.jsx"
+// import GridItem from "components/Grid/GridItem.jsx"
+// import Card from "components/Card/Card.jsx"
 import ContributorsStyle from "../../../assets/jss/material-kit-react/views/contributorsPageSections/contributorsStyle"
 
-const names = []
-const allCollaborators = []
-
-function addCollaborators(nodeArray){
-  nodeArray.map(node => {
-    if(node.name !== null && !names.includes(node.name)){
-      names.push(node.name)
-      allCollaborators.push({
-        name: node.name,
-        avatarUrl: node.avatarUrl
-      })
-    }
-  })
-}
+// const names = []
+// const allCollaborators = []
+//
+// function addCollaborators(nodeArray){
+//   nodeArray.map(node => {
+//     if(node.name !== null && !names.includes(node.name)){
+//       names.push(node.name)
+//       allCollaborators.push({
+//         name: node.name,
+//         avatarUrl: node.avatarUrl
+//       })
+//     }
+//   })
+// }
 const Contributors = (props) => {
 
   const { classes } = props
-  const imageClasses = classNames(
-      classes.imgRaised,
-      classes.imgRoundedCircle,
-      classes.imgFluid
-  )
+  // const imageClasses = classNames(
+  //     classes.imgRaised,
+  //     classes.imgRoundedCircle,
+  //     classes.imgFluid
+  // )
 
-  const data = useStaticQuery(graphql`
-    query {
-      allGithubData {
-        edges {
-          node {
-            data {
-              repo1 {
-                collaborators {
-                  nodes {
-                    avatarUrl
-                    name
-                  }
-                }
-              }
-              repo2 {
-                collaborators {
-                  nodes {
-                    avatarUrl
-                    name
-                  }
-                }
-              }
-              repo3 {
-                collaborators {
-                  nodes {
-                    avatarUrl
-                    name
-                  }
-                }
-              }
-              repo4 {
-                collaborators {
-                  nodes {
-                    avatarUrl
-                    name
-                  }
-                }
-              }
-              repo5 {
-                collaborators {
-                  nodes {
-                    avatarUrl
-                    name
-                  }
-                }
-              }
-              repo6 {
-                collaborators {
-                  nodes {
-                    avatarUrl
-                    name
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  `)
+  // const data = useStaticQuery(graphql`
+  //   query {
+  //     allGithubData {
+  //       edges {
+  //         node {
+  //           data {
+  //             repo1 {
+  //               collaborators {
+  //                 nodes {
+  //                   avatarUrl
+  //                   name
+  //                 }
+  //               }
+  //             }
+  //             repo2 {
+  //               collaborators {
+  //                 nodes {
+  //                   avatarUrl
+  //                   name
+  //                 }
+  //               }
+  //             }
+  //             repo3 {
+  //               collaborators {
+  //                 nodes {
+  //                   avatarUrl
+  //                   name
+  //                 }
+  //               }
+  //             }
+  //             repo4 {
+  //               collaborators {
+  //                 nodes {
+  //                   avatarUrl
+  //                   name
+  //                 }
+  //               }
+  //             }
+  //             repo5 {
+  //               collaborators {
+  //                 nodes {
+  //                   avatarUrl
+  //                   name
+  //                 }
+  //               }
+  //             }
+  //             repo6 {
+  //               collaborators {
+  //                 nodes {
+  //                   avatarUrl
+  //                   name
+  //                 }
+  //               }
+  //             }
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  // `)
 
-  addCollaborators(data.allGithubData.edges[0].node.data.repo1.collaborators.nodes)
-  addCollaborators(data.allGithubData.edges[0].node.data.repo2.collaborators.nodes)
-  addCollaborators(data.allGithubData.edges[0].node.data.repo3.collaborators.nodes)
-  addCollaborators(data.allGithubData.edges[0].node.data.repo4.collaborators.nodes)
-  addCollaborators(data.allGithubData.edges[0].node.data.repo5.collaborators.nodes)
-  addCollaborators(data.allGithubData.edges[0].node.data.repo6.collaborators.nodes)
+  // addCollaborators(data.allGithubData.edges[0].node.data.repo1.collaborators.nodes)
+  // addCollaborators(data.allGithubData.edges[0].node.data.repo2.collaborators.nodes)
+  // addCollaborators(data.allGithubData.edges[0].node.data.repo3.collaborators.nodes)
+  // addCollaborators(data.allGithubData.edges[0].node.data.repo4.collaborators.nodes)
+  // addCollaborators(data.allGithubData.edges[0].node.data.repo5.collaborators.nodes)
+  // addCollaborators(data.allGithubData.edges[0].node.data.repo6.collaborators.nodes)
 
   return (
     <div className={classes.section} style={{textAlign: "left"}}>
@@ -120,12 +120,12 @@ const Contributors = (props) => {
       {/*  </GridContainer>*/}
       {/*</div>*/}
       <div style={{marginLeft: "4vw"}}>
-        <img src="https://contributors-img.web.app/image?repo=aws-observability/aws-otel-test-framework" />
-        <img src="https://contributors-img.web.app/image?repo=aws-observability/aws-otel-playground" />
-        <img src="https://contributors-img.web.app/image?repo=aws-observability/aws-otel-community" />
-        <img src="https://contributors-img.web.app/image?repo=aws-observability/aws-otel-collector" />
-        <img src="https://contributors-img.web.app/image?repo=aws-observability/aws-otel-js" />
-        <img src="https://contributors-img.web.app/image?repo=aws-observability/aws-otel-java-instrumentation" />
+        <img src="https://contributors-img.web.app/image?repo=aws-observability/aws-otel-test-framework" alt="contributors"/>
+        <img src="https://contributors-img.web.app/image?repo=aws-observability/aws-otel-playground" alt="contributors"/>
+        <img src="https://contributors-img.web.app/image?repo=aws-observability/aws-otel-community" alt="contributors"/>
+        <img src="https://contributors-img.web.app/image?repo=aws-observability/aws-otel-collector" alt="contributors"/>
+        <img src="https://contributors-img.web.app/image?repo=aws-observability/aws-otel-js" alt="contributors"/>
+        <img src="https://contributors-img.web.app/image?repo=aws-observability/aws-otel-java-instrumentation" alt="contributors"/>
       </div>
     </div>
   )

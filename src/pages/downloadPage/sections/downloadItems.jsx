@@ -59,7 +59,7 @@ const DownloadItems = (props) => {
         <div className={classes.section}>
           <GridContainer justify="center">
             <GridItem xs={12} sm={12} md={10}>
-              {data.allDownloadsYaml.edges.map((downloadItem, index) => {
+              {data.allDownloadsYaml.edges.forEach((downloadItem, index) => {
                 if(downloadItem.node.version === props.version) {
                   return <DownloadItem key={index}
                                        version={downloadItem.node.version}
