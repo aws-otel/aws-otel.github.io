@@ -1,0 +1,79 @@
+title: Code of Conduct Page
+description:
+  This code of conduct provides guidance on participation in open source communities, and outlines the
+  process for reporting unacceptable behavior. As an organization and community, we are committed to providing an
+  inclusive environment for everyone. Anyone violating this code of conduct may be removed and banned from the community.
+path: '/code-of-conduct'
+
+pageConentTitle: Code of Conduct
+pageIntro:
+  This code of conduct provides guidance on participation in open source communities, and outlines the
+  process for reporting unacceptable behavior. As an organization and community, we are committed to providing an
+  inclusive environment for everyone. Anyone violating this code of conduct may be removed and banned from the community.
+
+sectionOneTitle: 'As an open source community, we endeavor to:'
+sectionOneContent:
+  - item: Use welcoming and inclusive language
+  - item: Be respectful of differing viewpoints at all times
+  - item: Accept constructive criticism and work together toward decisions
+  - item: Focus on what is best for the community and users
+
+sectionTwoTitle: 'Our Responsibility'
+sectionTwoDescription:
+  'As contributors, members, or bystanders we each individually have the responsibility to behave professionally and
+  respectfully at all times. Disrespectful and unacceptable behaviors include, but are not limited to:'
+sectionTwoContent:
+  - item: The use of violent threats, abusive, discriminatory, or derogatory language
+  - item:
+      Offensive comments related to gender, gender identity and expression, sexual orientation, disability, mental
+      illness, race, political or religious affiliation
+  - item: Posting of sexually explicit or violent content
+  - item: The use of sexualized language and unwelcome sexual attention or advances
+  - item: Public or private harassment of any kind
+  - item: Publishing private information, such as physical or electronic address, without permission
+  - item: Other conduct which could reasonably be considered inappropriate in a professional setting
+  - item: Advocating for or encouraging any of the above behaviors.
+
+sectionThreeTitle: Enforcement and Reporting Code of Conduct Issues
+sectionThreeDescription:
+  Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting
+  opensource-codeofconduct@amazon.com. All complaints will be reviewed and investigated and will result in a
+  response that is deemed necessary and appropriate to the circumstances.
+
+sectionFourTitle: Attribution
+sectionFourDescription:
+  This code of conduct is based on the template established by the TODO Group and the Scope section from the
+  Contributor Covenant version 1.4.
+
+searchIndex:
+  'This page outlines the open source code of conduct
+  Code of Conduct
+  This code of conduct provides guidance on participation in open source communities, and outlines the
+  process for reporting unacceptable behavior. As an organization and community, we are committed to providing an
+  inclusive environment for everyone. Anyone violating this code of conduct may be removed and banned from the community.
+  Our open source communities endeavor to:
+  Use welcoming and inclusive language
+  Be respectful of differing viewpoints at all times
+  Accept constructive criticism and work together toward decisions
+  Focus on what is best for the community and users
+  Our Responsibility
+  As contributors, members, or bystanders we each individually have the responsibility to behave professionally and
+    respectfully at all times. Disrespectful and unacceptable behaviors include, but are not limited to:
+  The use of violent threats, abusive, discriminatory, or derogatory language
+  Offensive comments related to gender, gender identity and expression, sexual orientation, disability, mental
+        illness, race, political or religious affiliation
+  Posting of sexually explicit or violent content
+  The use of sexualized language and unwelcome sexual attention or advances
+  Public or private harassment of any kind
+  Publishing private information, such as physical or electronic address, without permission
+  Other conduct which could reasonably be considered inappropriate in a professional setting
+  Advocating for or encouraging any of the above behaviors.
+  Enforcement and Reporting Code of Conduct Issues
+  Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting
+    opensource-codeofconduct@amazon.com. All complaints will be reviewed and investigated and will result in a
+    response that is deemed necessary and appropriate to the circumstances.
+  Attribution
+  This code of conduct is based on the template established by the TODO Group and the Scope section from the
+    Contributor Covenant version 1.4.
+  '
+

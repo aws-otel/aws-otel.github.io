@@ -1,0 +1,25 @@
+title: Announcements
+description:
+  This page contains all the latest and previous announcements for AWS Open Distro for OpenTelemetry
+path: /announcements
+
+announcements:
+  - title: Announcing AWS Distro for OpenTelemetry in Preview
+    date: '21-Oct-2020'
+    blurb:
+      Today, we are announcing the availability in preview of AWS Distro for OpenTelemetry,
+      a secure, production-ready, AWS-supported distribution of the OpenTelemetry project.
+    link: 'https://www.google.com/'
+#  - title: OpenTelemetry releases Trace Specification RC
+#    date: '21-Oct-2020'
+#    blurb:
+#      xxx
+#    link: 'https://www.google.com/'
+
+searchIndex:
+  '
+  Announcing AWS Distro for OpenTelemetry in Preview
+  21-Oct-2020
+  Today, we are announcing the availability in preview of AWS Distro for OpenTelemetry,
+  a secure, production-ready, AWS-supported distribution of the OpenTelemetry project.
+  '

@@ -1,0 +1,73 @@
+---
+title: 'Setting up AWS Distro for OpenTelemetry Collector in Amazon Elastic Kubernetes Service'
+description:
+    In this tutorial, we will demonstrate how to run the AWS Distro for OpenTelemetry(AWS OTel Collector) Collector as
+    sidecar on the Amazon Elastic Kubernetes Service (Amazon EKS). Sidecar is a microservices design pattern where a
+    companion service runs next to your primary microservice, augmenting its abilities or intercepting resources it is
+    utilizing. We recommend deploying AWS OTel Collector on Amazon EKS as a sidecar, defining it in the same task
+    definition as your application.
+path: '/docs/setup/eks'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import { Link } from "gatsby"
+import img11 from "assets/img/docs/img11.png"
+import img12 from "assets/img/docs/img12.png"
+import img13 from "assets/img/docs/img13.png"
+
+In this tutorial, we will demonstrate how to run the AWS Distro for OpenTelemetry(AWS OTel Collector) Collector as
+sidecar on the Amazon Elastic Kubernetes Service (Amazon EKS).
+
+<SectionSeparator />
+
+## Create IAM policy
+For the required permissions and setup,
+see the <Link to="/docs/setup/permissions">Permissions</Link> section.
+
+<SectionSeparator />
+
+## Attach the EKS-AWSObservability IAM Policy to worker node
+1. Open the [Amazon EC2 console](https://console.aws.amazon.com/ec2/).
+2. Select one of the worker node instances and choose the IAM role in the description.
+3. On the IAM role page, choose **Attach policies**.
+4. In the list of policies, select the check box next to `AWSDistroOpenTelemetryPolicy`. You can use the search box to find this policy.
+5. Choose **Attach policies**.
+
+<SectionSeparator />
+
+## Deploy AWS OTel Collector on Amazon EKS as sidecar
+Sidecar is a microservices design pattern where a companion service runs next to your primary microservice, augmenting its
+abilities or intercepting resources it is utilizing. We recommend deploying AWS OTel Collector on Amazon EKS as a sidecar,
+defining it in the same task definition as your application. This allows the AWS OTel Collector to collect the metric and
+trace data for the application.
+1. Create a Kubernetes namespace.
+```
+kubectl create namespace aws-otel-eks
+```
+2. An example configuration template can be
+found [under examples in the AWC OTel Collector GitHub](https://github.com/aws-observability/aws-otel-collector/blob/main/examples/eks/eks-sidecar.yaml).
+Replace `{{aws-otelImage}}` with the name of the AWS OTel Collector Docker image you built
+(For example, `aottestbed/awscollector:v0.1.12`), and `{{region}}` with the name of the Region where the logs are published (For example, `us-west-2`).
+3. Deploy the application.
+```
+kubectl apply -f examples/eks/eks-sidecar.yaml
+```
+4. View the resources in the `aws-otel-eks` namespace.
+```
+kubectl get all -n aws-otel-eks
+```
+<img src={img11} alt="Diagram" style="margin: 30px 0;" />
+5. View the details of the deployed deployment.
+```
+kubectl -n aws-otel-eks describe deployment aws-otel-eks-sidecar
+```
+<img src={img12} alt="Diagram" style="margin: 30px 0;" />
+The example template runs the AWS-OTel-Collector as a sidecar to send application metrics and traces on Amazon EKS.
+We run two applications: the main application (`aws-otel-emitter`) and the AWS OTel Collector (`aws-otel-collector`).
+After the setup is finished, we should see the following sample metrics in Amazon CloudWatch console.
+<img src={img13} alt="Diagram" style="margin: 30px 0;" />
+
+<div style="height: 40px" />
+
+**Notes**
+After you’ve finished the tutorial, remember to shut down the new EKS cluster created in the tutorial in order to avoid additional charges.

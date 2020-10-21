@@ -1,0 +1,73 @@
+---
+title: 'Run AOC Demo in Docker'
+description:
+    This example will introduce how to install AOC to collect metrics/traces data from a sample application running in
+    the Docker container. The sample application will generate Open Telemetry Protocol (OTLP) format based metrics and
+    traces data and send to AWS CloudWatch and X-Ray consoles. Please follow the steps below to try AWS Observability Collector Beta.
+path: '/docs/setup/aot-docker-images'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import img5 from "assets/img/docs/img5.png"
+import img6 from "assets/img/docs/img6.png"
+import img7 from "assets/img/docs/img7.png"
+
+This example will introduce how to install AOC to collect metrics/traces data from a sample application running in the
+Docker container. The sample application will generate Open Telemetry Protocol (OTLP) format based metrics and traces data
+and send to AWS CloudWatch and X-Ray consoles.
+
+Please follow the steps below to try AWS Observability Collector Beta.
+
+<SectionSeparator />
+
+## Prerequisite
+1. To retrieve your `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and `AWS_REGION` for the following example, please see
+[here](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html) for setting up your AWS credentials.
+2. Installed [docker](https://docs.docker.com/get-docker/) runtime on your laptop.
+
+<SectionSeparator />
+
+## Steps
+1. Download the source code in this [repo](https://github.com/aws-observability/aws-otel-collector) and enter into `examples` folder.
+Open and Edit `docker-compose.yaml` file with the expected `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and `AWS_REGION` in the section below.
+The region is where the data will be sent to.
+
+(**Note,** if you can’t access the repo, you can download `docker-compose.yaml` file at
+[here](https://drive.corp.amazon.com/documents/xiami@/AWS-Observability/docker-compose.yaml) and edit
+`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and `AWS_REGION` with the expected values.
+
+```yaml
+image: aottestbed/awscollector:v0.1.11
+command: ["--config=/etc/otel-agent-config.yaml", "--log-level=DEBUG"]
+environment:
+  - AWS_ACCESS_KEY_ID=<to_be_added>
+  - AWS_SECRET_ACCESS_KEY=<to_be_added>
+  - AWS_REGION=<to_be_added>
+volumes:
+  - ../config.yaml:/etc/otel-agent-config.yaml // use default config
+  - ~/.aws:/root/.aws
+ports:
+  - "1777:1777"   # pprof extension
+  - "55679:55679" # zpages extension
+  - "55680:55680" # OTLP receiver
+  - "13133"       # health_check
+```
+
+2. Once AWS credential has been updated in the `docker-compose.yaml` file, run the following command within the same folder where the `docker-compose.yaml` file is located.
+```
+docker-compose up -d
+```
+<img src={img5} alt="Diagram" style="margin: 30px 0;" />
+
+3. Once AOC and Sample application docker images are up and running. We can check the monitoring data in CloudWatch and X-Ray consoles.
+
+4. CloudWatch Metrics console - (AOCDockerDemo/AOCDockerDemoService)
+<img src={img6} alt="Diagram" style="margin: 30px 0;" />
+
+5. AWS X-Ray Console
+<img src={img7} alt="Diagram" style="margin: 30px 0;" />
+
+6. To stop this demo with AOC, please run the following command.
+```
+docker stop $(docker ps -aq)
+```

@@ -1,0 +1,219 @@
+---
+title: 'Getting Started with JavaScript SDK'
+description:
+    This project contains components of the OpenTelemetry Javascript SDK for OpenTelemetry, a framework to collect traces
+    and metrics from applications. In order to trace data from various web applications, OpenTelemetry provides plugins
+    to automatically trace data from web applications. As OpenTelemetry does not recognize AWS X-Ray as an officially
+    supported backend, configurations have to be made in the NodeTracerProvider provided by the OpenTelemetry API.
+path: '/docs/getting-started/javascript-sdk'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import img15 from "assets/img/docs/img15.png"
+
+## Introduction
+
+This project contains components of the OpenTelemetry Javascript SDK for OpenTelemetry, a framework to collect traces
+and metrics from applications. In order to trace data from various web applications, OpenTelemetry provides plugins to
+automatically trace data from web applications. As OpenTelemetry does not recognize AWS X-Ray as an officially supported
+backend, configurations have to be made in the `NodeTracerProvider` provided by the OpenTelemetry API.
+
+<img src={img15} alt="Diagram" style="margin: 30px 0;" />
+
+The data path of exporting to AWS X-Ray starts from instrumenting an app with our configured tracer, export traces to
+collector, and the collector will export to AWS X-Ray.
+
+### What is AWSXRayIdGenerator?
+
+By default, OpenTelemetry uses purely random trace IDs, which differs from AWS X-Ray where the first 4 bytes of the trace
+ID must be set to the start time of the trace. OpenTelemetry provides an extension point, `IdGenerator` to allow us to
+use a custom generator that conforms to the [X-Ray requirement](https://docs.aws.amazon.com/xray/latest/devguide/xray-api-sendingdata.html).
+We implemented an [AWS XRay IdGenerator](https://github.com/aws-observability/aws-otel-js/tree/master/packages/opentelemetry-id-generator-aws-xray)
+which generates traces with the first 8 hexadecimals set to the start time according to AWS X-Ray trace ID format.
+
+### What is AWSXRayPropagator?
+
+By default, OpenTelemetry uses the W3C Trace Context format for propagating spans, and out-of-the-box supports B3 and
+Jaeger propagation. The `HttpTextFormat` interface allows other propagators to be implemented, so we implemented a
+propagator that conforms with
+the [X-Ray trace header format](https://docs.aws.amazon.com/xray/latest/devguide/xray-concepts.html#xray-concepts-tracingheader).
+We implemented an [AWS Propagator](https://github.com/aws-observability/aws-otel-js/tree/master/packages/opentelemetry-propagator-aws-xray) which
+conforms the propagation headers to the AWS X-Ray format.
+
+Further information about OpenTelemetry can be found in the upstream [repo](https://github.com/open-telemetry/opentelemetry-js).
+
+We will provide a sample, to instrument an Express application with traces conforming to AWS X-Ray.
+
+<SectionSeparator />
+
+## Requirements
+
+[Node JS v8.50 (or later)](https://nodejs.org/en/download/) is required to run an application using OpenTelemetry.
+
+Note: You’ll also need to have the AWS Distro for OpenTelemetry Collector running to export traces to X-Ray.
+See the AWS OTel Collector documentation for setup instructions.
+
+<SectionSeparator />
+
+## Getting the SDK and Dependencies
+
+In order to trace your application, the following OpenTelemetry packages will be required to be installed in your applications main directory.
+
+```bash lineNumbers=true
+$ npm install \
+  @opentelemetry/api \
+  @opentelemetry/node \
+  @opentelemetry/resources \
+  @opentelemetry/tracing \
+  @opentelemetry/exporter-collector
+```
+
+Install the AWS X-Ray components.
+
+```bash lineNumbers=true
+$ npm install \
+  @aws/otel-aws-xray-propagator \
+  @aws/otel-aws-xray-id-generator
+```
+
+To install a specific version, see the [release tags on the Github releases page](https://github.com/aws-observability/aws-otel-js/releases).
+
+<SectionSeparator />
+
+## Instrumenting a Library
+
+OpenTelemetry can collect tracing data from various applications automatically using plugins.
+The [OpenTelemetry upstream repo](https://github.com/open-telemetry/opentelemetry-js#plugins) contains the list of
+supported modules, libraries, and installation instructions.
+
+OpenTelemetry Express Instrumentation allows the user to automatically collect trace data and export them to their backend
+of choice, to give observability with distributed systems. An example of how to instrument an Express application is given below:
+
+**All of the configuration code in this getting started should be place in the same file;** create a `tracer.js` file:
+
+```
+touch tracer.js
+```
+
+To load the express plugin, specify it in the Node Tracer’s configuration and set the flag enabled to true:
+
+```javascript title=tracer.js lineNumbers=true
+const { NodeTracerProvider } = require('@opentelemetry/node');
+
+module.exports = (serviceName) => {
+    const tracerConfig = {
+        plugins: {
+         express: {
+          enabled: true,
+           // You may use a package name or absolute path to the file.
+          path: '@opentelemetry/plugin-express',
+          }
+        }
+    }
+    const tracerProvider = new NodeTracerProvider(tracerConfig);
+
+    return trace.getTracer("example-tracer")
+}
+```
+
+<SectionSeparator />
+
+## Configure Global Tracer for AWS X-Ray
+
+The Global Tracer configuration for AWS X-Ray is uniform for all applications. This can be configured within
+the `tracer.js` file above with appropriate AWS X-Ray configs. Included in this repository, we can use our custom
+IdGenerator, Propagator, and Resource detectors.
+
+### Configuration
+
+The following will set the tracer’s global propagator to the AWS X-Ray propagator to conform to AWS X-Ray trace header’s.
+Also within the tracerConfig, we can set the idGenerator to use the AWSXRayIdGenerator.
+
+```javascript title=tracer.js lineNumbers=true
+const { NodeTracerProvider } = require('@opentelemetry/node');
+const { SimpleSpanProcessor, ConsoleSpanExporter } = require("@opentelemetry/tracing");
+const { CollectorTraceExporter } = require('@opentelemetry/exporter-collector');
+
+const { AWSXRayPropagator } = require('@aws/otel-aws-xray-propagator');
+const { AwsXRayIdGenerator } = require('@aws/otel-aws-xray-id-generator');
+
+
+// const { AwsXRayPropagator } = require('@aws-observability/propagator-aws-xray');
+// const { AwsXRayIdGenerator } = require('@aws-observability/id-generator-aws-xray');
+
+const { context, propagation, trace } = require("@opentelemetry/api");
+
+module.exports = (serviceName) => {
+    // set global propagator
+    propagation.setGlobalPropagator(new AWSXRayPropagator());
+
+    const tracerConfig = {
+        //
+        idGenerator: new AwsXRayIdGenerator();
+        plugins: {
+        }
+    }
+    const tracerProvider = new NodeTracerProvider(tracerConfig);
+
+    return trace.getTracer("example-xray-tracer")
+}
+```
+
+#### Export Trace Data to OTLP exporter
+
+To export to AWS X-Ray we setup an OTLP exporter which is configured to send data to
+an [OpenTelemetry collector](https://github.com/open-telemetry/opentelemetry-collector/blob/master/receiver/otlpreceiver/README.md)
+at `localhost:55680`. The AWS Distro for OpenTelemetry Collector to export traces to X-Ray should be setup as a part of the
+requirements. The setup for the OTLP exporter will set up within the `tracer.js` after the `tracerProvider` is instantiated.
+
+```javascript title=tracer.js lineNumbers=true
+const otlpExporter = new CollectorTraceExporter({
+    serviceName: serviceName,
+    protocolNode: 2,
+  });
+  tracerProvider.addSpanProcessor(new SimpleSpanProcessor(otlpExporter));
+  tracerProvider.addSpanProcessor(new SimpleSpanProcessor(new ConsoleSpanExporter()));
+```
+
+Next, start the application to specify the required tracing module via the -r flag.
+
+```
+$ node -r ./tracer.js app
+```
+
+#### Adding Custom Attributes
+
+You can add custom attributes to a `Span` by defining an `AttributeKey` and calling `setAttribute`
+on the current `Span`. The JS SDK creates spans via it’s supported web framework plugins. You
+use `TracingContextUtils.getCurrentSpan()` to access the current span and set the attribute for a key that you have
+defined as a constant by using `AttributeKeys`.
+
+```javascript title=tracer.js lineNumbers=true
+const { context, propagation, trace } = require("@opentelemetry/api");
+
+const tracer = require('./xray-tracer')('your app name');
+
+//...
+
+function SetSpanAttribute() {
+  const span = tracer.getCurrentSpan()
+  String exampleAttribute = exampleAttribute();
+  TracingContextUtils.getCurrentSpan().setAttribute(EXAMPLE_ATTRIBUTE, exampleAttribute);
+}
+```
+
+Note: When using AWS X-Ray as your tracing backend, you can control whether attributes are uploaded as annotations or
+metadata by configuring the AWS OTel Collector’s
+[indexed keys](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/master/exporter/awsxrayexporter#exporter-configuration).
+Additionally, you can set attributes as annotations or metadata in code by using `setAttribute(“annotation.<key>”, <value>)`
+and `setAttribute(“metadata.<key>”, <value>)`.
+
+#### Creating Spans
+
+Spans can be manually created using the standard OpenTelemetry API as well.
+
+```javascript title=tracer.js lineNumbers=true
+const span = tracer.startSpan('op');
+//...
+span.end();
+```

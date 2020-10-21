@@ -1,0 +1,40 @@
+---
+title: 'Configuring Permissions'
+description:
+    The AWS Distro for OpenTelemetry Collector requires permissions for AWS CloudWatch Logs for metric publishing,
+    and for AWS X-Ray for sending traces. Learn how to set up permissions by creating an IAM policy.
+path: '/docs/setup/permissions'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+
+The AWS Distro for OpenTelemetry Collector requires permissions for AWS CloudWatch Logs for metric publishing, and for
+AWS X-Ray for sending traces.
+
+<SectionSeparator />
+
+## Create IAM policy
+1. Open the [IAM console](https://console.aws.amazon.com/iam/).
+2. In the navigation pane, choose **Policies**.
+3. Choose **Create policy**, and then choose **JSON**.
+4. Type the following policy.
+```json lineNumbers=true
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+                "logs:DescribeLogStreams",
+                "xray:PutTraceSegments"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+```
+5. Choose **Review policy**.
+6. On the Review policy page, type `AWSDistroOpenTelemetryPolicy` for the Name, and then choose **Create policy**.

@@ -1,0 +1,42 @@
+title: About AWS Distro for OpenTelemetry
+description:
+  This page is about the AWS Distro for OpenTelemetry including features and background information
+path: /about
+
+intro: AWS Distro for OpenTelemetry is a secure, production-ready, AWS-supported distribution of the OpenTelemetry project.
+
+features:
+  - item:
+      Instrument your applications just once to send correlated metrics and traces to multiple monitoring solutions and
+      use auto-instrumentation agents to collect traces without changing your code.
+  - item:
+      Collect metadata from your AWS resources and managed services, so you can correlate application performance data
+      with underlying infrastructure data, reducing the mean time to problem resolution.
+  - item:
+      Use AWS Distro for OpenTelemetry to observe your applications running on Amazon Elastic Compute Cloud (EC2),
+      Amazon Elastic Container Service (ECS), and Amazon Elastic Kubernetes Service (EKS) on EC2, and AWS Fargate,
+      as well as on-premises.
+
+blurb:
+  OpenTelemetry is a Cloud Native Computing Foundation (CNCF) project which defines an open specification that is
+  implemented as open source APIs, libraries in multiple programming languages and agents to collect distributed traces
+  and metrics for application monitoring.
+
+searchIndex:
+  '
+  AWS Distro for OpenTelemetry is a secure, production-ready, AWS-supported distribution of the OpenTelemetry project.
+
+  Instrument your applications just once to send correlated metrics and traces to multiple monitoring solutions and
+  use auto-instrumentation agents to collect traces without changing your code.
+
+  Collect metadata from your AWS resources and managed services, so you can correlate application performance data
+  with underlying infrastructure data, reducing the mean time to problem resolution.
+
+  Use AWS Distro for OpenTelemetry to observe your applications running on Amazon Elastic Compute Cloud (EC2),
+  Amazon Elastic Container Service (ECS), and Amazon Elastic Kubernetes Service (EKS) on EC2, and AWS Fargate,
+  as well as on-premises.
+
+  OpenTelemetry is a Cloud Native Computing Foundation (CNCF) project which defines an open specification that is
+  implemented as open source APIs, libraries in multiple programming languages and agents to collect distributed traces
+  and metrics for application monitoring.
+  '
