@@ -10,7 +10,7 @@ const styles = {
 const BlogWidgets = (props) => {
 
   const { classes } = props;
-  const numBlogPostsToShow = 2;
+  const numBlogPostsToShow = 3;
 
   const data = useStaticQuery(graphql`
     query {

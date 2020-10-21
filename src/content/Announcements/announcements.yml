@@ -4,6 +4,12 @@ description:
 path: /announcements
 
 announcements:
+  - title: "Public Preview: AWS Distro for OpenTelemetry"
+    date: 'Jeff Barr, 21 Oct 2020'
+    blurb:
+      Today we are launching a preview of AWS Distro for OpenTelemetry. We are part of the Cloud Native Computing
+      Foundation (CNCF)’s OpenTelemetry community, working to define an open standard for the collection of distributed traces and metrics.
+    link: 'https://aws.amazon.com/blogs/aws/public-preview-aws-distro-open-telemetry/'
   - title: Announcing AWS Distro for OpenTelemetry in Preview
     date: '21-Oct-2020'
     blurb:
@@ -15,7 +21,7 @@ announcements:
     blurb:
       Today marks another milestone in the journey towards OpenTelemetry’s first GA release. The tracing
       spec is now frozen and considered to be a release candidate.
-    link: '/'
+    link: 'https://medium.com/opentelemetry/tracing-specification-release-candidate-ga-p-eec434d220f2'
 
 searchIndex:
   '
