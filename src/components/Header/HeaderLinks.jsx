@@ -41,10 +41,10 @@ function HeaderLinks({ ...props }) {
             <Link to="/about" className={classes.dropdownLink}>
               AWS Distro for OpenTelemetry
             </Link>,
-            <Link to="https://github.com/orgs/aws-observability/projects/4" target="_blank" className={classes.dropdownLink}>
+            <Link to="https://github.com/orgs/aws-observability/projects/4" target="_blank" rel="noopener noreferrer" className={classes.dropdownLink}>
               Roadmap
             </Link>,
-            <Link to="https://opentelemetry.io/" target="_blank" className={classes.dropdownLink}>
+            <Link to="https://opentelemetry.io/" target="_blank" rel="noopener noreferrer" className={classes.dropdownLink}>
               About OpenTelemetry
             </Link>,
           ]}
@@ -72,7 +72,7 @@ function HeaderLinks({ ...props }) {
             <Link to="/code-of-conduct" className={classes.dropdownLink}>
               Code of Conduct
             </Link>,
-            <Link to="https://gitter.im/aws-otel-distro/community" className={classes.dropdownLink} target="_blank">
+            <Link to="https://gitter.im/aws-otel-distro/community" className={classes.dropdownLink} target="_blank" rel="noopener noreferrer">
               Gitter
             </Link>,
             <Link to="/blog" className={classes.dropdownLink}>
@@ -84,7 +84,9 @@ function HeaderLinks({ ...props }) {
             <Link
                 to="https://aws.amazon.com/otel/faqs/"
                 className={classes.dropdownLink}
-                target="_blank">
+                target="_blank"
+                rel="noopener noreferrer"
+            >
               FAQ
             </Link>,
             <Link to="/resources" className={classes.dropdownLink}>
@@ -104,7 +106,7 @@ function HeaderLinks({ ...props }) {
         </Link>
       </ListItem>
       <ListItem className={classes.listItem}>
-        <Link to="https://github.com/aws-observability" className={classes.buttonLink} target="_blank">
+        <Link to="https://github.com/aws-observability" className={classes.buttonLink} target="_blank" rel="noopener noreferrer">
           <Button
             href=""
             color="transparent"

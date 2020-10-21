@@ -15,8 +15,8 @@ function Footer({ ...props }) {
           <h3>About</h3>
           <div> <Link to="/about" className={classes.link}> AWS Distro for OpenTelemetry </Link></div>
           {/*<div> <Link to="/coming-soon" className={classes.link}> Components </Link></div>*/}
-          <div> <Link to="https://github.com/orgs/aws-observability/projects/4" target={"_blank"} className={classes.link}> Roadmap </Link></div>
-          <div> <Link to="https://opentelemetry.io/" target={"_blank"} className={classes.link}> About OpenTelemetry </Link></div>
+          <div> <Link to="https://github.com/orgs/aws-observability/projects/4" target={"_blank"} className={classes.link} rel="noopener noreferrer"> Roadmap </Link></div>
+          <div> <Link to="https://opentelemetry.io/" target={"_blank"} className={classes.link} rel="noopener noreferrer"> About OpenTelemetry </Link></div>
         </div>
         <div className={classes.col}>
           <h3>Community</h3>
@@ -24,28 +24,28 @@ function Footer({ ...props }) {
           <div> <Link to="/contributing" className={classes.link}> Contributing </Link></div>
           <div> <Link to="/contributors" className={classes.link}> Contributors </Link></div>
           <div> <Link to="/code-of-conduct" className={classes.link}> Code of Conduct </Link></div>
-          <div> <Link to="https://gitter.im/aws-otel-distro/community" className={classes.link} target="_blank"> Gitter </Link></div>
+          <div> <Link to="https://gitter.im/aws-otel-distro/community" className={classes.link} target="_blank" rel="noopener noreferrer"> Gitter </Link></div>
           <div> <Link to="/blog" className={classes.link}> Blog Posts </Link></div>
-          <div> <Link to="https://aws.amazon.com/otel/faqs/" className={classes.link} target="_blank"> FAQ </Link></div>
-          <div> <Link to="/resources" className={classes.link} target="_blank"> Resources </Link></div>
+          <div> <Link to="https://aws.amazon.com/otel/faqs/" className={classes.link} target="_blank" rel="noopener noreferrer"> FAQ </Link></div>
+          <div> <Link to="/resources" className={classes.link} target="_blank" rel="noopener noreferrer"> Resources </Link></div>
         </div>
         <div className={classes.col}>
           <h3>Discover</h3>
           <div> <Link to="/docs/introduction" className={classes.link}> Documentation </Link></div>
-          <div> <Link to="https://github.com/aws-observability" className={classes.link} target="_blank"> Code on GitHub </Link></div>
+          <div> <Link to="https://github.com/aws-observability" className={classes.link} target="_blank" rel="noopener noreferrer"> Code on GitHub </Link></div>
           <div> <Link to="/download" className={classes.link}> Download </Link></div>
         </div>
         <div className={classes.col}>
           <h3>Stay Connected</h3>
-          <div> <Link to="https://twitter.com/awsopen" className={classes.link} target="_blank"> Twitter </Link></div>
-          <div> <Link to="https://github.com/aws-observability/aws-otel-community" className={classes.link} target="_blank"> GitHub Community </Link></div>
-          <div> <Link to="https://gitter.im/aws-otel-distro/community" className={classes.link} target="_blank"> Gitter </Link></div>
+          <div> <Link to="https://twitter.com/awsopen" className={classes.link} target="_blank" rel="noopener noreferrer"> Twitter </Link></div>
+          <div> <Link to="https://github.com/aws-observability/aws-otel-community" className={classes.link} target="_blank" rel="noopener noreferrer"> GitHub Community </Link></div>
+          <div> <Link to="https://gitter.im/aws-otel-distro/community" className={classes.link} target="_blank" rel="noopener noreferrer"> Gitter </Link></div>
           {/*<div> <Link to="https://groups.io/g/aws-otel-distro-announce" className={classes.link} target="_blank"> Groups.io </Link></div>*/}
         </div>
         <div className={classes.col}>
           <h3>Other</h3>
-          <div> <Link to="https://github.com/aws-observability/aws-otel-community/issues" className={classes.link} target="_blank"> Report a Bug </Link></div>
-          <div> <Link to="https://github.com/aws-observability/aws-otel-community/issues" className={classes.link} target="_blank"> File an Issue </Link></div>
+          <div> <Link to="https://github.com/aws-observability/aws-otel-community/issues" className={classes.link} target="_blank" rel="noopener noreferrer"> Report a Bug </Link></div>
+          <div> <Link to="https://github.com/aws-observability/aws-otel-community/issues" className={classes.link} target="_blank" rel="noopener noreferrer"> File an Issue </Link></div>
         </div>
       </section>
       <section className={classes.sectionBottom}>

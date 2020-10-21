@@ -29,7 +29,7 @@ function InfoArea({ ...props }) {
       <div className={classes.descriptionWrapper}>
         <h4 className={classes.title}>{title}</h4>
         <p className={classes.description} style={{textAlign: "left"}}>{description}</p>
-        <Link to={link} target="_blank" className={classes.linkStyle}>
+        <Link to={link} target="_blank" className={classes.linkStyle} rel="noopener noreferrer">
           <Button variant="outlined" color="primary" className={classes.buttonStyle}>
             Learn More
           </Button>

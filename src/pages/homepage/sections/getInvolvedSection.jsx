@@ -29,7 +29,7 @@ class GetInvolvedSection extends React.Component {
                 </Link>
               </GridItem>
               <GridItem xs={12} sm={12} md={2} className={classes.gridItem}>
-                <Link to="https://gitter.im/aws-otel-distro/community" className={classes.linkStyle} target="_blank">
+                <Link to="https://gitter.im/aws-otel-distro/community" className={classes.linkStyle} target="_blank" rel="noopener noreferrer">
                   <Button variant="outlined" color="primary" className={classes.buttonStyle}>
                     Gitter
                   </Button>

@@ -18,7 +18,7 @@ class AnnouncementWidget extends React.Component {
     return (
         <Card className={classes.root}>
           <CardActionArea>
-            <Link to={this.props.link} target="_blank" style={{textDecoration: "none"}}>
+            <Link to={this.props.link} target="_blank" style={{textDecoration: "none"}} rel="noopener noreferrer">
               <div style={{height: "20px"}} />
               <CardContent>
                 <Typography gutterBottom variant="h5" component="h2">
@@ -35,7 +35,7 @@ class AnnouncementWidget extends React.Component {
             </Link>
           </CardActionArea>
           <CardActions>
-            <Link to={this.props.link} style={{textDecoration: "none"}} target="_blank">
+            <Link to={this.props.link} style={{textDecoration: "none"}} target="_blank" rel="noopener noreferrer">
               <Button size="small" color="primary">
                 Read More
               </Button>

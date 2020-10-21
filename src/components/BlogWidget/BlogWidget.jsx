@@ -20,7 +20,7 @@ class BlogWidget extends React.Component {
           <CardActionArea>
             <div style={{height: "20px"}} />
             <CardContent>
-              <Link to={this.props.link} style={{textDecoration: "none"}} target="_blank">
+              <Link to={this.props.link} style={{textDecoration: "none"}} target="_blank" rel="noopener noreferrer">
                 <Typography gutterBottom variant="h5" component="h2">
                   {this.props.title}
                 </Typography>
@@ -35,7 +35,7 @@ class BlogWidget extends React.Component {
             </CardContent>
           </CardActionArea>
           <CardActions>
-            <Link to={this.props.link} style={{textDecoration: "none"}} target="_blank">
+            <Link to={this.props.link} style={{textDecoration: "none"}} target="_blank" rel="noopener noreferrer">
               <Button size="small" color="primary">
                 Read More
               </Button>

@@ -29,11 +29,11 @@ class MainBodySection extends React.Component {
               </p>
               <h2 className={classes.about}> Additional Links </h2>
               <ul>
-                <li><a href="https://gitter.im/aws-otel-distro/community" target="_blank"> Gitter </a></li>
-                <li><a href="https://github.com/aws-observability/aws-otel-community/issues" target="_blank"> File an Issue </a></li>
-                <li><a href="https://github.com/aws-observability/aws-otel-community/issues" target="_blank"> File a Pull Request </a></li>
-                <li><a href="https://opentelemetry.io/community/" target="_blank"> OpenTelemetry Community </a></li>
-                <li><a href="https://calendar.google.com/calendar/u/0/embed?src=google.com_b79e3e90j7bbsa2n2p5an5lf60@group.calendar.google.com" target="_blank"> OpenTelemetry SIG Meeting Calender </a></li>
+                <li><a href="https://gitter.im/aws-otel-distro/community" target="_blank" rel="noopener noreferrer"> Gitter </a></li>
+                <li><a href="https://github.com/aws-observability/aws-otel-community/issues" target="_blank" rel="noopener noreferrer"> File an Issue </a></li>
+                <li><a href="https://github.com/aws-observability/aws-otel-community/issues" target="_blank" rel="noopener noreferrer"> File a Pull Request </a></li>
+                <li><a href="https://opentelemetry.io/community/" target="_blank" rel="noopener noreferrer"> OpenTelemetry Community </a></li>
+                <li><a href="https://calendar.google.com/calendar/u/0/embed?src=google.com_b79e3e90j7bbsa2n2p5an5lf60@group.calendar.google.com" target="_blank" rel="noopener noreferrer"> OpenTelemetry SIG Meeting Calender </a></li>
               </ul>
             </GridItem>
           </GridContainer>

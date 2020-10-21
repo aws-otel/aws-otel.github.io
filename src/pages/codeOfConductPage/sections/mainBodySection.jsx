@@ -37,9 +37,9 @@ class MainBodySection extends React.Component {
               <p> {YAMLData.sectionFourDescription} </p>
               <h3 className={classes.about}> Additional Links </h3>
               <ul>
-                <li><a href="https://github.com/todogroup/opencodeofconduct/" target="_blank"> Template </a></li>
-                <li><a href="https://todogroup.org/" target="_blank"> TODO Group </a></li>
-                <li><a href="https://www.contributor-covenant.org/version/1/4/code-of-conduct/" target="_blank"> Contributor Covenant Version 1.4 </a></li>
+                <li><a href="https://github.com/todogroup/opencodeofconduct/" target="_blank" rel="noopener noreferrer"> Template </a></li>
+                <li><a href="https://todogroup.org/" target="_blank" rel="noopener noreferrer"> TODO Group </a></li>
+                <li><a href="https://www.contributor-covenant.org/version/1/4/code-of-conduct/" target="_blank" rel="noopener noreferrer"> Contributor Covenant Version 1.4 </a></li>
               </ul>
             </GridItem>
           </GridContainer>

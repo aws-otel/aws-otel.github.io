@@ -28,20 +28,20 @@ class DownloadItem extends React.Component {
             <div style={{height: "10px"}}/>
 
             <Button size="small" color="primary" style={{marginLeft: "-10px", display: "block"}}>
-              <a href={this.props.releaseNotes} style={{textDecoration: "none", color: "#3f51b5"}} target="_blank">
+              <a href={this.props.releaseNotes} style={{textDecoration: "none", color: "#3f51b5"}} target="_blank" rel="noopener noreferrer">
                 Release Notes
               </a>
             </Button>
 
             <Button size="small" color="primary" style={{marginLeft: "-10px", display: "block"}}>
-              <a href={this.props.documentation} style={{textDecoration: "none", color: "#3f51b5"}} target="_blank">
+              <a href={this.props.documentation} style={{textDecoration: "none", color: "#3f51b5"}} target="_blank" rel="noopener noreferrer">
                 Documentation
               </a>
             </Button>
 
           </CardContent>
           <CardContent>
-            <a href={this.props.dockerHub} style={{textDecoration: "none"}} target="_blank">
+            <a href={this.props.dockerHub} style={{textDecoration: "none"}} target="_blank" rel="noopener noreferrer">
               <Button size="small" color="primary" variant="outlined" className={classes.button}>
                 Download Now
               </Button>
