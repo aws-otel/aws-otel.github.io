@@ -24,65 +24,65 @@ module.exports = {
         trackingId: process.env.GA_KEY || "none",
       }
     },
-    {
-      resolve: `gatsby-source-github-api`,
-      options: {
-        token: process.env.GH_API_KEY,
-        variables: {},
-        graphQLQuery: `
-          query {
-            repo1: repository(owner: "open-o11y", name: "opentelemetry-js") {
-              collaborators {
-                nodes {
-                  name
-                  avatarUrl
-                }
-              }
-            }
-            repo2: repository(owner: "open-o11y", name: "opentelemetry-go-contrib") {
-              collaborators {
-                nodes {
-                  name
-                  avatarUrl
-                }
-              }
-            }
-            repo3: repository(owner: "open-o11y", name: "opentelemetry-python") {
-              collaborators {
-                nodes {
-                  name
-                  avatarUrl
-                }
-              }
-            }
-            repo4: repository(owner: "open-o11y", name: "opentelemetry-java") {
-              collaborators {
-                nodes {
-                  name
-                  avatarUrl
-                }
-              }
-            }
-            repo5: repository(owner: "aws-observability", name: "aws-otel-test-framework") {
-              collaborators {
-                nodes {
-                  name
-                  avatarUrl
-                }
-              }
-            }
-            repo6: repository(owner: "aws-observability", name: "aws-otel-playground") {
-              collaborators {
-                nodes {
-                  name
-                  avatarUrl
-                }
-              }
-            }
-          }
-        `
-      },
-    },
+    // {
+    //   resolve: `gatsby-source-github-api`,
+    //   options: {
+    //     token: process.env.GH_API_KEY,
+    //     variables: {},
+    //     graphQLQuery: `
+    //       query {
+    //         repo1: repository(owner: "open-o11y", name: "opentelemetry-js") {
+    //           collaborators {
+    //             nodes {
+    //               name
+    //               avatarUrl
+    //             }
+    //           }
+    //         }
+    //         repo2: repository(owner: "open-o11y", name: "opentelemetry-go-contrib") {
+    //           collaborators {
+    //             nodes {
+    //               name
+    //               avatarUrl
+    //             }
+    //           }
+    //         }
+    //         repo3: repository(owner: "open-o11y", name: "opentelemetry-python") {
+    //           collaborators {
+    //             nodes {
+    //               name
+    //               avatarUrl
+    //             }
+    //           }
+    //         }
+    //         repo4: repository(owner: "open-o11y", name: "opentelemetry-java") {
+    //           collaborators {
+    //             nodes {
+    //               name
+    //               avatarUrl
+    //             }
+    //           }
+    //         }
+    //         repo5: repository(owner: "aws-observability", name: "aws-otel-test-framework") {
+    //           collaborators {
+    //             nodes {
+    //               name
+    //               avatarUrl
+    //             }
+    //           }
+    //         }
+    //         repo6: repository(owner: "aws-observability", name: "aws-otel-playground") {
+    //           collaborators {
+    //             nodes {
+    //               name
+    //               avatarUrl
+    //             }
+    //           }
+    //         }
+    //       }
+    //     `
+    //   },
+    // },
     `gatsby-transformer-yaml`,
     {
       resolve: `gatsby-source-filesystem`,
