@@ -1,4 +1,4 @@
-const parallaxStyle = {
+const parallaxStyle = theme => ({
   parallax: {
     height: "70vh",
     maxHeight: "1000px",
@@ -10,7 +10,7 @@ const parallaxStyle = {
     padding: "0",
     border: "0",
     display: "flex",
-    alignItems: "center"
+    alignItems: "center",
   },
   filter: {
     "&:before": {
@@ -28,8 +28,16 @@ const parallaxStyle = {
     }
   },
   small: {
-    height: "25vh"
-  }
-}
+    height: "35vh"
+  },
+  [theme.breakpoints.down("xs")]: {
+    parallax: {
+      height: "95vh"
+    },
+    small: {
+      height: "35vh"
+    },
+  },
+})
 
 export default parallaxStyle

@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v1
       - uses: enriikke/gatsby-gh-pages-action@v2
         env:
-          GH_API_KEY: ${{ secrets.demo }}
+          GH_API_KEY: ${{ secrets.gh }}
           GA_KEY: ${{ secrets.ga }}
         with:
           access-token: ${{ secrets.demo }}
