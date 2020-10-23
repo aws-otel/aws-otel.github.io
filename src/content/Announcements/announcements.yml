@@ -15,7 +15,7 @@ announcements:
     blurb:
       Today, we are announcing the availability in preview of AWS Distro for OpenTelemetry,
       a secure, production-ready, AWS-supported distribution of the OpenTelemetry project.
-    link: '/'
+    link: 'https://aws.amazon.com/about-aws/whats-new/2020/10/announcing-aws-distro-for-opentelemetry-in-preview/'
   - title: OpenTelemetry announces its Tracing Specification Release Candidate
     date: '21-Oct-2020'
     blurb:
