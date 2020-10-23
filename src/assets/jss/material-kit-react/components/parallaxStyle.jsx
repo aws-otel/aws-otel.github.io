@@ -33,7 +33,10 @@ const parallaxStyle = theme => ({
   [theme.breakpoints.down("xs")]: {
     parallax: {
       height: "95vh"
-    }
+    },
+    small: {
+      height: "35vh"
+    },
   },
 })
 
