@@ -11,7 +11,7 @@ module.exports = {
     siteTitleShort: `AWS Distro OpenTelemetry`,
     siteDescription: `Technical documentation for AWS Open Distro for OpenTelemetry`,
     siteAuthor: `Amazon AWS Observability`,
-    siteImage: `/banner.png`,
+    // siteImage: `/banner.png`,
     siteLanguage: `en`,
     themeColor: `#F5A880`,
     basePath: `/`,
@@ -129,26 +129,20 @@ module.exports = {
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: `Rocketseat Gatsby Themes`,
-        short_name: `RS Gatsby Themes`,
+        name: `AWS Distro for OpenTelemetry`,
+        short_name: `AWS Distro for OTel`,
         start_url: `/`,
         background_color: `#ffffff`,
         display: `standalone`,
-        icon: `static/favicon.png`,
+        icon: `static/favicon-32x32.png`,
       },
     },
     `gatsby-plugin-sitemap`,
-    {
-      resolve: `gatsby-plugin-google-analytics`,
-      options: {
-        // trackingId: ``,
-      },
-    },
     `gatsby-plugin-remove-trailing-slashes`,
     {
       resolve: `gatsby-plugin-canonical-urls`,
       options: {
-        siteUrl: `https://rocketdocs.netlify.com`,
+        siteUrl: `https://aws-otel.github.io/`,
       },
     },
     `gatsby-plugin-offline`,
