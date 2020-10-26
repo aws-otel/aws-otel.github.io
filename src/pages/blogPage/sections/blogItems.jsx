@@ -2,7 +2,7 @@ import React from "react"
 import PropTypes from "prop-types"
 import { useStaticQuery, graphql } from "gatsby"
 import withStyles from "@material-ui/core/styles/withStyles"
-import BlogWidget from "../../../components/BlogWidget/BlogWidget";
+import BlogWidget from "../../../components/BlogWidget/BlogWidget"
 
 const styles = {
 };
