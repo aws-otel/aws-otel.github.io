@@ -22,8 +22,8 @@
       link: '/docs/getting-started/java-auto-instrumentation-agent'
     - label: 'Using CloudWatch Metrics'
       link: '/docs/getting-started/cloudwatch-metrics'
-#    - label: 'ECS Container Metrics Receiver'
-#      link: '/docs/getting-started/ecs-metrics-receiver'
+    - label: 'ECS Container Metrics Receiver'
+      link: '/docs/getting-started/ecs-metrics-receiver'
 - label: Setup
   items:
     - label: 'Permissions'

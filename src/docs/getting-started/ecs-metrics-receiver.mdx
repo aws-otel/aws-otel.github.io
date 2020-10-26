@@ -13,18 +13,18 @@ import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.js
 
 The Amazon ECS container agent provides a method to retrieve various task metadata and
 [Docker stats](https://docs.docker.com/engine/api/v1.30/#operation/ContainerStats), which is referred to as the task
-metadata endpoint. AWS Container Observability team wrote a receiver in the OpenTelemetry Collector that scrapes this
-task metadata endpoint and collects resource (such as CPU, memory, network, and disk) usage metrics.
-Customers can enable `awsecscontainermetrics` receiver in their OpenTelemetry configuration file to collect
-specific task- and container-level metrics and send them to their desired destinations and monitoring solutions.
+metadata endpoint. AWS Container Observability team wrote a receiver in the OpenTelemetry Collector that scrapes
+this task metadata endpoint and collects resource (such as CPU, memory, network, and disk) usage metrics.
+Customers can enable `awsecscontainermetrics` receiver in their OpenTelemetry configuration file to collect specific
+task and container-level metrics and send them to their desired destinations and monitoring solutions.
 
 <SectionSeparator />
 
 ## Enabling the AWS ECS Container Metrics Receiver
 
-To enable the `awsecscontainermetrics` receiver, write the name under receiver section in the config file. By default,
-the receiver will scrape the ECS task metadata endpoint every 20s and collect all the metrics. For the full list of metrics,
-see the [Available Metrics Table](#available-metrics).
+To enable the `awsecscontainermetrics` receiver, write the name under receiver section in the config file.
+By default, the receiver will scrape the ECS task metadata endpoint every 20s and collect all the metrics
+(For the full list of metrics, see [Available Metrics](#available-metrics).
 
 The following configuration will collect AWS ECS resource usage metrics by using `awsecscontainermetrics` receiver and
 send them to CloudWatch by using `awsemf` exporter.
@@ -34,8 +34,8 @@ receivers:
   awsecscontainermetrics:
 exporters:
   awsemf:
-      namespace: 'ECS/ContainerInsights/OpenTelemetry'
-      log_group_name: '/ecs/opentelemetry/containermetrics'
+      namespace: 'ECS/ContainerMetrics/OpenTelemetry'
+      log_group_name: '/ecs/containermetrics/opentelemetry'
 
 service:
   pipelines:
@@ -48,8 +48,8 @@ service:
 
 ## Set Collection Interval Metrics
 
-Customers can configure `collection_interval` under `awsecscontainermetrics` receiver to scrape and gather metrics at a
-specific interval. The following example configuration will collect metrics every 40 seconds.
+Customers can configure `collection_interval` under `awsecscontainermetrics` receiver to scrape and gather
+metrics at a specific interval. The following example configuration will collect metrics every 40 seconds.
 
 ```yaml lineNumbers=true
 receivers:
@@ -57,8 +57,8 @@ receivers:
       collection_interval: 40s
 exporters:
   awsemf:
-      namespace: 'ECS/ContainerInsights/OpenTelemetry'
-      log_group_name: '/ecs/opentelemetry/containermetrics'
+      namespace: 'ECS/ContainerMetrics/OpenTelemetry'
+      log_group_name: '/ecs/containermetrics/opentelemetry'
 
 service:
   pipelines:
@@ -74,16 +74,16 @@ service:
 The previous configuration files collect all the metrics and send them to Amazon CloudWatch using default names.
 However, we can use `filter` and `metrictransform` processors to send specific metrics and rename them respectively.
 
-The following configuration will collect only the `ecs.task.memory.utilized` metric and rename it to `MemoryUtilized`
-before sending to CloudWatch.
+The following configuration will collect only the `ecs.task.memory.utilized` metric and rename it
+to `MemoryUtilized` before sending to CloudWatch.
 
 ```yaml lineNumbers=true
 receivers:
   awsecscontainermetrics:
 exporters:
   awsemf:
-      namespace: 'ECS/ContainerInsights/OpenTelemetry'
-      log_group_name: '/opentelemetry/ecs/containerinsights/{cluster}/performance'
+      namespace: 'ECS/ContainerMetrics/OpenTelemetry'
+      log_group_name: '/ecs/containermetrics/opentelemetry'
 processors:
   filter:
     metrics:
@@ -108,11 +108,11 @@ service:
 
 <SectionSeparator />
 
-## Container insights experience
+## A full configuration for task level metrics
 
-The following example shows a full configuration to get similar experience as container insights. It uses `awsecscontainermetrics`
-receiver to collect all the resource usage metrics from ECS task metadata endpoint. It applies `filter` processor to select
-only 8 task-level metrics and update metrics names using `metricstransform` processor.  Finally, it sends the
+The following example shows a full configuration to get most useful task level metrics. It uses `awsecscontainermetrics`
+receiver to collect all the resource usage metrics from ECS task metadata endpoint. It applies `filter` processor to
+select only 8 task-level metrics and update metrics names using `metricstransform` processor. Finally, it sends the
 metrics to CloudWatch using `awsemf` exporter under the `ECS/ContainerInsights/OpenTelemetry` namespace.
 
 ```yaml lineNumbers=true
@@ -120,8 +120,8 @@ receivers:
   awsecscontainermetrics:
 exporters:
   awsemf:
-      namespace: 'ECS/ContainerInsights/OpenTelemetry'
-      log_group_name: '/opentelemetry/ecs/containerinsights/{cluster}/performance'
+      namespace: 'ECS/ContainerMetrics/OpenTelemetry'
+      log_group_name: '/ecs/containermetrics/opentelemetry'
 processors:
   filter:
     metrics:
@@ -152,10 +152,10 @@ processors:
         new_name: CpuReserved
       - metric_name: ecs.task.network.rate.rx
         action: update
-        new_name: NetworkRateRx
+        new_name: NetworkRx
       - metric_name: ecs.task.network.rate.tx
         action: update
-        new_name: NetworkRateTx
+        new_name: NetworkTx
       - metric_name: ecs.task.storage.read_bytes
         action: update
         new_name: StorageRead
@@ -175,37 +175,58 @@ service:
 
 ## Available Metrics
 
+Following is the full list of metrics emitted by this receiver.
 
-| Container Level Metrics                | Task Level Metrics                    |
-| -------------------------------------- | ------------------------------------- |
-| container.memory.usage                 | ecs.task.memory.usage                 |
-| container.memory.usage.max             | ecs.task.memory.usage.max             |
-| container.memory.usage.limit           | ecs.task.memory.usage.limit           |
-| container.memory.reserved              | ecs.task.memory.reserved              |
-| container.memory.utilized              | ecs.task.memory.utilized              |
-|                                        |                                       |
-|                                        |                                       |
-| container.cpu.usage.total              | ecs.task.cpu.usage.total              |
-| container.cpu.usage.kernelmode         | ecs.task.cpu.usage.kernelmode         |
-| container.cpu.usage.usermode           | ecs.task.cpu.usage.usermode           |
-| container.cpu.cores                    | ecs.task.cpu.cores                    |
-| container.cpu.onlines                  | ecs.task.cpu.onlines                  |
-| container.cpu.usage.system             | ecs.task.cpu.usage.system             |
-| container.cpu.reserved                 | ecs.task.cpu.reserved                 |
-| container.cpu.utilized                 | ecs.task.cpu.utilized                 |
-|                                        |                                       |
-|                                        |                                       |
-| container.network.rate.rx              | ecs.task.network.rate.rx              |
-| container.network.rate.tx              | ecs.task.network.rate.tx              |
-| container.network.io.usage.rx\_bytes   | ecs.task.network.io.usage.rx\_bytes   |
-| container.network.io.usage.rx\_packets | ecs.task.network.io.usage.rx\_packets |
-| container.network.io.usage.rx\_errors  | ecs.task.network.io.usage.rx\_errors  |
-| container.network.io.usage.rx\_dropped | ecs.task.network.io.usage.rx\_dropped |
-| container.network.io.usage.tx\_bytes   | ecs.task.network.io.usage.tx\_bytes   |
-| container.network.io.usage.tx\_packets | ecs.task.network.io.usage.tx\_packets |
-| container.network.io.usage.tx\_errors  | ecs.task.network.io.usage.tx\_errors  |
-| container.network.io.usage.tx\_dropped | ecs.task.network.io.usage.tx\_dropped |
-|                                        |                                       |
-|                                        |                                       |
-| container.storage.read\_bytes          | ecs.task.storage.read\_bytes          |
-| container.storage.write\_bytes         | ecs.task.storage.write\_bytes         |
+| Container Level Metrics                | Task Level Metrics                    | Unit         |
+| -------------------------------------- | ------------------------------------- | ------------ |
+| container.memory.usage                 | ecs.task.memory.usage                 | Bytes        |
+| container.memory.usage.max             | ecs.task.memory.usage.max             | Bytes        |
+| container.memory.usage.limit           | ecs.task.memory.usage.limit           | Bytes        |
+| container.memory.reserved              | ecs.task.memory.reserved              | Megabytes    |
+| container.memory.utilized              | ecs.task.memory.utilized              | Megabytes    |
+|                                        |                                       |              |
+| container.cpu.usage.total              | ecs.task.cpu.usage.total              | Nanoseconds  |
+| container.cpu.usage.kernelmode         | ecs.task.cpu.usage.kernelmode         | Nanoseconds  |
+| container.cpu.usage.usermode           | ecs.task.cpu.usage.usermode           | Nanoseconds  |
+| container.cpu.usage.system             | ecs.task.cpu.usage.system             | Nanoseconds  |
+| container.cpu.usage.vcpu               | ecs.task.cpu.usage.vcpu               | vCPU         |
+| container.cpu.cores                    | ecs.task.cpu.cores                    | Count        |
+| container.cpu.onlines                  | ecs.task.cpu.onlines                  | Count        |
+| container.cpu.reserved                 | ecs.task.cpu.reserved                 | vCPU         |
+| container.cpu.utilized                 | ecs.task.cpu.utilized                 | Percent      |
+|                                        |                                       |              |
+| container.network.rate.rx              | ecs.task.network.rate.rx              | Bytes/Second |
+| container.network.rate.tx              | ecs.task.network.rate.tx              | Bytes/Second |
+| container.network.io.usage.rx\_bytes   | ecs.task.network.io.usage.rx\_bytes   | Bytes        |
+| container.network.io.usage.rx\_packets | ecs.task.network.io.usage.rx\_packets | Count        |
+| container.network.io.usage.rx\_errors  | ecs.task.network.io.usage.rx\_errors  | Count        |
+| container.network.io.usage.rx\_dropped | ecs.task.network.io.usage.rx\_dropped | Count        |
+| container.network.io.usage.tx\_bytes   | ecs.task.network.io.usage.tx\_bytes   | Bytes        |
+| container.network.io.usage.tx\_packets | ecs.task.network.io.usage.tx\_packets | Count        |
+| container.network.io.usage.tx\_errors  | ecs.task.network.io.usage.tx\_errors  | Count        |
+| container.network.io.usage.tx\_dropped | ecs.task.network.io.usage.tx\_dropped | Count        |
+|                                        |                                       |              |
+| container.storage.read\_bytes          | ecs.task.storage.read\_bytes          | Bytes        |
+| container.storage.write\_bytes         | ecs.task.storage.write\_bytes         | Bytes        |
+
+<SectionSeparator />
+
+## Resource Attributes and Metrics Labels
+
+Metrics emitted by this receiver comes with a set of resource attributes. These resource attributes can be converted
+to metrics labels using appropriate processors/exporters (See `Full Configuration Examples` section below).
+Finally, these metrics labels can be set as metrics dimensions while exporting to desired destinations.
+Check the following table to see available resource attributes for Task and Container level metrics. Container level
+metrics have three additional attributes than task level metrics.
+
+| Resource Attributes for Task Level Metrics | Resource Attributes for Container Level Metrics |
+| ------------------------------------------ | ----------------------------------------------- |
+| ecs.cluster                                | ecs.cluster                                     |
+| ecs.task-definition-family                 | ecs.task-definition-family                      |
+| ecs.task-arn                               | ecs.task-arn                                    |
+| ecs.task-id                                | ecs.task-id                                     |
+| ecs.task-definition-version                | ecs.task-definition-version                     |
+| ecs.service                                | ecs.service                                     |
+|                                            | container.name                                  |
+|                                            | container.id                                    |
+|                                            | ecs.docker-name                                 |
