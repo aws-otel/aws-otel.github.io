@@ -6,54 +6,82 @@ description:
 path: /blog
 
 blogs:
-  - title: Building a Prometheus remote write exporter for the OpenTelemetry Go SDK
-    author: Alolita Sharma
-    date: 13-Oct-2020
+  - title: "Monitoring application health and performance with AWS Distro for OpenTelemetry"
+    author: "Min Xia, Shaocheng Wang, and Ying Wang"
+    date: "26-Oct-2020"
     body:
-      In this post, two AWS interns—Eric Lee and Connor Lindsey—describe their experience building a Prometheus remote
-      write exporter for the popular open source observability project OpenTelemetry.
-    link: https://aws.amazon.com/blogs/opensource/building-a-prometheus-remote-write-exporter-for-the-opentelemetry-go-sdk/
+      "A key challenge for any developer operations team is to gain full observability of a service’s health. In this post,
+      we introduce how to send application metrics to CloudWatch with AWS Distro for OpenTelemetry."
+    link: "https://aws.amazon.com/blogs/opensource/monitoring-application-health-and-performance-with-aws-distro-for-opentelemetry/"
 
-  - title: Integrating the OpenTelemetry JavaScript SDK with AWS X-Ray
-    author: Alolita Sharma
-    date: 13-Oct-2020
+  - title: "Distributed Tracing using AWS Distro for OpenTelemetry"
+    author: "Nizar Tyrewalla"
+    date: "26-Oct-2020"
     body:
-      In this blog post, AWS intern Cong Zou shares his experience contributing to a large open source project—OpenTelemetry—for
+      "With AWS Distro for OpenTelemetry, you can collect trace data from applications and send it to the destination
+      for your choice, for example, AWS X-Ray."
+    link: "https://aws.amazon.com/blogs/mt/distributed-tracing-aws-distro-for-opentelemetry/"
+
+  - title: "Building a Prometheus remote write exporter for the OpenTelemetry Go SDK"
+    author: "Alolita Sharma"
+    date: "13-Oct-2020"
+    body:
+      "In this post, two AWS interns—Eric Lee and Connor Lindsey—describe their experience building a Prometheus remote
+      write exporter for the popular open source observability project OpenTelemetry."
+    link: "https://aws.amazon.com/blogs/opensource/building-a-prometheus-remote-write-exporter-for-the-opentelemetry-go-sdk/"
+
+  - title: "Integrating the OpenTelemetry JavaScript SDK with AWS X-Ray"
+    author: "Alolita Sharma"
+    date: "13-Oct-2020"
+    body:
+      "In this blog post, AWS intern Cong Zou shares his experience contributing to a large open source project—OpenTelemetry—for
       the first time. OpenTelemetry provides a single set of APIs, libraries, agents, and collector services to capture distributed
-      traces and metrics from applications. Users can analyze these traces and metrics using Prometheus, Jaeger, and other observability tools.
-    link: https://aws.amazon.com/blogs/opensource/integrating-the-opentelemetry-javascript-sdk-with-aws-x-ray/
+      traces and metrics from applications. Users can analyze these traces and metrics using Prometheus, Jaeger, and other observability tools."
+    link: "https://aws.amazon.com/blogs/opensource/integrating-the-opentelemetry-javascript-sdk-with-aws-x-ray/"
 
-  - title: Testing the OpenTelemetry C++ Prometheus Exporter
-    author: Alolita Sharma
-    date: 05-Oct-2020
+  - title: "Testing the OpenTelemetry C++ Prometheus Exporter"
+    author: "Alolita Sharma"
+    date: "05-Oct-2020"
     body:
-      In this post AWS intern Eric Hsueh shares his experience working on OpenTelemetry. OpenTelemetry aims to be the
-      industry standard in collecting telemetry data, which includes metrics, tracing, and logs.
-    link: https://aws.amazon.com/blogs/opensource/testing-the-opentelemetry-c-prometheus-exporter/
+      "In this post AWS intern Eric Hsueh shares his experience working on OpenTelemetry. OpenTelemetry aims to be the
+      industry standard in collecting telemetry data, which includes metrics, tracing, and logs."
+    link: "https://aws.amazon.com/blogs/opensource/testing-the-opentelemetry-c-prometheus-exporter/"
 
-  - title: AWS adds a C++ Prometheus Exporter to OpenTelemetry
-    author: Alolita Sharma
-    date: 22-Sep-2020
+  - title: "AWS adds a C++ Prometheus Exporter to OpenTelemetry"
+    author: "Alolita Sharma"
+    date: "22-Sep-2020"
     body:
-      In this post, two AWS interns—Cunjun Wang and Eric Hsueh—describe their first engineering contributions to the popular
+      "In this post, two AWS interns—Cunjun Wang and Eric Hsueh—describe their first engineering contributions to the popular
       open source observability project OpenTelemetry. OpenTelemetry aims to develop an open standard and provides implementation
       in multiple programming languages for collecting telemetry data, including metrics, tracing, and logs. The interns
       contributed the C++ Prometheus Exporter to the OpenTelemetry project. This exporter takes collected metrics from
       OpenTelemetry and exports to Prometheus, a popular open source alerting and monitoring application. This post explains
-      how the Prometheus exporter works with the previously introduced metrics pipeline, potential code uses, and lessons learned along the way.
-    link: https://aws.amazon.com/blogs/opensource/aws-adds-a-c-prometheus-exporter-to-opentelemetry/
+      how the Prometheus exporter works with the previously introduced metrics pipeline, potential code uses, and lessons learned along the way."
+    link: "https://aws.amazon.com/blogs/opensource/aws-adds-a-c-prometheus-exporter-to-opentelemetry/"
 
-  - title: AWS adds observability metrics to the OpenTelemetry C++ library
-    author: Alolita Sharma
-    date: 01-Sep-2020
+  - title: "AWS adds observability metrics to the OpenTelemetry C++ library"
+    author: "Alolita Sharma"
+    date: "01-Sep-2020"
     body:
-      In this post, three AWS interns—Brandon Kimberly, Ankit Bhargava, and Hudson Humphries—describe their first
-      engineering contributions to the popular open source observability project OpenTelemetry.
-    link: https://aws.amazon.com/blogs/opensource/aws-adds-observability-metrics-to-the-opentelemetry-c-library/
+      "In this post, three AWS interns—Brandon Kimberly, Ankit Bhargava, and Hudson Humphries—describe their first
+      engineering contributions to the popular open source observability project OpenTelemetry."
+    link: "https://aws.amazon.com/blogs/opensource/aws-adds-observability-metrics-to-the-opentelemetry-c-library/"
 
 
 searchIndex:
-  '
+  "
+  Monitoring application health and performance with AWS Distro for OpenTelemetry
+  Min Xia, Shaocheng Wang, and Ying Wang
+  26-Oct-2020
+  A key challenge for any developer operations team is to gain full observability of a service’s health. In this post,
+  we introduce how to send application metrics to CloudWatch with AWS Distro for OpenTelemetry.
+
+  Distributed Tracing using AWS Distro for OpenTelemetry
+  Nizar Tyrewalla
+  26-Oct-2020
+  With AWS Distro for OpenTelemetry, you can collect trace data from applications and send it to the destination
+  for your choice, for example, AWS X-Ray.
+
   Integrating the OpenTelemetry JavaScript SDK with AWS X-Ray
   Alolita Sharma
   13-Oct-2020
@@ -82,4 +110,4 @@ searchIndex:
   contributed the C++ Prometheus Exporter to the OpenTelemetry project. This exporter takes collected metrics from
   OpenTelemetry and exports to Prometheus, a popular open source alerting and monitoring application. This post explains
   how the Prometheus exporter works with the previously introduced metrics pipeline, potential code uses, and lessons learned along the way.
-  '
+  "
