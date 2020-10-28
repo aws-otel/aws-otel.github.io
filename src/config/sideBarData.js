@@ -90,7 +90,7 @@ export const sideBarData = [
       id: nextId(),
       label: "Other",
       items: [
-        {label: "FAQ", link: "https://aws-content-sandbox.aka.amazon.com/blackfoot/users/habao/Himalia/faqs/"},
+        {label: "FAQ", link: "https://aws.amazon.com/otel/faqs/"},
         {label: "Glossary", link: "https://github.com/open-telemetry/opentelemetry-specification/blob/master/specification/glossary.md"},
         {label: "Resources", link: "/resources"},
       ],
