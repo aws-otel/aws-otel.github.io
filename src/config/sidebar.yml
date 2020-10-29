@@ -24,6 +24,8 @@
       link: '/docs/getting-started/cloudwatch-metrics'
     - label: 'ECS Container Metrics Receiver'
       link: '/docs/getting-started/ecs-metrics-receiver'
+    - label: 'X-Ray Receiver'
+      link: '/docs/getting-started/x-ray-receiver'
 - label: Setup
   items:
     - label: 'Permissions'

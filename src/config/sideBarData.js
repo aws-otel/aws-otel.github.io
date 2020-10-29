@@ -51,7 +51,8 @@ export const sideBarData = [
         {label: "JavaScript SDK", link: "/docs/getting-started/javascript-sdk"},
         {label: "Using AWS X-Ray Tracing", link: "/docs/getting-started/java-auto-instrumentation-agent"},
         {label: "Using CloudWatch Metrics", link: "/docs/getting-started/cloudwatch-metrics"},
-        {label: "ECS Container Metrics Receiver", link: "/docs/getting-started/ecs-metrics-receiver"}
+        {label: "ECS Container Metrics Receiver", link: "/docs/getting-started/ecs-metrics-receiver"},
+        {label: "X-Ray Receiver", link: "/docs/getting-started/x-ray-receiver"},
       ],
       link: "/docs/null"
     }
