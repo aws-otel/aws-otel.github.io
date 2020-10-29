@@ -40,7 +40,7 @@ const BlogWidgets = (props) => {
                 title={blog.title}
                 author={blog.author}
                 date={blog.date}
-                // body={blog.body}
+                body={blog.body}
                 link={blog.link}
             />
         )}
