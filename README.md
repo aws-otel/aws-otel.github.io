@@ -2,7 +2,7 @@
 
 This repo contains the source code for the [AWS Distro for OpenTelemetry Website](https://aws-otel.github.io/). 
 
-If you are a developer, please also checkout the [developers guide](./DEV_GUIDE.md)
+If you are a developer, please also checkout the [developers guide](./DEV_GUIDE.md).
 
 
 ## Table of Contents
