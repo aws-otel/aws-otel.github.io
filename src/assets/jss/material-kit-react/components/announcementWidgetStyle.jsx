@@ -8,6 +8,6 @@ const announcementWidgetStyle = {
   media: {
     height: 140,
   },
-};
+}
 
-export default announcementWidgetStyle;
+export default announcementWidgetStyle

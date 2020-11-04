@@ -17,14 +17,11 @@ const DownloadItems = (props) => {
         edges {
           node {
             version
-            tarballDownloadLink
-            releaseNotesLink
-            documentationLink
             releaseDate
             license
-            dockerHubDownloadLink
-            debianDownloadLink
-            RPMDownloadLink
+            releaseNotesLink
+            documentationLink
+            downloadLink
           }
         }
       }
@@ -43,10 +40,11 @@ const DownloadItems = (props) => {
                     license={downloadItem.node.license}
                     releaseNotes={downloadItem.node.releaseNotesLink}
                     documentation={downloadItem.node.documentationLink}
-                    dockerHub={downloadItem.node.dockerHubDownloadLink}
-                    RPM={downloadItem.node.RPMDownloadLink}
-                    debian={downloadItem.node.debianDownloadLink}
-                    tarball={downloadItem.node.tarballDownloadLink}
+                    downloadLink={downloadItem.node.downloadLink}
+                    // dockerHub={downloadItem.node.dockerHubDownloadLink}
+                    // RPM={downloadItem.node.RPMDownloadLink}
+                    // debian={downloadItem.node.debianDownloadLink}
+                    // tarball={downloadItem.node.tarballDownloadLink}
                 />
             )}
           </GridItem>
@@ -67,10 +65,11 @@ const DownloadItems = (props) => {
                                        license={downloadItem.node.license}
                                        releaseNotes={downloadItem.node.releaseNotesLink}
                                        documentation={downloadItem.node.documentationLink}
-                                       dockerHub={downloadItem.node.dockerHubDownloadLink}
-                                       RPM={downloadItem.node.RPMDownloadLink}
-                                       debian={downloadItem.node.debianDownloadLink}
-                                       tarball={downloadItem.node.tarballDownloadLink}
+                                       downloadLink={downloadItem.node.downloadLink}
+                                       // dockerHub={downloadItem.node.dockerHubDownloadLink}
+                                       // RPM={downloadItem.node.RPMDownloadLink}
+                                       // debian={downloadItem.node.debianDownloadLink}
+                                       // tarball={downloadItem.node.tarballDownloadLink}
                   />
                 }
               })}

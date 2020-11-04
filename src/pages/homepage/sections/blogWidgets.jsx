@@ -10,7 +10,7 @@ const styles = {
 const BlogWidgets = (props) => {
 
   // const { classes } = props;
-  const numBlogPostsToShow = 3;
+  const numBlogPostsToShow = 3
 
   const data = useStaticQuery(graphql`
     query {
@@ -30,7 +30,7 @@ const BlogWidgets = (props) => {
     }
   `)
 
-  const newData = data.allBlogPostsYaml.edges[0].node.blogs.slice(0, numBlogPostsToShow);
+  const newData = data.allBlogPostsYaml.edges[0].node.blogs.slice(0, numBlogPostsToShow)
 
   return (
       <div>
@@ -53,4 +53,4 @@ BlogWidgets.propTypes = {
   className: PropTypes.string,
 }
 
-export default withStyles(styles)(BlogWidgets);
+export default withStyles(styles)(BlogWidgets)

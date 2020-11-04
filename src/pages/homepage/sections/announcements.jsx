@@ -10,7 +10,7 @@ const styles = {
 const Announcements = (props) => {
 
   // const { classes } = props;
-  const numAnnouncementsToShow = 3;
+  const numAnnouncementsToShow = 3
 
   const data = useStaticQuery(graphql`
     query {
@@ -29,7 +29,7 @@ const Announcements = (props) => {
     }
   `)
 
-  const newData = data.allAnnouncementsYaml.edges[0].node.announcements.slice(0, numAnnouncementsToShow);
+  const newData = data.allAnnouncementsYaml.edges[0].node.announcements.slice(0, numAnnouncementsToShow)
 
   return (
       <div>
@@ -51,4 +51,4 @@ Announcements.propTypes = {
   className: PropTypes.string,
 }
 
-export default withStyles(styles)(Announcements);
+export default withStyles(styles)(Announcements)
