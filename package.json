@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "description": "AWS Distro for OpenTelemetry Site",
-  "author": "Wilbert Guo"
+  "author": "Wilbert Guo",
   "license": "MIT",
   "starter-name": "gatsby-starter-rocket-docs",
   "dependencies": {
