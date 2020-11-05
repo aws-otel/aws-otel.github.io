@@ -31,13 +31,60 @@ module.exports = {
         variables: {},
         graphQLQuery: `
           query {
-            organization(login: "aws-observability") {
+            orgMembers: organization(login: "aws-observability") {
               membersWithRole(first: 100) {
                 edges {
                   node {
                     name
-                    avatarUrl
                   }
+                }
+              }
+            }
+            repo1: repository(owner: "aws-observability", name: "aws-otel-test-framework") {
+              collaborators {
+                nodes {
+                  name
+                  avatarUrl
+                }
+              }
+            }
+            repo2: repository(owner: "aws-observability", name: "aws-otel-collector") {
+              collaborators {
+                nodes {
+                  name
+                  avatarUrl
+                }
+              }
+            }
+            repo3: repository(owner: "aws-observability", name: "aws-otel-java-instrumentation") {
+              collaborators {
+                nodes {
+                  name
+                  avatarUrl
+                }
+              }
+            }
+            repo4: repository(owner: "aws-observability", name: "aws-otel-js") {
+              collaborators {
+                nodes {
+                  name
+                  avatarUrl
+                }
+              }
+            }
+            repo5: repository(owner: "aws-observability", name: "aws-otel-community") {
+              collaborators {
+                nodes {
+                  name
+                  avatarUrl
+                }
+              }
+            }
+            repo6: repository(owner: "aws-observability", name: "aws-otel-playground") {
+              collaborators {
+                nodes {
+                  name
+                  avatarUrl
                 }
               }
             }
