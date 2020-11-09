@@ -6,6 +6,15 @@ description:
 path: /blog
 
 blogs:
+  - title: "AWS adds Prometheus Remote Write Exporter to OpenTelemetry Collector"
+    author: "Alolita Sharma"
+    date: "09-Nov-2020"
+    body:
+      "In this post, AWS intern Yang Hu describes how he made his first engineering contributions to the popular open source 
+      observability project—OpenTelemetry. His contributions to OpenTelemetry included adding a Prometheus Remote Write Exporter 
+      to the OpenTelemetry Collector. "
+    link: "https://aws.amazon.com/blogs/opensource/aws-adds-prometheus-remote-write-exporter-to-opentelemetry-collector/"
+
   - title: "Distributed tracing with OpenTelemetry"
     author: "Anuraag Agrawal"
     date: "04-Nov-2020"
@@ -87,6 +96,13 @@ blogs:
 
 searchIndex:
   "
+  AWS adds Prometheus Remote Write Exporter to OpenTelemetry Collector
+  Alolita Sharma
+  09-Nov-2020
+  In this post, AWS intern Yang Hu describes how he made his first engineering contributions to the popular open source 
+  observability project—OpenTelemetry. His contributions to OpenTelemetry included adding a Prometheus Remote Write Exporter 
+  to the OpenTelemetry Collector.
+
   Distributed tracing with OpenTelemetry
   Anuraag Agrawal
   04-Nov-2020
