@@ -43,6 +43,7 @@
     - label: 'Build Collector as Debian'
       link: '/docs/setup/build-collector-as-debian'
 - label: Components
+  items:
     - label: 'ECS Container Metrics Receiver'
       link: '/docs/components/ecs-metrics-receiver'
     - label: 'X-Ray Receiver'
