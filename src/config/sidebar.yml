@@ -22,10 +22,6 @@
       link: '/docs/getting-started/java-auto-instrumentation-agent'
     - label: 'Using CloudWatch Metrics'
       link: '/docs/getting-started/cloudwatch-metrics'
-    - label: 'ECS Container Metrics Receiver'
-      link: '/docs/getting-started/ecs-metrics-receiver'
-    - label: 'X-Ray Receiver'
-      link: '/docs/getting-started/x-ray-receiver'
 - label: Setup
   items:
     - label: 'Permissions'
@@ -46,6 +42,11 @@
       link: '/docs/setup/build-collector-as-rpm'
     - label: 'Build Collector as Debian'
       link: '/docs/setup/build-collector-as-debian'
+- label: Components
+    - label: 'ECS Container Metrics Receiver'
+      link: '/docs/components/ecs-metrics-receiver'
+    - label: 'X-Ray Receiver'
+      link: '/docs/components/x-ray-receiver'
 - label: Know Your Data
   items:
     - label: 'Traces'
