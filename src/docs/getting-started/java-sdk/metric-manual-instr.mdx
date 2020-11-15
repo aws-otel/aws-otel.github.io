@@ -39,8 +39,8 @@ Here is an example with steps for modifying application code to create metrics.
 
 With Gradle
 ```java
-implementation("io.opentelemetry:opentelemetry-sdk-metrics:0.9.0-SNAPSHOT")
-implementation("io.opentelemetry:opentelemetry-exporters-otlp:0.9.0-SNAPSHOT")
+implementation("io.opentelemetry:opentelemetry-sdk:0.10.0")
+implementation("io.opentelemetry:opentelemetry-exporter-otlp:0.10.0")
 ```
 
 With Maven
@@ -48,23 +48,22 @@ With Maven
 <!-- https://mvnrepository.com/artifact/io.opentelemetry/opentelemetry-sdk-metrics -->
 <dependency>
     <groupId>io.opentelemetry</groupId>
-    <artifactId>opentelemetry-sdk-metrics</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <artifactId>opentelemetry-sdk</artifactId>
+    <version>0.10.0</version>
 </dependency>
 <dependency>
     <groupId>io.opentelemetry</groupId>
     <artifactId>opentelemetry-exporters-otlp</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>0.10.0</version>
 </dependency>
 ```
 
 1. Create `OtlpGrpcMetricExporter` to send application metrics data to AWS OTel Collector.
 ```java
-MetricExporter metricExporter =
-                OtlpGrpcMetricExporter.newBuilder()
-                        .setChannel(ManagedChannelBuilder
-                            .forTarget("localhost:55680").usePlaintext().build())
-                        .build();
+        MetricExporter metricExporter =
+          OtlpGrpcMetricExporter.builder()
+            .setChannel(ManagedChannelBuilder.forTarget(otlpEndpoint).usePlaintext().build())
+            .build();
 ```
 
 2. Create `IntervalMetricReader` that will batch metrics for every 10 seconds before sending
@@ -72,10 +71,12 @@ MetricExporter metricExporter =
 IntervalMetricReader intervalMetricReader =
                 IntervalMetricReader.builder()
                         .setMetricProducers(
-                                Collections.singleton(OpenTelemetrySdk.getMeterProvider().getMetricProducer()))
+                                Collections.singleton(OpenTelemetrySdk.getGlobalMeterProvider().getMetricProducer()))
                         .setExportIntervalMillis(10000)// configurable interval
                         .setMetricExporter(metricExporter)
                         .build();
+
+Meter meter = OpenTelemetry.getGlobalMeter("aws-otel-java-sample", "v0.1.0");
 ```
 
 3. Create Metrics instruments by using OpenTelemetry API
