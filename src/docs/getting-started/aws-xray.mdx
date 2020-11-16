@@ -5,11 +5,10 @@ description:
     instrumentations for all supported libraries and all available data exporters, providing a complete out of the box
     experience for tracing on AWS. The agent is preconfigured to generate trace IDs compatible with AWS X-Ray, which
     will also work with any other tracing system, and enables trace propagation using W3C Trace Context, B3, and X-Ray.
-path: '/docs/getting-started/java-auto-instrumentation-agent'
+path: '/docs/getting-started/aws-xray'
 ---
 
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
-import { Link } from "gatsby"
 
 The Java library for OpenTelemetry can be attached to any Java 8+ application to gather telemetry data from a diverse
 set of libraries and frameworks. This data can also be exported to different backends in different formats. In addittion,
@@ -221,8 +220,3 @@ DynamoDbClient.builder()
 ```
 
 This will enable tracing for all DynamoDb calls using this client.
-
-
-
-
-
