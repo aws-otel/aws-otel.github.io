@@ -1,0 +1,104 @@
+---
+title: 'Tracing with the AWS Distro for OpenTelemetry JavaScript SDK'
+description:
+    Learn how to get started with Java Auto-Instrumentation Agent... This package includes the instrumentation agent,
+    instrumentations for all supported libraries and all available data exporters, providing a complete out of the box
+    experience for tracing on AWS. The agent is preconfigured to generate trace IDs compatible with AWS X-Ray, which
+    will also work with any other tracing system, and enables trace propagation using W3C Trace Context, B3, and X-Ray.
+path: '/docs/getting-started/js-sdk/metric-manual-instr'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import img2 from "assets/img/docs/img2.png"
+import { Link } from "gatsby"
+
+Metrics auto instrumentation has not been supported in AOT/OpenTelemetry yet. We have to manually instrumenting code in the application to generate application metrics. Here is an example with steps for modifying application code to create metrics with JavaScript SDK.
+
+OpenTelemetry JavaScript SDK has provided metrics API for metrics instrumentation in applications. You can follow the steps and sample code below to create OpenTelemetry Metrics and send it over to AWS OTel Collector.
+
+In this tutorial, we will introduce how to use OpenTelemetry JavaScript SDK for metric instrumentation in the application.
+
+<SectionSeparator />
+
+## Requirements
+
+[Node JS v8.50 (or later)](https://nodejs.org/en/download/) is required to run an application using OpenTelemetry.
+
+Note: You’ll also need to have the AWS Distro for OpenTelemetry Collector running to export metrics to Amazon CloudWatch.
+See the AWS OTel Collector documentation for setup instructions.
+
+<SectionSeparator />
+
+## Getting the SDK and Dependencies
+
+In order to trace your application, the following OpenTelemetry packages will be required to be installed in your applications main directory.
+
+```bash lineNumbers=true
+$ npm install \
+  @opentelemetry/api \
+  @opentelemetry/core \
+  @opentelemetry/exporter-collector \
+  @opentelemetry/exporter-collector-grpc \
+  @opentelemetry/exporter-collector-proto \
+  @opentelemetry/metrics
+```
+
+## Instrumenting Code
+Once OpenTelemetry Dependencies have been imported to application, we can start to instrument code for creating metrics.
+
+1. Initiate OpenTelemetry Metrics exporter to send metrics to AWS Otel Collector
+```javascript lineNumbers=true
+const metricExporter = new CollectorMetricExporter({
+  serviceName: 'aws-otel-js-sample',
+  logger: new ConsoleLogger(LogLevel.DEBUG),
+  url: (process.env.OTEL_EXPORTER_OTLP_ENDPOINT) ? process.env.OTEL_EXPORTER_OTLP_ENDPOINT : "localhost:55680"
+});
+```
+
+2. Create a OpenTelemetry Metric Provider for initiating metrics
+```javascript lineNumbers=true
+const meter = new MeterProvider({
+  exporter: metricExporter,
+  interval: 1000,
+}).getMeter('aws-otel-js');
+```
+
+3. Define Metrics and metrics labels(dimensions) for the application
+```javascript lineNumbers=true
+/** Counter Metrics */
+const payloadMetric = meter.createCounter('payload', {
+  description: 'Metric for counting request payload size',
+});
+
+/** Up and Down Counter Metrics */
+const activeReqMetric = meter.createUpDownCounter('activeRequest', {
+  description: 'Metric for record active requests',
+});
+
+/** Value Recorder Metrics with Histogram */
+const requestLatency = meter.createValueRecorder('latency', {
+  description: 'Metric for record request latency',
+});
+
+/** Define Metrics Dimensions */
+const labels = { pid: process.pid, env: 'beta' };
+```
+
+4. Send metrics
+```javascript lineNumbers=true
+setInterval(() => {
+  payloadMetric.bind(labels).add(1);
+  activeReqMetric.bind(labels).add(Math.random() > 0.5 ? 1 : -1);
+  requestLatency.bind(labels).record(Math.random() * 1000)
+}, 1000);
+```
+
+These steps provided the sample code for applications to create application metrics.
+
+Please follow <Link to="/docs/getting-started/cloudwatch-metrics">Getting Started Sending CloudWatch Metrics with AWS OpenTelemetry</Link>
+ to setup AWS OTel Collector for sending metrics to CloudWatch. Once AWS OTel Collector is installed to collect the metrics data.
+ You should see the following metrics present on your CloudWatch Console.
+
+<img src={img2} alt="Diagram" style="margin: 30px 0;" />
+
+Please stay tuned to [AWS Observability Repo](https://github.com/aws-observability) for more updates.

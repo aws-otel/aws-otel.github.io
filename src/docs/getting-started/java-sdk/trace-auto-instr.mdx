@@ -1,11 +1,11 @@
 ---
-title: 'Tracing with the AWS Distro for OpenTelemetry Java SDK'
+title: 'Tracing with AWS Auto Instrumentation Agent'
 description:
     Learn how to get started with Java Auto-Instrumentation Agent... This package includes the instrumentation agent,
     instrumentations for all supported libraries and all available data exporters, providing a complete out of the box
     experience for tracing on AWS. The agent is preconfigured to generate trace IDs compatible with AWS X-Ray, which
     will also work with any other tracing system, and enables trace propagation using W3C Trace Context, B3, and X-Ray.
-path: '/docs/getting-started/java-auto-instrumentation-agent'
+path: '/docs/getting-started/java-sdk/trace-auto-instr'
 ---
 
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
@@ -13,6 +13,8 @@ import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.js
 The Java library for OpenTelemetry can be attached to any Java 8+ application to gather telemetry data from a diverse
 set of libraries and frameworks. This data can also be exported to different backends in different formats. In addittion,
 the agent can be configured with environment variables or CLI parameters.
+
+In this tutorial, we will introduce how to use auto agent for auto traces instrumentations.
 
 <SectionSeparator />
 
@@ -121,106 +123,6 @@ if you need more functionality or want to trace only a block, rather than a meth
 ### Using the AWS SDK
 The Java agent includes instrumentation for the AWS SDK, which is enabled by default. This means you don’t need to
 complete any additional steps for detailed tracing of the AWS SDK.
-
-<SectionSeparator />
-
-## Instrumenting an application without the agent
-You might not be able to or want to run the Java agent with your application. For instance, because the Java agent
-rewrites parts of the application at startup time, it could have a negative impact on startup performance. Instead of
-using the agent, you can modify your app to include and initialize the OpenTelemetry SDK and library instrumentation manually.
-
-First, include the OpenTelemetry SDK as a compile dependency.
-
-##### For Gradle:
-```java lineNumbers=true
-dependencies {
-    implementation('io.opentelemetry:opentelemetry-sdk:0.8.0')
-}
-```
-
-##### For Maven:
-```xml lineNumbers=true
-<dependencies>
-  <dependency>
-    <groupId>io.opentelemetry</groupId>
-    <artifactId>opentelemetry-api</artifactId>
-    <version>0.8.0</version>
-  </dependency>
-</dependencies>
-```
-
-Next, you’ll need to initialize an exporter to send traces too.
-
-If you’re using Spring Boot, you can use the
-[OTLP starter](https://github.com/open-telemetry/opentelemetry-java-instrumentation/tree/master/instrumentation/spring/starters/otlp-exporter-starter)
-to set up the exporter. This also sets up tracing of requests for Spring Web MVC and Spring WebFlux. To have Spring Boot
-automatically initialize tracing, add a dependency on the starter.
-
-##### For Gradle:
-```java
-implementation 'io.opentelemetry.instrumentation:opentelemetry-otlp-exporter-starter:0.8.0'
-```
-
-##### For Maven:
-```xml lineNumbers=true
-<dependencies>
-  <dependency>
-    <groupId>io.opentelemetry.instrumentation</groupId>
-    <artifactId>opentelemetry-otlp-exporter-starter</artifactId>
-    <version>0.8.0</version>
-  </dependency>
-</dependencies>
-```
-
-If you’re not using Spring Boot, then as early as possible in your application, generally as a static block in your
-main class, or early in the main method, register the OTLP exporter like this.
-
-```java lineNumbers=true
-OpenTelemetrySdk.getTracerProvider()
-  .addSpanProcessor(BatchSpanProcessor.newBuilder(
-    OtlpGrpcSpanExporter.newBuilder()
-      .readSystemProperties()
-      .readEnvironmentVariables()
-      .build())
-.build());
-```
-
-This initializes the OTLP span exporter with default settings read from system properties or environment variables.
-You can read about the configuration options for the exporter on the
-[Open Telemetry Java Instumentation GitHub](https://github.com/open-telemetry/opentelemetry-java-instrumentation#otlp-exporter).
-
-To actually instrument your code, we recommend you use library instrumentation when available. These offer simple entry points
-to automatically generate spans for a given library without having to manually create them. For example, to instrument calls using
-the AWS SDK, add a dependency on the library instrumentation for the AWS SDK.
-
-##### For Gradle:
-```java
-implementation 'io.opentelemetry.instrumentation:opentelemetry-aws-sdk-2.2:0.8.0'
-```
-
-##### For Maven:
-```xml lineNumbers=true
-<dependencies>
-  <dependency>
-    <groupId>io.opentelemetry.instrumentation</groupId>
-    <artifactId>opentelemetry-aws-sdk-2.2</artifactId>
-    <version>0.8.0</version>
-  </dependency>
-</dependencies>
-```
-
-And when initializing an AWS SDK, add the `TracingExecutionInterceptor`.
-
-```java lineNumbers=true
-DynamoDbClient.builder()
-  .overrideConfiguration(ClientOverrideConfiguration.builder()
-    .addExecutionInterceptor(AwsSdk.newInterceptor())
-    .build())
-  .build();
-```
-
-This will enable tracing for all DynamoDb calls using this client.
-
 
 
 

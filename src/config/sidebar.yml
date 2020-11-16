@@ -19,7 +19,7 @@
     - label: 'JavaScript SDK'
       link: '/docs/getting-started/javascript-sdk'
     - label: 'Using AWS X-Ray Tracing'
-      link: '/docs/getting-started/java-auto-instrumentation-agent'
+      link: '/docs/getting-started/aws-xray'
     - label: 'Using CloudWatch Metrics'
       link: '/docs/getting-started/cloudwatch-metrics'
 - label: Setup
