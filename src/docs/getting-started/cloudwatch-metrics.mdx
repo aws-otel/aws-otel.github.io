@@ -39,7 +39,7 @@ For more information about installing AWS OTel Collector for each of the AWS pla
 We will discuss how to configure AWS OTel Collector to send different application metrics.
 
 
-**AWS Observability Collector supports CloudWatch metics with the default configuration**
+**AWS OpenTelemetry Collector supports CloudWatch metrics with the default configuration**
 AWS OTel Collector provides a default configuration out of box that enables CloudWatch metrics. The default
 configuration includes the essential components for metric enabling in AWS OTel Collector.
 
@@ -48,10 +48,12 @@ receivers:
   otlp:
     protocols:
       grpc:
-        endpoint: 0.0.0.0:55680
+        endpoint: localhost:55680
+      http:
+        endpoint: localhost:55681
 processors:
   batch:
-    timeout: 30s
+    timeout: 60s
 exporters:
   awsemf:
 service:
