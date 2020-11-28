@@ -100,9 +100,9 @@ Region=<AWS_Region>
 SecurityGroups=<Security_Groups>
 Subnets=<Subnets>
 aws cloudformation create-stack --stack-name AOCECS-${ClusterName}-${Region} \
-    --template-body file:///<CFN_File_Downloaded> \
+    --template-body file:///$(pwd)/${CFN_File_Downloaded} \
     --parameters ParameterKey=ClusterName,ParameterValue=${ClusterName} \
-                 ParameterKey=CreateIAMRoles,ParameterValue=False \
+                 ParameterKey=CreateIAMRoles,ParameterValue=True \
                  ParameterKey=SecurityGroups,ParameterValue=${SecurityGroups} \
                  ParameterKey=Subnets,ParameterValue=${Subnets} \
     --capabilities CAPABILITY_NAMED_IAM \
