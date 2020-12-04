@@ -30,7 +30,7 @@ This pipeline contains three components:
 - Processors: convert the data into chosen formats
 - Exporters: send the converted data to the desired locations
 
-![AppDTracingAWS]( images/appd-otel-aws-distro.png)
+![AppDTracingAWS]( assets/img/appd-otel-aws-distro.png)
 
 AppDynamics provides an OTLP (Online Transaction Processing) compliant backend to ingest telemetry data generated from applications monitored using [OpenTelemetry](https://github.com/open-telemetry/opentelemetry-specification/blob/master/specification/trace/api.md) components. The ingested data is processed by the AppDynamics backend to provide observability and diagnostic capabilities in your application and cloud environments. This page describes how to configure the [AWS OTel Collector](https://github.com/aws-observability/aws-otel-collector) to send OpenTelemetry trace data to the AppDynamics backend.
 
@@ -56,7 +56,7 @@ Confirm that you have access to a compatible Controller. See [Agent and Controll
 
 #### SaaS Controller version >=21.1.0
 
-To view your current AppDynamics build version in the Controller UI, go to ![Settings](images/geariconblack-white.png) > **About AppDynamics**.
+To view your current AppDynamics build version in the Controller UI, go to ![Settings](assets/img/appd-geariconblack-white.png) > **About AppDynamics**.
 
 #### Active AppDynamics Pro Edition
 
@@ -66,7 +66,7 @@ To obtain your unique `X-APPD-KEY`, you should work closely with your AppDynamic
 
 #### Permissions
 
-Users must have a role with the **View and Configure Licenses** permission for license management activity. To view your current AppDynamics edition in the Controller UI, go to ![Settings]( images/geariconblack-white.png) > License.
+Users must have a role with the **View and Configure Licenses** permission for license management activity. To view your current AppDynamics edition in the Controller UI, go to ![Settings](assets/img/appd-geariconblack-white.png) > License.
 
 ## Configure the AWS OpenTelemetry Collector YAML File
 
