@@ -91,8 +91,8 @@ Install the AWS OTel Collector in your computing environment. The OTel Collector
 
 AppDynamics relies on `service.name` and `service.namespace` trace resource attributes to map the services to AppDynamics tiers and applications respectively.
 
-- `service.name`: your AppDynamics tier name. Set corresponding `service.name` trace resource attribute for every service being monitored either via SDK.  set the resource attributes.
-- `service.namespace`: your AppDynamics application name. Set corresponding `service.namespace` trace resource attribute for every service being monitored either via SDK.
+- `service.name`: your AppDynamics tier name. Set corresponding `service.name` trace resource attribute for every service being monitored.  
+- `service.namespace`: your AppDynamics application name. Set corresponding `service.namespace` trace resource attribute for every service being monitored.
   - You can set these `service.name` and `service.namespace` attributes:
     1. Using `OTEL_RESOURCE_ATTRIBUTES` [environment variable](https://github.com/open-telemetry/opentelemetry-specification/blob/master/specification/resource/sdk.md#specifying-resource-information-via-an-environment-variable).
     2. Inside your application code: please consult the appropriate language documentation on how to
