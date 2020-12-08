@@ -22,7 +22,7 @@
    ```
 8. Start up the Gatsby site
     ```
-    gatsby build
+    gatsby develop
     ```
 9. Open http://localhost:8000 to check the site
 
