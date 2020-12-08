@@ -1,6 +1,6 @@
 ---
 name: Partner Documentation
-about: 'This is a template for submitting a getting started guide. '
+about: 'This is a template for submitting a getting started guide. Please include images in .png format for any diagrams.'
 title: ''
 labels: ''
 assignees: ''
@@ -17,4 +17,4 @@ State any underlying dependencies and runtime requirements of your component.
 Configuration instructions should be both informative and short. For each step in the process, describe what to do and why. If you vend any upstream components, explicitly show how to download/install and configure, with code snippets. Include any and all configuration options, flags or code snippets to modify the component behaviour.
 
 ** Sample Application **
-Link to a sample application hosted on Github, if applicable. Sample application instructions should reside in a README.md document, with similar instructions with this format.
+Link to a sample application hosted on GitHub, if applicable. Sample application instructions should reside in a README.md document, with similar instructions with this format.
