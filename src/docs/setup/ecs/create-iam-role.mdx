@@ -1,0 +1,117 @@
+---
+title: 'Create IAM Role'
+description:
+    To run a task in ECS with AWS OpenTelemetry Collector, we need two different roles- 
+    **TaskRole** and **TaskExecutionRole**. 
+    In this section, we will create these two roles with proper IAM policies.
+path: '/docs/setup/ecs'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import { Link } from "gatsby"
+import iam_role_01 from "assets/img/docs/setup/ecs/iam_role/iam_role_01.png"
+import iam_role_02 from "assets/img/docs/setup/ecs/iam_role/iam_role_02.png"
+import iam_role_03 from "assets/img/docs/setup/ecs/iam_role/iam_role_03.png"
+import iam_role_04 from "assets/img/docs/setup/ecs/iam_role/iam_role_04.png"
+import iam_role_05 from "assets/img/docs/setup/ecs/iam_role/iam_role_05.png"
+import iam_role_06 from "assets/img/docs/setup/ecs/iam_role/iam_role_06.png"
+import iam_role_07 from "assets/img/docs/setup/ecs/iam_role/iam_role_07.png"
+import iam_role_08 from "assets/img/docs/setup/ecs/iam_role/iam_role_08.png"
+import iam_role_09 from "assets/img/docs/setup/ecs/iam_role/iam_role_09.png"
+
+
+To run a task in ECS with AWS OpenTelemetry Collector, we need two different roles- 
+**TaskRole** and **TaskExecutionRole**. 
+In this section, we will create these two roles with proper IAM policies.
+
+<SectionSeparator />
+
+## 1. Create TaskRole 
+
+The **TaskRole** is the IAM role used by the task itself. For example, if your container wants to call other 
+AWS services like Amazon CloudWatch, AWS X-Ray, etc then those permissions would need to be covered by the TaskRole.
+
+**1.1. Go to AWS Management Console**
+
+Go to AWS Management Console and open the [IAM Roles](https://console.aws.amazon.com/iam/home#/roles) page.
+
+
+**1.2. Create Role**
+
+Click the **Create Role** button on top-left corner.
+<img src={iam_role_01} alt="Diagram" style="margin: 10px 0;" />
+<div style="height: 40px" />
+
+**1.3. Select `Elastic Container Service`**
+
+<img src={iam_role_02} alt="Diagram" style="margin: 10px 0;" />
+<div style="height: 80px" />
+
+**1.4. Select Use Case** 
+
+In the bottom of the same page, click the **Elastic Container Service Task** and click **Next: permissions** 
+button to go to the next page. 
+
+<img src={iam_role_03} alt="Diagram" style="margin: 10px 0;" />
+<div style="height: 40px" />
+
+**1.5. Attach Policy to the Role**
+
+Search for and select the policy (**AWSDistroOpenTelemetryPolicy**) we created in our previous 
+<Link to="/docs/setup/ecs/create-iam-policy">Create IAM Policy</Link> tutorial.
+Click **Next: Tags** button to go to the next page.
+
+<img src={iam_role_04} alt="Diagram" style="margin: 10px 0;" />
+<div style="height: 40px" />
+
+**1.6. Add Role Name and Description**
+
+Put a role name (i.e. **AWSOTTaskRole**) and role description. Click the **Create Role** button and finish the process.
+
+<img src={iam_role_05} alt="Diagram" style="margin: 10px 0;" />
+<div style="height: 40px" />
+
+<SectionSeparator />
+
+## 2. Create TaskExecutionRole
+
+The **TaskExecutionRole** grants the Amazon ECS container and Fargate agents permission to make AWS API calls on your behalf.
+
+**2.1. Repeat steps from previous section**
+
+Repeat the following steps (1.1 to 1.4) from **Create TaskRole** section-
+
+- 1.1 Go to AWS Management Console
+- 1.2 Create Role
+- 1.3 Select **Elastic Container Service**
+- 1.4 Select Use Case
+
+**2.2 Attach `AmazonECSTaskExecutionRolePolicy` Policy**
+
+Search for and Select the **AmazonECSTaskExecutionRolePolicy** Policy.
+
+<img src={iam_role_06} alt="Diagram" style="margin: 10px 0;" />
+<div style="height: 40px" />
+
+**2.3 Attach `CloudWatchLogsFullAccess` Policy**
+
+Search for and Select the **CloudWatchLogsFullAccess** Policy. 
+
+<img src={iam_role_07} alt="Diagram" style="margin: 10px 0;" />
+<div style="height: 40px" />
+
+**2.3 Attach `AmazonSSMReadOnlyAccess` Policy**
+
+Search for and Select the **AmazonSSMReadOnlyAccess** Policy. Click **Next: Tags** button to go to the next page.
+
+<img src={iam_role_08} alt="Diagram" style="margin: 10px 0;" />
+<div style="height: 40px" />
+
+
+**2.4 Add Role Name and Description**
+
+Click **Next: Review** button to go to the next page, put a role name (i.e. **AWSOTTaskExcutionRole**) and 
+description. Click the **Create Role** button and finish the process.
+
+<img src={iam_role_09} alt="Diagram" style="margin: 10px 0;" />
+<div style="height: 40px" />
