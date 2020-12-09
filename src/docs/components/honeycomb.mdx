@@ -1,0 +1,35 @@
+---
+title: 'Connecting to Honeycomb with the AWS Collector'
+description:
+    Honeycomb is a powerful observability tool that helps you debug your entire production app stack. Honeycomb supports several contributors to the OTEL project. Honeycomb can receive your OpenTelemetry data directly from AWS.
+path: '/docs/components/honeycomb'
+---
+
+Honeycomb supports OpenTelemetry by ingesting OTLP directly, so users of
+the AWS Distro for OpenTelemetry can send tracing data directly to Honeycomb
+without the need for extra exporters or other plugins.
+
+## Configuration
+
+Before you can use AWS Distro for OpenTelemetry with Honeycomb, you should 
+[sign up for a Honeycomb account](https://ui.honeycomb.io/signup). Once you
+have an account, you can use your API key and choose a name for your dataset.
+This will be included in the collector exporter configuration:
+
+```yaml
+# Honeycomb collector configuration
+exporters:
+  otlp:
+    endpoint: api.honeycomb.io:443
+    headers:
+      # You can find your Honeycomb authentication token at https://ui.honeycomb.io/account
+      "x-honeycomb-team":"<YOUR_API_KEY>"
+      # You can use any string for your dataset name, it will be created if it doesn't exist.
+      "x-honeycomb-dataset": "<YOUR_DATASET_NAME>"
+```
+
+## Support
+
+If you have any trouble using the AWS Distro for OpenTelemetry with Honeycomb, we're
+here to help. Just head over to the [Honeycomb support page](https://www.honeycomb.io/support/)
+and we'll get back to you as soon as we can.
