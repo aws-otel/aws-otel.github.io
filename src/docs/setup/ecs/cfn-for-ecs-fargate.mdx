@@ -2,7 +2,7 @@
 title: 'ECS Fargate Cloudformation Template'
 description:
     In this tutorial, we will demonstrate how to run OpenTelemetry Collector (AWS Otel Collector) as a sidecar on the
-    Amazon Elastic Container Service (Amazon ECS) in Fargate and in Amazon Elastic Compute Cloud(Amazon EC2) mode. We
+    Amazon Elastic Container Service (Amazon ECS) on Fargate. We
     provide sample applications within the same Amazon ECS task to send monitoring data to AWS OTel Collector.
 path: '/docs/setup/ecs/cfn-for-ecs-fargate'
 ---
@@ -11,7 +11,7 @@ import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.js
 import { Link } from "gatsby"
 
 In this tutorial, we will demonstrate how to run OpenTelemetry Collector (AWS Otel Collector) as a sidecar on the
-Amazon Elastic Container Service (Amazon ECS) in Fargate. We provide sample applications within the same Amazon ECS
+Amazon Elastic Container Service (Amazon ECS) on Fargate. We provide sample applications within the same Amazon ECS
 task to send monitoring data to AWS OTel Collector.
 
 <SectionSeparator />
@@ -30,7 +30,7 @@ curl -O https://raw.githubusercontent.com/aws-observability/aws-otel-collector/m
     * `Cluster_Name` - ECS Cluster name setup in Prerequisite step
     * `AWS_Region` - Region the data will be sent
     * `PATH_TO_CloudFormation_TEMPLATE` - CFN template path downloaded in Step 1
-    * `Security_Groups` - the security group your ECS Fargate Task is running
+    * `Security_Groups` - the security group for your ECS Fargate Task
     * `Subnets` - the subnet your ECS Fargate task is running (*ex: Subnets=SubnetID1\\\,SubnetID2*)
     * `command` -  Assign value to the command variable to select the config file path; the AWS collector comes with
                    two configs baked in for ECS customers (choose one of them based on your purpose):

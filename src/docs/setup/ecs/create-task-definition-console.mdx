@@ -47,9 +47,9 @@ and click the Create new Task Definition button.
 4. For the task execution role, select the role name you created by clicking Task execution role drop-down menu.
 <img src={task3} alt="Diagram" style="margin: 30px 0;" />
 5. Select the Task size:
-  * For ECS FARGATE launch type(slected in step 2), Mention task memory and cpu for your task-definition (This example uses 1GB, 0.5 vCPU).
+  * For ECS FARGATE launch type (slected in step 2), Mention task memory and cpu for your task-definition (This example uses 1GB, 0.5 vCPU).
     <img src={task4} alt="Diagram" style="margin: 30px 0;" />
-  * For ECS EC2 launch type(slected in step 2),  Mention task memory and task cpu  for your task-definition like use 2048 for memory, 1024 for CPU
+  * For ECS EC2 launch type (slected in step 2),  Mention task memory and task cpu  for your task-definition like use 2048 for memory, 1024 for CPU
     <img src={task5} alt="Diagram" style="margin: 30px 0;" />
 6. In the container definitions section, click the Add Container button. Let’s add the AWS Observability Collector container first.
 Put a container name (i.e. *aws-otel-collector*) and use the *amazon/aws-otel-collector* container image.
