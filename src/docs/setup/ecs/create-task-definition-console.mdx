@@ -56,8 +56,8 @@ Put a container name (i.e. *aws-otel-collector*) and use the *amazon/aws-otel-co
 We can keep everything else default
 <img src={task6} alt="Diagram" style="margin: 30px 0;" />
 7. Set up the OpenTelemetry configuration file for AWS Observability Toolkit (AOT)
-In this section we will set the OpenTelemetry configuration file for our collector container (AOC).  All the functionality
-of AOC is passive, if your application doesn’t emit the data to the port (X-ray use UDP 2000 and OPTL use TCP 55680 and 55681), they won’t work.
+In this section we will set the OpenTelemetry configuration file for our collector container (AWS OTel Collector).  All the functionality
+of AOC is passive, if your application doesn’t emit the data to the port (X-ray use UDP 2000 and OPTL use TCP 55680 and 55681) then there will be no effect.
    *  Collect Application Metrics and Traces:
 
       In the  Environment Command section add `--config=/etc/ecs/ecs-default-config.yaml` to select the ECS default configuration
@@ -75,7 +75,7 @@ of AOC is passive, if your application doesn’t emit the data to the port (X-ra
       <img src={task8} alt="Diagram" style="margin: 30px 0;" />
 8. Port mapping setup
 
-    **Note:** For ECS Fargate launch type(slected in step 2), you can just skip this step.
+    **Note:** For ECS Fargate launch type (slected in step 2), you can just skip this step.
 
     For ECS EC2 launch type, add port mappings, map 2000 for udp (used by AWS X-ray for traces), and 55680 for tcp (used by the collector).
     <img src={task9} alt="Diagram" style="margin: 30px 0;" />

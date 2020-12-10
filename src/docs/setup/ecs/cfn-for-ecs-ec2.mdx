@@ -16,9 +16,9 @@ applications within the same Amazon ECS task to send monitoring data to AWS OTel
 
 <SectionSeparator />
 
-To Install AWS OTel Collector by using CloudFormation, you have to manually create an ECS cluster on your AWS console first.
-If you are not famaliar with how to create a cluster, See the <Link to="/docs/setup/ecs/create-cluster">create-cluster</Link>
-section to learn how to create a cluster.
+To Install AWS OTel Collector by using CloudFormation, you have to have a cluster.
+If you are not famaliar with how to create a cluster, you can check this <Link to="/docs/setup/ecs/create-cluster">create-cluster</Link>
+section.
 
 ### Setup for ECS EC2
 1. Download the CloudFormation template file for installing AWS OTel Collector for ECS EC2. Run the following curl command.
@@ -31,7 +31,7 @@ curl -O https://raw.githubusercontent.com/aws-observability/aws-otel-collector/m
     * `AWS_Region` - Region the data will be sent
     * `PATH_TO_CloudFormation_TEMPLATE` - CFN template path downloaded in Step 1
     * `command` -  Assign value to the command variable to select the config file path; the AWS collector comes with
-                   two configs baked in for ECS customers(choose one of them based on your purpose):
+                   two configs baked in for ECS customers (choose one of them based on your purpose):
                    `--config=/etc/ecs/otel-agent-ecs-default-config.yaml` - To consome OTPL metrics/traces and X-Ray SDK traces (custom application metrics/traces)
                    `--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml` - To Use OTPL, Xray and Container Resource utilization metrics
 ```console lineNumbers=true
@@ -41,7 +41,7 @@ command=<command>
 aws cloudformation create-stack --stack-name AOCECS-${ClusterName}-${Region} \
     --template-body file://<PATH_TO_CloudFormation_TEMPLATE> \
     --parameters ParameterKey=ClusterName,ParameterValue=${ClusterName} \
-                 ParameterKey=CreateIAMRoles,ParameterValue=false \
+                 ParameterKey=CreateIAMRoles,ParameterValue=True \
                  ParameterKey=command,ParameterValue=${command} \
     --capabilities CAPABILITY_NAMED_IAM \
     --region ${Region}

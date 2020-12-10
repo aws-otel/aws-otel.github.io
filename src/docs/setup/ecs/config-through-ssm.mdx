@@ -1,7 +1,7 @@
 ---
 title: 'Use custom OpenTelemetry configuration file from SSM Parameter'
 description:
-    Customers can upload custom OpenTelemetry configuration file to SSM Parameter store 
+    Learn how to upload custom OpenTelemetry configuration file to SSM Parameter store
     and use it with AWS OpenTelemetry Collector.
 path: '/docs/setup/ecs'
 ---
@@ -12,11 +12,17 @@ import custom_config_01 from "assets/img/docs/setup/ecs/custom_config/custom_con
 import ssm_01 from "assets/img/docs/setup/ecs/custom_config/ssm_01.png"
 
 
-Customers can upload custom OpenTelemetry configuration file to SSM Parameter store 
+Learn how to upload custom OpenTelemetry configuration file to SSM Parameter store
 and use it with AWS OpenTelemetry Collector.
 
 
 <SectionSeparator />
+
+The AWS Observability Collector can optionally be configured via an environment variable AOT_CONFIG_CONTENT. The value of this 
+variable is expected to be a full collector configuration file; it will override the config file used in the collector 
+entrypoint command. In ECS, the values of environment variables can be set from AWS Systems Manager Parameters.
+
+
 
 ## 1. Update Task Defintion
 
