@@ -28,7 +28,7 @@ The requests sent to Dynatrace are authenticated using an API token mechanism do
 
 ## Enable Dynatrace Metrics Exporter
 
-To enable the Dynatrace metrics exporter, write the name under exporter section in the OT config file `(local/config.yaml)` and add the `dynatrace` exporter to your metrics pipeline.
+To enable the Dynatrace metrics exporter, write the name under exporter section in the OpenTelemetry config file (`local/config.yaml`) and add the `dynatrace` exporter to your metrics pipeline.
 
 ```yaml lineNumbers=true highlight={7,8,9,15}
 receivers:
@@ -52,7 +52,7 @@ service:
 
 ## Set Dynatrace Metrics Exporter Configurations
 
-Customers can configure the HTTP client, TLS, queueing, retry, and timeout settings.
+Users can configure the HTTP client, TLS, queueing, retry, and timeout settings.
 
 ```yaml lineNumbers=true highlight={10-27}
 receivers:
