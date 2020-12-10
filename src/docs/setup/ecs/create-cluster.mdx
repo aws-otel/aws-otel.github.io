@@ -1,23 +1,35 @@
 ---
-title: 'Setting up AWS Distro for OpenTelemetry Collector in Amazon Elastic Container Service'
+title: 'Create ECS Cluster'
 description:
-    In this tutorial, we will demonstrate how to run AWS Distro for OpenTelemetry Collector (AWS Otel Collector) as a
-    sidecar on the Amazon Elastic Container Service (Amazon ECS) in Fargate and in Amazon Elastic Compute Cloud
-    (Amazon EC2) mode. We provide a sample application within the same Amazon ECS task to send monitoring data to
-    AWS OTel Collector.
-path: '/docs/setup/ecs'
+    In this tutorial, we will demonstrate how to create a cluster on the Amazon Elastic Container Service (Amazon ECS).
+path: '/docs/setup/ecs/create-cluster'
 ---
 
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
 import { Link } from "gatsby"
-import img8 from "assets/img/docs/img8.png"
-import img9 from "assets/img/docs/img9.png"
+import clusterbuild1 from "assets/img/docs/setup/ecs/cluster/clusterbuild1.png"
+import clusterbuild2 from "assets/img/docs/setup/ecs/cluster/clusterbuild2.png"
+import clusterbuild3 from "assets/img/docs/setup/ecs/cluster/clusterbuild3.png"
+import clusterbuild4 from "assets/img/docs/setup/ecs/cluster/clusterbuild4.png"
 
-In this tutorial, we will demonstrate how to run AWS Distro for OpenTelemetry Collector (AWS Otel Collector) as a
-sidecar on the Amazon Elastic Container Service (Amazon ECS) in Fargate and in Amazon Elastic Compute Cloud
-(Amazon EC2) mode. We provide a sample application within the same Amazon ECS task to send monitoring data to AWS
-OTel Collector.
-
+In this tutorial, we will demonstrate how to create a cluster on the Amazon Elastic Container Service (Amazon ECS).
 
 <SectionSeparator />
-Create Cluster Page
+
+## Create your Cluster
+
+1. Go to AWS Management Console and select Elastic Container Service. From the left side navigation,
+select <Link to="https://us-west-2.console.aws.amazon.com/ecs/home?region=us-west-2#/clusters">Clusters</Link> and click
+the Create Cluster button.
+<img src={clusterbuild1} alt="Diagram" style="margin: 30px 0;" />
+2. On the Create Cluster page, select EC2 Linux + Networking as your cluster template, go to the next step.
+<img src={clusterbuild2} alt="Diagram" style="margin: 30px 0;" />
+3. On the Configure Cluster page, put a name for the cluster (e.g. aot-test-cluster) and keep everything default.
+Click the Create Cluster button in the bottom and finish this step.It’s better to have at least *2* container instances.
+<img src={clusterbuild3} alt="Diagram" style="margin: 30px 0;" />
+4. Check above launch status page, when it finished, save the following info for later uses.
+    a. Cluster Name
+    b. Security Group
+    c. Subnet
+<img src={clusterbuild4} alt="Diagram" style="margin: 30px 0;" />
+

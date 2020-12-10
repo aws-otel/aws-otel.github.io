@@ -15,7 +15,7 @@ import img9 from "assets/img/docs/img9.png"
 
 In this tutorial, we will demonstrate how to run AWS Distro for OpenTelemetry Collector (AWS Otel Collector) as a
 sidecar on the Amazon Elastic Container Service (Amazon ECS) in Fargate and in Amazon Elastic Compute Cloud
-(Amazon EC2) mode. We provide a sample application within the same Amazon ECS task to send trace data to AWS
+(Amazon EC2) mode. We provide a sample application within the same Amazon ECS task to send monitoring data to AWS
 OTel Collector.
 
 <SectionSeparator />
@@ -28,22 +28,22 @@ OTel Collector.
     * ***[Option-1] Setup using CloudFormation template***<br/>
         The CloudFormation template will create all the necessary resources to get the collector ready. This option is recommended for the beginners 
         who are new to ECS.
-        - <Link to="/docs/setup/ecs/create-cluster">Deploy AOT for ECS on EC2</Link>
-        - <Link to="/docs/setup/ecs/create-cluster">Deploy AOT for ECS on Fargate</Link> 
+        - <Link to="/docs/setup/ecs/cfn-for-ecs-ec2">Deploy AOT for ECS on EC2</Link>
+        - <Link to="/docs/setup/ecs/cfn-for-ecs-fargate">Deploy AOT for ECS on Fargate</Link> 
     * ***[Option-2] Setup using ECS Task Definition***<br/>
         This option is recommended for developers who are familier with ECS and know how to run a task using a given task definition.
         1. <Link to="/docs/setup/ecs/create-iam-policy">Create IAM Policy</Link> 
         1. <Link to="/docs/setup/ecs/create-iam-role">Create IAM Role</Link> 
         1. **Create Task Definition**
-            * <Link to="/docs/setup/ecs/create-cluster">Create task definition for ECS on EC2</Link>  
-            * <Link to="/docs/setup/ecs/create-cluster">Create task definition for ECS on Fargate</Link>  
-        1. <Link to="/docs/setup/ecs/create-cluster">Deploy Task</Link>  
+            * <Link to="/docs/setup/ecs/task-definition-for-ecs-ec2">Create task definition for ECS on EC2</Link>  
+            * <Link to="/docs/setup/ecs/task-definition-for-ecs-fargate">Create task definition for ECS on Fargate</Link>  
+        1. <Link to="/docs/setup/ecs/run-task">Deploy Task</Link>  
     * ***[Option-3] Setup using AWS Management Console***<br/>
         This option shows the whole process step by step to setup AWS OTel Collector using AWS Management Console. 
         1. <Link to="/docs/setup/ecs/create-iam-policy">Create IAM Policy</Link> 
         1. <Link to="/docs/setup/ecs/create-iam-role">Create IAM Role</Link> 
-        1. <Link to="/docs/setup/ecs/create-cluster">Create Task Definition using AWS Console</Link> 
-        1. <Link to="/docs/setup/ecs/create-cluster">Run Task</Link>  
+        1. <Link to="/docs/setup/ecs/create-task-definition-console">Create Task Definition using AWS Console</Link> 
+        1. <Link to="/docs/setup/ecs/run-task">Run Task</Link>  
 1. **Results**<br/>
     * <Link to="/docs/setup/ecs/results-metrics">See container metrics in CloudWatch</Link> 
     * <Link to="/docs/setup/ecs/results-traces">See traces in AWS X-Ray</Link> 

@@ -1,0 +1,32 @@
+---
+title: 'Run your task on the Amazon Elastic Container Service (Amazon ECS)'
+description:
+    In this tutorial, we will demonstrate how to run your task on the Amazon Elastic Container Service (Amazon ECS).
+path: '/docs/setup/ecs/run-task'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import { Link } from "gatsby"
+import runtask1 from "assets/img/docs/setup/ecs/run-task/runtask1.png"
+import runtask2 from "assets/img/docs/setup/ecs/run-task/runtask2.png"
+
+In this tutorial, we will demonstrate how to run your task on the Amazon Elastic Container Service (Amazon ECS).
+
+<SectionSeparator />
+
+### Run your task
+
+1. Go to the <Link to="https://us-west-2.console.aws.amazon.com/ecs/home?/taskDefinitions#/taskDefinitions">Task Definitions</Link> ,
+and select the task you created, and click actions. Click Run task.
+
+<img src={runtask1} alt="Diagram" style="margin: 30px 0;" />
+
+2. Select FARGATE  as the Launch type and select the Cluster VPC you created or any old one you use (This VPC must be same with the one you used in your cluster).
+Also select all the subnets. Click the run task:
+
+<img src={runtask2} alt="Diagram" style="margin: 30px 0;" />
+
+If you selected the EC2 as your launch Type when you created your task definition, you can just select 
+EC2 as your Launch type. Select the cluster you want to use and click the **Run Task** button.
+
+3. You can go to the cluster to see the task running. Visit the Results section to check the collected metrics and traces. 

@@ -1,0 +1,26 @@
+---
+title: 'Create ECS Task Definition for Fargate with AWS OTel Collector'
+description:
+    In this tutorial, we will demonstrate how to create an ECS Task Definition for Fargate with AWS OTel Collector.
+path: '/docs/setup/ecs/task-definition-for-ecs-fargate'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import { Link } from "gatsby"
+import task1 from "assets/img/docs/setup/ecs/task-definition/task-definition-ec2.png"
+
+In this tutorial, we will demonstrate how to create an ECS Task Definition for Fargate with AWS OTel Collector.
+
+<SectionSeparator />
+
+### Setup for ECS Fargate
+1. [Download the ECS Fargate task definition template](https://github.com/aws-observability/aws-otel-collector/blob/master/examples/ecs/ecs-fargate-sidecar.json) from Github.
+2. Fill the following parameters in the task definition templates:
+    * `{{region}}` - the region the data will be sent to
+    * `{{ecsTaskRoleArn}}` - **AWSOTTaskRole** ARN created in the previous section
+    * `{{ecsExecutionRoleArn}}` - **AWSOTTaskExcutionRole** ARN created in the previous section
+    * `command` -  Assign value to the command variable to select the config file path; the AWS collector comes with
+                       two configs baked in for ECS customers(choose one of them based on your purpose):
+                       `--config=/etc/ecs/otel-agent-ecs-default-config.yaml` - To consome OTPL metrics/traces and X-Ray SDK traces (custom application metrics/traces)
+                       `--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml` - To Use OTPL, Xray and Container Resource utilization metrics
+3. Follow the [ECS Fargate setup instructions](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/getting-started-fargate.html) to create a task definition using the given template.
