@@ -189,6 +189,10 @@ where the `{ClusterName}` placeholder will be replaced with actual cluster name.
 [AWS EMF Exporter](https://aws-otel.github.io/docs/getting-started/cloudwatch-metrics) documentation to see and
 explore the metrics in Amazon CloudWatch.
 
+**Note:** AWS OpenTelemetry Collector has a [default configuration](https://github.com/aws-observability/aws-otel-collector/blob/main/config/ecs/container-insights/otel-task-metrics-config.yaml) 
+backed into it for Container Insights experience which is smiliar to this one. Follow our [setup doc](https://aws-otel.github.io/docs/setup/ecs) to check how to use that default config.
+
+
 ```yaml lineNumbers=true
 receivers:
   awsecscontainermetrics: # collect 52 metrics
