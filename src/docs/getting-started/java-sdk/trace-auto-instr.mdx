@@ -10,11 +10,11 @@ path: '/docs/getting-started/java-sdk/trace-auto-instr'
 
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
 
-The Java library for OpenTelemetry can be attached to any Java 8+ application to gather telemetry data from a diverse
+The Auto-Instrumentation Java Agent for OpenTelemetry can be attached to any Java 8+ application to gather telemetry data from a diverse
 set of libraries and frameworks. This data can also be exported to different backends in different formats. In addittion,
 the agent can be configured with environment variables or CLI parameters.
 
-In this tutorial, we will introduce how to use auto agent for auto traces instrumentations.
+In this tutorial, we will introduce how to use the java agent for automatic trace instrumentation.
 
 <SectionSeparator />
 
@@ -57,17 +57,22 @@ If your app is packaged in Docker, the easiest way to run with the agent is to u
 snippet to your `Dockerfile` will typically be enough to enable tracing, although if you already set
 `JAVA_TOOL_OPTIONS`, don't forget to make sure to add to your existing setting rather than replacing it.
 
+```
+ADD https://github.com/aws-observability/aws-otel-java-instrumentation/releases/latest/download/aws-opentelemetry-agent.jar /opt/aws-opentelemetry-agent.jar
+ENV JAVA_TOOL_OPTIONS=-javaagent:/opt/aws-opentelemetry-agent.jar
+```
+
 <SectionSeparator />
 
 ## Advanced configuration of the auto-instrumentation agent
 By default OpenTelemetry Java agent uses the [OTLP exporter](https://github.com/open-telemetry/opentelemetry-java/tree/master/exporters/otlp)
 and is configured to send data to a [OpenTelemetry collector](https://github.com/open-telemetry/opentelemetry-collector/blob/master/receiver/otlpreceiver/README.md)
-at `localhost:55680`.
+at `localhost:4317`.
 
 The agent can be configured using [standard OpenTelemetry options for configuration](https://github.com/open-telemetry/opentelemetry-java-instrumentation#configuration-parameters-subject-to-change).
 For example, to set the random sampling rate for creating traces, you can set either the `-Dotel.config.sampler.probability`
-Java system property or `OTEL_CONFIG_SAMPLER_PROBABILITY` environment variable to a value between 0 and 1 with the sampling rate.
-Additionally, to specify a sampling rate of 30%, you can set the environment variable `OTEL_CONFIG_SAMPLER_PROBABILITY=0.3`.
+Java system property or `OTEL_CONFIG_SAMPLER_PROBABILITY` environment variable to a value between 0 and 1 with the sampling rate,
+meaning to specify a sampling rate of 30%, you can set the environment variable `OTEL_CONFIG_SAMPLER_PROBABILITY=0.3`.
 
 <SectionSeparator />
 
@@ -123,7 +128,3 @@ if you need more functionality or want to trace only a block, rather than a meth
 ### Using the AWS SDK
 The Java agent includes instrumentation for the AWS SDK, which is enabled by default. This means you don’t need to
 complete any additional steps for detailed tracing of the AWS SDK.
-
-
-
-
