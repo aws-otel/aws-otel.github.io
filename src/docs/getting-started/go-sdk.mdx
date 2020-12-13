@@ -1,0 +1,460 @@
+---
+title: 'Tracing with the AWS Distro for OpenTelemetry Go SDK'
+description:
+    Welcome to the AWS Distro for OpenTelemetry Go (ADOT Go) getting started guide. This walkthrough covers the ADOT Go components, 
+    how to configure the ADOT components for traces with OpenTelemetry Go and AWS X-Ray, as well as how to use the AWS Elastic 
+    Container Service (AWS ECS) and AWS Elastic Kubernetes Service (AWS EKS) resource detectors.
+path: '/docs/getting-started/go-sdk'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import SubSectionSeparator from "components/MdxSubSectionSeparator/subsectionSeparator.jsx"
+import goImg1 from "assets/img/docs/gettingStarted/goSDK/img1.jpg"
+import goImg2 from "assets/img/docs/gettingStarted/goSDK/img2.jpg"
+import goImg3 from "assets/img/docs/gettingStarted/goSDK/img3.jpg"
+import goImg4 from "assets/img/docs/gettingStarted/goSDK/img4.png"
+import goImg5 from "assets/img/docs/gettingStarted/goSDK/img5.jpg"
+import goImg6 from "assets/img/docs/gettingStarted/goSDK/img6.jpg"
+
+Welcome to the AWS Distro for OpenTelemetry Go (ADOT Go) getting started guide. This walkthrough covers the ADOT Go components, how to 
+configure the ADOT components for traces with OpenTelemetry Go and AWS X-Ray, as well as how to use the AWS Elastic Container Service 
+(AWS ECS) and AWS Elastic Kubernetes Service (AWS EKS) resource detectors. Before reading this guide, you should familiarize with 
+distributed tracing and the basics of OpenTelemetry. To learn more about getting started with OpenTelemetry Go, see the 
+[OpenTelemetry developer documentation](https://opentelemetry.io/docs/go/).
+
+<img src={goImg1} alt="Diagram" style="margin: 30px 0;" />
+
+<SectionSeparator />
+
+## Installation and Configuration
+
+To get started with ADOT Go, create a new directory for your project and add a new file inside called `main.go`. Open up your command line 
+interface (CLI) and run the command `go mod init main` in the same directory, which will create a `go.mod` file. This file is used by Go to manage imports. 
+
+To install the necessary prerequisites, run the following command in the same directory that the `go.mod` file is in:
+
+```bash
+$ go get go.opentelemetry.io/otel 
+$ go get go.opentelemetry.io/otel/sdk 
+$ go get go.opentelemetry.io/otel/exporters/otlp 
+$ go get go.opentelemetry.io/contrib/propagators/aws/xray/idgenerator 
+$ go get go.opentelemetry.io/contrib/propagators/aws/xray/propagator
+```
+
+In your `main.go` file, add the following imports:
+
+```go lineNumbers=true
+package main
+
+import (
+    "context"
+    
+    "go.opentelemetry.io/otel"
+    "go.opentelemetry.io/otel/api/global"
+    "go.opentelemetry.io/otel/api/trace"
+    "go.opentelemetry.io/otel/exporters/otlp"
+    "go.opentelemetry.io/contrib/propagators/aws/xray"
+    sdktrace "go.opentelemetry.io/otel/sdk/trace"
+)
+```
+
+The packages above contain only the basic requirements for using OpenTelemetry Go with AWS X-Ray. The specific libraries and packages that 
+are used will vary greatly depending on the type of application and what features you need. Check out the full list of 
+[libraries](https://github.com/open-telemetry/opentelemetry-go-contrib/tree/master/instrumentation#instrumentation) that contains 
+instrumentation for 3rd-party Go packages and some packages from the standard library.
+
+<SectionSeparator />
+
+## Creating an OpenTelemetry Protocol (OTLP) Exporter
+
+<img src={goImg2} alt="Diagram" style="margin: 30px 0;" />
+
+OpenTelemetry Go requires an exporter to send traces to a backend. Exporters allow telemetry data to be transferred either to the AWS 
+Distro for OpenTelemetry Collector (ADOT Collector), or to a remote system or console for further analysis. 
+
+The ADOT Collector is a separate process that is designed to be a ‘sink’ for telemetry data emitted by many processes, which can then export 
+that data to back-end systems. The base components vendor-agnostic implementation on how to receive, process and export telemetry data. 
+
+To initialize the OTLP exporter, add the following code to the file the `main.go` file -
+
+```go lineNumbers=true 
+// Create new OTLP Exporter
+exporter, err := otlp.NewExporter(
+    otlp.WithInsecure(), 
+    otlp.WithAddress("localhost:55680"),
+)
+    
+if err != nil {
+    // Handle error here...
+}
+```
+
+*Note: To see an example for creating an OTLP exporter with TLS credentials please see the example 
+[here](https://github.com/open-telemetry/opentelemetry-go/blob/master/exporters/otlp/example_test.go#L77).*
+
+This creates a new OTLP exporter with a few options - `WithInsecure()` disables client transport security for the exporter’s gRPC connection 
+just like [`grpc.WithInsecure()`](https://pkg.go.dev/google.golang.org/grpc#WithInsecure), and `WithAddress()` allows you to set the address 
+that the exporter will connect to the collector on. If the address is unset, it will instead try to use connect to `DefaultCollectorHost:DefaultCollectorPort`.
+
+<SectionSeparator />
+
+## Creating a Tracer Provider 
+
+Tracing refers to the practice used by engineers and developers to analyze application code. Traditionally, this was done through using various 
+different debugging tools and programming techniques. As applications evolved and adopted the microservices architecture, tracing now refers 
+to distributed tracing. This term refers to tracing a path that a request takes as it goes through different services and processes in a 
+multi-service architecture design. To define a trace more precisely in OpenTelemetry terms, it is essentially a group of linked spans, which 
+represent a unit of work in a request. The spans can have information attached such as a name and other data describing the timed operation. 
+Every trace consists of at least a root span and can have zero or more child spans. The root span describes the end-to-end latency of the entire 
+trace, while child spans representing sub-operations. 
+
+<img src={goImg3} alt="Diagram" style="margin: 30px 0;" />
+
+In order to generate traces, OpenTelemetry Go requires a trace provider to be created. A Trace provider can have multiple different span processors, 
+which are components that give the ability to modify and export span data after it has been created. 
+
+To create a new trace provider, add the following lines to the `main.go` file:
+
+```go lineNumbers=true 
+cfg := sdktrace.Config{
+    DefaultSampler: sdktrace.AlwaysSample(),
+}
+   
+idg := xray.NewIDGenerator()
+
+tp := sdktrace.NewTracerProvider(
+    sdktrace.WithConfig(cfg),
+    sdktrace.WithSyncer(exporter),
+    sdktrace.WithIDGenerator(idg),
+)
+```
+
+The block of code above will create a new `TracerProvider` with a Sampler that samples every trace, and an ID Generator that 
+will generate trace IDs that conform to AWS X-Ray’s format, as well as register the OLTP exporter we created in the previous section. 
+
+<SectionSeparator />
+
+## Setting Global Options
+
+In this section we will be setting a global tracer provider since its good practice when using OpenTelemetry Go. By doing this, it will make it easier 
+for other libraries/dependencies that use the OpenTelemetry API to easily discover the SDK and emit telemetry data. 
+
+In addition to setting a global tracer provider, we will also configure the context propagation option. Context propagation refers to sharing data across 
+multiple processes or services. This ability to correlate information across service boundaries is one of the principal concepts behind distributed tracing. 
+To find these correlations, components in a distributed system need to be able to collect, store, and transfer metadata referred to as context. Propagator 
+structs are configured inside Tracer structs in order to support transferring of context across process boundaries. A context will often have information 
+identifying the current span and trace, and can contain arbitrary correlations as key-value pairs. Propagation is when context is bundled and transferred 
+across services, often via HTTP headers. 
+
+To set up global options, we will use the global package and add the following lines to the `main.go` file: 
+
+```go lineNumbers=true 
+global.SetTracerProvider(tp)
+global.SetTextMapPropagator(xray.Propagator{})
+```
+
+<SectionSeparator />
+
+## Demo Walkthrough 
+
+Let’s take the concepts we’ve just covered in the previous section and create a demo application. In this application we will be creating a HTTP 
+application with one endpoint called /hello-world. When a client hits this endpoint, the server will return a simple response containing a string 
+saying “Hello World”. The goal of this example application is to show you how to instrument send traces to AWS X-Ray using OpenTelemetry Go. 
+
+<SubSectionSeparator />
+
+### Setting up a Router Using Mux
+
+The first thing we need to do is create the `/hello-world` endpoint. To do this, we will be using a routing package in Go called 
+[Mux](https://github.com/gorilla/mux). To install this package, run the following command:
+
+```
+go get -u github.com/gorilla/mux
+```
+
+Now that we have Mux installed, let’s go ahead and make a new `main.go` file. In this file, we will first create a new router using Mux. Then, we will 
+define the `/hello-world` endpoint and pass in a function called `handler()`, which will return “Hello World”. Finally, we will call the `http.ListenAndServe()` 
+function to start our server and listen on port :8080.
+
+The file should look something like this:
+
+```go lineNumbers=true 
+package main
+
+import (
+    "encoding/json"
+    "net/http"
+    "github.com/gorilla/mux"
+)
+
+func main() {
+
+    // Create a new HTTP router to handle incoming client requests
+    r := mux.NewRouter()
+    
+    // When client makes GET request to /hello-world
+    // handler() will execute
+    r.HandleFunc("/hello-world", handler).Methods(http.MethodGet)
+    
+    // Start the server and listen on localhost:8080
+    http.ListenAndServe(":8080", r)
+}
+
+// Function for handling the /hello-world endpoint
+func handler(w http.ResponseWriter, r *http.Request) {
+
+    // Set the header content-type and return hello world
+    w.Header().Set("Content-Type", "text/plain")
+    json.NewEncoder(w).Encode("hello world")
+    
+}
+```
+
+To start the server we will use the `go run` command to build and execute our `main.go` file. To do this, open up your command line interface and navigate 
+to the directory that contains your `main.go` file. Once you’re in the directory execute the following command to run the `main.go` file and start the server on port 8080.
+
+```
+$ go run main.go
+```
+
+After starting the server, we can test that it works by opening up the browser and typing in `localhost:8080/hello-world` , you should now see “Hello World” printed to the screen! 
+
+*Note: Make sure the [aws-otel-collector](https://aws-otel.github.io/docs/getting-started/collector) is properly set up and running*
+
+<SubSectionSeparator />
+
+### Instrument our Application
+
+Now that we have a simple HTTP server set up with one endpoint, it’s time to instrument our application with OpenTelemetry Go so that we can start tracing requests. 
+To do this, we will first create a helper function called `initTracer()`, where we include all the instrumentation code. In this helper function, we will 
+instantiate a new OTLP exporter struct. Then, we will create a new `TracerProvider` struct and pass in configuration options such as a custom ID Generator, 
+which will be used for sending the traces to AWS X-Ray . The last part of this function is specifying the `TracerProvider` struct that we want to use, as well as the propagator. 
+
+The function should look something like this:
+
+```go lineNumbers=true 
+func initTracer() {
+
+    // Create new OTLP Exporter struct
+    exporter, err := otlp.NewExporter(
+        otlp.WithInsecure(), 
+        otlp.WithAddress("localhost:55680"),
+    )
+    if err != nil {
+        // Handle error here...
+    }
+
+    // AlwaysSample() returns a Sampler that samples every trace.
+    // Be careful about using this sampler in a production application with
+    // significant traffic: a new trace will be started and exported for every request.
+    cfg := sdktrace.Config{
+        DefaultSampler: sdktrace.AlwaysSample(),
+    }
+    
+    // A custom ID Generator to generate traceIDs that conform to
+    // AWS X-Ray traceID format
+    idg := xray.NewIDGenerator()
+
+    // Create a new TraceProvider object passing in the config, the exporter
+    // and the ID Generator we want to use for our tracing
+    tp := sdktrace.NewTracerProvider(
+        sdktrace.WithConfig(cfg),
+        sdktrace.WithSyncer(exporter),
+        sdktrace.WithIDGenerator(idg),
+    )
+
+    // Set the traceprovider and the propagator we want to use
+    otel.SetTracerProvider(tp)
+    otel.SetTextMapPropagator(xray.Propagator{})
+}
+```
+
+After creating the `initTracer()` function, we can now call it in our `main()` function, along with creating a new tracer and giving it a 
+name of “demo-app”. In addition to initializing a tracer, we also need to add a line to allow the ADOT Collector to act as a middleware in 
+order to intercept requests and send those traces to AWS X-Ray. 
+
+The updated `main()` function should now look something like this:
+
+```go lineNumbers=true highlight={3,4,9}
+func main() {
+
+    initTracer()
+    tracer := otel.Tracer("demo-app")
+    
+    // Create a new HTTP router to handle incoming client requests
+    r := mux.NewRouter()
+    
+    r.Use(otelmux.Middleware("my-server"))
+    
+    // When client makes GET request to /hello-world, handler() will execute
+    r.HandleFunc("/hello-world", handler).Methods(http.MethodGet)
+    
+    // Start the server and listen on localhost:8080
+    http.ListenAndServe(":8080", r)
+}
+```
+
+Once again, we will start our server by using the following command and then visiting `localhost:8080/hello-world`. 
+
+```
+$ go run main.go
+```
+
+Now, along with seeing “Hello World” printed to the browser, you can also log into your AWS X-Ray Console and see that there is a new trace 
+request for the `/hello-world` endpoint. 
+
+<img src={goImg4} alt="Diagram" style="margin: 30px 0;" />
+
+The completed `main.go` file should now look something like this:
+
+```go lineNumbers=true 
+package main
+
+import (
+	"encoding/json"
+	"net/http"
+
+	"github.com/gorilla/mux"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gorilla/mux/otelmux"
+	"go.opentelemetry.io/contrib/propagators/aws/xray"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/exporters/otlp"
+
+	sdktrace "go.opentelemetry.io/otel/sdk/trace"
+)
+
+var tracer = otel.Tracer("demo-app")
+
+func main() {
+
+	initTracer()
+
+	// Create a new HTTP router to handle incoming client requests
+	r := mux.NewRouter()
+
+	r.Use(otelmux.Middleware("my-server"))
+
+	// When client makes GET request to /hello-world
+	// handler() will execute
+	r.HandleFunc("/hello-world", handler).Methods(http.MethodGet)
+
+	// Start the server and listen on localhost:8080
+	http.ListenAndServe(":8080", r)
+
+}
+
+// Function for handling the /hello-world endpoint
+func handler(w http.ResponseWriter, r *http.Request) {
+
+	// Set the header content-type and return hello world
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode("hello world")
+
+}
+
+func initTracer() {
+
+	// Create new OTLP Exporter struct
+	exporter, err := otlp.NewExporter(
+		otlp.WithInsecure(),
+		otlp.WithAddress("localhost:30080"),
+	)
+	if err != nil {
+		// Handle error here...
+	}
+
+	// AlwaysSample() returns a Sampler that samples every trace.
+	// Be careful about using this sampler in a production application with
+	// significant traffic: a new trace will be started and exported for every request.
+	cfg := sdktrace.Config{
+		DefaultSampler: sdktrace.AlwaysSample(),
+	}
+
+	// A custom ID Generator to generate traceIDs that conform to
+	// AWS X-Ray traceID format
+	idg := xray.NewIDGenerator()
+
+	// Create a new TraceProvider struct passing in the config, the exporter
+	// and the ID Generator we want to use for our tracing
+	tp := sdktrace.NewTracerProvider(
+		sdktrace.WithConfig(cfg),
+		sdktrace.WithSyncer(exporter),
+		sdktrace.WithIDGenerator(idg),
+	)
+
+	// Set the traceprovider and the propagator we want to use
+	otel.SetTracerProvider(tp)
+	otel.SetTextMapPropagator(xray.Propagator{})
+}
+```
+
+<SectionSeparator />
+
+## Using the AWS ECS Resource Detector
+
+The AWS ECS Resource Detector is responsible for detecting whether or not a Go application instrumented with OpenTelemetry is running on ECS. 
+If the resource detector does in fact detect that it is running on ECS, it will populate the `resource` with ECS metadata. The metadata will include 
+the `containerId` and `hostName` which will be formatted as key value pairs inside the `resource` struct. If the ECS resource detector detects that the application 
+is not running on ECS, then it will return an empty `resource` struct.
+
+<img src={goImg5} alt="Diagram" style="margin: 30px 0;" />
+
+The following code snippet demonstrates how to use the ECS resource detector.
+
+```go lineNumbers=true
+import (
+    "context"
+    "go.opentelemetry.io/contrib/detectors/ecs"
+)
+
+func main() {
+    
+    // Instantiate a new ECS resource detector
+    detectorUtils := new(ecsDetectorUtils)
+    ecsResourceDetector := ResourceDetector{detectorUtils}
+    
+    // If on ECS, resourceObj contains the containerID and hostName
+    // If NOT on ECS, resourceObj is empty
+    resourceObj, err := ecsResourceDetector.Detect(context.Background())
+    
+}
+```
+
+<SectionSeparator />
+
+## Using AWS EKS Resource Detector
+
+The AWS EKS Resource Detector is responsible for detecting whether or not a Go application instrumented with OpenTelemetry is running on EKS. If the 
+EKS resource detector detects that it is running on EKS, it will then populate the `resource` struct with metadata. The metadata will include the 
+`containerId` and `clusterName` which will be formatted as key value pairs. If the EKS resource detector detects that the application is not 
+running on EKS, then it will return an empty `resource`.
+
+<img src={goImg6} alt="Diagram" style="margin: 30px 0;" />
+
+The following code snippet demonstrates how to use the EKS Resource detector.
+
+```go lineNumbers=true 
+import (
+    "context"
+    "go.opentelemetry.io/contrib/detectors/eks"
+)
+
+func main() {
+    
+    // Instantiate a new EKS Resource detector
+    detectorUtils := new(ecsDetectorUtils)
+    eksResourceDetector := ResourceDetector{detectorUtils}
+    
+    // If on EKS, resourceObj contains the containerID and clusterName
+    // If NOT on EKS, resourceObj is empty
+    resourceObj, err := eksResourceDetector.Detect(context.Background())
+    
+}
+```
+
+<SectionSeparator />
+
+## Conclusion
+
+After reading this guide you should now have a basic understand of how to instrument Go applications with OpenTelemetry and send traces 
+to AWS X-Ray. We also went through how to use the resource detectors to extract information specific to ECS and EKS environments into `resource` objects.
