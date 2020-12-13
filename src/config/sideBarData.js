@@ -49,6 +49,7 @@ export const sideBarData = [
         {label: "Collector", link: "/docs/getting-started/collector"},
         {label: "Java SDK", link: "/docs/getting-started/java-sdk"},
         {label: "JavaScript SDK", link: "/docs/getting-started/javascript-sdk"},
+        {label: "Python SDK", link: "/docs/getting-started/python-sdk"},
         {label: "Using AWS X-Ray Tracing", link: "/docs/getting-started/aws-xray"},
         {label: "Using CloudWatch Metrics", link: "/docs/getting-started/cloudwatch-metrics"},
       ],
