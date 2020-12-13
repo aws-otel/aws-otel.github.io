@@ -1,0 +1,56 @@
+---
+title: 'ECS Fargate Cloudformation Template'
+description:
+    In this tutorial, we will demonstrate how to run OpenTelemetry Collector (AWS Otel Collector) as a sidecar on the
+    Amazon Elastic Container Service (Amazon ECS) on Fargate. We
+    provide sample applications within the same Amazon ECS task to send monitoring data to AWS OTel Collector.
+path: '/docs/setup/ecs/cfn-for-ecs-fargate'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import { Link } from "gatsby"
+
+In this tutorial, we will demonstrate how to run OpenTelemetry Collector (AWS Otel Collector) as a sidecar on the
+Amazon Elastic Container Service (Amazon ECS) on Fargate. We provide sample applications within the same Amazon ECS
+task to send monitoring data to AWS OTel Collector.
+
+<SectionSeparator />
+
+To Install AWS OTel Collector by using CloudFormation, you have to have a cluster.
+If you are not famaliar with how to create a cluster, you can check this <Link to="/docs/setup/ecs/create-cluster">create-cluster</Link>
+section.
+
+### Setup for ECS Fargate
+1. Download CloudFormation template file for installing AWS OTel Collector on ECS Fargate mode on GitHub.
+```
+curl -O https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/deployment-template/ecs/aws-otel-fargate-sidecar-deployment-cfn.yaml
+```
+2. Replace the <PATH_TO_CloudFormation_TEMPLATE> with the path where your template saved in the command, and export the
+   following parameters, and then run CloudFormation command.
+    * `Cluster_Name` - ECS Cluster name setup in Prerequisite step
+    * `AWS_Region` - Region the data will be sent
+    * `PATH_TO_CloudFormation_TEMPLATE` - CFN template path downloaded in Step 1
+    * `Security_Groups` - the security group for your ECS Fargate Task
+    * `Subnets` - the subnet your ECS Fargate task is running (*ex: Subnets=SubnetID1\\\,SubnetID2*)
+    * `command` -  Assign value to the command variable to select the config file path; the AWS collector comes with
+                   two configs baked in for ECS customers (choose one of them based on your purpose):
+                   `--config=/etc/ecs/otel-agent-ecs-default-config.yaml` - To consome OTPL metrics/traces and X-Ray SDK traces (custom application metrics/traces)
+                   `--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml` - To Use OTPL, Xray and Container Resource utilization metrics
+```console lineNumbers=true
+ClusterName=<Cluster_Name>
+Region=<AWS_Region>
+SecurityGroups=<Security_Groups>
+Subnets=<Subnets>
+command=<command>
+aws cloudformation create-stack --stack-name AOCECS-${ClusterName}-${Region} \
+    --template-body file://<PATH_TO_CloudFormation_TEMPLATE> \
+    --parameters ParameterKey=ClusterName,ParameterValue=${ClusterName} \
+                 ParameterKey=CreateIAMRoles,ParameterValue=True \
+                 ParameterKey=SecurityGroups,ParameterValue=${SecurityGroups} \
+                 ParameterKey=Subnets,ParameterValue=${Subnets} \
+                 ParameterKey=command,ParameterValue=${command} \
+    --capabilities CAPABILITY_NAMED_IAM \
+    --region ${Region}
+```
+3. Go to you ECS Console and see if the task is running.
+4. Go to the <Link to="/docs/setup/ecs#3-results">Results</Link> section to learn how to check the collected metrics and traces.
