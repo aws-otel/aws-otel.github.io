@@ -78,9 +78,14 @@ that data to back-end systems. The base components vendor-agnostic implementatio
 To initialize the OTLP exporter, add the following code to the file the `main.go` file -
 
 ```go lineNumbers=true 
+creds, err := credentials.NewClientTLSFromFile("my-cert.pem", "")
+if err != nil {
+    // Handle error here...
+}
+
 // Create new OTLP Exporter
 exporter, err := otlp.NewExporter(
-    otlp.WithInsecure(), 
+    otlp.WithTLSCredentials(creds), 
     otlp.WithAddress("localhost:55680"),
 )
     
@@ -89,11 +94,8 @@ if err != nil {
 }
 ```
 
-*Note: To see an example for creating an OTLP exporter with TLS credentials please see the example 
-[here](https://github.com/open-telemetry/opentelemetry-go/blob/master/exporters/otlp/example_test.go#L77).*
-
-This creates a new OTLP exporter with a few options - `WithInsecure()` disables client transport security for the exporter’s gRPC connection 
-just like [`grpc.WithInsecure()`](https://pkg.go.dev/google.golang.org/grpc#WithInsecure), and `WithAddress()` allows you to set the address 
+This creates a new OTLP exporter with a few options - `WithTLSCredentials()` is a way to intialize gRPC TransportCredentials and you can learn more about it 
+[here](https://pkg.go.dev/google.golang.org/grpc/credentials#TransportCredentials), and `WithAddress()` allows you to set the address 
 that the exporter will connect to the collector on. If the address is unset, it will instead try to use connect to `DefaultCollectorHost:DefaultCollectorPort`.
 
 <SectionSeparator />
