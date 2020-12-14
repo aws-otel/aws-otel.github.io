@@ -21,11 +21,11 @@ class MainBodySection extends React.Component {
               <p className={classes.about}> With AWS Distro for OpenTelemetry, you can: </p>
               <ul>
                 {YAMLData.features.map((data, index) => {
-                  return <li key={`content_item_${index}`}>{data.item}</li>
+                  return <li key={`content_item_${index}`}><p className={classes.about}>{data.item}</p></li>
                 })}
               </ul>
               <div style={{height: "20px"}} />
-              <p> {YAMLData.blurb} </p>
+              <p className={classes.about}> {YAMLData.blurb} </p>
             </GridItem>
           </GridContainer>
         </div>
