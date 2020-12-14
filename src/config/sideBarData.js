@@ -71,7 +71,7 @@ export const sideBarData = [
         {label: "Build Collector on MS-Windows", link: "/docs/setup/build-collector-on-windows"},
         {label: "Build Collector as RPM", link: "/docs/setup/build-collector-as-rpm"},
         {label: "Build Collector as Debian", link: "/docs/setup/build-collector-as-debian"},
-        {label: "Python Lambda", link: "/docs/setup/lambda"}
+        {label: "Lambda", link: "/docs/setup/lambda"}
       ],
       link: "/docs/null"
     }
