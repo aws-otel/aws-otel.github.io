@@ -86,7 +86,7 @@ if err != nil {
 // Create new OTLP Exporter
 exporter, err := otlp.NewExporter(
     otlp.WithTLSCredentials(creds), 
-    otlp.WithAddress("localhost:55680"),
+    otlp.WithAddress(<INSERT LISTEN ADDRESS HERE>),
 )
     
 if err != nil {
@@ -240,7 +240,7 @@ func initTracer() {
     // Create new OTLP Exporter struct
     exporter, err := otlp.NewExporter(
         otlp.WithInsecure(), 
-        otlp.WithAddress("localhost:55680"),
+        otlp.WithAddress("localhost:30080"),
     )
     if err != nil {
         // Handle error here...
