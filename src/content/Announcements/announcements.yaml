@@ -4,6 +4,20 @@ description:
 path: /announcements
 
 announcements:
+  - title: "Check out our Twitch Stream where we showcase the AWS Distro for OpenTelemetry"
+    date: "15-Dec-2020"
+    blurb:
+      "AWS What's Next S1|E12 - ft Nizar Tyrewalla, Principal Product Manager for AWS Distro for OpenTelemetry"
+    link: "https://www.twitch.tv/videos/786737025"
+
+  - title: "Check out our video on how to Capture Trace Data with AWS Distro for OpenTelemetry"
+    date: "20-Nov-2020"
+    blurb:
+      "In this video, you’ll see how to capture trace data using the AWS Distro for OpenTelemetry. With this solution, 
+      you can auto-instrument trace sending from Java web applications to AWS X-Ray so that you can analyze trace data 
+      and debug errors."
+    link: "https://www.youtube.com/watch?v=837NtV0McOA&ab_channel=AmazonWebServices"
+
   - title: "AWS Distro for OpenTelemetry Available for Public Preview"
     date: "31-Oct-2020"
     blurb:
