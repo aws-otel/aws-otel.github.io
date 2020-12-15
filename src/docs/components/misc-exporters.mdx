@@ -1,0 +1,73 @@
+---
+title: 'Logging and File Exporter'
+description:
+    The logging exporter and file exporter are included as a part of the AWS Distro for OpenTelemetry(ADOT). An exporter is a component in the 
+    OpenTelemetry Collectorconfigured to send data to different systems/back-ends. An exporter translates the OpenTelemetry protocol (OTLP) 
+    formatted data to a different predefined format to be interpreted by another system or back-end. Pipeline data includes logs, 
+    metrics, and traces. The logging exporter and file exporter are local exporters intended for debugging the Collector or OTLP 
+    formatted data without setting up a backend. 
+path: '/docs/components/misc-exporters'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+
+The logging exporter and file exporter are included as a part of the AWS Distro for OpenTelemetry(ADOT). An exporter is a component in the 
+OpenTelemetry [Collector](https://github.com/open-telemetry/opentelemetry-collector) configured to send data to different systems/back-ends. 
+An exporter translates the 
+[OpenTelemetry protocol (OTLP)](https://github.com/open-telemetry/opentelemetry-specification/blob/master/specification/protocol/otlp.md) 
+formatted data to a different predefined format to be interpreted by another system or back-end. Pipeline data includes logs, metrics, and traces. 
+The logging exporter and file exporter are local exporters intended for debugging the Collector or OTLP formatted data without setting up a backend. 
+
+<SectionSeparator />
+
+## Logging Exporter
+
+The logging exporter writes OTLP data to the console using the [Zap Logger](https://github.com/uber-go/zap).  The file exporter currently 
+supports logs, metrics, and traces. In order to start using the file exporter, you have to modify the yaml file configuration of the 
+OpenTelemetry [Collector](https://aws-otel.github.io/docs/getting-started/collector).
+
+The following settings are optional:
+
+* `loglevel` (default = `info`): there are 4 type of settings debug, info, warn, and error. In debug, pipeline data is verbosely logged.
+* `sampling_initial` (default = `2`): number of messages initially logged each second.
+* `sampling_thereafter` (default = `500`): sampling rate after the initial messages are logged (every ith message is logged).
+
+*Note: Refer to [Zap docs](https://godoc.org/go.uber.org/zap/zapcore#NewSampler) for more details on how sampling parameters impact number of messages.*
+
+#### Example (Default):
+
+```
+exporters:
+  logging:
+```
+
+#### Example (Configuring with optional settings) :
+
+```
+exporters:
+  logging:
+    loglevel: debug
+    sampling_initial: 5
+    sampling_thereafter: 200
+```
+
+<SectionSeparator />
+
+## File Exporter
+
+The file exporter writes pipeline data to a JSON file with [Protobuf JSON encoding](https://developers.google.com/protocol-buffers/docs/proto3#json) 
+using [OpenTelemetry protocol](https://github.com/open-telemetry/opentelemetry-proto).  The file exporter currently supports exporting logs, 
+metrics, and traces. In order to start using the file exporter, you have to modify the yaml file configuration of the 
+OpenTelemetry [Collector](https://aws-otel.github.io/docs/getting-started/collector).
+
+Since there is no default path, you must declare the `path` location to a JSON file to write the pipeline data.
+
+#### Example:
+
+```
+exporters:
+  file:
+    path: ./filename.json
+```
+
+*Note: There is no guarantee that the exact field names will remain stable.*

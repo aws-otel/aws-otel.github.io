@@ -20,8 +20,8 @@ import { Link } from "gatsby"
 function ListWithSubItems({ children, text, link }) {
     return (
         <>
-            <Heading><Link to={link} style={{"color": "black"}}>{text}</Link></Heading>
-            {/* <Heading>{text}</Heading> */}
+            {/* <Heading><Link to={link} style={{"color": "black"}}>{text}</Link></Heading> */}
+            <Heading>{text}</Heading>
             <SubItem>{children}</SubItem>
         </>
     );

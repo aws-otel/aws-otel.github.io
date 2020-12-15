@@ -55,6 +55,7 @@ export const sideBarData = [
         {label: "Prometheus (AMP)", link: "/docs/getting-started/prometheus-remote-write-exporter"},
         {label: "Prometheus Configurations", link: "/docs/getting-started/advanced-prometheus-remote-write-configurations"},
         {label: "CloudWatch Metrics", link: "/docs/getting-started/cloudwatch-metrics"},
+        {label: "X-Ray", link: "/docs/getting-started/x-ray"},
       ],
       link: "/docs/null"
     }
@@ -86,8 +87,10 @@ export const sideBarData = [
         {label: "Prometheus Exporters", link: "/docs/components/prometheus-exporters"},
         {label: "CloudWatch EMF Exporter", link: "/docs/getting-started/cloudwatch-metrics#cloudwatch-emf-exporter-awsemf"},
         {label: "ECS Container Metrics Receiver", link: "/docs/components/ecs-metrics-receiver"},
-        {label: "X-Ray Exporter", link: ""},
+        {label: "X-Ray Exporter", link: "/docs/getting-started/x-ray#configuring-the-aws-x-ray-exporter"},
         {label: "X-Ray Receiver", link: "/docs/components/x-ray-receiver"},
+        {label: "Logging Exporter", link: "/docs/components/misc-exporters#logging-exporter"},
+        {label: "File Exporter", link: "/docs/components/misc-exporters#file-exporter"},
       ],
       link: "/docs/null"
     }
