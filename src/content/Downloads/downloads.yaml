@@ -40,12 +40,12 @@
   documentationLink: 'https://github.com/aws-observability/aws-otel-collector/blob/main/README.md'
   downloadLink: 'https://hub.docker.com/r/amazon/aws-otel-collector'
 
-- version: 'AWS X-Ray Playground for OpenTelemetry Version 0.1.0'
-  releaseDate: 'Oct-21-2020'
-  license: 'Apache-2.0'
-  releaseNotesLink: 'https://github.com/aws-observability/aws-otel-playground/releases'
-  documentationLink: 'https://github.com/aws-observability/aws-otel-playground/blob/main/README.md'
-  downloadLink: 'https://hub.docker.com/r/amazon/aws-otel-playground'
+# - version: 'AWS X-Ray Playground for OpenTelemetry Version 0.1.0'
+#   releaseDate: 'Oct-21-2020'
+#   license: 'Apache-2.0'
+#   releaseNotesLink: 'https://github.com/aws-observability/aws-otel-playground/releases'
+#   documentationLink: 'https://github.com/aws-observability/aws-otel-playground/blob/main/README.md'
+#   downloadLink: 'https://hub.docker.com/r/amazon/aws-otel-playground'
 
 - version: 'AWS OpenTelemetry Auto Instrumentation Agent Version 0.9.0'
   releaseDate: 'Oct-21-2020'

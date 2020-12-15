@@ -7,6 +7,7 @@ path: '/docs/getting-started/python-sdk/trace-auto-instr'
 ---
 
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import SubSectionSeparator from "components/MdxSubSectionSeparator/subsectionSeparator.jsx"
 
 
 The AWS Distro for OpenTelemetry Python (ADOT Python) provides functionality to [OpenTelemetry Python](https://github.com/open-telemetry/opentelemetry-python) 
@@ -45,18 +46,53 @@ pip install opentelemetry-exporter-otlp==0.16b1
 pip install opentelemetry-sdk-extension-aws==0.16b1
 # Automatically install supported instrumentors for the application's dependencies
 opentelemetry-bootstrap --action=install
+``` 
+
+<SubSectionSeparator />
+
+### Setting the global propagators
+
+To allow the span context to propagate downstream when the application makes calls to external services, configure the global propagator. 
+Set the `OTEL_PROPAGATORS` environment variable to use to the AWS X-Ray Propagator.
+
 ```
+OTEL_PROPAGATORS=aws_xray
+```
+
+Alternatively, you can set the global propagator in code. Configure the propagator before your code starts, as shown below.
+
+```python lineNumbers=true 
+from opentelemetry import propagators
+from opentelemetry.sdk.extension.aws.trace.propagation.aws_xray_format import AwsXRayFormat
+
+propagators.set_global_textmap(AwsXRayFormat())
+```
+
+<SubSectionSeparator />
 
 ### Run the application 
 
-In a new terminal window, move to the project directory and start the application by entering `opentelemetry-instrument`. This automatically initializes the 
-installed instrumentors. Use environment variables to connect to the ADOT Collector and command line arguments to configure use with AWS X-Ray.
+Auto instrumentation uses the `opentelemetry-instrument` wrapper executable to automatically initialize the installed instrumentors 
+and start the provided application. Environment variables are used to configure the connection to the ADOT Collector and command 
+line arguments are used to configure trace generation for AWS X-Ray.
 
-We can use the `OTEL_EXPORTER_OTLP_INSECURE=True` environment variable to disable client transport security for our OTLP exporter’s connection. This setting 
-is acceptable when running the application locally and the OTel Collector is expecting traces without using 
-[TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security). However, if connecting to a gRPC server on the internet running gRPC over TLS as is 
-the common the case, this setting is not necessary. Read more regarding this on the 
-[gRPC Python Documentation](https://grpc.github.io/grpc/python/grpc.html?highlight=insecure#grpc.insecure_channel).
+<div style="margin: 20px 0">
+    <mark>
+        Please note, we do not recommend using the insecure option. Rather, we recommend configuring either a public or private
+        certificate to authenticate your session before running your application.
+    </mark>
+</div>
+
+The `OTEL_EXPORTER_OTLP_INSECURE=True` environment variable is used to disable client transport security for an OTLP 
+exporter’s connection. This will use the gRPC insecure_channel() method as explained in the 
+[gRPC Python Documentation](https://grpc.github.io/grpc/python/grpc.html?highlight=insecure#grpc.insecure_channel). 
+This option should never be used in production, non-sidecar deployments.
+
+If connecting to a gRPC server on the internet running gRPC over TLS, the `OTEL_EXPORTER_OTLP_CERTIFICATE=/path/to/cert.pem` environment 
+variable can be used to give a path to credentials to be used to establish a secure connection for the app’s exporter. The credentials 
+at this path should be the public certificate of the collector, or one of its root certificates. If no certificate is found, the 
+gRPC method `ssl_channel_credentials()` will attempt to “retrieve the PEM-encoded root certificates from a default 
+location chosen by gRPC runtime” as explained in the [gRPC Python Documentation](https://grpc.github.io/grpc/python/grpc.html?highlight=ssl_channel_credentials).
 
 Further, we can use the `OTEL_EXPORTER_OTLP_ENDPOINT=localhost:55678` environment variable to set the address that the exporter will use to connect 
 to the collector. If the address is unset, it will instead try to connect to `localhost:55680`.
