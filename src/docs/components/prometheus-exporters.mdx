@@ -1,0 +1,61 @@
+---
+title: 'Prometheus Exporters'
+description:
+    With the OpenTelemetry components, you can either instrument your application with the language APIs and their in-process 
+    exporters to send metrics data to a Prometheus backend or you can use the OpenTelemetry Collector with its out-of-process 
+    exporters to send metrics data to a Prometheus backend.
+path: '/docs/components/prometheus-exporters'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+
+With the OpenTelemetry components, you can either instrument your application with the language APIs and their in-process 
+exporters to send metrics data to a Prometheus backend or you can use the OpenTelemetry Collector with its out-of-process 
+exporters to send metrics data to a Prometheus backend.
+
+There are two types of Prometheus exporters available in OpenTelemetry - push based and pull based.
+
+Read more [here](https://prometheus.io/docs/introduction/faq/#why-do-you-pull-rather-than-push) to learn when to use push vs.
+pull for Prometheus.
+
+<SectionSeparator />
+
+## Push-based Prometheus Remote Write Exporter
+
+A push-based Prometheus remote write exporter enables you to send metrics data generated from OpenTelemetry API, Prometheus 
+instrumented libraries, or other sources, to a variety of Prometheus remote write integrated backends, including Cortex, Thanos, 
+and InfluxDB. Users can visualize or configure alarms for the exported metrics to monitor the health of their services, improve 
+performance, and detect anomalies. 
+
+Read this [blog post](https://aws.amazon.com/blogs/opensource/aws-adds-prometheus-remote-write-exporter-to-opentelemetry-collector/) 
+to learn more about the Prometheus remote write exporter we implemented for the OpenTelemetry Collector. Here is another 
+[blog post](https://aws.amazon.com/blogs/opensource/building-a-prometheus-remote-write-exporter-for-the-opentelemetry-go-sdk/) to 
+learn more about the Prometheus remote write exporter we implemented for the OpenTelemetry Go SDK.
+
+<SectionSeparator />
+
+## Getting Started with AMP
+
+Here is the [guide](/docs/getting-started/prometheus-remote-write-exporter) for using the AWS Managed Service for Prometheus 
+(AMP) with the Prometheus Remote Write Collector available in AWS Distro for OpenTelemetry.
+
+<SectionSeparator />
+
+## Pull-based Prometheus Exporter
+
+Prometheus is an open source system monitoring and alerting toolkit that collects metrics data via a pull model over HTTP. The 
+Prometheus server makes pull requests to the HTTP server exposed by the exporter and scrapes metrics data on a regular interval. 
+Prometheus Exporter is used to maintain the HTTP server and to serve the metrics data collected by the OpenTelemetry Controller 
+for Prometheus.
+
+Read this [blog post](https://aws.amazon.com/blogs/opensource/aws-adds-a-c-prometheus-exporter-to-opentelemetry/) 
+to learn about the C++ implementation of a Prometheus pull exporter. 
+
+<SectionSeparator />
+
+## Questions, Feedback, Issues 
+
+We would love to hear more common configuration scenarios or improvements to this documentation from you! Please submit an issue 
+on the [aws-otel community page](https://github.com/aws-observability/aws-otel-community) to let us know.
+
+

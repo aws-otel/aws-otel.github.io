@@ -1,0 +1,29 @@
+---
+title: 'Results: Check Traces in AWS X-Ray'
+description:
+    In this section, we will check the traces in AWS X-Ray collected using x-ray receiver.
+path: '/docs/setup/ecs'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import { Link } from "gatsby"
+import trace_01 from "assets/img/docs/setup/ecs/results/trace_01.png"
+import trace_02 from "assets/img/docs/setup/ecs/results/trace_02.png"
+
+In this section, we will check the traces in AWS X-Ray collected using x-ray receiver.
+
+
+<SectionSeparator />
+
+1. **Check Trace IDs**
+
+Let’s go to Xray console and click *Traces* in the left list. Trace IDs sent from the x-ray SDK are shown below.
+<img src={trace_01} alt="Diagram" style="margin: 10px 0;" />
+<div style="height: 40px" />
+
+
+2. **Check Trace map and raw data**
+
+Click one trace id to see the Trace map. By clicking the `Raw data` on top, we can see the raw trace data.
+<img src={trace_02} alt="Diagram" style="margin: 10px 0;" />
+<div style="height: 40px" />

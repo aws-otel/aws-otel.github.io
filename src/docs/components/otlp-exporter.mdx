@@ -1,0 +1,210 @@
+---
+title: 'Getting Started with the OTLP Exporters'
+description:
+    An exporter is a component in the OpenTelemetry Collector configured to send data to different systems/back-ends. Different 
+    exporters converts OpenTelemetry protocol (OTLP) formatted data to their respective predefined back-end format  and exports 
+    this data to be interpreted by the back-end or system.
+path: '/docs/components/otlp-exporter'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import SubSectionSeparator from "components/MdxSubSectionSeparator/subsectionSeparator.jsx"
+
+An exporter is a component in the OpenTelemetry [Collector](https://github.com/open-telemetry/opentelemetry-collector) configured 
+to send data to different systems/back-ends. Different exporters converts 
+[OpenTelemetry protocol (OTLP)](https://github.com/open-telemetry/opentelemetry-specification/blob/master/specification/protocol/otlp.md) 
+formatted data to their respective predefined back-end format  and exports this data to be interpreted by the back-end or system.
+
+<SectionSeparator />
+
+## OTLP Protocol
+
+The [OpenTelemetry Protocol](https://github.com/open-telemetry/opentelemetry-specification/blob/master/specification/protocol/otlp.md) 
+(OTLP) defines the encoding, transport, and delivery mechanism of telemetry data between telemetry sources, intermediate processes such 
+as collectors and telemetry backends. OTLP is a protocol based on requests and responses, for example the client sends requests and the 
+server corresponds with responses. OTLP is currently implemented over two types of transport systems, gRPC and HTTP, specifying the 
+[Protocol Buffers schema](https://developers.google.com/protocol-buffers/docs/overview) (protobuf) used for the payloads. The protobuf 
+schema of the messages is the same for OTLP/HTTP and OTLP/gRPC.
+
+<SubSectionSeparator />
+
+### OTLP/HTTP
+
+The OTLP implementation transport system over HTTP uses protobuf payloads either in binary format or JSON. OTLP/HTTP uses HTTP POST 
+requests to send telemetry data from clients to servers. Implementations may use HTTP/1.1 or HTTP/2 transports, if an HTTP/2 connection 
+cannot be established it should fallback to HTTP/1.1 transport.
+
+<SubSectionSeparator />
+
+### OTLP/gRPC
+
+OTLP/gRPC sends telemetry data with unary requests in `ExportTraceServiceRequest` for traces, `ExportMetricsServiceRequest` for metrics, 
+`ExportLogsServiceRequest` for logs. The language independent interface types for these mentioned pipeline data can be found 
+[here](https://github.com/open-telemetry/opentelemetry-proto). The client will continuously send sequences of requests to the server 
+and expects to receive a response with each request. You can learn more about the OTLP protocol 
+[here](https://github.com/open-telemetry/opentelemetry-specification/blob/master/specification/protocol/otlp.md).
+
+<SectionSeparator />
+
+## Setting up A Monitoring Backend 
+
+OpenTelemetry can export traces, logs, and metrics to various backends to analyze in order to understand an application’s performance 
+and behavior. There are multiple monitoring backends (also known as end-points) which can support OpenTelemetry using the OTLP protocol. 
+
+In this section, we will getting started configurations to the Collector to export telemetry data to **Honeycomb, Lightstep, and SumoLogic** end-points.
+
+<SectionSeparator />
+
+## Prerequisites
+
+For using any backends supported by OpenTelemetry, make sure you have set up the [Collector](https://aws-otel.github.io/docs/getting-started/collector).
+
+<SectionSeparator />
+
+## Honeycomb
+
+Honeycomb supports OpenTelemetry by ingesting OTLP directly, so users of the AWS Distro for OpenTelemetry (ADOT) can send tracing data directly to 
+Honeycomb without the need for additional plugins or non-OTLP exporters.
+
+<SubSectionSeparator />
+
+### Requirements
+
+Before you can use the AWS Distro for OpenTelemetry with the Honeycomb end-point, you need:
+
+* You will need a Honeycomb account, if you don’t currently have one you can sign up [here](https://ui.honeycomb.io/signup).
+* In your Honeycomb account, choose a name for your dataset and use your API key.
+
+<SubSectionSeparator />
+
+### Configuration (Collector)
+
+The configuration will take place in the OTLP exporter in the collector config YAML file.
+
+* Set the OTLP endpoint to [api.honeycomb.io:443](http://api.honeycomb.io:443/)
+* Add your Honeycomb access token as an OTLP header (you can find your API token [here](https://ui.honeycomb.io/account))
+
+<SubSectionSeparator />
+
+### Example 
+
+```yaml lineNumbers=true highlight={7,9}
+# Honeycomb collector configuration
+exporters:
+  otlp:
+    endpoint: api.honeycomb.io:443
+    headers:
+      # You can find your Honeycomb authentication token at https://ui.honeycomb.io/account
+      "x-honeycomb-team":"<YOUR_API_KEY>"
+      # You can use any string for your dataset name, it will be created if it doesn't exist.
+      "x-honeycomb-dataset": "<YOUR_DATASET_NAME>"
+```
+
+<SubSectionSeparator />
+
+## Support 
+
+If you have any trouble using the AWS Distro for OpenTelemetry with Honeycomb, you can reach out to the ADOT support team 
+or directly to the [Honeycomb support page](https://www.honeycomb.io/support/). 
+
+<SectionSeparator />
+
+## Lightstep
+
+Lightstep supports OpenTelemetry natively, via OTLP. If you’re already set up with AWS Distro for OpenTelemetry, then 
+getting data into Lightstep only requires an edit to the YAML config file for the Collector to get started.
+
+<SubSectionSeparator />
+
+### Requirements
+
+Before you can use the AWS Distro for OpenTelemetry with Lightstep, you need:
+
+* A Lightstep account. If you don't already have one, you can create a free account [here](https://app.lightstep.com/signup/developer?signup_source=awsdoc).
+* An access token for your Lightstep project. This can be found in project settings (the gear icon in the sidebar).
+
+<SubSectionSeparator />
+
+### Configuration (Collector)
+
+The configuration will take place in the OTLP exporter in the collector config YAML file.
+
+* Configure the Collector to export OTLP.
+* Set the OTLP endpoint to point to Lightstep.
+    * Public endpoint: [ingest.lightstep.com:443](http://ingest.lightstep.com:443/)
+    * Private satellites: the address of your satellite load balancer.
+* Add your Lightstep access token as an OTLP header.
+    * Header name: "lightstep-access-token"
+
+<SubSectionSeparator />
+
+### Example 
+
+```yaml lineNumbers=true highlight={8}
+# Lightstep collector configuration
+exporters:
+  otlp:
+     # NOTE: if you are using private satellites, replace this public
+     # endpoint with the address of your satellite load balancer.
+    endpoint: ingest.lightstep.com:443
+     # Your access token can be found in the project settings page
+    headers: {"lightstep-access-token":"<YOUR_ACCESS_TOKEN>"}
+```
+
+<SectionSeparator />
+
+## SumoLogic 
+
+Sumo Logic supports telemetry signals from OpenTelemetry natively via OTLP.  If you’re already set up with AWS Distro for 
+OpenTelemetry, then exporting data into a SumoLogic backend is as simple as editing your YAML config file for the Collector 
+and getting started.
+
+<SubSectionSeparator />
+
+### Requirements
+
+Before you can use the AWS Distro for OpenTelemetry with Sumologic you need:
+
+* A Sumologic account. If you don't already have one, you can create an account [here](https://www.sumologic.com/sign-up/mon/).
+* An access token for your Sumologic project. This can be found [here](https://help.sumologic.com/Manage/Security/Access-Keys).
+
+<SubSectionSeparator />
+
+### Configuration (Collector)
+
+The configuration will take place in the OTLP exporter in the collector config YAML file.
+
+* Configure the Collector to export OTLP. There are separate endpoints for HTTP and gRPC:
+    * OTLP gRPC: `collection-sumologic-otelcol.sumologic:55680`
+    * OTLP HTTP: `collection-sumologic-otelcol.sumologic:55681/v1/trace`
+* An accessId and access Key for your SumoLogic project. This can be generated [here](https://help.sumologic.com/Manage/Security/Access-Keys).
+
+<SubSectionSeparator />
+
+### Example
+
+```yaml lineNumbers=true highlight={7}
+# SumoLogic collector configuration
+exporters:
+  otlp:
+    # NOTE: set the endpoint with the expected protocol
+    # this is an example for gRPC, different endpoints are
+    # required for different protocols
+    endpoint: collection-sumologic-otelcol.sumologic:55680
+    # You can generate your accessID and accessKey in your account settings
+    headers: {"<accessId>:<accessKey>"}
+```
+
+If you are instrumenting your application using OpenTelemetry JavaScript, Java, Python, Go,  Ruby, .NET you can use the SumoLogic 
+[documentation](https://help.sumologic.com/Traces/Getting_Started_with_Transaction_Tracing/Set_up_traces_collection_for_Kubernetes_environments#direct-connection-to-the-collector-recommended) 
+to set up your application to connect with a SumoLogic backend.
+
+<SectionSeparator />
+
+## Questions, Feedback?
+
+We would love to hear more common configuration scenarios or improvements to this documentation from you! Please submit an issue 
+on the  [aws-otel community page](https://github.com/aws-observability/aws-otel-community) to let us know.
+
+
+

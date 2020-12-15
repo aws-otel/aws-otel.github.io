@@ -1,0 +1,115 @@
+---
+title: 'ADOT Python - Auto Instrumentation Documentation'
+description:
+    OpenTelemetry provides different language SDKs to instrument code for collecting telemetry data in the application.
+    In this tutorial, we will introduce how to use OpenTelemetry Python SDK for traces and metrics instrumentation in the application...
+path: '/docs/getting-started/python-sdk/trace-auto-instr'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import SubSectionSeparator from "components/MdxSubSectionSeparator/subsectionSeparator.jsx"
+
+
+The AWS Distro for OpenTelemetry Python (ADOT Python) provides functionality to [OpenTelemetry Python](https://github.com/open-telemetry/opentelemetry-python) 
+for use with AWS X-Ray. OpenTelemetry Python supports automatic instrumentation, which instruments your application to gather telemetry data from a 
+diverse set of libraries and frameworks with minimal configuration. This data can then be exported to different back-ends in different formats.
+
+In this tutorial, we introduce you to how to use the auto-instrumentation package for traces with AWS X-Ray.
+
+<SectionSeparator />
+
+## Requirements
+
+Python 3.5+ is required to use OpenTelemetry Python. Check your currently installed Python version using python3 -V.
+For more information about supported Python versions, see the [OpenTelemetry Python API package on PyPi](https://pypi.org/project/opentelemetry-api/).
+
+Make sure you have AWS Distro for OpenTelemetry Collector (ADOT Collector) running. To set up the collector, see 
+[Getting Started with the AWS Distro for OpenTelemetry Collector](https://aws-otel.github.io/docs/getting-started/collector).
+
+<SectionSeparator />
+
+## Getting the SDKs and dependencies
+
+The OpenTelemetry instrumentation package automates much of the on-boarding process. See the package usage later in this documentation.
+
+###  Install instrumentation packages
+
+You’ll need the `opentelemetry-instrumentation` package from PyPi. This automatically installs the `opentelemetry-api` and `opentelemetry-sdk` packages. 
+It also provides commands to detect, install, and initialize all instrumentation packages supported for your application’s dependencies.
+
+Go to the directory of the application, which currently imports these packages, and run the following commands.
+
+```bash 
+# Install required packages for instumentation and tracing support for AWS X-Ray 
+pip install opentelemetry-instrumentation==0.16b1
+pip install opentelemetry-exporter-otlp==0.16b1
+pip install opentelemetry-sdk-extension-aws==0.16b1
+# Automatically install supported instrumentors for the application's dependencies
+opentelemetry-bootstrap --action=install
+``` 
+
+<SubSectionSeparator />
+
+### Setting the global propagators
+
+To allow the span context to propagate downstream when the application makes calls to external services, configure the global propagator. 
+Set the `OTEL_PROPAGATORS` environment variable to use to the AWS X-Ray Propagator.
+
+```
+OTEL_PROPAGATORS=aws_xray
+```
+
+Alternatively, you can set the global propagator in code. Configure the propagator before your code starts, as shown below.
+
+```python lineNumbers=true 
+from opentelemetry import propagators
+from opentelemetry.sdk.extension.aws.trace.propagation.aws_xray_format import AwsXRayFormat
+
+propagators.set_global_textmap(AwsXRayFormat())
+```
+
+<SubSectionSeparator />
+
+### Run the application 
+
+Auto instrumentation uses the `opentelemetry-instrument` wrapper executable to automatically initialize the installed instrumentors 
+and start the provided application. Environment variables are used to configure the connection to the ADOT Collector and command 
+line arguments are used to configure trace generation for AWS X-Ray.
+
+<div style="margin: 20px 0">
+    <mark>
+        Please note, we do not recommend using the insecure option. Rather, we recommend configuring either a public or private
+        certificate to authenticate your session before running your application.
+    </mark>
+</div>
+
+The `OTEL_EXPORTER_OTLP_INSECURE=True` environment variable is used to disable client transport security for an OTLP 
+exporter’s connection. This will use the gRPC insecure_channel() method as explained in the 
+[gRPC Python Documentation](https://grpc.github.io/grpc/python/grpc.html?highlight=insecure#grpc.insecure_channel). 
+This option should never be used in production, non-sidecar deployments.
+
+If connecting to a gRPC server on the internet running gRPC over TLS, the `OTEL_EXPORTER_OTLP_CERTIFICATE=/path/to/cert.pem` environment 
+variable can be used to give a path to credentials to be used to establish a secure connection for the app’s exporter. The credentials 
+at this path should be the public certificate of the collector, or one of its root certificates. If no certificate is found, the 
+gRPC method `ssl_channel_credentials()` will attempt to “retrieve the PEM-encoded root certificates from a default 
+location chosen by gRPC runtime” as explained in the [gRPC Python Documentation](https://grpc.github.io/grpc/python/grpc.html?highlight=ssl_channel_credentials).
+
+Further, we can use the `OTEL_EXPORTER_OTLP_ENDPOINT=localhost:55678` environment variable to set the address that the exporter will use to connect 
+to the collector. If the address is unset, it will instead try to connect to `localhost:55680`.
+
+An example of starting an application using generic environment variables:
+
+```
+OTEL_EXPORTER_OTLP_INSECURE=True opentelemetry-instrument -e otlp --ids-generator aws_xray python ./path/to/your/app.py
+```
+
+An example of starting an application using flask:
+
+```
+OTEL_EXPORTER_OTLP_INSECURE=True OTEL_EXPORTER_OTLP_ENDPOINT=localhost:55678 FLASK_APP=./my_flask_app.py opentelemetry-instrument -e otlp --ids-generator aws_xray flask run
+```
+
+<SectionSeparator />
+
+Custom tracing works the same way when using automatic instrumentation or manual instrumentation. For information about trace instrumentation, see 
+[custom tracing manual instrumentation](/docs/getting-started/python-sdk/trace-manual-instr).

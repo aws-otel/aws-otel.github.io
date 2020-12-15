@@ -1,0 +1,75 @@
+---
+title: 'Create IAM Policy'
+description:
+    The AWS OpenTelemetry Collector requires permissions to publish app metrics 
+    and container metrics to AWS CloudWatch Logs and sending app traces to AWS X-Ray. 
+    In this section, we will create an IAM policy with proper permission.
+path: '/docs/setup/ecs'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import { Link } from "gatsby"
+import iam_policy_01 from "assets/img/docs/setup/ecs/iam_policy/iam_policy_01.png"
+import iam_policy_02 from "assets/img/docs/setup/ecs/iam_policy/iam_policy_02.png"
+import iam_policy_03 from "assets/img/docs/setup/ecs/iam_policy/iam_policy_03.png"
+
+The AWS OpenTelemetry Collector requires permissions to publish app metrics and container 
+metrics to AWS CloudWatch and sending app traces to AWS X-Ray. Metrics are sent to CloudWatch 
+using [EMF Logs](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Embedded_Metric_Format.html), 
+so CloudWatch Logs permissions are required to send metrics. In this section, we will create 
+an IAM policy with proper permission.
+
+<SectionSeparator />
+
+1. **Go to AWS Management Console**
+
+Go to AWS Management Console and open the [IAM Policy](https://console.aws.amazon.com/iam/home?#/policies) page.
+
+
+2. **Create Policy**
+
+Click the `Create Policy` button on top-left corner.
+<img src={iam_policy_01} alt="Diagram" style="margin: 10px 0;" />
+<div style="height: 40px" />
+
+3. **Copy JSON Policy**
+
+Click the `JSON` tab on top of the page. Copy and paste the following policy text.
+
+````
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "logs:PutLogEvents",
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:DescribeLogGroups",
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries",
+                "ssm:GetParameters"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+````
+
+4. **Click the Review Policy**
+
+<img src={iam_policy_02} alt="Diagram" style="margin: 10px 0;" />
+<div style="height: 40px" />
+
+5. **Add Policy Name and Finish**
+
+On the Review policy page, type **AWSDistroOpenTelemetryPolicy** for the Name, and then click **Create policy**
+button and finish the process.
+
+<img src={iam_policy_03} alt="Diagram" style="margin: 10px 0;" />
+<div style="height: 40px" />
