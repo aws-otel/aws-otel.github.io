@@ -22,12 +22,27 @@ projects:
       Cortex provides horizontally scalable, highly available, multi-tenant, long term storage for Prometheus. Cortex is
       horizontally scalable, highly available, multi-tenant and provides long term storage.
     link: https://cortexmetrics.io/
+  - title: EKS Distro Repository
+    description:
+      Amazon EKS Distro (EKS-D) is a Kubernetes distribution based on and used by Amazon Elastic Kubernetes Service (EKS) to create 
+      reliable and secure Kubernetes clusters. With EKS-D, you can rely on the same versions of Kubernetes and its dependencies deployed by Amazon EKS. 
+      This includes the latest upstream updates as well as extended security patching support. 
+    link: https://github.com/aws/eks-distro
+  - title: Grafana
+    description:
+      Grafana is an open source visualization framework that allows you to query, visualize, alert on and understand your metrics.
+    link: https://github.com/grafana/grafana
   - title: Open Distro for Elasticsearch
     description:
       Open Distro for ElasticSearch is an Apache 2.0-licensed distribution of Elasticsearch enhanced with enterprise
       security, alerting, and more. It allows you to keep your data secure, get notified automatically, query with
       familiar tools and get deep diagnostic insights.
     link: https://opendistro.github.io/for-elasticsearch/
+  - title: OpenMetrics
+    description:
+      OpenMetrics specifies a popular standard for transmitting cloud-native metrics at scale, with support for both text representation 
+      and Protocol Buffers and brings it into IETF. It supports both pull and push-based data collection.
+    link: https://openmetrics.io/
   - title: OpenTelemetry
     description:
       OpenTelemetry is a collection of tools, APIs, and SDKs. You use it to instrument, generate, collect, and export
