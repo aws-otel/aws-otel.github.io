@@ -47,12 +47,15 @@ export const sideBarData = [
       label: "Getting started",
       items: [
         {label: "Collector", link: "/docs/getting-started/collector"},
-        {label: "Java SDK", link: "/docs/getting-started/java-sdk"},
-        {label: "JavaScript SDK", link: "/docs/getting-started/javascript-sdk"},
-        {label: "Python SDK", link: "/docs/getting-started/python-sdk"},
-        {label: "Go SDK", link: "/docs/getting-started/go-sdk"},
-        {label: "Using AWS X-Ray Tracing", link: "/docs/getting-started/aws-xray"},
-        {label: "Using CloudWatch Metrics", link: "/docs/getting-started/cloudwatch-metrics"},
+        {label: "Go", link: "/docs/getting-started/go-sdk"},
+        {label: "Java", link: "/docs/getting-started/java-sdk"},
+        {label: "JavaScript", link: "/docs/getting-started/javascript-sdk"},
+        {label: "Python", link: "/docs/getting-started/python-sdk"},
+        {label: "Lambda for Python", link: "/docs/getting-started/lambda"},
+        {label: "Prometheus (AMP)", link: "/docs/getting-started/prometheus-remote-write-exporter"},
+        {label: "Prometheus Configurations", link: "/docs/getting-started/advanced-prometheus-remote-write-configurations"},
+        {label: "CloudWatch Metrics", link: "/docs/getting-started/cloudwatch-metrics"},
+        {label: "X-Ray", link: "/docs/getting-started/aws-xray"},
       ],
       link: "/docs/null"
     }
@@ -64,14 +67,13 @@ export const sideBarData = [
       items: [
         {label: "Permissions", link: "/docs/setup/permissions"},
         {label: "Docker Images", link: "/docs/setup/docker-images"},
-        {label: "For ECS", link: "/docs/setup/ecs"},
-        {label: "For EC2", link: "/docs/setup/ec2"},
-        {label: "For EKS", link: "/docs/setup/eks"},
+        {label: "ECS", link: "/docs/setup/ecs"},
+        {label: "EC2", link: "/docs/setup/ec2"},
+        {label: "EKS", link: "/docs/setup/eks"},
         {label: "On-Premises", link: "/docs/setup/on-premises"},
-        {label: "Build Collector on MS-Windows", link: "/docs/setup/build-collector-on-windows"},
-        {label: "Build Collector as RPM", link: "/docs/setup/build-collector-as-rpm"},
-        {label: "Build Collector as Debian", link: "/docs/setup/build-collector-as-debian"},
-        {label: "Lambda", link: "/docs/setup/lambda"}
+        {label: "Debian", link: "/docs/setup/build-collector-as-debian"},
+        {label: "RPM", link: "/docs/setup/build-collector-as-rpm"},
+        {label: "MS-Windows", link: "/docs/setup/build-collector-on-windows"},
       ],
       link: "/docs/null"
     }
@@ -81,7 +83,11 @@ export const sideBarData = [
       id: nextId(),
       label: "Components",
       items: [
+        {label: "OTLP Exporters", link: "/docs/components/otlp-exporter"},
+        {label: "Prometheus Exporters", link: ""},
+        {label: "CloudWatch EMF Exporter", link: "/docs/getting-started/cloudwatch-metrics#cloudwatch-emf-exporter-awsemf"},
         {label: "ECS Container Metrics Receiver", link: "/docs/components/ecs-metrics-receiver"},
+        {label: "X-Ray Exporter", link: ""},
         {label: "X-Ray Receiver", link: "/docs/components/x-ray-receiver"},
       ],
       link: "/docs/null"
