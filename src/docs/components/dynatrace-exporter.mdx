@@ -22,7 +22,12 @@ The Dynatrace metrics exporter exports metrics to the [metrics API v2](https://w
 using the [metrics ingestion protocol](https://www.dynatrace.com/support/help/how-to-use-dynatrace/metrics/metric-ingestion/metric-ingestion-protocol/).
 This enables Dynatrace to receive metrics collected by the OpenTelemetry Collector.
 
-The requests sent to Dynatrace are authenticated using an API token mechanism documented [here](https://www.dynatrace.com/support/help/dynatrace-api/basics/dynatrace-api-authentication/).
+Given an environment ID `abc12345` on Dynatrace SaaS, for example, the metrics ingest endpoint would be `https://abc12345.live.dynatrace.com/api/v2/metrics/ingest`.
+
+The requests sent to Dynatrace are authenticated using an API token.
+Creating an API token for your Dynatrace environment is described in the [Dynatrace API documentation](https://www.dynatrace.com/support/help/dynatrace-api/basics/dynatrace-api-authentication/).
+The only access scope required for exporting metrics is the **Ingest metrics** (`metrics.ingest`) scope listed in the **API v2** section.
+It is recommended to limit the token's scope to only that one.
 
 <SectionSeparator />
 
@@ -38,7 +43,7 @@ receivers:
         endpoint: 0.0.0.0:55680
 exporters:
   dynatrace:
-    endpoint: https://ab12345.live.dynatrace.com
+    endpoint: https://ab12345.live.dynatrace.com/api/v2/metrics/ingest
     api_token: <api token must have metrics.write permission>
 service:
   extensions:
@@ -62,7 +67,7 @@ receivers:
         endpoint: 0.0.0.0:55680
 exporters:
   dynatrace:
-    endpoint: https://ab12345.live.dynatrace.com
+    endpoint: https://ab12345.live.dynatrace.com/api/v2/metrics/ingest
     api_token: <api token must have metrics.write permission>
     tags:
       - tag1=value1
