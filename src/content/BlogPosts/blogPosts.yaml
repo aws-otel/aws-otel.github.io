@@ -6,6 +6,15 @@ description:
 path: /blog
 
 blogs:
+  - title: "Announcing alpha availability of Trace Analytics for distributed tracing"
+    author: "Rajiv Taori"
+    date: "17-Dec-2020"
+    body:
+      "Today we are excited to announce an alpha release of Trace Analytics, a new capability in Open Distro for Elasticsearch, that 
+      enables developers to find and fix performance problems in distributed applications. By adding trace data to the existing 
+      log analytics capabilities of Open Distro for Elasticsearch ... "
+    link: "https://opendistro.github.io/for-elasticsearch/blog/releases/2020/12/announcing-trace-analytics/"
+
   - title: "AWS adds Prometheus Remote Write Exporter to OpenTelemetry Collector"
     author: "Alolita Sharma"
     date: "09-Nov-2020"
@@ -96,6 +105,13 @@ blogs:
 
 searchIndex:
   "
+  Announcing alpha availability of Trace Analytics for distributed tracing
+  Rajiv Taori
+  17-Dec-2020
+  Today we are excited to announce an alpha release of Trace Analytics, a new capability in Open Distro for Elasticsearch, that 
+  enables developers to find and fix performance problems in distributed applications. By adding trace data to the existing 
+  log analytics capabilities of Open Distro for Elasticsearch
+
   AWS adds Prometheus Remote Write Exporter to OpenTelemetry Collector
   Alolita Sharma
   09-Nov-2020
