@@ -21,18 +21,15 @@ In this tutorial, we will introduce you to how to use the manual instrumentation
 
 ## Requirements
 
-Python 3.5+ is required to use ADOT Python. Check your currently installed python version using `python3 -V`.
-For more information about supported Python versions, see the [OpenTelemetry API Python package on PyPi](https://pypi.org/project/opentelemetry-api/).
-Make sure you have AWS Distro for OpenTelemetry Collector (ADOT Collector) running. To set up the collector, see 
-[Getting Started with the AWS Distro for OpenTelemetry Collector](https://aws-otel.github.io/docs/getting-started/collector).
+Python 3.5+ is required to use ADOT Python. Check your currently installed python version using `python3 -V`. For more information about supported Python versions, see the [OpenTelemetry API Python package on PyPi](https://pypi.org/project/opentelemetry-api/). Make sure you have AWS Distro for OpenTelemetry Collector (ADOT Collector) running. To set up the collector, see [Getting Started with the AWS Distro for OpenTelemetry Collector](https://aws-otel.github.io/docs/getting-started/collector).
 
 <SectionSeparator />
 
 ## Getting the SDK and dependencies
 
- Install the following packages from OpenTelemetry Python using pip.
+Install the following packages from OpenTelemetry Python using pip.
 
-```
+```bash
 $ pip install opentelemetry-api==0.16b1 \
               opentelemetry-sdk==0.16b1 \
               opentelemetry-exporter-otlp==0.16b1 \
@@ -43,10 +40,10 @@ OpenTelemetry Python distributes many packages, which provide instrumentation fo
 instrumentation package for every dependency you want to generate traces for. To see supported frameworks and libraries, check out 
 the [OpenTelemetry Registry](https://opentelemetry.io/registry/?s=python).
 
-```
+```bash
 # Supported instrumentation packages for the dependencies of the example above
-pip install opentelemetry-instrumentation-flask==0.16b1
-pip install opentelemetry-instrumentation-botocore==0.16b1
+$ pip install opentelemetry-instrumentation-flask==0.16b1
+$ pip install opentelemetry-instrumentation-botocore==0.16b1
 ```
 
 <SectionSeparator />
@@ -72,7 +69,23 @@ from opentelemetry.sdk.trace.export import BatchExportSpanProcessor
 from opentelemetry.sdk.extension.aws.trace import AwsXRayIdsGenerator
 ```
 
-Configure the Global Tracer Provider to export to the ADOT Collector.
+Next, configure the Global Tracer Provider to export to the ADOT Collector. The configuration of your SDK exporter depends on how you have configured your ADOT Collector. To learn more about how the ADOT Collector can be configured, refer to the [ADOT Collector Documentation](https://aws-otel.github.io/docs/getting-started/collector).
+
+The `endpoint=` argument allows you to set the address that the exporter will use to connect to the collector. If the address is unset, it will instead try to connect to `localhost:55680`.
+
+#### Connecting to a collector running locally as a sidecar
+
+The `insecure=True` argument disables client transport security for our OTLP exporter’s connection. This will use the gRPC `insecure_channel()`
+method as explained in the [gRPC Python Documentation](https://grpc.github.io/grpc/python/grpc.html?highlight=insecure#grpc.insecure_channel).
+This option should never be used in production, non-sidecar deployments.
+
+#### Connecting to a collector running on the internet as a service
+
+If connecting to a gRPC server on the internet running gRPC over TLS, the `credentials=/path/to/cert.pem` argument can be used to give a path to credentials to be used to establish a secure connection for the app’s exporter. The credentials at this path should be the public certificate of the collector, or one of its root certificates. If no certificate is found, the gRPC method ssl_channel_credentials() will attempt to “retrieve the PEM-encoded root certificates from a default location chosen by gRPC runtime” as explained in the [gRPC Python Documentation](https://grpc.github.io/grpc/python/grpc.html?highlight=ssl_channel_credentials).
+
+#### Example TracerProvider configuration
+
+As an example where we connect to a ADOT Collector running locally deployed as a sidecar, we can setup the TracerProvider as follows:
 
 ```python lineNumbers=true
 # Sends generated traces in the OTLP format to an ADOT Collector running on port 55678
@@ -82,26 +95,6 @@ span_processor = BatchExportSpanProcessor(otlp_exporter)
 # Configures the Global Tracer Provider
 trace.set_tracer_provider(TracerProvider(active_span_processor=span_processor, ids_generator=AwsXRayIdsGenerator()))
 ```
-
-<div style="margin: 20px 0">
-    <mark>
-        Please note, we do not recommend using the insecure option. Rather, we recommend configuring either a public or private
-        certificate to authenticate your session before running your application.
-    </mark>
-</div>
-
-The `insecure=True` argument disables client transport security for our OTLP exporter’s connection. This will use the gRPC `insecure_channel()` 
-method as explained in the [gRPC Python Documentation](https://grpc.github.io/grpc/python/grpc.html?highlight=insecure#grpc.insecure_channel). 
-This option should never be used in production, non-sidecar deployments.
-
-If connecting to a gRPC server on the internet running gRPC over TLS, the credentials=/path/to/cert.pem argument can be used to give a path to 
-credentials to be used to establish a secure connection for the app’s exporter. The credentials at this path should be the public certificate of the 
-collector, or one of its root certificates. If no certificate is found, the gRPC method ssl_channel_credentials() will attempt to “retrieve the PEM-encoded 
-root certificates from a default location chosen by gRPC runtime” as explained in the 
-[gRPC Python Documentation](https://grpc.github.io/grpc/python/grpc.html?highlight=ssl_channel_credentials).
-
-The `endpoint=` argument allows you to set the address that the exporter will use to connect to the collector. If the address is unset, it will 
-instead try to connect to `localhost:55680`.
 
 <SubSectionSeparator />
 
