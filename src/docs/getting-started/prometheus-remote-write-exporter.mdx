@@ -59,9 +59,60 @@ For information about advanced configurations and how to scrape Kubernetes infra
 Before getting started, you will need to set up the following components:
 
 * An AMP workspace should be set up. Guides for this can be found [here](https://docs.aws.amazon.com/prometheus/latest/userguide/what-is-Amazon-Managed-Service-Prometheus.html). 
-* AWS credentials from any of the options in the [default AWS credentials chain](https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/configuring-sdk.html).
 * A Kubernetes or EKS cluster. If you need to set up an EKS cluster, please use the following [guide](https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html). 
 You can check the name of the active context/cluster using this command `kubectl config current-context`.
+* [Set up IAM roles for service accounts for the ingestion of metrics from Amazon EKS clusters](https://docs.aws.amazon.com/prometheus/latest/userguide/set-up-irsa.html#set-up-irsa-ingest). 
+Please follow the **To set up IRSA for ingestion into AMP** section. This section will create a IAM role for the service account that we will use for the 
+ADOT Collector to scrape and export metrics.
+
+<SubSectionSeparator />
+
+### Editing the Trust Policy 
+
+Go to your IAM Management Console to find the **amp-iamproxy-ingest-role** that was created in the prerequisites. Go to trust relationships and click **Edit trust relationship.**
+
+Then, replace the **aws-amp** namespace for the service account to **adot-col**. Your resulting trust policy should reflect the example below:
+
+```json lineNumbers=true 
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Federated": "arn:aws:iam::account-id:oidc-provider/oidc.eks.aws_region.amazonaws.com/id/openid"
+      },
+      "Action": "sts:AssumeRoleWithWebIdentity",
+      "Condition": {
+        "StringEquals": {
+          "oidc.eks.aws_region.amazonaws.com/id/openid:sub": "system:serviceaccount:adot-col:amp-iamproxy-ingest-service-account"
+        }
+      }
+    }
+  ]
+}
+```
+
+Please make sure the following permissions policy is attached to the IAM role above:
+
+```json lineNumbers=true 
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "aps:RemoteWrite",
+                "aps:GetSeries",
+                "aps:GetLabels",
+                "aps:GetMetricMetadata"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+```
+
 
 <SubSectionSeparator />
 
@@ -82,6 +133,11 @@ To deploy the sample app in EKS, copy this Kubernetes configuration and apply it
 
 ```bash
 $ curl https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/examples/eks/prometheus-pipeline/prometheus-sample-app.yaml -o prometheus-sample-app.yaml
+```
+
+Add your image reference to `prometheus-sample-app.yaml`
+
+```bash
 $ kubectl apply -f prometheus-sample-app.yaml
 ```
 
@@ -110,8 +166,9 @@ Any applications that you want to scrape should be instrumented with a [Promethe
 ### AWS Distro for OpenTelemetry (ADOT) Collector Setup
 
 
-To start a default instance of the Collector, we have provided an example template configuration. You will have to change the “endpoint” and 
-“region” to correspond with your own AMP workspace. The changes should be with respect to the AWS Prometheus Remote Write Exporter’s configuration. 
+To start a default instance of the Collector, we have provided an example template configuration. You will have to change the `<YOUR_ENDPOINT>` 
+and `<YOUR_REGION>` to correspond with your own AMP workspace.  You’ll also need to change `<YOUR_ACCOUNT_ID>` to your AWS account ID. The changes 
+should be with respect to the AWS Prometheus Remote Write Exporter’s configuration. 
 
 For Example:
 
@@ -134,13 +191,15 @@ configurations if you would like to scrape a different application.*
 To pull the Kubernetes configuration for ADOT Collector:
 
 ```bash
-$ curl https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/examples/eks/prometheus-pipeline/eks-prometheus-sidecar.yaml -o eks-prometheus-sidecar.yaml
+$ curl https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/examples/eks/prometheus-pipeline/eks-prometheus-daemonset.yaml -o eks-prometheus-daemonset.yaml
 ```
+
+Make the changes as mentioned above
 
 Now, to deploy the ADOT Collector in EKS, apply this Kubernetes config:
 
 ```bash
-$ kubectl apply -f eks-prometheus-sidecar.yaml
+$ kubectl apply -f eks-prometheus-daemonset.yaml
 ```
 
 You can verify that the ADOT Collector has started with this command:
