@@ -100,7 +100,7 @@ AppDynamics relies on `service.name` and `service.namespace` trace resource attr
 - `service.namespace`: your AppDynamics application name. Set corresponding `service.namespace` trace resource attribute for every service being monitored.
   - You can set these `service.name` and `service.namespace` attributes:
     1. Using `OTEL_RESOURCE_ATTRIBUTES` [environment variable](https://github.com/open-telemetry/opentelemetry-specification/blob/master/specification/resource/sdk.md#specifying-resource-information-via-an-environment-variable).
-    2. Inside your application code: please consult the appropriate language documentation on how to
+    2. Inside your application code: please consult the appropriate OpenTelemetry language-specific documentation for your code.
 
 ### Configure AWS OTel Collector for AppDynamics
 
