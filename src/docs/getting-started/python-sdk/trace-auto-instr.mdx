@@ -78,32 +78,28 @@ The configuration of your SDK exporter depends on how you have configured your A
 
 We can use the `OTEL_EXPORTER_OTLP_ENDPOINT=localhost:55678` environment variable to set the address that the exporter will use to connect to the collector. If the address is unset, it will instead try to connect to `localhost:55680`.
 
-#### Connecting to a collector running locally as a sidecar
+If the collector the application will connect to is running without TLS configured, the `OTEL_EXPORTER_OTLP_INSECURE=True` environment variable is used to disable client transport security for an SDK OTLP exporter’s connection. This will use the gRPC insecure_channel() method as explained in the [gRPC Python Documentation](https://grpc.github.io/grpc/python/grpc.html?highlight=insecure#grpc.insecure_channel). This option should never be used in production, non-sidecar deployments.
 
-When the collector is running locally, the `OTEL_EXPORTER_OTLP_INSECURE=True` environment variable is used to disable client transport security for an SDK OTLP exporter’s connection. This will use the gRPC insecure_channel() method as explained in the [gRPC Python Documentation](https://grpc.github.io/grpc/python/grpc.html?highlight=insecure#grpc.insecure_channel). This option should never be used in production, non-sidecar deployments.
-
-#### Connecting to a collector running on the internet as a service
-
-If connecting to a gRPC server on the internet running gRPC over TLS, the `OTEL_EXPORTER_OTLP_CERTIFICATE=/path/to/my-cert.crt` environment variable can be used to give a path to credentials to be used to establish a secure connection for the app’s exporter. The credentials at this path should be the public certificate of the collector, or one of its root certificates. If no certificate is found, the gRPC method `ssl_channel_credentials()` will attempt to “retrieve the PEM-encoded root certificates from a default location chosen by gRPC runtime” as explained in the [gRPC Python Documentation](https://grpc.github.io/grpc/python/grpc.html?highlight=ssl_channel_credentials).
+If the collector the application will connect to is running with TLS configured, the `OTEL_EXPORTER_OTLP_CERTIFICATE=/path/to/my-cert.crt` environment variable is used to give a path to credentials to be used to establish a secure connection for the app’s exporter. The credentials at this path should be the public certificate of the collector, or one of its root certificates. If no certificate is found, the gRPC method `ssl_channel_credentials()` will attempt to “retrieve the PEM-encoded root certificates from a default location chosen by gRPC runtime” as explained in the [gRPC Python Documentation](https://grpc.github.io/grpc/python/grpc.html?highlight=ssl_channel_credentials).
 
 #### Examples on running the application
 
-An example of starting an application which connects to a collector running locally:
+Starting an application which connects to a collector running as a sidecar without TLS:
 
 ```bash
-$ OTEL_EXPORTER_OTLP_INSECURE=True opentelemetry-instrument -e otlp --ids-generator aws_xray python ./path/to/your/app.py
+$ OTEL_EXPORTER_OTLP_INSECURE=True OTEL_EXPORTER_OTLP_ENDPOINT=localhost:55678 opentelemetry-instrument -e otlp --ids-generator aws_xray python ./path/to/your/app.py
 ```
 
-An example of starting an application which connects to a collector running locally using flask:
+Starting an application which connects to a collector running as a sidecar without TLS using flask:
 
 ```bash
 $ OTEL_EXPORTER_OTLP_INSECURE=True OTEL_EXPORTER_OTLP_ENDPOINT=localhost:55678 FLASK_APP=./my_flask_app.py opentelemetry-instrument -e otlp --ids-generator aws_xray flask run
 ```
 
-An example of starting an application which connects to a collector running as a service:
+Starting an application which connects to a collector running as a service with TLS:
 
 ```bash
-$ OTEL_EXPORTER_OTLP_CERTIFICATE=/path/to/my-cert.crt opentelemetry-instrument -e otlp --ids-generator aws_xray python ./path/to/your/app.py
+$ OTEL_EXPORTER_OTLP_CERTIFICATE=/path/to/my-cert.crt OTEL_EXPORTER_OTLP_ENDPOINT=https://my-example-awesome-website-with-collector.com opentelemetry-instrument -e otlp --ids-generator aws_xray python ./path/to/your/app.py
 ```
 
 <SectionSeparator />
