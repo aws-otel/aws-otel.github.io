@@ -34,7 +34,7 @@ curl -O https://raw.githubusercontent.com/aws-observability/aws-otel-collector/m
     * `Subnets` - the subnet your ECS Fargate task is running (*ex: Subnets=SubnetID1\\\,SubnetID2*)
     * `command` -  Assign value to the command variable to select the config file path; the AWS collector comes with
                    two configs baked in for ECS customers (choose one of them based on your purpose):
-                   `--config=/etc/ecs/otel-agent-ecs-default-config.yaml` - To consome OTPL metrics/traces and X-Ray SDK traces (custom application metrics/traces)
+                   `--config=/etc/ecs/ecs-default-config.yaml` - To consome OTPL metrics/traces and X-Ray SDK traces (custom application metrics/traces)
                    `--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml` - To Use OTPL, Xray and Container Resource utilization metrics
 ```console lineNumbers=true
 ClusterName=<Cluster_Name>

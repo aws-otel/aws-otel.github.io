@@ -21,7 +21,7 @@ In this tutorial, we will demonstrate how to create an ECS Task Definition for E
     * `{{ecsExecutionRoleArn}}` - **AWSOTTaskExcutionRole** ARN created in the previous section
     * `command` -  Assign value to the command variable to select the config file path; the AWS collector comes with
                    two configs baked in for ECS customers(choose one of them based on your purpose):
-                   `--config=/etc/ecs/otel-agent-ecs-default-config.yaml` - To consome OTPL metrics/traces and X-Ray SDK traces (custom application metrics/traces)
+                   `--config=/etc/ecs/ecs-default-config.yaml` - To consome OTPL metrics/traces and X-Ray SDK traces (custom application metrics/traces)
                    `--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml` - To Use OTPL, Xray and Container Resource utilization metrics
 3. Follow the [ECS EC2 setup instructions](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/getting-started-ecs-ec2.html)
 to create a task definition using the given template.
