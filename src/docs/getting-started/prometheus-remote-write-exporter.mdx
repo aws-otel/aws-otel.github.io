@@ -9,6 +9,9 @@ path: '/docs/getting-started/prometheus-remote-write-exporter'
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
 import SubSectionSeparator from "components/MdxSubSectionSeparator/subsectionSeparator.jsx"
 import prometheusPipelineImg from "assets/img/docs/gettingStarted/prometheusGettingStarted/Prometheus_Pipeline.png"
+import proxyIngestRoleImg from "assets/img/docs/gettingStarted/prometheusGettingStarted/IAMProxyIngestRole.png"
+import proxyIngestRoleTrustRelationshipImg from "assets/img/docs/gettingStarted/prometheusGettingStarted/IAMProxyIngestRole_TrustRelationship.png"
+import proxyIngestRolePoliciesImg from "assets/img/docs/gettingStarted/prometheusGettingStarted/IAMProxyIngestRole_Policies.png"
 
 In order to scrape and export metrics to your AWS Managed Service for Prometheus (AMP) instance, you can use either the AWS Distro for 
 the OpenTelemetry Collector (ADOT Collector) or a standard vanilla Prometheus server.
@@ -69,7 +72,13 @@ ADOT Collector to scrape and export metrics.
 
 ### Editing the Trust Policy 
 
-Go to your IAM Management Console to find the **amp-iamproxy-ingest-role** that was created in the prerequisites. Go to trust relationships and click **Edit trust relationship.**
+Go to your IAM Management Console to find the **amp-iamproxy-ingest-role** that was created in the prerequisites. 
+
+<img src={proxyIngestRoleImg} alt="Diagram" style="margin: 30px 0;" />
+
+Go to trust relationships and click **Edit trust relationship.**
+
+<img src={proxyIngestRoleTrustRelationshipImg} alt="Diagram" style="margin: 30px 0;" />
 
 Then, replace the **aws-amp** namespace for the service account to **adot-col**. Your resulting trust policy should reflect the example below:
 
@@ -95,23 +104,7 @@ Then, replace the **aws-amp** namespace for the service account to **adot-col**.
 
 Please make sure the following permissions policy is attached to the IAM role above:
 
-```json lineNumbers=true 
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "aps:RemoteWrite",
-                "aps:GetSeries",
-                "aps:GetLabels",
-                "aps:GetMetricMetadata"
-            ],
-            "Resource": "*"
-        }
-    ]
-}
-```
+<img src={proxyIngestRolePoliciesImg} alt="Diagram" style="margin: 30px 0;" />
 
 
 <SubSectionSeparator />
@@ -166,22 +159,7 @@ Any applications that you want to scrape should be instrumented with a [Promethe
 ### AWS Distro for OpenTelemetry (ADOT) Collector Setup
 
 
-To start a default instance of the Collector, we have provided an example template configuration. You will have to change the `<YOUR_ENDPOINT>` 
-and `<YOUR_REGION>` to correspond with your own AMP workspace.  You’ll also need to change `<YOUR_ACCOUNT_ID>` to your AWS account ID. The changes 
-should be with respect to the AWS Prometheus Remote Write Exporter’s configuration. 
-
-For Example:
-
-```yaml lineNumbers=true 
-exporters:
-  awsprometheusremotewrite:
-    endpoint: "https://aps-workspaces.us-west-2.amazonaws.com/workspaces/ws-d26e36bf-361j-480c-94f0-54bd7370f997/api/v1/remote_write"
-    aws_auth:
-      service: "aps"
-      region: "us-west-2"
-```
-
-We will use an example Kubernetes configuration template from the aws-otel-collector repository in order to deploy the ADOT Collector.
+To start a default instance of the Collector, we have provided an example template configuration. This template will deploy the ADOT Collector as a DaemonSet.
 
 *Note: in this example, the ADOT Collector configurations uses Prometheus’s Kubernetes service discovery in order to automatically find 
 the sample app endpoint. An annotation (scrape=true) is used to determine which target endpoints to scrape. (This allows the ADOT Collector 
@@ -194,9 +172,21 @@ To pull the Kubernetes configuration for ADOT Collector:
 $ curl https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/examples/eks/prometheus-pipeline/eks-prometheus-daemonset.yaml -o eks-prometheus-daemonset.yaml
 ```
 
-Make the changes as mentioned above
+You will have to change the `<YOUR_ENDPOINT>` and `<YOUR_REGION>` to correspond with your own AMP workspace. The changes should be with respect to the AWS Prometheus Remote Write Exporter’s configuration. 
 
-Now, to deploy the ADOT Collector in EKS, apply this Kubernetes config:
+For Example:
+
+```yaml lineNumbers=true 
+exporters:
+  awsprometheusremotewrite:
+    endpoint: "https://aps-workspaces.us-west-2.amazonaws.com/workspaces/ws-d26e36bf-361j-480c-94f0-54bd7370f997/api/v1/remote_write"
+    aws_auth:
+      service: "aps"
+      region: "us-west-2"
+```
+
+
+You’ll also need to change `<YOUR_ACCOUNT_ID>` (in the service account section of the Kubernetes configuration) to your AWS account ID. Now, to deploy the ADOT Collector in EKS, apply this Kubernetes config:
 
 ```bash
 $ kubectl apply -f eks-prometheus-daemonset.yaml
@@ -247,11 +237,11 @@ In order to test if AMP received those metrics, we can use the awscurl. This too
 Sigv4 authentication. In order to use this, make sure you have set the correct permissions to query from AMP in your local AWS credentials. Please use 
 this guide to [install awscurl](https://github.com/okigan/awscurl).
 
-You can use the following command below to check if a metric was received in AMP. The region and `AMP_ENDPOINT` will have to be changed 
+You can use the following command below to check if a metric was received in AMP. The `AMP_REGION` and `AMP_ENDPOINT` will have to be changed 
 corresponding to your AMP workspace.
 
 ```bash
-$ awscurl --service="aps" --region="region" "https://{AMP_ENDPOINT}/api/v1/query?query=adot_test_gauge0"
+$ awscurl --service="aps" --region="AMP_REGION" "https://{AMP_ENDPOINT}/api/v1/query?query=adot_test_gauge0"
 {"status":"success","data":{"resultType":"vector","result":[{"metric":{"__name__":"adot_test_gauge0"},"value":[1606512592.493,"16.87214000011479"]}]}}
 ```
 
