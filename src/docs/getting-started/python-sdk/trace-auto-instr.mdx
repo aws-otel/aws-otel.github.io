@@ -20,7 +20,7 @@ In this tutorial, we introduce you to how to use the auto-instrumentation packag
 
 ## Requirements
 
-Python 3.5+ is required to use OpenTelemetry Python. Check your currently installed Python version using python3 -V.
+Python 3.5+ is required to use OpenTelemetry Python. Check your currently installed Python version using `python3 -V`.
 For more information about supported Python versions, see the [OpenTelemetry Python API package on PyPi](https://pypi.org/project/opentelemetry-api/).
 
 Make sure you have AWS Distro for OpenTelemetry Collector (ADOT Collector) running. To set up the collector, see 
@@ -40,12 +40,12 @@ It also provides commands to detect, install, and initialize all instrumentation
 Go to the directory of the application, which currently imports these packages, and run the following commands.
 
 ```bash 
-# Install required packages for instumentation and tracing support for AWS X-Ray 
-pip install opentelemetry-instrumentation==0.16b1
-pip install opentelemetry-exporter-otlp==0.16b1
-pip install opentelemetry-sdk-extension-aws==0.16b1
+$ # Install required packages for instumentation and tracing support for AWS X-Ray
+$ pip install opentelemetry-instrumentation==0.16b1
+$ pip install opentelemetry-exporter-otlp==0.16b1
+$ pip install opentelemetry-sdk-extension-aws==0.16b1
 # Automatically install supported instrumentors for the application's dependencies
-opentelemetry-bootstrap --action=install
+$ opentelemetry-bootstrap --action=install
 ``` 
 
 <SubSectionSeparator />
@@ -53,7 +53,7 @@ opentelemetry-bootstrap --action=install
 ### Setting the global propagators
 
 To allow the span context to propagate downstream when the application makes calls to external services, configure the global propagator. 
-Set the `OTEL_PROPAGATORS` environment variable to use to the AWS X-Ray Propagator.
+Set the `OTEL_PROPAGATORS` environment variable to use the AWS X-Ray Propagator.
 
 ```
 OTEL_PROPAGATORS=aws_xray
@@ -72,41 +72,34 @@ propagators.set_global_textmap(AwsXRayFormat())
 
 ### Run the application 
 
-Auto instrumentation uses the `opentelemetry-instrument` wrapper executable to automatically initialize the installed instrumentors 
-and start the provided application. Environment variables are used to configure the connection to the ADOT Collector and command 
-line arguments are used to configure trace generation for AWS X-Ray.
+Auto instrumentation uses the `opentelemetry-instrument` wrapper executable to automatically initialize the installed instrumentors and start the provided application. Environment variables are used to configure the connection to the ADOT Collector and command line arguments are used to configure trace generation for AWS X-Ray.
 
-<div style="margin: 20px 0">
-    <mark>
-        Please note, we do not recommend using the insecure option. Rather, we recommend configuring either a public or private
-        certificate to authenticate your session before running your application.
-    </mark>
-</div>
+The configuration of your SDK exporter depends on how you have configured your ADOT Collector. To learn more about how the ADOT Collector can be configured, refer to the [ADOT Collector Documentation](https://aws-otel.github.io/docs/getting-started/collector).
 
-The `OTEL_EXPORTER_OTLP_INSECURE=True` environment variable is used to disable client transport security for an OTLP 
-exporter’s connection. This will use the gRPC insecure_channel() method as explained in the 
-[gRPC Python Documentation](https://grpc.github.io/grpc/python/grpc.html?highlight=insecure#grpc.insecure_channel). 
-This option should never be used in production, non-sidecar deployments.
+We can use the `OTEL_EXPORTER_OTLP_ENDPOINT=localhost:55678` environment variable to set the address that the exporter will use to connect to the collector. If the address is unset, it will instead try to connect to `localhost:55680`.
 
-If connecting to a gRPC server on the internet running gRPC over TLS, the `OTEL_EXPORTER_OTLP_CERTIFICATE=/path/to/cert.pem` environment 
-variable can be used to give a path to credentials to be used to establish a secure connection for the app’s exporter. The credentials 
-at this path should be the public certificate of the collector, or one of its root certificates. If no certificate is found, the 
-gRPC method `ssl_channel_credentials()` will attempt to “retrieve the PEM-encoded root certificates from a default 
-location chosen by gRPC runtime” as explained in the [gRPC Python Documentation](https://grpc.github.io/grpc/python/grpc.html?highlight=ssl_channel_credentials).
+If the collector the application will connect to is running without TLS configured, the `OTEL_EXPORTER_OTLP_INSECURE=True` environment variable is used to disable client transport security for an SDK OTLP exporter’s connection. This will use the gRPC insecure_channel() method as explained in the [gRPC Python Documentation](https://grpc.github.io/grpc/python/grpc.html?highlight=insecure#grpc.insecure_channel). This option should never be used in production, non-sidecar deployments.
 
-Further, we can use the `OTEL_EXPORTER_OTLP_ENDPOINT=localhost:55678` environment variable to set the address that the exporter will use to connect 
-to the collector. If the address is unset, it will instead try to connect to `localhost:55680`.
+If the collector the application will connect to is running with TLS configured, the `OTEL_EXPORTER_OTLP_CERTIFICATE=/path/to/my-cert.crt` environment variable is used to give a path to credentials to be used to establish a secure connection for the app’s exporter. The credentials at this path should be the public certificate of the collector, or one of its root certificates. If no certificate is found, the gRPC method `ssl_channel_credentials()` will attempt to “retrieve the PEM-encoded root certificates from a default location chosen by gRPC runtime” as explained in the [gRPC Python Documentation](https://grpc.github.io/grpc/python/grpc.html?highlight=ssl_channel_credentials).
 
-An example of starting an application using generic environment variables:
+#### Examples on running the application
 
-```
-OTEL_EXPORTER_OTLP_INSECURE=True opentelemetry-instrument -e otlp --ids-generator aws_xray python ./path/to/your/app.py
+Starting an application which connects to a collector running as a sidecar without TLS:
+
+```bash
+$ OTEL_EXPORTER_OTLP_INSECURE=True OTEL_EXPORTER_OTLP_ENDPOINT=localhost:55678 opentelemetry-instrument -e otlp --ids-generator aws_xray python ./path/to/your/app.py
 ```
 
-An example of starting an application using flask:
+Starting an application which connects to a collector running as a sidecar without TLS using flask:
 
+```bash
+$ OTEL_EXPORTER_OTLP_INSECURE=True OTEL_EXPORTER_OTLP_ENDPOINT=localhost:55678 FLASK_APP=./my_flask_app.py opentelemetry-instrument -e otlp --ids-generator aws_xray flask run
 ```
-OTEL_EXPORTER_OTLP_INSECURE=True OTEL_EXPORTER_OTLP_ENDPOINT=localhost:55678 FLASK_APP=./my_flask_app.py opentelemetry-instrument -e otlp --ids-generator aws_xray flask run
+
+Starting an application which connects to a collector running as a service with TLS:
+
+```bash
+$ OTEL_EXPORTER_OTLP_CERTIFICATE=/path/to/my-cert.crt OTEL_EXPORTER_OTLP_ENDPOINT=collector.service.local opentelemetry-instrument -e otlp --ids-generator aws_xray python ./path/to/your/app.py
 ```
 
 <SectionSeparator />
