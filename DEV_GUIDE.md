@@ -12,7 +12,7 @@
 3. Open up the project using your preferred code editor
 4. Install the required node modules for this project
     ```
-    yarn install
+    npm install
     ```
 5. [Generate a GitHub Personal Access Token](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token)
 6. Create a new file in the root called `.env.development` (See [Project Structure](#project-structure) for more information)
@@ -22,7 +22,7 @@
    ```
 8. Start up the Gatsby site
     ```
-    gatsby develop
+    npm start
     ```
 9. Open http://localhost:8000 to check the site
 
