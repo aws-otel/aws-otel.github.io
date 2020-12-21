@@ -34,11 +34,11 @@ interface (CLI) and run the command `go mod init main` in the same directory, wh
 To install the necessary prerequisites, run the following command in the same directory that the `go.mod` file is in:
 
 ```bash
-$ go get go.opentelemetry.io/otel 
-$ go get go.opentelemetry.io/otel/sdk 
-$ go get go.opentelemetry.io/otel/exporters/otlp 
-$ go get go.opentelemetry.io/contrib/propagators/aws/xray/idgenerator 
-$ go get go.opentelemetry.io/contrib/propagators/aws/xray/propagator
+go get go.opentelemetry.io/otel 
+go get go.opentelemetry.io/otel/sdk 
+go get go.opentelemetry.io/otel/exporters/otlp 
+go get go.opentelemetry.io/contrib/propagators/aws/xray/idgenerator 
+go get go.opentelemetry.io/contrib/propagators/aws/xray/propagator
 ```
 
 In your `main.go` file, add the following imports:
@@ -426,8 +426,7 @@ import (
 func main() {
     
     // Instantiate a new ECS resource detector
-    detectorUtils := new(ecsDetectorUtils)
-    ecsResourceDetector := ResourceDetector{detectorUtils}
+    ecsResourceDetector := new(ecs.ResourceDetector)
     
     // If on ECS, resourceObj contains the containerID and hostName
     // If NOT on ECS, resourceObj is empty
@@ -458,8 +457,7 @@ import (
 func main() {
     
     // Instantiate a new EKS Resource detector
-    detectorUtils := new(ecsDetectorUtils)
-    eksResourceDetector := ResourceDetector{detectorUtils}
+    eksResourceDetector := new(eks.ResourceDetector)
     
     // If on EKS, resourceObj contains the containerID and clusterName
     // If NOT on EKS, resourceObj is empty
