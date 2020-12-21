@@ -364,7 +364,7 @@ Next, push this image to a remote repository on either ECR or Dockerhub so that 
 
 ### Demonstration 1: ECS Powered by Fargate
 
-1. [Download the ECS Fargate AMP task definition template from Github.](https://github.com/aws-observability/aws-otel-collector/tree/main/examples/ecs/prometheus-pipeline/ecs-fargate-task-def.yaml) This definition specifies a Prometheus sample app and an ADOT Collector instance. If you would like to learn more about the sample app, please visit [here](https://github.com/aws-observability/aws-otel-community/tree/master/sample-apps/prometheus).
+1. [Download the ECS Fargate AMP task definition template from Github.](https://github.com/aws-observability/aws-otel-collector/tree/main/examples/ecs/prometheus-pipeline/ecs-fargate-task-def.json) This definition specifies a Prometheus sample app and an ADOT Collector instance. If you would like to learn more about the sample app, please visit [here](https://github.com/aws-observability/aws-otel-community/tree/master/sample-apps/prometheus).
 2. Fill the following parameters in the task definition templates:
     * `region` - the region the data will be sent to
     * `ecsTaskRoleArn` - AWSOTTaskRole ARN created in the previous section
@@ -385,7 +385,7 @@ Note that you must have a cluster created with an EC2 instance available. We cho
 
 <img src={createClusterECSImg} alt="Diagram" style="margin: 30px 0;" />
 
-1. [Download the ECS EC2 AMP task definition template from Github](https://github.com/aws-observability/aws-otel-collector/tree/main/examples/ecs/prometheus-pipeline/ecs-ec2-task-def.yaml). This definition specifies a Prometheus sample app and an ADOT Collector instance. If you would like to learn more about the sample app, please visit [here](https://github.com/aws-observability/aws-otel-community/tree/master/sample-apps/prometheus).
+1. [Download the ECS EC2 AMP task definition template from Github](https://github.com/aws-observability/aws-otel-collector/tree/main/examples/ecs/prometheus-pipeline/ecs-ec2-task-def.json). This definition specifies a Prometheus sample app and an ADOT Collector instance. If you would like to learn more about the sample app, please visit [here](https://github.com/aws-observability/aws-otel-community/tree/master/sample-apps/prometheus).
 2. Fill the following parameters in the task definition templates:
     * `region` - the region the data will be sent to
     * `ecsTaskRoleArn` - AWSOTTaskRole ARN created in the previous section
