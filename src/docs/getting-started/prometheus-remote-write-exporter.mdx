@@ -8,10 +8,13 @@ path: '/docs/getting-started/prometheus-remote-write-exporter'
 
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
 import SubSectionSeparator from "components/MdxSubSectionSeparator/subsectionSeparator.jsx"
-import prometheusPipelineImg from "assets/img/docs/gettingStarted/prometheusGettingStarted/Prometheus_Pipeline.png"
-import proxyIngestRoleImg from "assets/img/docs/gettingStarted/prometheusGettingStarted/IAMProxyIngestRole.png"
-import proxyIngestRoleTrustRelationshipImg from "assets/img/docs/gettingStarted/prometheusGettingStarted/IAMProxyIngestRole_TrustRelationship.png"
-import proxyIngestRolePoliciesImg from "assets/img/docs/gettingStarted/prometheusGettingStarted/IAMProxyIngestRole_Policies.png"
+import prometheusPipelineEKSImg from "assets/img/docs/gettingStarted/prometheus/eks/Prometheus_Pipeline.png"
+import proxyIngestRoleEKSImg from "assets/img/docs/gettingStarted/prometheus/eks/IAMProxyIngestRole.png"
+import proxyIngestRoleTrustRelationshipEKSImg from "assets/img/docs/gettingStarted/prometheus/eks/IAMProxyIngestRole_TrustRelationship.png"
+import proxyIngestRolePoliciesEKSImg from "assets/img/docs/gettingStarted/prometheus/eks/IAMProxyIngestRole_Policies.png"
+import prometheusPipelineECSImg from "assets/img/docs/gettingStarted/prometheus/ecs/Prometheus_Pipeline.png"
+import createClusterECSImg from "assets/img/docs/gettingStarted/prometheus/ecs/CreateCluster.png"
+import availableMetricsECSImg from "assets/img/docs/gettingStarted/prometheus/ecs/AvailableMetrics.png"
 
 In order to scrape and export metrics to your AWS Managed Service for Prometheus (AMP) instance, you can use either the AWS Distro for 
 the OpenTelemetry Collector (ADOT Collector) or a standard vanilla Prometheus server.
@@ -26,7 +29,7 @@ and send metrics to the AWS Managed Service for Prometheus (AMP).
 The ADOT-AMP pipeline enables us to use the ADOT Collector to scrape a Prometheus-instrumented application, and send the scraped metrics 
 to AWS Managed Service for Prometheus (AMP). 
 
-<img src={prometheusPipelineImg} alt="Diagram" style="margin: 30px 0;" />
+<img src={prometheusPipelineEKSImg} alt="Diagram" style="margin: 30px 0;" />
 
 The ADOT-AMP pipeline includes two OpenTelemetry Collector components specific to Prometheus — the Prometheus Receiver and the AWS Prometheus 
 Remote Write Exporter. 
@@ -47,10 +50,11 @@ authentication protocol for secure authentication.
 
 <SectionSeparator />
 
-## Basic EKS Configuration for AMP
+## Basic Kubernetes/EKS Configuration for AMP
 
 Now, we'll enable Prometheus collection on an EKS cluster. In this scenario, we will use the Prometheus Receiver to perform service discovery in 
-an EKS cluster and metric scraping. We will scrape from an application that provides us with some example Prometheus metrics.
+an EKS cluster and metric scraping. We will scrape from an application that provides us with some example Prometheus metrics. Notice that this setup 
+will also work for an on-premise Kubernetes configuration.
 
 For information about advanced configurations and how to scrape Kubernetes infrastructure with the ADOT Collector-AMP pipeline, please take a look 
 [here](/docs/getting-started/advanced-prometheus-remote-write-configurations)
@@ -64,7 +68,7 @@ Before getting started, you will need to set up the following components:
 * An AMP workspace should be set up. Guides for this can be found [here](https://docs.aws.amazon.com/prometheus/latest/userguide/what-is-Amazon-Managed-Service-Prometheus.html). 
 * A Kubernetes or EKS cluster. If you need to set up an EKS cluster, please use the following [guide](https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html). 
 You can check the name of the active context/cluster using this command `kubectl config current-context`.
-* [Set up IAM roles for service accounts for the ingestion of metrics from Amazon EKS clusters](https://docs.aws.amazon.com/prometheus/latest/userguide/set-up-irsa.html#set-up-irsa-ingest). 
+* If you are setting up the ADOT Collector of AWS EKS, you will need to [set up IAM roles for service accounts for the ingestion of metrics from Amazon EKS clusters](https://docs.aws.amazon.com/prometheus/latest/userguide/set-up-irsa.html#set-up-irsa-ingest). 
 Please follow the **To set up IRSA for ingestion into AMP** section. This section will create a IAM role for the service account that we will use for the 
 ADOT Collector to scrape and export metrics.
 
@@ -72,15 +76,17 @@ ADOT Collector to scrape and export metrics.
 
 ### Editing the Trust Policy 
 
-Go to your IAM Management Console to find the **amp-iamproxy-ingest-role** that was created in the prerequisites. 
+If you are setting up the ADOT Collector of AWS EKS, you will need to edit the trust policy created in the prerequisites.
 
-<img src={proxyIngestRoleImg} alt="Diagram" style="margin: 30px 0;" />
+1. Go to your IAM Management Console to find the **amp-iamproxy-ingest-role** that was created in the prerequisites. 
 
-Go to trust relationships and click **Edit trust relationship.**
+<img src={proxyIngestRoleEKSImg} alt="Diagram" style="margin: 30px 0;" />
 
-<img src={proxyIngestRoleTrustRelationshipImg} alt="Diagram" style="margin: 30px 0;" />
+2. Go to trust relationships and click **Edit trust relationship.**
 
-Then, replace the **aws-amp** namespace for the service account to **adot-col**. Your resulting trust policy should reflect the example below:
+<img src={proxyIngestRoleTrustRelationshipEKSImg} alt="Diagram" style="margin: 30px 0;" />
+
+3. Then, replace the **aws-amp** namespace for the service account to **adot-col**. Your resulting trust policy should reflect the example below:
 
 ```json lineNumbers=true 
 {
@@ -102,9 +108,9 @@ Then, replace the **aws-amp** namespace for the service account to **adot-col**.
 }
 ```
 
-Please make sure the following permissions policy is attached to the IAM role above:
+4. Please make sure the following permissions policy is attached to the IAM role above:
 
-<img src={proxyIngestRolePoliciesImg} alt="Diagram" style="margin: 30px 0;" />
+<img src={proxyIngestRolePoliciesEKSImg} alt="Diagram" style="margin: 30px 0;" />
 
 
 <SubSectionSeparator />
@@ -265,6 +271,155 @@ Run the following commands to clean up your EKS cluster.
 $ kubectl delete namespace aoc-prometheus-pipeline-demo
 $ kubectl delete namespace adot-col
 ```
+
+<SectionSeparator />
+
+## Basic ECS Configuration for AMP
+
+For ECS clusters powered by both AWS Fargate or AWS EC2, we will create a task definition of an ADOT Collector and a Prometheus metric emitter sample app. 
+
+Our ADOT Collector configurations will contain two pipelines. 
+
+
+* To scrape **application metrics**, we will configure the Prometheus Receiver to scrape application metrics from static hosts and export our metrics using the AWS Prometheus Remote Write Exporter.
+* To scrape **ECS Metrics**, we will configure the AWS ECS Container Metrics Receiver to collect ECS metrics and another AWS Prometheus Remote Write Exporter to export metrics. 
+
+<img src={prometheusPipelineECSImg} alt="Diagram" style="margin: 30px 0;" />
+
+### Prerequisites
+
+Before getting started, you will need to set up the following components:
+
+* An AMP workspace should be set up. Guides for this can be found [here](https://docs.aws.amazon.com/prometheus/latest/userguide/what-is-Amazon-Managed-Service-Prometheus.html). 
+* An ECS cluster with Fargate or EC2. If you need to set up an ECS cluster, please use the following [guide](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create_cluster.html). 
+
+### Creating a IAM Policy
+
+We need to create two IAM policies which will give the task role we create later the permissions to execute the actions necessary:
+
+* **AWSDistroOpenTelemetryPolicy**: This policy will give permissions to create/describe logs and get your ADOT configurations from AWS Systems Manager Parameter Store (SSM Parameter Store).
+* **AMPRemoteWritePolicy**: This policy will give permissions to remote write and query metrics from your AMP instance.
+
+Please follow the steps outlined in this guide: [Creating an IAM policy](https://aws-otel.github.io/docs/setup/ecs/create-iam-policy). Note that you will need to use the policies we define below instead.
+
+**AWSDistroOpenTelemetryPolicy:**
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "logs:PutLogEvents",
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:DescribeLogGroups",
+                "ssm:GetParameters"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+```
+
+**AMPRemoteWritePolicy:**
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "aps:RemoteWrite"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+```
+
+### Creating an Task Role
+
+After creating your IAM policies, we need to create a task role to execute the task. We will need to create a task role. 
+
+Please follow this guide for [creating an IAM role](https://aws-otel.github.io/docs/setup/ecs/create-iam-role). However, when creating your Task Role (section 1.5), please remember to attach the **AMPRemoteWritePolicy** we just created above.
+
+Now, we have defined the roles necessary to execute our ECS ADOT Collector configurations. Please follow the section below that fits your ECS cluster.
+
+### Building our Sample App Image
+
+We will be using a simple sample app that is used for the integration tests of this pipeline. You can find the sample app [here](https://github.com/aws-observability/aws-otel-community).
+
+First, fork the repository. Then clone the repository and run the following commands:
+
+```bash
+$ cd ./sample-apps/prometheus
+$ docker build . -t prometheus-sample-app:latest
+```
+
+Next, push this image to a remote repository on either ECR or Dockerhub so that it can be used by the ECS deployment
+
+### Demonstration 1: ECS Powered by Fargate
+
+1. [Download the ECS Fargate AMP task definition template from Github.](https://github.com/aws-observability/aws-otel-collector/tree/main/examples/ecs/prometheus-pipeline/ecs-fargate-task-def.yaml) This definition specifies a Prometheus sample app and an ADOT Collector instance. If you would like to learn more about the sample app, please visit [here](https://github.com/aws-observability/aws-otel-community/tree/master/sample-apps/prometheus).
+2. Fill the following parameters in the task definition templates:
+    * `region` - the region the data will be sent to
+    * `ecsTaskRoleArn` - AWSOTTaskRole ARN created in the previous section
+    * `ecsExecutionRoleArn` - AWSOTTaskExcutionRole ARN created in the previous section
+    * `sampleAppImage` - the image to the Prometheus sample app we created above
+3. Follow the [ECS task definition setup instructions](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-task-definition.html), and use the “Fargate Launch Type” instructions step 1 to create a task definition using the given template.
+    * Be sure to verify all of the fields match the template
+4. [Download the custom ADOT Collector configuration.](https://github.com/aws-observability/aws-otel-collector/tree/main/examples/ecs/prometheus-pipeline/ecs-fargate-adot-config.yaml) This configuration uses the Prometheus Receiver to scrape from a static target. Notice that our sample app is automatically deployed on port 8080. 
+    * Fill the following parameters in the ADOT Collector configuration:
+      * `region` - the region the data will be sent to
+      * `endpoint` - the AMP remote_write endpoint which we will export data to
+5. To use our custom ADOT Collector configuration, we can [set up a custom configuration file using SSM Parameter](https://aws-otel.github.io/docs/setup/ecs/config-through-ssm). 
+6. Now, [deploy your task on ECS](https://aws-otel.github.io/docs/setup/ecs/run-task). 
+
+### Demonstration 2: ECS Powered by AWS EC2
+
+Note that you must have a cluster created with an EC2 instance available. We chose “EC2 Linux + Networking” template. For more detailed cluster setup please refer to the link in the prerequisites section of this document.
+
+<img src={createClusterECSImg} alt="Diagram" style="margin: 30px 0;" />
+
+1. [Download the ECS EC2 AMP task definition template from Github](https://github.com/aws-observability/aws-otel-collector/tree/main/examples/ecs/prometheus-pipeline/ecs-ec2-task-def.yaml). This definition specifies a Prometheus sample app and an ADOT Collector instance. If you would like to learn more about the sample app, please visit [here](https://github.com/aws-observability/aws-otel-community/tree/master/sample-apps/prometheus).
+2. Fill the following parameters in the task definition templates:
+    * `region` - the region the data will be sent to
+    * `ecsTaskRoleArn` - AWSOTTaskRole ARN created in the previous section
+    * `ecsExecutionRoleArn` - AWSOTTaskExcutionRole ARN created in the previous section
+    * `sampleAppImage` - the image to the Prometheus sample app we created above
+3. Follow the [ECS task definition setup instructions](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-task-definition.html), and use the “EC2 Launch Type” instructions step 1 to create a task definition using the given template.
+    * Be sure to verify all of the fields match the template
+4. [Download the custom ADOT Collector configuration](https://github.com/aws-observability/aws-otel-collector/tree/main/examples/ecs/prometheus-pipeline/ecs-ec2-adot-config.yaml). This configuration uses the Prometheus Receiver to scrape from a static target using an environment variable.
+    * Fill the following parameters in the ADOT Collector configuration:
+        * `region` - the region the data will be sent to
+        * `endpoint` - the AMP remote_write endpoint which we will export data to
+5. To use our custom ADOT Collector configuration, we can [set up a custom configuration file using SSM Parameter](https://aws-otel.github.io/docs/setup/ecs/config-through-ssm). 
+6. Now, [deploy your task on ECS](https://aws-otel.github.io/docs/setup/ecs/run-task). 
+
+### Results
+
+#### Query for AMP metrics
+
+In order to test if AMP received those metrics, we can use the awscurl. This tool allows us to send HTTPs requests through the command line with AWS Sigv4 authentication. In order to use this, make sure you have set the correct permissions to query from AMP in your local AWS credentials. Please use this guide to install [awscurl](https://github.com/okigan/awscurl).
+
+You can use the following command below to check if a metric was received in AMP. The region and AMP_ENDPOINT will have to be changed corresponding to your AMP workspace.
+
+```bash
+$ awscurl --service="aps" --region="region" "https://{AMP_ENDPOINT}/api/v1/query?query=adot_test_gauge0"
+{"status":"success","data":{"resultType":"vector","result":[{"metric":{"__name__":"adot_test_gauge0"},"value":[1606512592.493,"16.87214000011479"]}]}}
+```
+
+Note: we added a namespace: adot value in the ADOT Collector yaml file to prefix each metric that is exported by ADOT Collector with adot_. 
+
+#### Visualize metrics in AWS Managed Service for Grafana 
+
+If you are using AWS Managed Service for Grafana (AMG), we can visualize and list the metrics we found. For example, the AWS ECS Container Metrics Receiver will produce the following metrics:
+
+<img src={availableMetricsECSImg} alt="Diagram" style="margin: 30px 0;" />
 
 <SectionSeparator />
 
