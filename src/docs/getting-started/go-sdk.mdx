@@ -421,16 +421,20 @@ The following code snippet demonstrates how to use the ECS resource detector.
 import (
     "context"
     "go.opentelemetry.io/contrib/detectors/ecs"
+    sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
 
 func main() {
     
-    // Instantiate a new ECS resource detector
+    // Instantiate a new ECS Resource detector
     ecsResourceDetector := new(ecs.ResourceDetector)
-    
-    // If on ECS, resourceObj contains the containerID and hostName
-    // If NOT on ECS, resourceObj is empty
-    resourceObj, err := ecsResourceDetector.Detect(context.Background())
+
+    resource, err := ecsResourceDetector.Detect(context.Background())
+
+    //Associate resource with TracerProvider
+    tracerProvider := sdktrace.NewTracerProvider(
+        sdktrace.WithResource(resource),
+    )
     
 }
 ```
@@ -452,16 +456,20 @@ The following code snippet demonstrates how to use the EKS Resource detector.
 import (
     "context"
     "go.opentelemetry.io/contrib/detectors/eks"
+    sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
 
 func main() {
     
     // Instantiate a new EKS Resource detector
     eksResourceDetector := new(eks.ResourceDetector)
-    
-    // If on EKS, resourceObj contains the containerID and clusterName
-    // If NOT on EKS, resourceObj is empty
-    resourceObj, err := eksResourceDetector.Detect(context.Background())
+
+    resource, err := eksResourceDetector.Detect(context.Background())
+
+    //Associate resource with TracerProvider
+    tracerProvider := sdktrace.NewTracerProvider(
+        sdktrace.WithResource(resource),
+    )
     
 }
 ```
