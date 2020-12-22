@@ -28,6 +28,7 @@ import task17 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinit
 import task18 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition18.png"
 import task19 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition19.png"
 import task20 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition20.png"
+import task21 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition21.png"
 
 In this tutorial, we will demonstrate how to install AWS OTel Collector using Task Definition on the Amazon Elastic
 Container Service (Amazon ECS) through AWS console.
@@ -99,7 +100,9 @@ of AOC is passive, if your application doesn’t emit the data to the port (X-ra
        <img src={task13} alt="Diagram" style="margin: 30px 0;" />
        3.  In the NETWORK SETTINGS Links, put the container name aws-otel-collector you used in step 6 as AOT collector.
        <img src={task14} alt="Diagram" style="margin: 30px 0;" />
-       4.  Keep the rest information as default and click add.
+    * 10.4  In the ENVIRONMENT part, cancel the check checkmark .
+       <img src={task21} alt="Diagram" style="margin: 30px 0;" />
+    * 10.5  Keep the rest information as default and click add.
        <img src={task15} alt="Diagram" style="margin: 30px 0;" />
 11. Let’s add another application container in similar way.
     1.  For this example, we use the nginx (Image: nginx:latest).
