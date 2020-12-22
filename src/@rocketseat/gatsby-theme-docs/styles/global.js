@@ -167,13 +167,13 @@ export default function GlobalStyle() {
           color: ${theme.colors.text};
           padding-left: 15px;
           margin-bottom: 16px;
-          font-size: 16px;
+          font-size: 14px;
 
           li {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
                 Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
             line-height: 28px;
-            font-size: 16px;
+            font-size: 14px;
           }
         }
 
