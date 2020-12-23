@@ -66,7 +66,7 @@ For information about advanced configurations and how to scrape Kubernetes infra
 Before getting started, you will need to set up the following components:
 
 * An AMP workspace should be set up. Guides for this can be found [here](https://docs.aws.amazon.com/prometheus/latest/userguide/what-is-Amazon-Managed-Service-Prometheus.html). 
-* A Kubernetes or EKS cluster. If you need to set up an EKS cluster, please use the following [guide](https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html). 
+* A Kubernetes or EKS cluster. The EKS cluster can be on either EC2 or Fargate. If you need to set up an EKS cluster, please use the following [guide](https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html). 
 You can check the name of the active context/cluster using this command `kubectl config current-context`.
 * If you are setting up the ADOT Collector of AWS EKS, you will need to [set up IAM roles for service accounts for the ingestion of metrics from Amazon EKS clusters](https://docs.aws.amazon.com/prometheus/latest/userguide/set-up-irsa.html#set-up-irsa-ingest). 
 Please follow the **To set up IRSA for ingestion into AMP** section. This section will create a IAM role for the service account that we will use for the 
@@ -167,10 +167,10 @@ Any applications that you want to scrape should be instrumented with a [Promethe
 
 To start a default instance of the Collector, we have provided an example template configuration. This template will deploy the ADOT Collector as a DaemonSet.
 
-*Note: in this example, the ADOT Collector configurations uses Prometheus’s Kubernetes service discovery in order to automatically find 
+In this example, the ADOT Collector configurations uses Prometheus’s Kubernetes service discovery in order to automatically find 
 the sample app endpoint. An annotation (scrape=true) is used to determine which target endpoints to scrape. (This allows the ADOT Collector 
 to distinguish between our sample app endpoint from kube-system endpoints within your cluster.) Feel free to remove this from the relabel 
-configurations if you would like to scrape a different application.*
+configurations if you would like to scrape a different application.
 
 To pull the Kubernetes configuration for ADOT Collector:
 
@@ -193,6 +193,8 @@ exporters:
 
 
 You’ll also need to change `<YOUR_ACCOUNT_ID>` (in the service account section of the Kubernetes configuration) to your AWS account ID. Now, to deploy the ADOT Collector in EKS, apply this Kubernetes config:
+
+**Note: if you are using EKS on Fargate, you will need to change `DaemonSet` to `Deployment`. This is because DaemonSets are not supported by Fargate because there is no concept of nodes in Fargate.**
 
 ```bash
 $ kubectl apply -f eks-prometheus-daemonset.yaml
