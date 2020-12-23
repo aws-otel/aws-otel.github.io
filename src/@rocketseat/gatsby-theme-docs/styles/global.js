@@ -58,7 +58,7 @@ export default function GlobalStyle() {
 
         p {
           color: ${theme.colors.text};
-          font-size: 16px;
+          font-size: 16px !important;
           line-height: 28px;
           margin-bottom: 16px;
           font-weight: 400;
