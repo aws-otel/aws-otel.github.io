@@ -29,6 +29,9 @@ const footerStyle = theme => ({
       color: "#2F428E",
     },
   },
+  verticalSpacing: {
+    margin: "5px 0"
+  },
   [theme.breakpoints.down("sm")]: {
     sectionTop: { 
       flexDirection: "column" 
