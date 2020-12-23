@@ -4,7 +4,7 @@ const projectWidgetStyle = {
     textAlign: "left",
     // margin: "50px 0",
     borderRadius: "12px",
-    height: "320px"
+    height: "380px"
   },
   media: {
     height: 140,
