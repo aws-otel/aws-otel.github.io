@@ -81,6 +81,9 @@ function HeaderLinks({ ...props }) {
             <Link to="/announcements" className={classes.dropdownLink}>
               Announcements
             </Link>,
+            // <Link to="/videos" className={classes.dropdownLink}>
+            //   Videos
+            // </Link>,
             <Link
                 to="https://aws.amazon.com/otel/faqs/"
                 className={classes.dropdownLink}
