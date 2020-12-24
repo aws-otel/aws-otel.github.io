@@ -136,8 +136,14 @@ module.exports = (serviceName) => {
   // add OTLP exporter
   const otlpExporter = new CollectorTraceExporter({
     serviceName: serviceName,
-  // can send to any port configured in the collector config
+    // port configured in the collector config, defaults to 55680
     url: "localhost:55680"
+    // credentials only required if tls setup on collector instance
+    credentials: grpc.credentials.createSsl(
+      fs.readFileSync('./ca.crt'),
+      fs.readFileSync('./client.key'),
+      fs.readFileSync('./client.crt')
+    )
   });
   tracerProvider.addSpanProcessor(new SimpleSpanProcessor(otlpExporter));
 
