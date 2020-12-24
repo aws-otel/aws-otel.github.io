@@ -131,6 +131,18 @@ blogs:
 
 searchIndex:
   "
+  Enhancing AWS X-Ray support in OpenTelemetry JavaScript SDK
+  Kelvin Lo and Alolita Sharma
+  21-Dec-2020
+  In this post, AWS intern Kelvin Lo shares his experience of enhancing the OpenTelemetry JavaScript SDK to support AWS X-Ray.
+  These enhancements are also available in the AWS Distro for OpenTelemetry.
+
+  Go support for AWS X-Ray now available in AWS Distro for OpenTelemetry
+  Wilbert Guo, Kelvin Lo and Alolita Sharma
+  18-Dec-2020
+  In this blog post, AWS interns Wilbert Guo and Kelvin Lo share their experience in enhancing the OpenTelemetry Go SDK to
+  support sending traces to AWS X-Ray. These enhancements are also available in the AWS Distro for OpenTelemetry.
+
   Announcing alpha availability of Trace Analytics for distributed tracing
   Rajiv Taori
   17-Dec-2020
@@ -138,6 +150,14 @@ searchIndex:
   enables developers to find and fix performance problems in distributed applications. By adding trace data to the existing
   log analytics capabilities of Open Distro for Elasticsearch
 
+  Building a reliable metrics pipeline with the OpenTelemetry Collector for AWS Managed Service for Prometheus
+  Aman Brar, Jason Liu and Alolita Sharma
+  16-Dec-2020
+  In this blog post, AWS intern engineers Aman Brar and Jason Liu talk about their experience working with the OpenTelemetry
+  Collector and Prometheus Remote Write Exporter. They share their experiences in tackling challenges they faced and
+  how they applied lessons learned to ensure the reliability of the AWS Distro for the OpenTelemetry Collector as
+  the de facto agent for sending metrics to AWS Managed Service for Prometheus.
+  
   AWS adds Prometheus Remote Write Exporter to OpenTelemetry Collector
   Alolita Sharma
   09-Nov-2020
