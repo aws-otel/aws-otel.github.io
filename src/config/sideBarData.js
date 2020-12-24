@@ -95,6 +95,19 @@ export const sideBarData = [
       link: "/docs/null"
     }
   },
+  // {
+  //    node: {
+  //     id: nextId(),
+  //     label: "Partners",
+  //     items: [
+  //       {label: "DataDog", link: "/docs/partners/datadog"},
+  //       {label: "Dynatrace", link: "/docs/partners/dynatrace"},
+  //       {label: "New Relic", link: "/docs/partners/new-relic"},
+  //       {label: "Splunk", link: "/docs/partners/splunk"},
+  //     ],
+  //     link: "/docs/null"
+  //   }
+  // },
   {
     node: {
       id: nextId(),
