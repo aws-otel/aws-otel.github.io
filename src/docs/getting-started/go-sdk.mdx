@@ -97,6 +97,9 @@ This creates a new OTLP exporter with a few options - `WithTLSCredentials()` is 
 [here](https://pkg.go.dev/google.golang.org/grpc/credentials#TransportCredentials), and `WithAddress()` allows you to set the address 
 that the exporter will connect to the collector on. If the address is unset, it will instead try to use connect to `DefaultCollectorHost:DefaultCollectorPort`.
 
+If the collector you are connecting to does not use TLS, for example in a [sidecar deployment](/docs/getting-started/collector/sidecar-vs-service),
+then pass `otlp.WithInsecure()` instead to `otlp.NewExporter`.
+
 <SectionSeparator />
 
 ## Creating a Tracer Provider 
@@ -270,12 +273,8 @@ func initTracer() {
 }
 ```
 
-<div style="margin: 20px 0">
-    <mark>
-        Please note, we do not recommend using the insecure option on line 5. Rather, we recommend configuring either a public or private
-        certificate to authenticate your session before running your application.
-    </mark>
-</div>
+Please note, if your collector is using TLS, usually because it is deployed as a [service](/docs/getting-started/collector/sidecar-vs-service),
+you will need to use `otlp.WithTLSCredentials` instead of `otlp.WithInsecure`.
 
 After creating the `initTracer()` function, we can now call it in our `main()` function, along with creating a new tracer and giving it a 
 name of “demo-app”. In addition to initializing a tracer, we also need to add a line to allow the ADOT Collector to act as a middleware in 
@@ -396,12 +395,8 @@ func initTracer() {
 }
 ```
 
-<div style="margin: 20px 0">
-    <mark>
-        Please note, we do not recommend using the insecure option on line 5. Rather, we recommend configuring either a public or private
-        certificate to authenticate your session before running your application.
-    </mark>
-</div>
+Please note, if your collector is using TLS, usually because it is deployed as a [service](/docs/getting-started/collector/sidecar-vs-service),
+you will need to use `otlp.WithTLSCredentials` instead of `otlp.WithInsecure`.
 
 <SectionSeparator />
 
