@@ -79,7 +79,7 @@ Before you can use the AWS Distro for OpenTelemetry with the Honeycomb end-point
 
 ### Configuration (Collector)
 
-The configuration will take place in the OTLP exporter in the collector config YAML file.
+The configuration will take place in the OTLP exporter in the Collector config YAML file.
 
 * Set the OTLP endpoint to [api.honeycomb.io:443](http://api.honeycomb.io:443/)
 * Add your Honeycomb access token as an OTLP header (you can find your API token [here](https://ui.honeycomb.io/account))
@@ -89,7 +89,7 @@ The configuration will take place in the OTLP exporter in the collector config Y
 ### Example 
 
 ```yaml lineNumbers=true highlight={7,9}
-# Honeycomb collector configuration
+# Honeycomb Collector configuration
 exporters:
   otlp:
     endpoint: api.honeycomb.io:443
@@ -127,7 +127,7 @@ Before you can use the AWS Distro for OpenTelemetry with Lightstep, you need:
 
 ### Configuration (Collector)
 
-The configuration will take place in the OTLP exporter in the collector config YAML file.
+The configuration will take place in the OTLP exporter in the Collector config YAML file.
 
 * Configure the Collector to export OTLP.
 * Set the OTLP endpoint to point to Lightstep.
@@ -141,7 +141,7 @@ The configuration will take place in the OTLP exporter in the collector config Y
 ### Example 
 
 ```yaml lineNumbers=true highlight={8}
-# Lightstep collector configuration
+# Lightstep Collector configuration
 exporters:
   otlp:
      # NOTE: if you are using private satellites, replace this public
@@ -172,7 +172,7 @@ Before you can use the AWS Distro for OpenTelemetry with Sumologic you need:
 
 ### Configuration (Collector)
 
-The configuration will take place in the OTLP exporter in the collector config YAML file.
+The configuration will take place in the OTLP exporter in the Collector config YAML file.
 
 * Configure the Collector to export OTLP. There are separate endpoints for HTTP and gRPC:
     * OTLP gRPC: `collection-sumologic-otelcol.sumologic:55680`
@@ -184,7 +184,7 @@ The configuration will take place in the OTLP exporter in the collector config Y
 ### Example
 
 ```yaml lineNumbers=true highlight={7}
-# SumoLogic collector configuration
+# SumoLogic Collector configuration
 exporters:
   otlp:
     # NOTE: set the endpoint with the expected protocol

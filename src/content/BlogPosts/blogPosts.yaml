@@ -96,7 +96,7 @@ blogs:
     date: "13-Oct-2020"
     body:
       "In this blog post, AWS intern Cong Zou shares his experience contributing to a large open source project—OpenTelemetry—for
-      the first time. OpenTelemetry provides a single set of APIs, libraries, agents, and collector services to capture distributed
+      the first time. OpenTelemetry provides a single set of APIs, libraries, agents, and Collector services to capture distributed
       traces and metrics from applications. Users can analyze these traces and metrics using Prometheus, Jaeger, and other observability tools."
     link: "https://aws.amazon.com/blogs/opensource/integrating-the-opentelemetry-javascript-sdk-with-aws-x-ray/"
 
@@ -194,7 +194,7 @@ searchIndex:
   Alolita Sharma
   13-Oct-2020
   In this blog post, AWS intern Cong Zou shares his experience contributing to a large open source project—OpenTelemetry—for
-  the first time. OpenTelemetry provides a single set of APIs, libraries, agents, and collector services to capture distributed
+  the first time. OpenTelemetry provides a single set of APIs, libraries, agents, and Collector services to capture distributed
   traces and metrics from applications. Users can analyze these traces and metrics using Prometheus, Jaeger, and other observability tools.
 
   Building a Prometheus remote write exporter for the OpenTelemetry Go SDK
