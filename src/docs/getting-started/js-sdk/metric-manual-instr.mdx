@@ -50,9 +50,9 @@ Once OpenTelemetry Dependencies have been imported to application, we can start 
 const metricExporter = new CollectorMetricExporter({
   serviceName: 'aws-otel-js-sample',
   logger: new ConsoleLogger(LogLevel.DEBUG),
-  // port configured in the collector config, defaults to 55680
+  // port configured in the Collector config, defaults to 55680
   url: "localhost:55680"
-  // credentials only required if tls setup on collector instance
+  // credentials only required if tls setup on Collector instance
   credentials: grpc.credentials.createSsl(
     fs.readFileSync('./ca.crt'),
     fs.readFileSync('./client.key'),

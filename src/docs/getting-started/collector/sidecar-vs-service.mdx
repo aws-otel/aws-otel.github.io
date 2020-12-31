@@ -6,19 +6,19 @@ path: '/docs/getting-started/collector/sidecar-vs-service'
 ---
 
 When setting up the AWS OTel Collector, you will generally decide between two different types of deployment, sidecar or
-service. A sidecar deployment runs a process of the collector next to each process of each of your applications while a
-service would have a collector process shared by multiple applications in your system. We generally recommend sidecar
+service. A sidecar deployment runs a process of the Collector next to each process of each of your applications while a
+service would have a Collector process shared by multiple applications in your system. We generally recommend sidecar
 deployment to support all the functionality of the collector.
 
 ## Sidecar
 
-In a sidecar deployment, you will run an instance of the collector for each instance of each application in your system.
+In a sidecar deployment, you will run an instance of the Collector for each instance of each application in your system.
 For example, if you are using Kubernetes, then you will commonly have several deployments, each corresponding to a
 different microservice, and each deployment will have several pods distributed across zones for scalability and
 reliability. With a sidecar deployment, each pod will have a process running your application as well as a process
 running the collector, communicating with each over `localhost`.
 
-By having the collector running with your application, it has the most visibility into the state of the system and will
+By having the Collector running with your application, it has the most visibility into the state of the system and will
 be able to provide the most functionality from the collector. For example, observability data can be tagged with the
 Kubernetes pod which the application is running on because it is the same as the application.
 
@@ -27,7 +27,7 @@ effectively adds memory and CPU usage that goes up at the same rate as the numbe
 collector can run fine with relatively low dedicated resources, but you may need to tweak some settings to make sure it
 doesn't have an oversized impact on your resource utilization. In particular, you should always use the
 [memory limiter](https://github.com/open-telemetry/opentelemetry-collector/tree/master/processor/memorylimiter) to
-ensure the collector does not use up memory needed by your application. For example,
+ensure the Collector does not use up memory needed by your application. For example,
 
 ```yaml
 processors:
@@ -35,21 +35,21 @@ processors:
     limit_mib: 20
 ```
 
-will configure the collector to keep memory usage around 20MiB.
+will configure the Collector to keep memory usage around 20MiB.
 
 ## Service
 
-In a service deployment, you will run a set number of instances of the collector which are accessed from all the
+In a service deployment, you will run a set number of instances of the Collector which are accessed from all the
 applications in your system. For example, if you are using Kubernetes, then you will commonly have several deployments,
 each corresponding to a different microservice, and each deployment will have several pods distributed across zones for
-scalability and reliability. By deploying the collector as a service, it will have its own deployment, independent of
-the others in the system. Applications will communiate with the collector through a service endpoint.
+scalability and reliability. By deploying the Collector as a service, it will have its own deployment, independent of
+the others in the system. Applications will communiate with the Collector through a service endpoint.
 
-Because the collector runs independently from applications, it will not have visiblity into application-specific state,
+Because the Collector runs independently from applications, it will not have visiblity into application-specific state,
 for example the Kubernetes pod running the application. For this reason, we generally recommend deploying as a sidecar
 to unlock all the functionality of the collector.
 
-When running the collector as a service, you will need to configure TLS as well to ensure communication from
+When running the Collector as a service, you will need to configure TLS as well to ensure communication from
 applications is secure. Receivers can be configured with TLS certificates, for example,
 
 ```yaml

@@ -95,9 +95,9 @@ if err != nil {
 
 This creates a new OTLP exporter with a few options - `WithTLSCredentials()` is a way to intialize gRPC TransportCredentials and you can learn more about it 
 [here](https://pkg.go.dev/google.golang.org/grpc/credentials#TransportCredentials), and `WithAddress()` allows you to set the address 
-that the exporter will connect to the collector on. If the address is unset, it will instead try to use connect to `DefaultCollectorHost:DefaultCollectorPort`.
+that the exporter will connect to the Collector on. If the address is unset, it will instead try to use connect to `DefaultCollectorHost:DefaultCollectorPort`.
 
-If the collector you are connecting to does not use TLS, for example in a [sidecar deployment](/docs/getting-started/collector/sidecar-vs-service),
+If the Collector you are connecting to does not use TLS, for example in a [sidecar deployment](/docs/getting-started/collector/sidecar-vs-service),
 then pass `otlp.WithInsecure()` instead to `otlp.NewExporter`.
 
 <SectionSeparator />
@@ -273,7 +273,7 @@ func initTracer() {
 }
 ```
 
-Please note, if your collector is using TLS, usually because it is deployed as a [service](/docs/getting-started/collector/sidecar-vs-service),
+Please note, if your Collector is using TLS, usually because it is deployed as a [service](/docs/getting-started/collector/sidecar-vs-service),
 you will need to use `otlp.WithTLSCredentials` instead of `otlp.WithInsecure`.
 
 After creating the `initTracer()` function, we can now call it in our `main()` function, along with creating a new tracer and giving it a 
@@ -395,7 +395,7 @@ func initTracer() {
 }
 ```
 
-Please note, if your collector is using TLS, usually because it is deployed as a [service](/docs/getting-started/collector/sidecar-vs-service),
+Please note, if your Collector is using TLS, usually because it is deployed as a [service](/docs/getting-started/collector/sidecar-vs-service),
 you will need to use `otlp.WithTLSCredentials` instead of `otlp.WithInsecure`.
 
 <SectionSeparator />

@@ -27,7 +27,7 @@ is not configured for AWS X-Ray by default, configuration has to be made in the 
 <img src={img15} alt="Diagram" style="margin: 30px 0;" />
 
 The diagram above shows the data path of exporting from an application instrumented with OpenTelemetry to AWS X-Ray. It starts with instrumenting 
-our app with a configured tracer, then we export traces to the collector, and finally, the collector will export to AWS X-Ray.
+our app with a configured tracer, then we export traces to the Collector, and finally, the Collector will export to AWS X-Ray.
 
 <SubSectionSeparator />
 
@@ -136,9 +136,9 @@ module.exports = (serviceName) => {
   // add OTLP exporter
   const otlpExporter = new CollectorTraceExporter({
     serviceName: serviceName,
-    // port configured in the collector config, defaults to 55680
+    // port configured in the Collector config, defaults to 55680
     url: "localhost:55680"
-    // credentials only required if tls setup on collector instance
+    // credentials only required if tls setup on Collector instance
     credentials: grpc.credentials.createSsl(
       fs.readFileSync('./ca.crt'),
       fs.readFileSync('./client.key'),
@@ -211,13 +211,13 @@ node server.js
 ```
 
 Whenever a request is made to the application, the tracer will automatically collect telemetry data from the application, export to 
-the collector, and the collector will send traces AWS X-Ray.
+the collector, and the Collector will send traces AWS X-Ray.
 
 Visit the sample application via url localhost:8080:
 
 <img src={jsImg1} alt="Diagram" style="margin: 30px 0;" />
 
-If the collector has been set up successfully with the proper endpoints, AWS credentials and the application is instrumented correctly, 
+If the Collector has been set up successfully with the proper endpoints, AWS credentials and the application is instrumented correctly, 
 we should see the following in the AWS X-Ray console:
 
 <img src={jsImg2} alt="Diagram" style="margin: 30px 0;" />
