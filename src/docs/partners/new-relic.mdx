@@ -1,6 +1,38 @@
----
-title: 'New Relic'
-description:
-    This is the New Relic partners page
-path: '/docs/partners/new-relic'
----
+# New Relic OpenTelemetry Collector Exporter
+
+New Relic’s OpenTelemetry Collector Exporter sends _trace_, _metric_, and _resource_ data from the AWS OpenTelemetry Collector to New Relic. This duo gives you the power of instrumenting your entire stack for complete visibility and interoperability on the New Relic One platform. Use our curated out-of-the-box experiences and flexible visualization tools to quickly gain insight into how all your apps, systems and components are performing.
+
+## Requirements
+
+1. The New Relic OpenTelemetry Collector exporter is included in the AWS OTel Collector. It requires a functioning instance of the AWS OTel Collector to operate.
+2. If you have not already done so, [create your New Relic account](https://docs.newrelic.com/docs/accounts/accounts-billing/account-setup/create-your-new-relic-account).
+3. Create an ingest API key using New Relic’s [API Keys UI](https://one.newrelic.com/launcher/api-keys-ui.api-keys-launcher).
+
+## Configuration
+
+The following configuration must be added to your existing AWS OTel Collector configuration yaml file.
+
+1. Add the `newrelic` exporter to the list of configured exporters for traces and metrics in the _service_ section:
+
+   ```yaml
+   service:
+     pipelines:
+       traces:
+         receivers: [otlp, awsxray]
+         processors: [batch/traces]
+         exporters: [awsxray, newrelic]
+       metrics:
+         receivers: [otlp]
+         processors: [batch/metrics]
+         exporters: [awsemf, newrelic]
+   ```
+
+2. Add the `newrelic` configuration to the _exporters_ section with your New Relic Ingest API Key:
+
+   ```yaml
+   exporters:
+     awsxray:
+     awsemf:
+     newrelic:
+       apikey: your_ingest_api_key_goes_here
+   ```
