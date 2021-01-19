@@ -153,9 +153,9 @@ exporters:
 
 <SectionSeparator />
 
-## SumoLogic 
+## Sumo Logic
 
-Sumo Logic supports telemetry signals from OpenTelemetry natively via OTLP.  If you’re already set up with AWS Distro for 
+Sumo Logic supports telemetry signals from OpenTelemetry natively via OTLP. If you’re already set up with AWS Distro for
 OpenTelemetry, then exporting data into a SumoLogic backend is as simple as editing your YAML config file for the Collector 
 and getting started.
 
@@ -163,21 +163,16 @@ and getting started.
 
 ### Requirements
 
-Before you can use the AWS Distro for OpenTelemetry with Sumologic you need:
+Before you can use the AWS Distro for OpenTelemetry with Sumo Logic you need:
 
-* A Sumologic account. If you don't already have one, you can create an account [here](https://www.sumologic.com/sign-up/mon/).
-* An access token for your Sumologic project. This can be found [here](https://help.sumologic.com/Manage/Security/Access-Keys).
+* A Sumo Logic account. If you don't already have one, you can create an account [here](https://www.sumologic.com/sign-up/).
+* A HTTP Traces endpoint URL. This can be found [here](https://help.sumologic.com/03Send-Data/Sources/02Sources-for-Hosted-Collectors/HTTP_Traces_Source).
 
 <SubSectionSeparator />
 
 ### Configuration (Collector)
 
-The configuration will take place in the OTLP exporter in the Collector config YAML file.
-
-* Configure the Collector to export OTLP. There are separate endpoints for HTTP and gRPC:
-    * OTLP gRPC: `collection-sumologic-otelcol.sumologic:55680`
-    * OTLP HTTP: `collection-sumologic-otelcol.sumologic:55681/v1/trace`
-* An accessId and access Key for your SumoLogic project. This can be generated [here](https://help.sumologic.com/Manage/Security/Access-Keys).
+The configuration will take place in the OTLP/HTTP exporter in the Collector config YAML file.
 
 <SubSectionSeparator />
 
@@ -186,18 +181,13 @@ The configuration will take place in the OTLP exporter in the Collector config Y
 ```yaml lineNumbers=true highlight={7}
 # SumoLogic Collector configuration
 exporters:
-  otlp:
-    # NOTE: set the endpoint with the expected protocol
-    # this is an example for gRPC, different endpoints are
-    # required for different protocols
-    endpoint: collection-sumologic-otelcol.sumologic:55680
-    # You can generate your accessID and accessKey in your account settings
-    headers: {"<accessId>:<accessKey>"}
+  otlphttp:
+    endpoint: https://YOUR_SUMOLOGIC_HTTP_TRACES_ENDPOINT_URL
 ```
 
 If you are instrumenting your application using OpenTelemetry JavaScript, Java, Python, Go,  Ruby, .NET you can use the SumoLogic 
-[documentation](https://help.sumologic.com/Traces/Getting_Started_with_Transaction_Tracing/Set_up_traces_collection_for_Kubernetes_environments#direct-connection-to-the-collector-recommended) 
-to set up your application to connect with a SumoLogic backend.
+[documentation](https://help.sumologic.com/Traces/Getting_Started_with_Transaction_Tracing/Instrument_your_application_with_OpenTelemetry)
+to set up your application and obtain telemetry data.
 
 <SectionSeparator />
 
