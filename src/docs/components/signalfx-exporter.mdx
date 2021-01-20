@@ -1,0 +1,41 @@
+---
+title: Getting Started with SignalFx Exporter
+kind: documentation
+description: 'Configure the AWS Distro for OpenTelemetry Collector to send metrics, events and trace correlation to Splunk Infrastructure Monitoring'
+---
+
+## Overview
+
+The [`signalfx` exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/master/exporter/signalfxexporter) exports metrics, events and trace correlation to Splunk Infrastrcuture Monitoring.
+
+## Configuring SignalFx Exporter
+
+Here is a simple configuration for exporting metrics using the `signalfx` exporter.
+
+```yaml
+exporters:
+  signalfx:
+    access_token: YOUR_TOKEN
+    realm: us0
+```
+
+The `realm` configuration option determines the destination to which data will be sent. The access token can be obtained from the Splunk Infrastructure Monitoring web. For details on how to do so please refer the documentation [here](https://docs.signalfx.com/en/latest/admin-guide/tokens.html#access-tokens).
+
+To send metrics compatible to the ones emitted by the [SignalFx Agent](https://github.com/signalfx/signalfx-agent/), set the `send_compatible_metrics` to `true`. Also, ensure `translation_rules` are not explicitly specified, if not, the defaults will not be used. Here is an example to exporter compatible metrics from the `hostmetrics` receiver.
+
+```yaml
+receivers:
+  hostmetrics:
+    collection_interval: 10s
+    cpu:
+    memory:
+    network:
+    disk:
+exporters:
+  signalfx:
+    access_token: YOUR_TOKEN
+    realm: us0
+    send_compatible_metrics: true
+```
+
+For more details on all configuration options refer to the [`open-telemetry` GitHub repository](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/master/exporter/signalfxexporter).
