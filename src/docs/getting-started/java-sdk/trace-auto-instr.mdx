@@ -93,12 +93,12 @@ public class AppController {
   @ResponseBody
   public String handler() {
      String organizationId = findOrganizationIdForCurrentUser();
-     TracingContextUtils.getCurrentSpan().setAttribute(ORGANIZATION_ID, organizationId);
+     Span.current().setAttribute(ORGANIZATION_ID, organizationId);
   }
 }
 ```
 In this example, the Java agent has already created a span corresponding to the Spring
-handler method. You use `TracingContextUtils.getCurrentSpan()` to access that span and set the
+handler method. You use `Span.current()` to access that span and set the
 attribute for a key that you have defined as a constant by using `AttributeKeys`.
 
 **Note:** When using AWS X-Ray as your tracing backend, you can control whether attributes are uploaded as annotations
@@ -109,7 +109,7 @@ By default, all attributes will be metadata.
 ### Creating spans
 To add a span corresponding to a method in your application, we recommend using the `@WithSpan` annotation.
 ```java lineNumbers=true
-import io.opentelemetry.extensions.auto.annotations.WithSpan;
+import io.opentelemetry.extension.annotations.WithSpan;
 
 public class MyClass {
   @WithSpan
@@ -119,8 +119,7 @@ public class MyClass {
 }
 ```
 This automatically creates a span corresponding to the method with the same name as the method. You
-can use `TracingContextUtils.getCurrentSpan()` inside the method to customize it, for example by
-adding attributes.
+can use `Span.current()` inside the method to customize it, for example by adding attributes.
 
 You can also use the [Tracer API](https://github.com/open-telemetry/opentelemetry-java/blob/master/QUICKSTART.md#tracing)
 if you need more functionality or want to trace only a block, rather than a method, of code.
