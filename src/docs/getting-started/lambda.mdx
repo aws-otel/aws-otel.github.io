@@ -67,7 +67,7 @@ To enable the AWS Distro for OpenTelemetry in your Lambda function, you need to 
 1. Open the Lambda function you intend to instrument in the in AWS console. 
 2. In the **Layers in Designer** section, choose **Add a layer**.
 3.  Under **specify an ARN**, paste the layer ARN, and then choose **Add**.
-4. Add the environment variable `AWS_LAMBDA_EXEC_WRAPPER = /opt/python/aot-instrument` to your Lambda function. This enable auto-instumentations.
+4. Add the environment variable `AWS_LAMBDA_EXEC_WRAPPER = /opt/python/adot-instrument` to your Lambda function. This enable auto-instumentations.
 5. [Enable active tracing](https://docs.aws.amazon.com/lambda/latest/dg/services-xray.html) for your AWS Lambda function.
 
 Tips:
@@ -92,11 +92,11 @@ The ADOT Python Lambda layer combines both OpenTelemetry Python and the ADOT Col
 By default, the ADOT Lambda layer uses [config.yaml](https://github.com/aws-observability/aws-otel-lambda/blob/main/extensions/aoc-extension/config.yaml), 
 which exports telemetry data to AWS X-Ray and AWS CloudWatch.
 
-For debugging, you can turn on the logging exporter in the Collector by adding the environment variable `AOT_DEBUG=true` in the Lambda function.
+For debugging, you can turn on the logging exporter in the Collector by adding the environment variable `ADOT_DEBUG=true` in the Lambda function.
 
 To fully customize the Collector config, there are two options:
-* Bring customized config file (and ca/cert/key files) into the Lambda function by the Lambda layer, then set the Collector config by environment variable `AOT_CONFIG=<your config file path>`
-* Add the environment variable `AOT_CONFIG_CONTENT=<Full content of your config file>`
+* Bring customized config file (and ca/cert/key files) into the Lambda function by the Lambda layer, then set the Collector config by environment variable `ADOT_CONFIG=<your config file path>`
+* Add the environment variable `ADOT_CONFIG_CONTENT=<Full content of your config file>`
 
 For more information about ADOT Collector configuration like adding ca/cert/key files, see the Github 
 [README.md](https://github.com/aws-observability/aws-otel-lambda/blob/main/extensions/sample-aoc-config/README.md).
