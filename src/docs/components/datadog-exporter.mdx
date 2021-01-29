@@ -96,18 +96,11 @@ service:
       exporters: [datadog/api]
 ```
 
-Here is an example configuration for collecting metrics data using the `hostmetrics` receiver:
+Here is an example configuration for collecting metrics data:
 
 ```yaml lineNumbers=true
 receivers:
-  hostmetrics:
-    collection_interval: 2s
-    scrapers:
-      load:
-      cpu:
-      memory:
-      disk:
-      filesystem:
+  otlp:
 
 exporters:    
   datadog/api:
@@ -124,7 +117,7 @@ exporters:
 service:
   pipelines:
     metrics:
-      receivers: [hostmetrics]
+      receivers: [otlp]
       exporters: [datadog/api]
 ```
 
