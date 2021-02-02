@@ -4,6 +4,8 @@ description: Configure the AWS Distro for OpenTelemetry Collector to send metric
 path: '/docs/partners/datadog'
 ---
 
+## Overview
+
 Datadog provides monitoring and insights into infrastructure and application performance across your entire stack. The AWS Distro for Open Telemetry includes the [Datadog exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/master/exporter/datadogexporter), which takes OpenTelemetry data (metrics and traces) collected by the AWS OTel Collector and forwards it on to Datadog. From there, you can use Datadog tools and dashboards to analyze and solve performance problems in your distributed apps.
 
 ## Prerequisites
@@ -123,7 +125,7 @@ service:
 
 Supply the relative path to this configuration file when you start the collector by passing it in using the `--config=<path/to/configuration_file>` command line argument. For examples of supplying a configuration file, see the [AWS OpenTelemetry Collector documentation](https://aws-otel.github.io/docs/getting-started/collector) for your target platform.
 
-## Further reading
+## Resources
 
 For additional information about the Datadog exporter, see the [`open-telemetry` Github repo](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/master/exporter/datadogexporter).
 

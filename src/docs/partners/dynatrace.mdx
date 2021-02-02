@@ -5,33 +5,17 @@ description:
     and observability across your full stack.
 path: '/docs/partners/dynatrace'
 ---
-
-import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
-
-Dynatrace is an all-in-one software intelligence platform delivering continuous, automatic discovery
-and observability across your full stack.
-
-The Dynatrace Open Source Engineering team wrote an exporter for metrics in the OpenTelemetry Collector. This exporter allows
-metrics collected by the OpenTelemetry Collector to be stored, viewed, and analyzed in Dynatrace.
-
-<SectionSeparator />
-
 ## Overview
 
-The Dynatrace metrics exporter exports metrics to the [metrics API v2](https://www.dynatrace.com/support/help/dynatrace-api/environment-api/metric-v2/post-ingest-metrics/)
-using the [metrics ingestion protocol](https://www.dynatrace.com/support/help/how-to-use-dynatrace/metrics/metric-ingestion/metric-ingestion-protocol/).
-This enables Dynatrace to receive metrics collected by the OpenTelemetry Collector.
+The Dynatrace metrics exporter exports metrics to the [metrics API v2](https://www.dynatrace.com/support/help/dynatrace-api/environment-api/metric-v2/post-ingest-metrics/) using the [metrics ingestion protocol](https://www.dynatrace.com/support/help/how-to-use-dynatrace/metrics/metric-ingestion/metric-ingestion-protocol/). This enables Dynatrace to receive metrics collected by the OpenTelemetry Collector. Dynatrace is an all-in-one software intelligence platform delivering continuous, automatic discovery and observability across your full stack. The Dynatrace Open Source Engineering team developed this exporter for metrics in the OpenTelemetry Collector. This exporter allows metrics collected by the OpenTelemetry Collector to be stored, viewed, and analyzed in Dynatrace.
+
+## Requirements
 
 Given an environment ID `abc12345` on Dynatrace SaaS, for example, the metrics ingest endpoint would be `https://abc12345.live.dynatrace.com/api/v2/metrics/ingest`.
 
-The requests sent to Dynatrace are authenticated using an API token.
-Creating an API token for your Dynatrace environment is described in the [Dynatrace API documentation](https://www.dynatrace.com/support/help/dynatrace-api/basics/dynatrace-api-authentication/).
-The only access scope required for exporting metrics is the **Ingest metrics** (`metrics.ingest`) scope listed in the **API v2** section.
-It is recommended to limit the token's scope to only that one.
+The requests sent to Dynatrace are authenticated using an API token. Creating an API token for your Dynatrace environment is described in the [Dynatrace API documentation](https://www.dynatrace.com/support/help/dynatrace-api/basics/dynatrace-api-authentication/). The only access scope required for exporting metrics is the **Ingest metrics** (`metrics.ingest`) scope listed in the **API v2** section. It is recommended to limit the token's scope to only that one.
 
-<SectionSeparator />
-
-## Enable Dynatrace Metrics Exporter
+## COnfiguring the Dynatrace Metrics Exporter
 
 To enable the Dynatrace metrics exporter, write the name under exporter section in the OpenTelemetry config file (`local/config.yaml`) and add the `dynatrace` exporter to your metrics pipeline.
 
@@ -52,8 +36,6 @@ service:
       receivers: [otlp]
       exporters: [dynatrace]
 ```
-
-<SectionSeparator />
 
 ## Set Dynatrace Metrics Exporter Configurations
 
