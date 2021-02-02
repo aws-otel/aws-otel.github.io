@@ -67,7 +67,7 @@ To enable the AWS Distro for OpenTelemetry in your Lambda function, you need to 
 1. Open the Lambda function you intend to instrument in the in AWS console. 
 2. In the **Layers in Designer** section, choose **Add a layer**.
 3.  Under **specify an ARN**, paste the layer ARN, and then choose **Add**.
-4. Add the environment variable `AWS_LAMBDA_EXEC_WRAPPER = /opt/python/aot-instrument` to your Lambda function. This enable auto-instumentations.
+4. Add the environment variable `AWS_LAMBDA_EXEC_WRAPPER = /opt/python/adot-instrument` to your Lambda function. This enable auto-instumentations.
 5. [Enable active tracing](https://docs.aws.amazon.com/lambda/latest/dg/services-xray.html) for your AWS Lambda function.
 
 Tips:
