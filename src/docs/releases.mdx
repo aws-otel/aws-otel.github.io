@@ -21,14 +21,18 @@ import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.js
 
 | Reciever                       | **Processor**                 | **Exporter**                     | Extensions           |
 | ------------------------------ | ----------------------------- | -------------------------------- | -------------------- |
-| *awsecscontainermetricsreceiver* | attributesprocessor           | *awsemfexporter*                   | healthcheckextension |
-| *awsxrayreceiver*                | batchprocessor                | *awsprometheusremotewriteexporter* | pprofextension       |
+| *awsecscontainermetricsreceiver* | attributesprocessor            | *awsemfexporter*                   | healthcheckextension |
+| *awsxrayreceiver*                | batchprocessor                 | *awsprometheusremotewriteexporter* | pprofextension       |
 | otlpreceiver                   | filterprocessor               | *awsxrayexporter*                | zpagesextension      |
 | prometheusreceiver             | memorylimiter                 | fileexporter                     |                      |
 |                                | probabilisticsamplerprocessor | loggingexporter                  |                      |
 |                                | queuedprocessor               | otlpexporter                     |                      |
 |                                | resourceprocessor             | otlphttpexporter                 |                      |
 |                                | spanprocessor                 | prometheusexporter               |                      |
-|                                | tailsamplingprocessor         |                                  |                      |
+|                                | tailsamplingprocessor         | datadogexporter                  |                      |
+|                                |                               | dynatraceexporter                |                      |
+|                                |                               | newrelicexporter                 |                      |
+|                                |                               | sapmexporter                     |                      |
+|                                |                               | signalfxexporter                 |                      |
 
 Note: Components in italics are AWS developed
