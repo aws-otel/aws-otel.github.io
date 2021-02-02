@@ -1,6 +1,102 @@
 ---
-title: 'Splunk'
+title: 'Splunk - SAPM and SignalFx Exporters'
 description:
-    This is the Splunk partners page
+    Splunk has two exporters for sending metrics and trace data from the ADOT Collector. The SAPM Exporter sends traces to Splunk APM. The SignalFx exporter sends send metrics, events and trace correlation to Splunk Infrastructure Monitoring.
 path: '/docs/partners/splunk'
 ---
+
+## Overview
+
+The [`sapm` exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/master/exporter/sapmexporter) exports traces to Splunk APM using the SAPM protocol.
+
+## Configuring SAPM Exporter
+
+The following configuration options are **required**.
+
+#### `access_token`
+
+The authentication token provided by Splunk or another backend that supports the SAPM protocol. The Splunk access token can be obtained from the web app. For details on how to do so please refer the documentation [here](https://docs.signalfx.com/en/latest/admin-guide/tokens.html#access-tokens).
+
+#### `endpoint`
+
+This is the destination to where traces will be sent to in SAPM format. It must be a full URL and include the scheme, port and path e.g, https://ingest.us0.signalfx.com/v2/trace. This can be pointed to the Splunk backend or to another Otel collector that has the SAPM receiver enabled.
+
+The following configuration options can also be configured.
+
+#### `max_connections`
+
+##### `default: 100`
+
+The maximum idle HTTP connection the exporter can keep open.
+
+#### `num_workers`
+
+##### `default: 8`
+
+The number of workers that should be used to export traces. Exporter can make as many requests in parallel as the number of workers. Note that this will likely be removed in future in favour of processors handling parallel exporting.
+
+#### `access_token_passthrough`
+
+##### `default: true`
+
+Whether to use `"com.splunk.signalfx.access_token"` trace resource attribute, if any, as Splunk access token.  In either case this attribute will be deleted during final translation.
+
+
+#### `timeout`
+
+##### `default: 5s`
+
+Timeout for every attempt to send data to the specified endpoint.
+
+### Example Configuration
+
+```yaml
+exporters:
+  sapm:
+    access_token: YOUR_ACCESS_TOKEN
+    access_token_passthrough: true
+    endpoint: https://ingest.YOUR_SIGNALFX_REALM.signalfx.com/v2/trace
+    max_connections: 100
+    num_workers: 8
+```
+
+This exporter also offers proxy support as documented [here](https://github.com/open-telemetry/opentelemetry-collector/tree/master/exporter#proxy-support).
+
+<SectionSeparator />
+
+
+## Overview
+
+The [`signalfx` exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/master/exporter/signalfxexporter) exports metrics, events and trace correlation to Splunk Infrastrcuture Monitoring.
+
+## Configuring SignalFx Exporter
+
+Here is a simple configuration for exporting metrics using the `signalfx` exporter.
+
+```yaml
+exporters:
+  signalfx:
+    access_token: YOUR_TOKEN
+    realm: us0
+```
+
+The `realm` configuration option determines the destination to which data will be sent. The access token can be obtained from the Splunk Infrastructure Monitoring web. For details on how to do so please refer the documentation [here](https://docs.signalfx.com/en/latest/admin-guide/tokens.html#access-tokens).
+
+To send metrics compatible to the ones emitted by the [SignalFx Agent](https://github.com/signalfx/signalfx-agent/), set the `send_compatible_metrics` to `true`. Also, ensure `translation_rules` are not explicitly specified, if not, the defaults will not be used. Here is an example to exporter compatible metrics from the `hostmetrics` receiver.
+
+```yaml
+receivers:
+  hostmetrics:
+    collection_interval: 10s
+    cpu:
+    memory:
+    network:
+    disk:
+exporters:
+  signalfx:
+    access_token: YOUR_TOKEN
+    realm: us0
+    send_compatible_metrics: true
+```
+
+For more details on all configuration options refer to the [`open-telemetry` GitHub repository](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/master/exporter/signalfxexporter).
