@@ -25,72 +25,46 @@ module.exports = {
       }
     },
     {
-      resolve: `gatsby-source-github-api`,
+      resolve: `gatsby-source-github-contributors`,
       options: {
+        repo: "aws-observability/aws-otel-test-framework",
         token: process.env.GH_API_KEY,
-        variables: {},
-        graphQLQuery: `
-          query {
-            orgMembers: organization(login: "aws-observability") {
-              membersWithRole(first: 100) {
-                edges {
-                  node {
-                    name
-                  }
-                }
-              }
-            }
-            repo1: repository(owner: "aws-observability", name: "aws-otel-test-framework") {
-              collaborators {
-                nodes {
-                  name
-                  avatarUrl
-                }
-              }
-            }
-            repo2: repository(owner: "aws-observability", name: "aws-otel-collector") {
-              collaborators {
-                nodes {
-                  name
-                  avatarUrl
-                }
-              }
-            }
-            repo3: repository(owner: "aws-observability", name: "aws-otel-java-instrumentation") {
-              collaborators {
-                nodes {
-                  name
-                  avatarUrl
-                }
-              }
-            }
-            repo4: repository(owner: "aws-observability", name: "aws-otel-js") {
-              collaborators {
-                nodes {
-                  name
-                  avatarUrl
-                }
-              }
-            }
-            repo5: repository(owner: "aws-observability", name: "aws-otel-community") {
-              collaborators {
-                nodes {
-                  name
-                  avatarUrl
-                }
-              }
-            }
-            repo6: repository(owner: "aws-observability", name: "aws-otel-playground") {
-              collaborators {
-                nodes {
-                  name
-                  avatarUrl
-                }
-              }
-            }
-          }
-        `
-      },
+      }
+    },
+    {
+      resolve: `gatsby-source-github-contributors`,
+      options: {
+        repo: "aws-observability/aws-otel-collector",
+        token: process.env.GH_API_KEY,
+      }
+    },
+    {
+      resolve: `gatsby-source-github-contributors`,
+      options: {
+        repo: "aws-observability/aws-otel-java-instrumentation",
+        token: process.env.GH_API_KEY,
+      }
+    },
+    {
+      resolve: `gatsby-source-github-contributors`,
+      options: {
+        repo: "aws-observability/aws-otel-js",
+        token: process.env.GH_API_KEY,
+      }
+    },
+    {
+      resolve: `gatsby-source-github-contributors`,
+      options: {
+        repo: "aws-observability/aws-otel-community",
+        token: process.env.GH_API_KEY,
+      }
+    },
+    {
+      resolve: `gatsby-source-github-contributors`,
+      options: {
+        repo: "aws-observability/aws-otel-playground",
+        token: process.env.GH_API_KEY,
+      }
     },
     `gatsby-transformer-yaml`,
     {

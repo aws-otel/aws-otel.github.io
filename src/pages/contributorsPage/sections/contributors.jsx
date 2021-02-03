@@ -8,21 +8,12 @@ import GridItem from "components/Grid/GridItem.jsx"
 import Card from "components/Card/Card.jsx"
 import ContributorsStyle from "../../../assets/jss/material-kit-react/views/contributorsPageSections/contributorsStyle"
 
-const publicOrgMembers = []
 const names = []
 const allCollaborators = []
 
-function getOrgMembers(data){
-  data.map(obj => {
-      if(!publicOrgMembers.includes(obj.node.name)){
-        publicOrgMembers.push(obj.node.name)
-      }
-  })
-}
-
 function addCollaborators(nodeArray){
   nodeArray.map(node => {
-    if(node.name !== null && !names.includes(node.name) && publicOrgMembers.includes(node.name)){
+    if(node.name !== null && !names.includes(node.name)){
       names.push(node.name)
       allCollaborators.push({
         name: node.name,
@@ -43,82 +34,16 @@ const Contributors = (props) => {
 
   const data = useStaticQuery(graphql`
     query MyQuery {
-      allGithubData {
-        edges {
-          node {
-            data {
-              orgMembers {
-                membersWithRole {
-                  edges {
-                    node {
-                      name
-                    }
-                  }
-                }
-              }
-              repo1 {
-                collaborators {
-                  nodes {
-                    avatarUrl
-                    name
-                  }
-                }
-              }
-              repo2 {
-                collaborators {
-                  nodes {
-                    avatarUrl
-                    name
-                  }
-                }
-              }
-              repo3 {
-                collaborators {
-                  nodes {
-                    avatarUrl
-                    name
-                  }
-                }
-              }
-              repo4 {
-                collaborators {
-                  nodes {
-                    avatarUrl
-                    name
-                  }
-                }
-              }
-              repo5 {
-                collaborators {
-                  nodes {
-                    avatarUrl
-                    name
-                  }
-                }
-              }
-              repo6 {
-                collaborators {
-                  nodes {
-                    avatarUrl
-                    name
-                  }
-                }
-              }
-            }
-          }
+      allGitHubContributor {
+        nodes {
+            name
+            avatarUrl
         }
       }
     }
   `)
 
-  getOrgMembers(data.allGithubData.edges[0].node.data.orgMembers.membersWithRole.edges)
-  
-  addCollaborators(data.allGithubData.edges[0].node.data.repo1.collaborators.nodes)
-  addCollaborators(data.allGithubData.edges[0].node.data.repo2.collaborators.nodes)
-  addCollaborators(data.allGithubData.edges[0].node.data.repo3.collaborators.nodes)
-  addCollaborators(data.allGithubData.edges[0].node.data.repo4.collaborators.nodes)
-  addCollaborators(data.allGithubData.edges[0].node.data.repo5.collaborators.nodes)
-  addCollaborators(data.allGithubData.edges[0].node.data.repo6.collaborators.nodes)
+  addCollaborators(data.allGitHubContributor.nodes)
 
   return (
     <div className={classes.section}>
