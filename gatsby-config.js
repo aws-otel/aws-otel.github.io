@@ -21,7 +21,7 @@ module.exports = {
     {
       resolve: `gatsby-plugin-google-analytics`,
       options: {
-        trackingId: process.env.GA_KEY || "none",
+        trackingId: 'UA-180925204-1',
       }
     },
     {
