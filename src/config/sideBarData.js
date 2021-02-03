@@ -92,6 +92,7 @@ export const sideBarData = [
         {label: "File Exporter", link: "/docs/components/misc-exporters#file-exporter"},
         {label: "ECS Container Metrics Receiver", link: "/docs/components/ecs-metrics-receiver"},
         {label: "X-Ray Receiver", link: "/docs/components/x-ray-receiver"},
+        {label: "StatsD Receiver", link: "/docs/components/statsd-receiver"},
       ],
       link: "/docs/null"
     }

@@ -1,0 +1,38 @@
+---
+title: 'Results: Check StatsD metrics in Amazon CloudWatch'
+description:
+    In this section, we will check the metrics in Amazon CloudWatch collected using statsD receiver.
+path: '/docs/setup/ecs'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import { Link } from "gatsby"
+import statsd_metrics_01 from "assets/img/docs/setup/ecs/results/statsd_metrics_01.png"
+import statsd_metrics_02 from "assets/img/docs/setup/ecs/results/statsd_metrics_02.png"
+
+In this section, we will check the metrics in Amazon CloudWatch collected using statsD receiver.
+
+
+<SectionSeparator />
+
+1. **Check CloudWatch Logs**
+
+Let’s go to CloudWatch console and select Log groups from the left side navigation. Search for our log group
+name `/aws/ecs/application/metrics`  and then click the log stream name which defined before.
+We should see our expected (following) metrics. These logs use the CloudWatch [Embedded Metric
+Format](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Embedded_Metric_Format.html) (EMF)
+to generate CloudWatch Metrics. We sent `statsdTestMetric:1|c` once a second and the aggregation time is 60s, we should see the value
+around to 60
+Following is an example for received logs in the CloudWatch console.
+
+<img src={statsd_metrics_01} alt="Diagram" style="margin: 10px 0;" />
+<div style="height: 40px" />
+
+
+2. **Check CloudWatch metrics**
+
+In the CloudWatch Console, from the left side panel, select Metrics. You should be able to see ECS/AWSOTel/Application namespace.
+Click it and you will see the expected metrics.
+
+<img src={statsd_metrics_02} alt="Diagram" style="margin: 10px 0;" />
+<div style="height: 40px" />

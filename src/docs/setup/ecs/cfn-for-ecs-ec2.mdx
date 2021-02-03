@@ -32,8 +32,8 @@ curl -O https://raw.githubusercontent.com/aws-observability/aws-otel-collector/m
     * `PATH_TO_CloudFormation_TEMPLATE` - CFN template path downloaded in Step 1
     * `command` -  Assign value to the command variable to select the config file path; the AWS Collector comes with
                    two configs baked in for ECS customers (choose one of them based on your requirements):
-                   `--config=/etc/ecs/ecs-default-config.yaml` - To consome OTPL metrics/traces and X-Ray SDK traces (custom application metrics/traces)
-                   `--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml` - To Use OTPL, Xray and Container Resource utilization metrics
+                   `--config=/etc/ecs/ecs-default-config.yaml` - To consume StatsD metrics, OTLP metrics/traces and X-Ray SDK traces (custom application metrics/traces)
+                   `--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml` - To Use StatsD, OTLP, Xray and Container Resource utilization metrics
 ```console lineNumbers=true
 ClusterName=<Cluster_Name>
 Region=<AWS_Region>
