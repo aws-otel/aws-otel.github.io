@@ -70,9 +70,8 @@ and is configured to send data to a [OpenTelemetry collector](https://github.com
 at `localhost:4317`.
 
 The agent can be configured using [standard OpenTelemetry options for configuration](https://github.com/open-telemetry/opentelemetry-java-instrumentation#configuration-parameters-subject-to-change).
-For example, to set the random sampling rate for creating traces, you can set either the `-Dotel.config.sampler.probability`
-Java system property or `OTEL_CONFIG_SAMPLER_PROBABILITY` environment variable to a value between 0 and 1 with the sampling rate,
-meaning to specify a sampling rate of 30%, you can set the environment variable `OTEL_CONFIG_SAMPLER_PROBABILITY=0.3`.
+For example, to set the random sampling rate for creating traces, you can set the environment variables
+`OTEL_TRACE_SAMPLER=parentbased_traceidratio` and `OTEL_TRACE_SAMPLER_ARG=0.3` to configure a sampling rate of 30%.
 
 <SectionSeparator />
 
