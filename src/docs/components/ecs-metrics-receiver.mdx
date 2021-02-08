@@ -159,7 +159,7 @@ The following table lists all metrics emitted by AWS ECS container metrics recei
 Metrics emitted by this receiver comes with a set of resource attributes. These resource attributes can be converted to
 metrics labels using appropriate processors/exporters (See [Full Configuration](#full-configuration-for-task-level-metrics) section below). These metrics
 labels can be set as metrics dimensions while exporting to desired destinations. Check the following table to see
-available resource attributes for Task and Container level metrics. Container level metrics have three additional
+available resource attributes for Task and Container level metrics. Container level metrics have seven additional
 attributes than task level metrics.
 
 | Resource Attributes for Task Level Metrics | Resource Attributes for Container Level Metrics |
@@ -186,6 +186,7 @@ attributes than task level metrics.
 |                                            | aws.ecs.container.exit_code                     |
 
 
+**Note:** Please do not contains more than 9 dimension keys in the dimension set. [See cloudwatch docs for more information](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Embedded_Metric_Format_Specification.html#CloudWatch_Embedded_Metric_Format_Specification_structure_dimensionset)
 
 
 <SectionSeparator />
