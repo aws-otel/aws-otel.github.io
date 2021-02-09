@@ -78,10 +78,10 @@ exporters:
 
 *Note: These configurations are optional*
 
-### Enable The Customer X-Ray Annotations
-By using OpenTelemetry SDK, we can add the customized attributes for each trace subsegment. By default, these OTel attributes will be
-converted into `metadta` attributes in X-Ray raw data. If we need to convert all of OTel attributes or the selected attributes
-into X-Ray `annotation`. We can following the steps below for enabling annotation conversion.
+### Enable The Customized X-Ray Annotations
+By using OpenTelemetry SDK, we can add the customized attributes for each trace subsegment. By default, these OTel
+attributes will be converted into `metadta` attributes in X-Ray raw data. If we need to convert all of OTel attributes or the selected attributes
+into X-Ray `annotation`. We can follow the steps below for enabling annotation conversion.
 
 #### Step 1: create an attribute by using OTel SDK
 For example:
