@@ -351,7 +351,8 @@ function SetSpanAttribute() {
 
 *Note: When using AWS X-Ray as your tracing backend, you can control whether attributes are uploaded as annotations or metadata by configuring the ADOT 
 Collector’s [indexed keys](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/master/exporter/awsxrayexporter#exporter-configuration). 
-Additionally, you can set attributes as annotations or metadata in code by using `setAttribute(“annotation.<key>”, <value>)` and `setAttribute(“metadata.<key>”, <value>)`.*
+Additionally, you can set attributes as annotations by enabling it in the collector configuration for X-Ray exporter.
+See the instructions [here](/docs/getting-started/x-ray/#enable-the-customer-x-ray-annotations).
 
 #### Creating Spans
 
