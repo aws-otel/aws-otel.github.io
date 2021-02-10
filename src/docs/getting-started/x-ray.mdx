@@ -78,6 +78,29 @@ exporters:
 
 *Note: These configurations are optional*
 
+### Enable The Customized X-Ray Annotations
+By using OpenTelemetry SDK, we can add the customized attributes for each trace subsegment. By default, these OTel
+attributes will be converted into `metadta` attributes in X-Ray raw data. If we need to convert all of OTel attributes or the selected attributes
+into X-Ray `annotation`. We can follow the steps below for enabling annotation conversion.
+
+#### Step 1: create an attribute by using OTel SDK
+For example:
+```
+setAttribute(“TransactionId”, <value>)
+setAttribute(“AccountId”, <value>)
+```
+#### Step 2: In the collector, set the config in one of the two ways
+For specific attributes to be indexed
+```yaml lineNumbers=true
+awsxray:
+  indexed_attributes: ["TransactionId", "AccountId"]
+```
+For all attributes to be indexed
+```yaml lineNumbers=true
+awsxray:
+  index_all_attributes: true
+```
+
 <SectionSeparator />
 
 ## Configuring Processors
