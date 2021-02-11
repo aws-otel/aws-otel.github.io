@@ -240,10 +240,13 @@ The function should look something like this:
 func initTracer() {
 
     // Create new OTLP Exporter struct
-    exporter, err := otlp.NewExporter(
-        otlp.WithInsecure(), 
-        otlp.WithAddress("localhost:30080"),
+    driver := otlpgrpc.NewDriver(
+	 otlpgrpc.WithInsecure(),
+	 otlpgrpc.WithEndpoint("localhost:30080"),
+	 otlpgrpc.WithDialOption(grpc.WithBlock()), // useful for testing
     )
+    
+    exporter, err := otlp.NewExporter(ctx, driver)
     if err != nil {
         // Handle error here...
     }
@@ -326,6 +329,7 @@ import (
 	"go.opentelemetry.io/contrib/propagators/aws/xray"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/otlp"
+	"go.opentelemetry.io/otel/exporters/otlp/otlpgrpc"
 
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
@@ -362,10 +366,13 @@ func handler(w http.ResponseWriter, r *http.Request) {
 func initTracer() {
 
 	// Create new OTLP Exporter struct
-	exporter, err := otlp.NewExporter(
-		otlp.WithInsecure(),
-		otlp.WithAddress("localhost:30080"),
-	)
+	 driver := otlpgrpc.NewDriver(
+	 	otlpgrpc.WithInsecure(),
+		otlpgrpc.WithEndpoint("localhost:30080"),
+	 	otlpgrpc.WithDialOption(grpc.WithBlock()), // useful for testing
+        )
+    
+    	exporter, err := otlp.NewExporter(ctx, driver)
 	if err != nil {
 		// Handle error here...
 	}
@@ -414,15 +421,14 @@ The following code snippet demonstrates how to use the ECS resource detector.
 ```go lineNumbers=true
 import (
     "context"
-    "go.opentelemetry.io/contrib/detectors/ecs"
+    "go.opentelemetry.io/contrib/detectors/aws/ecs"
     sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
 
 func main() {
     
     // Instantiate a new ECS Resource detector
-    ecsResourceDetector := new(ecs.ResourceDetector)
-
+    ecsResourceDetector := ecs.NewResourceDetector()
     resource, err := ecsResourceDetector.Detect(context.Background())
 
     //Associate resource with TracerProvider
@@ -449,15 +455,14 @@ The following code snippet demonstrates how to use the EKS Resource detector.
 ```go lineNumbers=true 
 import (
     "context"
-    "go.opentelemetry.io/contrib/detectors/eks"
+    "go.opentelemetry.io/contrib/detectors/aws/eks"
     sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
 
 func main() {
     
     // Instantiate a new EKS Resource detector
-    eksResourceDetector := new(eks.ResourceDetector)
-
+    eksResourceDetector := eks.NewResourceDetector()
     resource, err := eksResourceDetector.Detect(context.Background())
 
     //Associate resource with TracerProvider
