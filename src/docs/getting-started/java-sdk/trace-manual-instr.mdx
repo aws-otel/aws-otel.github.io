@@ -10,33 +10,24 @@ path: '/docs/getting-started/java-sdk/trace-manual-instr'
 
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
 
-The Java library for OpenTelemetry can be attached to any Java 8+ application to gather telemetry data from a diverse
+The Java library for OpenTelemetry can be compiled into any Java 8+ application to gather telemetry data from a diverse
 set of libraries and frameworks.
 
-In this tutorial, we will introduce how to use OpenTelemetry Java SDK for traces instrumentation in the application.
+In this tutorial, we will introduce how to use OpenTelemetry Java SDK for trace instrumentation in the application.
 
 <SectionSeparator />
 
 ## Requirements
 
-[Java 8 (or later)](https://adoptopenjdk.net/) is required to run an application using OpenTelemetry.Getting the auto-instrumentation agent
-
-Download the [latest version](https://github.com/aws-observability/aws-otel-java-instrumentation/releases/latest/download/aws-opentelemetry-agent.jar).
-
-If you'd prefer to pin to a specific version, check out our [releases](https://github.com/aws-observability/aws-otel-java-instrumentation/releases).
-
-This package includes the instrumentation agent and instrumentation for all supported libraries and all available data exporters,
-providing a complete out-of-the-box experience for tracing. The agent is preconfigured to generate trace IDs compatible
-with [AWS X-Ray](https://aws.amazon.com/xray/), which works with any other tracing system, and enables trace propagation
-using [W3C Trace Context](https://w3c.github.io/trace-context/), [B3](https://github.com/openzipkin/b3-propagation),
-and [X-Ray](https://docs.aws.amazon.com/xray/latest/devguide/xray-concepts.html#xray-concepts-tracingheader).
+[Java 8 (or later)](https://adoptopenjdk.net/) is required to run an application using OpenTelemetry.
 
 Note: You’ll also need to have the AWS Distro for OpenTelemetry Collector running to export traces to X-Ray.
 
 <SectionSeparator />
 
-## Instrumenting an application without the agent
-You might not be able to or want to run the Java agent with your application. For instance, because the Java agent
+## Instrumenting an application using manual instrumentation
+
+You might not be able to or want to run the auto instrumentation Java agent with your application. For instance, because the Java agent
 rewrites parts of the application at startup time, it could have a negative impact on startup performance. Instead of
 using the agent, you can modify your app to include and initialize the OpenTelemetry SDK and library instrumentation manually.
 
@@ -45,7 +36,7 @@ First, include the OpenTelemetry SDK as a compile dependency.
 ##### For Gradle:
 ```java lineNumbers=true
 dependencies {
-    implementation('io.opentelemetry:opentelemetry-sdk:0.8.0')
+    implementation('io.opentelemetry:opentelemetry-sdk:0.15.0')
 }
 ```
 
@@ -54,8 +45,8 @@ dependencies {
 <dependencies>
   <dependency>
     <groupId>io.opentelemetry</groupId>
-    <artifactId>opentelemetry-api</artifactId>
-    <version>0.8.0</version>
+    <artifactId>opentelemetry-sdk</artifactId>
+    <version>0.15.0</version>
   </dependency>
 </dependencies>
 ```
@@ -69,7 +60,7 @@ automatically initialize tracing, add a dependency on the starter.
 
 ##### For Gradle:
 ```java
-implementation 'io.opentelemetry.instrumentation:opentelemetry-otlp-exporter-starter:0.8.0'
+implementation 'io.opentelemetry.instrumentation:opentelemetry-otlp-exporter-starter:0.15.0'
 ```
 
 ##### For Maven:
@@ -78,27 +69,26 @@ implementation 'io.opentelemetry.instrumentation:opentelemetry-otlp-exporter-sta
   <dependency>
     <groupId>io.opentelemetry.instrumentation</groupId>
     <artifactId>opentelemetry-otlp-exporter-starter</artifactId>
-    <version>0.8.0</version>
+    <version>0.15.0</version>
   </dependency>
 </dependencies>
 ```
 
 If you’re not using Spring Boot, then as early as possible in your application, generally as a static block in your
-main class, or early in the main method, register the OTLP exporter like this.
+main class, or early in the main method, configure the SDK with the OTLP exporter as follows:
 
 ```java lineNumbers=true
-OpenTelemetrySdk.getTracerProvider()
-  .addSpanProcessor(BatchSpanProcessor.newBuilder(
-    OtlpGrpcSpanExporter.newBuilder()
-      .readSystemProperties()
-      .readEnvironmentVariables()
+OpenTelemetrySdk.builder()
+  .addSpanProcessor(BatchSpanProcessor.builder(
+    OtlpGrpcSpanExporter.builder()
+      .setEndpoint("localhost:11111")
       .build())
-.build());
+    .build())
+  .buildAndRegisterGlobal();
 ```
 
-This initializes the OTLP span exporter with default settings read from system properties or environment variables.
-You can read about the configuration options for the exporter on the
-[Open Telemetry Java Instumentation GitHub](https://github.com/open-telemetry/opentelemetry-java-instrumentation#otlp-exporter).
+This initializes the OTLP span exporter to connect to a collector at port `11111` on `localhost`. You can use additional
+methods on the `OtlpGrpcSpanExporterBuilder` for additional configuration of the exporter.
 
 To actually instrument your code, we recommend you use library instrumentation when available. These offer simple entry points
 to automatically generate spans for a given library without having to manually create them. For example, to instrument calls using
@@ -106,7 +96,7 @@ the AWS SDK, add a dependency on the library instrumentation for the AWS SDK.
 
 ##### For Gradle:
 ```java
-implementation 'io.opentelemetry.instrumentation:opentelemetry-aws-sdk-2.2:0.8.0'
+implementation 'io.opentelemetry.instrumentation:opentelemetry-aws-sdk-2.2:0.15.0'
 ```
 
 ##### For Maven:
@@ -115,7 +105,7 @@ implementation 'io.opentelemetry.instrumentation:opentelemetry-aws-sdk-2.2:0.8.0
   <dependency>
     <groupId>io.opentelemetry.instrumentation</groupId>
     <artifactId>opentelemetry-aws-sdk-2.2</artifactId>
-    <version>0.8.0</version>
+    <version>0.15.0</version>
   </dependency>
 </dependencies>
 ```
@@ -132,7 +122,36 @@ DynamoDbClient.builder()
 
 This will enable tracing for all DynamoDb calls using this client.
 
+<SectionSeparator />
+
+## Configuring manual instrumentation for use with AWS X-Ray
+
+If you are using AWS X-Ray as your tracing backend, you will need to configure the SDK ID generation for compatibility
+with X-Ray.
+
+Add a dependency on the AWS extensions to the OpenTelemetry SDK
 
 
+```java
+implementation 'io.opentelemetry:opentelemetry-sdk-extension-aws:0.15.0'
+```
 
+##### For Maven:
+```xml lineNumbers=true
+<dependencies>
+  <dependency>
+    <groupId>io.opentelemetry</groupId>
+    <artifactId>opentelemetry-sdk-extension-aws</artifactId>
+    <version>0.15.0</version>
+  </dependency>
+</dependencies>
+```
 
+And when configuring the SDK, specify the ID generator.
+
+```java lineNumbers=true
+OpenTelemetrySdk.builder()
+  ...
+  .setIdGenerator(AwsXrayIdGenerator.getInstance())
+  .buildAndRegisterGlobal();
+```

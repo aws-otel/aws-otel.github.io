@@ -55,7 +55,7 @@ const infoStyle = {
     overflow: "hidden",
     marginTop: "0px",
     fontSize: "14px",
-    minHeight: "260px",
+    minHeight: "300px",
   },
   iconWrapperVertical: {
     float: "none"

@@ -12,8 +12,7 @@ jobs:
       - uses: actions/checkout@v1
       - uses: enriikke/gatsby-gh-pages-action@v2
         env:
-          GH_API_KEY: ${{ secrets.gh }}
-          GA_KEY: ${{ secrets.ga }}
+          GH_API_KEY: ${{ secrets.GITHUB_TOKEN }}
         with:
           access-token: ${{ secrets.demo }}
           deploy-branch: gh-pages

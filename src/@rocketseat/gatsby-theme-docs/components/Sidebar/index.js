@@ -14,11 +14,13 @@ import {
 } from './styles';
 import ExternalLink from './ExternalLink';
 import InternalLink from './InternalLink';
+import { Link } from "gatsby"
 // import Logo from '../Logo';
 
-function ListWithSubItems({ children, text }) {
+function ListWithSubItems({ children, text, link }) {
     return (
         <>
+            {/* <Heading><Link to={link} style={{"color": "black"}}>{text}</Link></Heading> */}
             <Heading>{text}</Heading>
             <SubItem>{children}</SubItem>
         </>
@@ -77,7 +79,7 @@ export default function Sidebar({ isMenuOpen }) {
                             });
 
                             return (
-                                <ListWithSubItems key={id} text={label}>
+                                <ListWithSubItems key={id} text={label} link={link}>
                                     {subitems}
                                 </ListWithSubItems>
                             );

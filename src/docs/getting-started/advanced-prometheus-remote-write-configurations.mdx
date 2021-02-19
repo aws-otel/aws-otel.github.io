@@ -1,0 +1,512 @@
+---
+title: 'Prometheus Remote Write Exporter Advanced Configurations for AMP'
+description:
+    In this guide, we provide some advanced configurations for the AWS Distro for OpenTelemetry Collector-AWS Managed 
+    Service for Prometheus (AMP) Pipeline. 
+path: '/docs/getting-started/advanced-prometheus-remote-write-configurations'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import SubSectionSeparator from "components/MdxSubSectionSeparator/subsectionSeparator.jsx"
+
+In this guide, we provide some advanced configurations for the AWS Distro for OpenTelemetry (ADOT) Collector-AWS Managed Service 
+for Prometheus (AMP) Pipeline. 
+
+For an overview on what the pipeline is or for more basic configurations, please take a look at this 
+[Getting Started with the AWS Distro for OpenTelemetry Collector-AMP Pipeline in EKS Guide](/docs/getting-started/prometheus-remote-write-exporter).
+
+<SectionSeparator />
+
+## Prometheus Receiver Configurations
+
+The Prometheus Receiver provides many configurations to perform service discovery, metric scraping, and metric re-labelling.
+
+Note that each of these configurations requires its own Role-Based Access Control (RBAC) permissions in order to access the kube-api and 
+discover scrape targets. These requirements can be found [here](#permissions).
+
+<SubSectionSeparator />
+
+### Additional Kubernetes/EKS Scraping Configurations
+
+To monitor your Kubernetes applications and clusters, we specifically use the `kubernetes_sd_configs`. We can choose between various Kubernetes 
+objects to discover and scrape including endpoints, pods, nodes, services and ingresses. For each of these objects, we provide a default configuration.
+
+#### Endpoints 
+
+The Prometheus Receiver monitors each applications deployment using the service endpoints. Specifically, it scrapes and collects metrics from the 
+`/metrics` endpoint. In order to create and expose these metrics, we use the [Prometheus client libraries](https://prometheus.io/docs/instrumenting/clientlibs/).
+
+```yaml lineNumbers=true 
+- job_name: 'kubernetes-service-endpoints'
+  kubernetes_sd_configs:
+  - role: endpoints
+  
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+
+  relabel_configs:
+  # Example relabel to scrape only endpoints that have
+  # "prometheus.io/scrape = true" annotation.
+  # - action: keep
+  #   regex: true
+  #   source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
+  # Example relabel to configure scrape scheme for all service scrape targets
+  # based on endpoints "prometheus.io/scrape_scheme = <scheme>" annotation.
+  # - action: replace
+  #   regex: (https?)
+  #   source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
+  #   target_label: __scheme__
+  # Example relabel to customize metric path based on endpoints
+  # "prometheus.io/metric_path = <metric path>" annotation.
+  # - action: replace
+  #   regex: (.+)
+  #   source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
+  #   target_label: __metrics_path__
+  # Example relabel to scrape only single, desired port for the service based
+  # on endpoints "prometheus.io/scrape_port = <port>" annotation.
+  # - action: replace
+  #   regex: ([^:]+)(?::\d+)?;(\d+)
+  #   replacement: $$1:$$2
+  #   source_labels: [__address__,__meta_kubernetes_service_annotation_prometheus_io_port]
+  #   target_label: __address__
+  - action: labelmap
+    regex: __meta_kubernetes_pod_label_(.+)      
+  - action: replace
+    source_labels: [__meta_kubernetes_namespace]
+    target_label: Namespace
+  - action: replace
+    source_labels: [__meta_kubernetes_service_name]
+    target_label: Service
+  - action: replace
+    source_labels: [__meta_kubernetes_pod_node_name]
+    target_label: kubernetes_node
+  - action: replace
+    source_labels: [__meta_kubernetes_pod_name]
+    target_label: pod_name
+  - action: replace
+    source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: container_name
+
+  # Exclude high cardinality metrics
+  metric_relabel_configs:
+  - source_labels: [__name__]
+    regex: 'go_gc_duration_seconds.*'
+    action: drop
+```
+
+<SubSectionSeparator />
+
+### Pods 
+
+A pod is a group of one or more containers, with shared storage/network resources, and a specification for how to run the containers. 
+When monitoring pods, we want to watch the pod deployment patterns, total pod instances, and expected vs. actual pod instances.
+
+```yaml lineNumbers=true 
+- job_name: 'kubernetes-pods'
+  sample_limit: 10000
+  kubernetes_sd_configs:
+  - role: pod
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  relabel_configs:
+  # Example relabel to scrape only endpoints that have
+  # "prometheus.io/scrape = true" annotation.
+  # - action: keep
+  #  regex: true
+  #  source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
+  # Example relabel to configure scrape scheme for all service scrape targets
+  # based on endpoints "prometheus.io/scrape_scheme = <scheme>" annotation.
+  # - action: replace
+  #  regex: (https?)
+  #  source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
+  #  target_label: __scheme__
+  # Example relabel to customize metric path based on endpoints
+  # "prometheus.io/metric_path = <metric path>" annotation.
+  # - action: replace
+  #  regex: (.+)
+  #  source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
+  #  target_label: __metrics_path__
+  # Example relabel to scrape only single, desired port for the service based
+  # on endpoints "prometheus.io/scrape_port = <port>" annotation.
+  # - action: labelmap
+  #  regex: __meta_kubernetes_pod_label_(.+)
+  - action: replace
+    source_labels: [__meta_kubernetes_namespace]
+    target_label: Namespace
+  - action: replace
+    source_labels: [__meta_kubernetes_pod_name]
+    target_label: pod_name
+  - action: replace
+    source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: container_name
+  - action: replace
+    source_labels: [__meta_kubernetes_pod_controller_name]
+    target_label: pod_controller_name
+  - action: replace
+    source_labels: [__meta_kubernetes_pod_controller_kind]
+    target_label: pod_controller_kind
+  - action: replace
+    source_labels: [__meta_kubernetes_pod_phase]
+    target_label: pod_phase
+
+  metric_relabel_configs:
+  - action: drop
+    source_labels: [__name__]
+    regex: 'go_gc_duration_seconds.*'
+``` 
+
+<SubSectionSeparator />
+
+### Kubernetes (k8s) API Server
+
+The [kube-apiserver](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/) provides REST operations and the 
+front-end to the cluster’s shared state through which all other components interact. Key metrics to watch for include: the number and 
+duration of requests for each combination of resource (including pods, Deployments, etc.) as well as the operation (such as GET, LIST, POST, DELETE).
+
+The TLS configurations give us access to the k8s objects.
+
+```yaml lineNumbers=true 
+- job_name: 'kubernetes-apiservers'
+  sample_limit: 10000
+  # Default to scraping over https. If required, just disable this or change to
+  # `http`.
+  scheme: https
+  
+  kubernetes_sd_configs:
+  - role: endpoints
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+    action: keep
+    regex: kubernetes;https
+```
+
+Some types of metrics we can receive from the API server include:
+
+| Metric                                | Description                                                               | Metric Type       |
+| ------------------------------------- | ------------------------------------------------------------------------- | ----------------- |
+| apiserver\_request\_duration\_seconds | Count of requests to the API server for a specific resource and verb      | Work: Throughput  |
+| workqueue\_queue\_duration\_seconds   | Total number of seconds that items spent waiting in a specific work queue | Work: Performance |
+| workqueue\_work\_duration\_seconds    | Total number of seconds spent processing items in a specific work queue   | Work: Performance |
+
+<SubSectionSeparator />
+
+### cAdvisor
+
+The cAdvisor is an agent integrated into the kubelet binary to monitor the resource usage and analyze the performance of **containers**. 
+Key metrics collected by the cAdvisor include the CPU, memory, file, and network usage for containers running on a given node.
+
+```yaml lineNumbers=true 
+- job_name: 'kubernetes-cadvisor'
+  sample_limit: 10000
+  # Default to scraping over https. If required, just disable this or change to
+  # `http`.
+  scheme: https
+  metrics_path: /metrics/cadvisor
+  
+  kubernetes_sd_configs:
+  - role: node
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  
+  relabel_configs:
+    - action: labelmap
+      regex: __meta_kubernetes_node_label_(.+)
+```
+
+Types of metrics we can receive from the cAdvisor include:
+
+| Metric                                 | Description                                                   |
+| -------------------------------------- | ------------------------------------------------------------- |
+| container\_cpu\_load\_average\_10s     | Value of container cpu load average over the last 10 seconds. |
+| container\_cpu\_system\_seconds\_total | Cumulative system cpu time consumed in seconds.               |
+| container\_last\_seen                  | Last time a container was seen by the exporter                |
+| container\_memory\_failcnt             | Number of memory usage hits limits                            |
+| container\_memory\_failures\_total     | Cumulative count of memory allocation failures.               |
+
+<SubSectionSeparator />
+
+### Nodes
+
+Kubernetes nodes are the virtual or physical machines that run our workloads. Key metrics to watch for nodes 
+mainly report on resource utilization including allocatable memory/CPU and CPU/disk utilization.
+
+```yaml lineNumbers=true
+- job_name: 'kubernetes-nodes'
+  sample_limit: 10000
+  # Default to scraping over https. If required, just disable this or change to
+  # `http`.
+  scheme: https
+  
+  kubernetes_sd_configs:
+  - role: node
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  
+  relabel_configs:
+    - action: labelmap
+      regex: __meta_kubernetes_node_label_(.+)
+```
+
+Types of metrics we receive from the cAdvisor include:
+
+| Metric                                          | Description                                                                                                                                                          |
+| ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| kubelet\_cgroup\_manager\_duration\_seconds     | Duration in seconds for cgroup manager operations. Broken down by method.                                                                                            |
+| kubelet\_node\_config\_error                    | This metric is true (1) if the node is experiencing a configuration-related error, false (0) otherwise.                                                              |
+| kubelet\_pleg\_relist\_duration\_seconds        | Duration in seconds for relisting pods in PLEG (pod lifecycle event generator).                                                                                      |
+| kubelet\_pod\_start\_duration\_seconds          | Duration in seconds for a single pod to go from pending to running.                                                                                                  |
+| kubelet\_pod\_worker\_duration\_seconds         | Duration in seconds to sync a single pod. Broken down by operation type: create, update, or sync                                                                     |
+| kubelet\_running\_pod\_count                    | Number of pods currently running                                                                                                                                     |
+| kubelet\_runtime\_operations\_duration\_seconds | Duration in seconds of runtime operations. Broken down by operation type.                                                                                            |
+| kubelet\_runtime\_operations\_errors\_total     | Cumulative number of runtime operation errors by operation type. This can be a good indicator of low level issues in the node, like problems with container runtime. |
+| kubelet\_runtime\_operations\_total             | Total count of runtime operations of each type.                                                                                                                      |
+| storage\_operation\_duration\_seconds\_count    | Storage operation duration                                                                                                                                           |
+| storage\_operation\_errors\_total               | Storage operation errors                                                                                                                                             |
+
+
+<SubSectionSeparator />
+
+### Services
+
+A service is an abstract way to expose an application running on a set of pods as a network service. The services define a logical set of pods 
+and a policy by which to access them, enabling decoupling between pods. The important metrics to consider for services is the health of that 
+service. We can use the [Blackbox Exporter provided by Prometheus](https://github.com/prometheus/blackbox_exporter) to probe endpoints over HTTP, HTTPS, DNS, TCP and ICMP. 
+
+#### Prerequisite
+
+To use the blackbox exporter, ** we can deploy the configurations 
+[here](https://github.com/aws-observability/aws-otel-collector/blob/main/examples/eks/prometheus-pipeline/prometheus-blackbox-exporter.yaml).
+
+Using the name of the Blackbox Exporter service and the exposed port (9115), we can access the probed metrics. This is done by 
+replacing the `__address__`. If we do not want to probe all services, we can specify a list of target addresses to probe in the `static_configs` 
+(more information can be found [here](https://prometheus.io/docs/prometheus/latest/configuration/configuration/)).
+
+```yaml lineNumbers=true 
+- job_name: 'kubernetes-services'
+  sample_limit: 10000
+  metrics_path: /probe
+  params:
+    module: [http_2xx]
+    
+  kubernetes_sd_configs:
+  - role: service
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  
+  relabel_configs:
+  # Example relabel to probe only some services that have "prometheus.io/should_be_probed = true" annotation
+  # - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_should_be_probed]
+  #  action: keep
+  #  regex: true
+  - source_labels: [__address__]
+    target_label: __param_target
+  - target_label: __address__
+    replacement: blackbox-exporter-service:9115
+  - source_labels: [__param_target]
+    target_label: instance
+  - action: labelmap
+    regex: __meta_kubernetes_service_label_(.+)
+  - source_labels: [__meta_kubernetes_namespace]
+    target_label: kubernetes_namespace
+  - source_labels: [__meta_kubernetes_service_name]
+    target_label: kubernetes_name
+```
+
+Some types of metrics we can receive from the service probing include:
+
+| Metric                                  | Description                                            |
+| --------------------------------------- | ------------------------------------------------------ |
+| probe\_duration\_seconds                | Returns how long the probe took to complete in seconds |
+| probe\_http\_status\_code               | Response HTTP status code                              |
+| probe\_http\_uncompressed\_body\_length | Length of uncompressed response body                   |
+| probe\_success                          | Displays whether or not the probe was a success        |
+
+
+<SubSectionSeparator />
+
+### Ingresses
+
+A Kubernetes ingress is an API object that manages external access to the services in a cluster. Similar to services, the important metrics to 
+consider is the health of the ingress. We can use the [Blackbox Exporter provided by Prometheus](https://github.com/prometheus/blackbox_exporter) 
+to probe endpoints over HTTP, HTTPS, DNS, TCP and ICMP. 
+
+As setup in `services`, this will also require the Blackbox Exporter.
+
+```yaml lineNumbers=true 
+- job_name: 'kubernetes-ingresses'
+  sample_limit: 10000
+  metrics_path: /probe
+  params:
+    module: [http_2xx]
+
+  kubernetes_sd_configs:
+  - role: ingress
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  
+  relabel_configs:
+  # Example relabel to probe only some services that have "prometheus.io/should_be_probed = true" annotation
+  # - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_should_be_probed]
+  #  action: keep
+  #  regex: true
+  - source_labels: [__meta_kubernetes_ingress_scheme,__address__,__meta_kubernetes_ingress_path]
+    regex: (.+);(.+);(.+)
+    replacement: $${1}://$${2}$${3}
+    target_label: __param_target
+  - target_label: __address__
+    replacement: blackbox-exporter-service:9115
+  - source_labels: [__param_target]
+    target_label: instance
+  - action: labelmap
+    regex: __meta_kubernetes_ingress_label_(.+)
+  - source_labels: [__meta_kubernetes_namespace]
+    target_label: kubernetes_namespace
+  - source_labels: [__meta_kubernetes_ingress_name]
+    target_label: kubernetes_name
+```
+
+Some types of metrics that we can receive from the service probing include:
+
+| Metric                                  | Description                                            |
+| --------------------------------------- | ------------------------------------------------------ |
+| probe\_duration\_seconds                | Returns how long the probe took to complete in seconds |
+| probe\_http\_status\_code               | Response HTTP status code                              |
+| probe\_http\_uncompressed\_body\_length | Length of uncompressed response body                   |
+| probe\_success                          | Displays whether or not the probe was a success        |
+
+*Notice that these metrics are similar to the service metrics above (as they are both probing metrics). The difference will lie in the labels.*
+
+<SectionSeparator />
+
+## Permissions
+
+### Kubernetes API Server
+
+If you are scraping for kube-system components and the API server, the endpoints need to be enabled for private access. More information 
+on this can be found [here](https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html#cluster-endpoint-access-console). 
+
+<SubSectionSeparator />
+
+### RBAC for Other Kubernetes Resources
+
+In order for service discovery and scraping to work, the ADOT Collector pod may need permissions to get and list objects of the EKS cluster.
+ By default, the OTel Collector uses the default service account to communicate with the API server. We can set a ClusterRoleBinding for this 
+ service account such that it can access and scrape the necessary metric endpoints.
+
+Example configuration:
+
+```lineNumbers=true 
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: otelcol-rbac
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: otelcol
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io
+---
+```
+
+If necessary, we can restrict the service account access to the specific Kubernetes resources we want to scrape. For instance, if we were 
+specifically scraping for pod-level metrics, we could use the following ClusterRole and ClusterRoleBinding:
+
+```lineNumbers=true 
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: prom-admin
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "watch", "list"]
+- nonResourceURLs:
+  - /metrics
+  verbs:
+  - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: prom-rbac
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: otelcol
+roleRef:
+  kind: ClusterRole
+  name: prom-admin
+  apiGroup: rbac.authorization.k8s.io
+---
+```
+
+<SectionSeparator />
+
+## AWS Prometheus Remote Write Exporter Configurations
+
+For the AWS Prometheus Remote Write Exporter to sign your HTTP requests with AWS SigV4 (AWS’ authentication protocol for secure authentication), 
+you will need to provide the aws_auth configurations. If aws_auth is not provided, HTTPs requests will not be signed.
+
+```yaml lineNumbers=true 
+exporters:
+  awsprometheusremotewrite:
+    endpoint: "https://aws-managed-prometheus-endpoint/v1/api/remote_write"
+    aws_auth:
+      service: "aps"
+      region: "user-region"
+```
+
+Aside from the auth configurations, the AWS Prometheus Remote Write Exporter is also configurable with retry, sending queue, and timeout 
+settings. An example of these configurations is provided below.
+
+```yaml lineNumbers=true 
+exporters:
+  awsprometheusremotewrite:
+    endpoint: "https://aps-workspaces-gamma.us-east-1.amazonaws.com/workspaces/ws-7cd45747-2381-4a2a-847f-fa61a3694a74/api/v1/remote_write"
+    namespace: test
+    auth:
+      region: "us-east-1"
+      service: "aps"
+    retry_on_failure:
+      enabled: true
+      initial_interval: 5s
+      max_interval: 10s
+      max_elabsed_time: 30s
+    timeout: 15s
+```
+
+More information on the possible retry, sending queue, and timeout configurations can be found 
+[here](https://github.com/open-telemetry/opentelemetry-collector/tree/master/exporter/exporterhelper#configuration). 
+
+<SectionSeparator />
+
+## Takeaway
+
+These advanced configurations should enable you to monitor your applications and Kubernetes cluster in a secure and reliable manner. 
+If you would like a more basic setup, please take a look at the 
+[getting started with the AWS Distro for OpenTelemetry Collector-AMP Pipeline in EKS Guide](/docs/getting-started/prometheus-remote-write-exporter).
+
+We would love to hear more common configuration scenarios or improvements to this documentation from you! Please submit an issue 
+on the [aws-otel community](https://github.com/aws-observability/aws-otel-community) to let us know.

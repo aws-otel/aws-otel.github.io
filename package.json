@@ -1,5 +1,5 @@
 {
-  "name": "gatsby-starter-rocket-docs",
+  "name": "aws-otel-docs",
   "private": true,
   "version": "1.0.0",
   "description": "AWS Distro for OpenTelemetry Site",
@@ -32,7 +32,7 @@
     "gatsby-plugin-sass": "^2.0.10",
     "gatsby-plugin-sitemap": "^2.2.26",
     "gatsby-source-filesystem": "^2.3.34",
-    "gatsby-source-github-api": "^0.2.1",
+    "gatsby-source-github-contributors": "^0.1.10",
     "gatsby-transformer-remark": "^2.8.38",
     "gatsby-transformer-yaml": "^2.4.14",
     "history": "^4.7.2",

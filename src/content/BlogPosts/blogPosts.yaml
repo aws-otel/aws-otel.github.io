@@ -6,12 +6,47 @@ description:
 path: /blog
 
 blogs:
+  - title: "Enhancing AWS X-Ray support in OpenTelemetry JavaScript SDK"
+    author: "Kelvin Lo and Alolita Sharma"
+    date: "21-Dec-2020"
+    body:
+      "In this post, AWS intern Kelvin Lo shares his experience of enhancing the OpenTelemetry JavaScript SDK to support AWS X-Ray.
+      These enhancements are also available in the AWS Distro for OpenTelemetry ... "
+    link: "https://aws.amazon.com/blogs/opensource/enhancing-aws-x-ray-support-in-opentelemetry-javascript-sdk/"
+
+  - title: "Go support for AWS X-Ray now available in AWS Distro for OpenTelemetry"
+    author: "Wilbert Guo, Kelvin Lo and Alolita Sharma"
+    date: "18-Dec-2020"
+    body:
+      "In this blog post, AWS interns Wilbert Guo and Kelvin Lo share their experience in enhancing the OpenTelemetry Go SDK to
+      support sending traces to AWS X-Ray. These enhancements are also available in the AWS Distro for OpenTelemetry ... "
+    link: "https://aws.amazon.com/blogs/opensource/go-support-for-aws-x-ray-now-available-in-aws-distro-for-opentelemetry/"
+
+  - title: "Announcing alpha availability of Trace Analytics for distributed tracing"
+    author: "Rajiv Taori"
+    date: "17-Dec-2020"
+    body:
+      "Today we are excited to announce an alpha release of Trace Analytics, a new capability in Open Distro for Elasticsearch, that
+      enables developers to find and fix performance problems in distributed applications. By adding trace data to the existing
+      log analytics capabilities of Open Distro for Elasticsearch ... "
+    link: "https://opendistro.github.io/for-elasticsearch/blog/releases/2020/12/announcing-trace-analytics/"
+
+  - title: "Building a reliable metrics pipeline with the OpenTelemetry Collector for AWS Managed Service for Prometheus"
+    author: "Aman Brar, Jason Liu and Alolita Sharma"
+    date: "16-Dec-2020"
+    body:
+      "In this blog post, AWS intern engineers Aman Brar and Jason Liu talk about their experience working with the OpenTelemetry
+       Collector and Prometheus Remote Write Exporter. They share their experiences in tackling challenges they faced and
+       how they applied lessons learned to ensure the reliability of the AWS Distro for the OpenTelemetry Collector as
+       the de facto agent for sending metrics to AWS Managed Service for Prometheus ... "
+    link: "https://aws.amazon.com/blogs/opensource/building-a-reliable-metrics-pipeline-with-the-opentelemetry-collector-for-aws-managed-service-for-prometheus/"
+
   - title: "AWS adds Prometheus Remote Write Exporter to OpenTelemetry Collector"
-    author: "Alolita Sharma"
+    author: "Yang Hu and Alolita Sharma"
     date: "09-Nov-2020"
     body:
-      "In this post, AWS intern Yang Hu describes how he made his first engineering contributions to the popular open source 
-      observability project—OpenTelemetry. His contributions to OpenTelemetry included adding a Prometheus Remote Write Exporter 
+      "In this post, AWS intern Yang Hu describes how he made his first engineering contributions to the popular open source
+      observability project—OpenTelemetry. His contributions to OpenTelemetry included adding a Prometheus Remote Write Exporter
       to the OpenTelemetry Collector. "
     link: "https://aws.amazon.com/blogs/opensource/aws-adds-prometheus-remote-write-exporter-to-opentelemetry-collector/"
 
@@ -19,8 +54,8 @@ blogs:
     author: "Anuraag Agrawal"
     date: "04-Nov-2020"
     body:
-      "How can we keep an eye on all the services that a request went through? This is where distributed tracing comes 
-      in. Tracing enables linking processing together between the services that handle a request, even as it goes 
+      "How can we keep an eye on all the services that a request went through? This is where distributed tracing comes
+      in. Tracing enables linking processing together between the services that handle a request, even as it goes
       across network boundaries between containers. "
     link: "https://aws.amazon.com/blogs/opensource/distributed-tracing-with-opentelemetry/"
 
@@ -28,7 +63,7 @@ blogs:
     author: "Nizar Tyrewalla"
     date: "26-Oct-2020"
     body:
-      "Today, AWS X-Ray is launching support for tracing applications running on Amazon EC2, Amazon ECS, Amazon EKS, and op-premises 
+      "Today, AWS X-Ray is launching support for tracing applications running on Amazon EC2, Amazon ECS, Amazon EKS, and op-premises
       using open-source OpenTelemetry APIs and SDKs through AWS Distro for OpenTelemetry."
     link: "https://aws.amazon.com/blogs/mt/distributed-tracing-aws-distro-for-opentelemetry/"
 
@@ -61,7 +96,7 @@ blogs:
     date: "13-Oct-2020"
     body:
       "In this blog post, AWS intern Cong Zou shares his experience contributing to a large open source project—OpenTelemetry—for
-      the first time. OpenTelemetry provides a single set of APIs, libraries, agents, and collector services to capture distributed
+      the first time. OpenTelemetry provides a single set of APIs, libraries, agents, and Collector services to capture distributed
       traces and metrics from applications. Users can analyze these traces and metrics using Prometheus, Jaeger, and other observability tools."
     link: "https://aws.amazon.com/blogs/opensource/integrating-the-opentelemetry-javascript-sdk-with-aws-x-ray/"
 
@@ -96,24 +131,51 @@ blogs:
 
 searchIndex:
   "
+  Enhancing AWS X-Ray support in OpenTelemetry JavaScript SDK
+  Kelvin Lo and Alolita Sharma
+  21-Dec-2020
+  In this post, AWS intern Kelvin Lo shares his experience of enhancing the OpenTelemetry JavaScript SDK to support AWS X-Ray.
+  These enhancements are also available in the AWS Distro for OpenTelemetry.
+
+  Go support for AWS X-Ray now available in AWS Distro for OpenTelemetry
+  Wilbert Guo, Kelvin Lo and Alolita Sharma
+  18-Dec-2020
+  In this blog post, AWS interns Wilbert Guo and Kelvin Lo share their experience in enhancing the OpenTelemetry Go SDK to
+  support sending traces to AWS X-Ray. These enhancements are also available in the AWS Distro for OpenTelemetry.
+
+  Announcing alpha availability of Trace Analytics for distributed tracing
+  Rajiv Taori
+  17-Dec-2020
+  Today we are excited to announce an alpha release of Trace Analytics, a new capability in Open Distro for Elasticsearch, that
+  enables developers to find and fix performance problems in distributed applications. By adding trace data to the existing
+  log analytics capabilities of Open Distro for Elasticsearch
+
+  Building a reliable metrics pipeline with the OpenTelemetry Collector for AWS Managed Service for Prometheus
+  Aman Brar, Jason Liu and Alolita Sharma
+  16-Dec-2020
+  In this blog post, AWS intern engineers Aman Brar and Jason Liu talk about their experience working with the OpenTelemetry
+  Collector and Prometheus Remote Write Exporter. They share their experiences in tackling challenges they faced and
+  how they applied lessons learned to ensure the reliability of the AWS Distro for the OpenTelemetry Collector as
+  the de facto agent for sending metrics to AWS Managed Service for Prometheus.
+  
   AWS adds Prometheus Remote Write Exporter to OpenTelemetry Collector
   Alolita Sharma
   09-Nov-2020
-  In this post, AWS intern Yang Hu describes how he made his first engineering contributions to the popular open source 
-  observability project—OpenTelemetry. His contributions to OpenTelemetry included adding a Prometheus Remote Write Exporter 
+  In this post, AWS intern Yang Hu describes how he made his first engineering contributions to the popular open source
+  observability project—OpenTelemetry. His contributions to OpenTelemetry included adding a Prometheus Remote Write Exporter
   to the OpenTelemetry Collector.
 
   Distributed tracing with OpenTelemetry
   Anuraag Agrawal
   04-Nov-2020
-  How can we keep an eye on all the services that a request went through? This is where distributed tracing comes 
-  in. Tracing enables linking processing together between the services that handle a request, even as it goes 
+  How can we keep an eye on all the services that a request went through? This is where distributed tracing comes
+  in. Tracing enables linking processing together between the services that handle a request, even as it goes
   across network boundaries between containers.
 
   Distributed Tracing using AWS Distro for OpenTelemetry
   Nizar Tyrewalla
   26-Oct-2020
-  Today, AWS X-Ray is launching support for tracing applications running on Amazon EC2, Amazon ECS, Amazon EKS, and op-premises 
+  Today, AWS X-Ray is launching support for tracing applications running on Amazon EC2, Amazon ECS, Amazon EKS, and op-premises
   using open-source OpenTelemetry APIs and SDKs through AWS Distro for OpenTelemetry.
 
   Monitoring application health and performance with AWS Distro for OpenTelemetry
@@ -132,7 +194,7 @@ searchIndex:
   Alolita Sharma
   13-Oct-2020
   In this blog post, AWS intern Cong Zou shares his experience contributing to a large open source project—OpenTelemetry—for
-  the first time. OpenTelemetry provides a single set of APIs, libraries, agents, and collector services to capture distributed
+  the first time. OpenTelemetry provides a single set of APIs, libraries, agents, and Collector services to capture distributed
   traces and metrics from applications. Users can analyze these traces and metrics using Prometheus, Jaeger, and other observability tools.
 
   Building a Prometheus remote write exporter for the OpenTelemetry Go SDK

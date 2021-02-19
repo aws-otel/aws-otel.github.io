@@ -1,0 +1,165 @@
+---
+title: 'Dynatrace Exporter'
+description:
+    Dynatrace is an all-in-one software intelligence platform delivering continuous, automatic discovery
+    and observability across your full stack.
+path: '/docs/partners/dynatrace'
+---
+## Overview
+
+The Dynatrace metrics exporter exports metrics to the [metrics API v2](https://www.dynatrace.com/support/help/dynatrace-api/environment-api/metric-v2/post-ingest-metrics/) using the [metrics ingestion protocol](https://www.dynatrace.com/support/help/how-to-use-dynatrace/metrics/metric-ingestion/metric-ingestion-protocol/). This enables Dynatrace to receive metrics collected by the OpenTelemetry Collector. Dynatrace is an all-in-one software intelligence platform delivering continuous, automatic discovery and observability across your full stack. The Dynatrace Open Source Engineering team developed this exporter for metrics in the OpenTelemetry Collector. This exporter allows metrics collected by the OpenTelemetry Collector to be stored, viewed, and analyzed in Dynatrace.
+
+## Requirements
+
+Given an environment ID `abc12345` on Dynatrace SaaS, for example, the metrics ingest endpoint would be `https://abc12345.live.dynatrace.com/api/v2/metrics/ingest`.
+
+The requests sent to Dynatrace are authenticated using an API token. Creating an API token for your Dynatrace environment is described in the [Dynatrace API documentation](https://www.dynatrace.com/support/help/dynatrace-api/basics/dynatrace-api-authentication/). The only access scope required for exporting metrics is the **Ingest metrics** (`metrics.ingest`) scope listed in the **API v2** section. It is recommended to limit the token's scope to only that one.
+
+## COnfiguring the Dynatrace Metrics Exporter
+
+To enable the Dynatrace metrics exporter, write the name under exporter section in the OpenTelemetry config file (`local/config.yaml`) and add the `dynatrace` exporter to your metrics pipeline.
+
+```yaml lineNumbers=true highlight={7,8,9,15}
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:55680
+exporters:
+  dynatrace:
+    endpoint: https://ab12345.live.dynatrace.com/api/v2/metrics/ingest
+    api_token: <api token must have metrics.write permission>
+service:
+  extensions:
+  pipelines:
+    metrics:
+      receivers: [otlp]
+      exporters: [dynatrace]
+```
+
+## Set Dynatrace Metrics Exporter Configurations
+
+Users can configure the HTTP client, TLS, queueing, retry, and timeout settings.
+
+```yaml lineNumbers=true highlight={10-27}
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:55680
+exporters:
+  dynatrace:
+    endpoint: https://ab12345.live.dynatrace.com/api/v2/metrics/ingest
+    api_token: <api token must have metrics.write permission>
+    tags:
+      - tag1=value1
+    prefix: my_prefix
+    headers:
+      - header1: value1
+    read_buffer_size: 4000
+    write_buffer_size: 4000
+    timeout: 10s
+    insecure_skip_verify: false
+    retry_on_failure:
+      enabled: true
+      initial_interval: 5s
+      max_interval: 30s
+      max_elapsed_time: 120s
+    sending_queue:
+      enabled: true
+      num_consumers: 10
+      queue_size: 5000
+service:
+  extensions:
+  pipelines:
+    metrics:
+      receivers: [otlp]
+      exporters: [dynatrace]
+```
+
+### tags (Optional)
+
+Tags are included as dimensions on all exported metrics.
+Tags must be in the `key=value` dimension format specified by the [metrics ingestion protocol](https://www.dynatrace.com/support/help/how-to-use-dynatrace/metrics/metric-ingestion/metric-ingestion-protocol/).
+
+### prefix (Optional)
+
+Prefix is a string which will be used as the first part of a dot-separated metric key.
+For example, if a metric with name `request_count` is prefixed with `my_service`, the resulting
+metric key is `my_service.request_count`.
+
+### headers (Optional)
+
+Additional headers to be included with every outgoing http request.
+
+### read_buffer_size (Optional)
+
+Defines the buffer size to allocate to the HTTP client for reading the response.
+
+Default: `4096`
+
+### write_buffer_size (Optional)
+
+Defines the buffer size to allocate to the HTTP client for writing the payload
+
+Default: `4096`
+
+### timeout (Optional)
+
+Timeout specifies a time limit for requests made by this
+Client. The timeout includes connection time, any
+redirects, and reading the response body. The timer remains
+running after Get, Head, Post, or Do return and will
+interrupt reading of the Response.Body.
+
+https://golang.org/pkg/net/http/#Client
+
+Default: `0`
+
+### insecure_skip_verify (Optional)
+
+Additionally you can configure TLS to be enabled but skip verifying the server's certificate chain. This cannot be combined with insecure since insecure won't use TLS at all.
+
+Default: `false`
+
+### retry_on_failure.enabled (Optional)
+
+Default: `true`
+
+### retry_on_failure.initial_interval (Optional)
+
+Time to wait after the first failure before retrying; ignored if enabled is false.
+
+Default: `5s`
+
+### retry_on_failure.max_interval (Optional)
+
+The upper bound on backoff; ignored if enabled is false
+
+Default: `30s`
+
+### retry_on_failure.max_elapsed_time (Optional)
+
+The maximum amount of time spent trying to send a batch; ignored if enabled is false.
+
+Default: `120s`
+
+### sending_queue.enabled (Optional)
+
+Default: `true`
+
+### sending_queue.num_consumers (Optional)
+
+Number of consumers that dequeue batches; ignored if enabled is false.
+
+Default: `10`
+
+### sending_queue.queue_size (Optional)
+
+Maximum number of batches kept in memory before data; ignored if enabled is false;
+User should calculate this as `num_seconds * requests_per_second` where:
+
+- `num_seconds` is the number of seconds to buffer in case of a backend outage
+- `requests_per_second` is the average number of requests per seconds.
+
+Default: `5000`

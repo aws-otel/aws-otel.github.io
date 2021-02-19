@@ -4,6 +4,32 @@ description:
 path: /announcements
 
 announcements:
+  - title: "AWS Distro for OpenTelemetry adds Prometheus and Lambda support and other cool features"
+    date: "15-Dec-2020"
+    blurb:
+      "Today’s release of the AWS Distro for OpenTelemetry (ADOT) now brings support for Prometheus and AWS Lambda and adds AWS X-Ray support in Go and Python."
+    link: "https://aws.amazon.com/blogs/opensource/aws-distro-for-opentelemetry-adds-prometheus-and-lambda-support-and-other-cool-features/"
+
+  - title: "Containers on the Couch: Unboxing the AWS Distro for OpenTelemetry with Prometheus"
+    date: "15-Dec-2020"
+    blurb:
+      "Join Alolita Sharma, Principle Technologist, Michael Hausenblas and the AWS Observability team as we look at the AWS Distro for Open Telemetry."
+    link: "https://www.youtube.com/watch?v=tnlJeb0rTkw&list=PLehXSATXjcQFHpz-HAO8YOC6EqFScEz27&index=4&t=389s&ab_channel=ContainersfromtheCouch"
+
+  - title: "AWS What's Next on Twitch: AWS Distro for OpenTelemetry"
+    date: "15-Dec-2020"
+    blurb:
+      "AWS What's Next S1|E12 - ft Nizar Tyrewalla, Principal Product Manager for AWS Distro for OpenTelemetry"
+    link: "https://www.twitch.tv/videos/786737025"
+
+  - title: "New Video: Capturing Trace Data with the AWS Distro for OpenTelemetry"
+    date: "20-Nov-2020"
+    blurb:
+      "In this video, you’ll see how to capture trace data using the AWS Distro for OpenTelemetry. With this solution, 
+      you can auto-instrument trace sending from Java web applications to AWS X-Ray so that you can analyze trace data 
+      and debug errors."
+    link: "https://www.youtube.com/watch?v=837NtV0McOA&ab_channel=AmazonWebServices"
+
   - title: "AWS Distro for OpenTelemetry Available for Public Preview"
     date: "31-Oct-2020"
     blurb:
@@ -36,6 +62,24 @@ announcements:
 
 searchIndex:
   "
+  AWS Distro for OpenTelemetry adds Prometheus and Lambda support and other cool features
+  15-Dec-2020
+  Today’s release of the AWS Distro for OpenTelemetry (ADOT) now brings support for Prometheus and AWS Lambda and adds AWS X-Ray support in Go and Python.
+
+  Containers on the Couch: Unboxing the AWS Distro for OpenTelemetry with Prometheus
+  15-Dec-2020
+  Join Alolita Sharma, Principle Technologist, Michael Hausenblas and the AWS Observability team as we look at the AWS Distro for Open Telemetry.
+
+  AWS What's Next on Twitch: AWS Distro for OpenTelemetry
+  15-Dec-2020
+  AWS What's Next S1|E12 - ft Nizar Tyrewalla, Principal Product Manager for AWS Distro for OpenTelemetry
+
+  New Video: Capturing Trace Data with the AWS Distro for OpenTelemetry
+  20-Nov-2020
+  In this video, you’ll see how to capture trace data using the AWS Distro for OpenTelemetry. With this solution, 
+  you can auto-instrument trace sending from Java web applications to AWS X-Ray so that you can analyze trace data 
+  and debug errors.
+
   AWS Distro for OpenTelemetry Available for Public Preview
   Steef-Jan Wiggers, 31-Oct-2020
   Recently, AWS announced the public preview of the AWS Distro for OpenTelemetry, a secure, production-ready, 

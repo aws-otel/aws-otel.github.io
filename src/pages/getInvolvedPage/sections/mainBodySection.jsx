@@ -21,7 +21,7 @@ class MainBodySection extends React.Component {
               <p className={classes.about}> {YAMLData.paragraph3} </p>
               <ul>
                 {YAMLData.list.map((data, index) => {
-                  return <li key={`content_item_${index}`}>{data.item}</li>
+                  return <li key={`content_item_${index}`}><p className={classes.about}>{data.item}</p></li>
                 })}
               </ul>
               <p className={classes.about}>
@@ -29,11 +29,11 @@ class MainBodySection extends React.Component {
               </p>
               <h2 className={classes.about}> Additional Links </h2>
               <ul>
-                <li><a href="https://gitter.im/aws-otel-distro/community" target="_blank" rel="noopener noreferrer"> Gitter </a></li>
-                <li><a href="https://github.com/aws-observability/aws-otel-community/issues" target="_blank" rel="noopener noreferrer"> File an Issue </a></li>
-                <li><a href="https://github.com/aws-observability/aws-otel-community/issues" target="_blank" rel="noopener noreferrer"> File a Pull Request </a></li>
-                <li><a href="https://opentelemetry.io/community/" target="_blank" rel="noopener noreferrer"> OpenTelemetry Community </a></li>
-                <li><a href="https://calendar.google.com/calendar/u/0/embed?src=google.com_b79e3e90j7bbsa2n2p5an5lf60@group.calendar.google.com" target="_blank" rel="noopener noreferrer"> OpenTelemetry SIG Meeting Calender </a></li>
+                <li><a href="https://gitter.im/aws-otel-distro/community" target="_blank" rel="noopener noreferrer"> <p className={classes.about}>Gitter</p> </a></li>
+                <li><a href="https://github.com/aws-observability/aws-otel-community/issues" target="_blank" rel="noopener noreferrer"> <p className={classes.about}>File an Issue</p> </a></li>
+                <li><a href="https://github.com/aws-observability/aws-otel-community/issues" target="_blank" rel="noopener noreferrer"> <p className={classes.about}>File a Pull Request</p> </a></li>
+                <li><a href="https://opentelemetry.io/community/" target="_blank" rel="noopener noreferrer"> <p className={classes.about}>OpenTelemetry Community</p> </a></li>
+                <li><a href="https://calendar.google.com/calendar/u/0/embed?src=google.com_b79e3e90j7bbsa2n2p5an5lf60@group.calendar.google.com" target="_blank" rel="noopener noreferrer"><p className={classes.about}> OpenTelemetry SIG Meeting Calender </p></a></li>
               </ul>
             </GridItem>
           </GridContainer>

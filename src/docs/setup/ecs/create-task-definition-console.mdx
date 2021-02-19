@@ -1,0 +1,112 @@
+---
+title: 'Install AWS OTel Collector By Creating Task Definition Through AWS Console '
+description:
+    In this tutorial, we will demonstrate how to install AWS OTel Collector using Task Definition on the Amazon
+    Elastic Container Service (Amazon ECS) through AWS console.
+path: '/docs/setup/ecs/create-task-definition'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import { Link } from "gatsby"
+import task_01 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition_01.png"
+import task2 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition2.png"
+import task3 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition3.png"
+import task4 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition4.png"
+import task5 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition5.png"
+import task6 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition6.png"
+import task7 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition7.png"
+import task8 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition8.png"
+import task9 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition9.png"
+import task10 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition10.png"
+import task11 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition11.png"
+import task12 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition12.png"
+import task13 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition13.png"
+import task14 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition14.png"
+import task15 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition15.png"
+import task16 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition16.png"
+import task17 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition17.png"
+import task18 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition18.png"
+import task19 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition19.png"
+import task20 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition20.png"
+
+In this tutorial, we will demonstrate how to install AWS OTel Collector using Task Definition on the Amazon Elastic
+Container Service (Amazon ECS) through AWS console.
+
+<SectionSeparator />
+
+1. Go to AWS Management Console and select Elastic Container Service. From the left side navigation,
+select <Link to="https://us-west-2.console.aws.amazon.com/ecs/home?/taskDefinitions#/taskDefinitions">Task Definitions</Link>
+and click the Create new Task Definition button.
+
+2. Select FARGATE or EC2 as the Launch type and move forward.
+
+<img src={task_01} alt="Diagram" style="margin: 30px 0;" />
+
+3. Put a task-definition name (i.e.aws-otel). And select the role you create in pre section from Taskrole drop-down menu.
+<img src={task2} alt="Diagram" style="margin: 30px 0;" />
+4. For the task execution role, select the role name you created by clicking Task execution role drop-down menu.
+<img src={task3} alt="Diagram" style="margin: 30px 0;" />
+5. Select the Task size:
+  * For ECS FARGATE launch type (slected in step 2), Mention task memory and cpu for your task-definition (This example uses 1GB, 0.5 vCPU).
+    <img src={task4} alt="Diagram" style="margin: 30px 0;" />
+  * For ECS EC2 launch type (slected in step 2),  Mention task memory and task cpu  for your task-definition like use 2048 for memory, 1024 for CPU
+    <img src={task5} alt="Diagram" style="margin: 30px 0;" />
+6. In the container definitions section, click the Add Container button. Let’s add the AWS Observability Collector container first.
+Put a container name (i.e. *aws-otel-collector*) and use the *amazon/aws-otel-collector* container image.
+We can keep everything else default
+<img src={task6} alt="Diagram" style="margin: 30px 0;" />
+7. Set up the OpenTelemetry configuration file for AWS Observability Toolkit (AOT)
+In this section we will set the OpenTelemetry configuration file for our Collector container (AWS OTel Collector).  All the functionality
+of AOC is passive, if your application doesn’t emit the data to the port (X-ray use UDP 2000 and OPTL use TCP 55680 and 55681) then there will be no effect.
+   *  Collect Application Metrics and Traces:
+
+      In the  Environment Command section add `--config=/etc/ecs/ecs-default-config.yaml` to select the ECS default configuration
+      file for AWS Observability Collector (AOC). This will collect Application Metrics and Traces and send them to
+      Amazon CloudWatch Metrics and AWS X-Ray. Specifically, this configuration file can collect metrics and traces from
+      the OpenTelemetry SDKs (OTLP) and X-Ray traces from the X-Ray SDKs.
+      <img src={task7} alt="Diagram" style="margin: 30px 0;" />
+   *  Collect Application Metrics & Traces and Container Resource Metrics
+
+      In the container definition section for   Environment Command section add `--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml`,
+      which is  already included as part of AOT collector, select the ECS default configuration for Container Insights experience.
+      This will collect Application Metrics, Traces  and task-level Container Resource Metrics, and send them to Amazon CloudWatch Metrics
+      and AWS X-Ray. This configuration file can collect metrics and traces from the OpenTelemetry SDKs (OTLP)
+      and X-Ray traces from the X-Ray SDKs.
+      <img src={task8} alt="Diagram" style="margin: 30px 0;" />
+8. Port mapping setup
+
+    **Note:** For ECS Fargate launch type (slected in step 2), you can just skip this step.
+
+    For ECS EC2 launch type, add port mappings, map 2000 for udp (used by AWS X-ray for traces), and 55680 for tcp (used by the collector).
+    <img src={task9} alt="Diagram" style="margin: 30px 0;" />
+9. In the STORAGE and LOGGING section, let’s enable Auto-configure CloudWatch logs.
+   <img src={task10} alt="Diagram" style="margin: 30px 0;" />
+   We are done here. Keep other config options as they are. Finish adding the container.
+
+**_Attention: 10 and 11 will add two example applications to show how everything works. Normally, these images should be your business applications. Feel free to skip these steps._**
+
+10. Let’s add a sample application container in similar way (you can configure your application like this)
+    * 10.1  You can select the container name you want (i.e. webapp ), but we use another image
+    (Image: 611364707713.dkr.ecr.us-west-2.amazonaws.com/amazon/aws-otel-goxray-sample-app:v0.0.1). This image will
+    create a sample web application using Xray SDK to generate the trace data and send it to AWS Observability Collector (AOC).
+    <img src={task11} alt="Diagram" style="margin: 30px 0;" />
+    * 10.2  In the STARTUP DEPENDENCY ORDERING  select the Container name aws-otel-collector you used in step 6 and in the Condition, select START.
+    <img src={task20} alt="Diagram" style="margin: 30px 0;" />
+    * 10.3 **If you selected FARGATE as your launch Type in step 2, you can just skip this step.  If you are using ECS EC2, do the following:**
+       1.  Add Port mappings, map port **8000** for **tcp**.
+       <img src={task12} alt="Diagram" style="margin: 30px 0;" />
+       2.  In Environment Section, add Environment variable: **AWS_XRAY_DAEMON_ADDRESS** with **aws-otel-collector:2000**
+       <img src={task13} alt="Diagram" style="margin: 30px 0;" />
+       3.  In the NETWORK SETTINGS Links, put the container name aws-otel-collector you used in step 6 as AOT collector.
+       <img src={task14} alt="Diagram" style="margin: 30px 0;" />
+       4.  Keep the rest information as default and click add.
+       <img src={task15} alt="Diagram" style="margin: 30px 0;" />
+11. Let’s add another application container in similar way.
+    1.  For this example, we use the nginx (Image: nginx:latest).
+        <img src={task16} alt="Diagram" style="margin: 30px 0;" />
+    2.  In the STARTUP DEPENDENCY ORDERING  select the Container name aws-otel-collector you used in step 6 and in the Condition, select START.
+        <img src={task17} alt="Diagram" style="margin: 30px 0;" />
+    3.  Keep the rest information as default and click add.
+        <img src={task18} alt="Diagram" style="margin: 30px 0;" />
+12. Click the Create button in the bottom to finish the process. If everything works fine, you will see something like the following.
+    <img src={task19} alt="Diagram" style="margin: 30px 0;" />
