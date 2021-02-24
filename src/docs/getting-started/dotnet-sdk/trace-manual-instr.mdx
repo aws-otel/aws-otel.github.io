@@ -143,8 +143,6 @@ var tracerProvider = Sdk.CreateTracerProviderBuilder()
         .AddXRayTraceIdWithSampler(your_sampler) // for generating AWS X-Ray compliant trace IDs
         .AddOtlpExporter()
         .Build();
-
-Sdk.SetDefaultTextMapPropagator(new AWSXRayPropagator()); // configure AWS X-Ray propagator
 ```
 
 <SubSectionSeparator />
