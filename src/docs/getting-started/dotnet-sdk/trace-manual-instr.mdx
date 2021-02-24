@@ -78,7 +78,7 @@ public void ConfigureServices(IServiceCollection services)
     tracerProviderBuilder
         .AddAspNetCoreInstrumentation()
         .AddOtlpExporter()
-		.Build();          
+        .Build();          
 }
 ```
 
@@ -157,9 +157,9 @@ public void ConfigureServices(IServiceCollection services)
     services.AddControllers();
   
     tracerProviderBuilder
-	    .AddAWSInstrumentation() // for tracing calls to AWS services via AWS SDK for .NET
+        .AddAWSInstrumentation() // for tracing calls to AWS services via AWS SDK for .NET
         .AddAspNetCoreInstrumentation()
         .AddOtlpExporter()
-		.Build();
+        .Build();
 }
 ```
