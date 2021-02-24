@@ -34,7 +34,7 @@ This generally requires additional packages to be downloaded for specific instru
 
 By default, the OpenTelemetry SDK generates traces with W3C random ID which X-Ray backend doesn’t currently support yet.
 You need to install the `OpenTelemetry.Contrib.Extensions.AWSXRay` to be able to use the `AWSXRayIdGenerator` which generates X-Ray compatible trace IDs.
-If you plan to call an AWS service or another application instrumented with AWS X-Ray SDK, you’ll need to configure the `AWSXRayPropagator` as well.
+If you plan to call another application instrumented with AWS X-Ray SDK, you’ll need to configure the `AWSXRayPropagator` as well.
 
 ```shell
 dotnet add package OpenTelemetry.Contrib.Extensions.AWSXRay
