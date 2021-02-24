@@ -69,11 +69,8 @@ public void ConfigureServices(IServiceCollection services)
 {
     services.AddControllers();
     services.AddOpenTelemetryTracing((builder) => builder
-        .AddXRayTraceId() // for generating AWS X-Ray compliant trace IDs
         .AddAspNetCoreInstrumentation()
-        .AddOtlpExporter());  
-        
-    Sdk.SetDefaultTextMapPropagator(new AWSXRayPropagator()); // configure AWS X-Ray propagator            
+        .AddOtlpExporter());          
 }
 ```
 
