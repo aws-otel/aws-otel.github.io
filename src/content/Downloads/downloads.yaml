@@ -1,3 +1,17 @@
+- version: 'Nuget:OpenTelemetry.Contrib.Extensions.AWSXRay v1.0.1'
+  releaseDate: 'Feb-24-2021'
+  license: 'Apache-2.0'
+  releaseNotesLink: 'https://github.com/open-telemetry/opentelemetry-dotnet-contrib/releases/tag/Extensions.AWSXRay-1.0.1'
+  documentationLink: 'https://github.com/open-telemetry/opentelemetry-dotnet-contrib/blob/main/src/OpenTelemetry.Contrib.Extensions.AWSXRay/README.md'
+  downloadLink: 'https://www.nuget.org/packages/OpenTelemetry.Contrib.Extensions.AWSXRay/'
+  
+- version: 'Nuget:OpenTelemetry.Contrib.Instrumentation.AWS v1.0.1'
+  releaseDate: 'Feb-24-2021'
+  license: 'Apache-2.0'
+  releaseNotesLink: 'https://github.com/open-telemetry/opentelemetry-dotnet-contrib/releases/tag/Instrumentation.AWS-1.0.1'
+  documentationLink: 'https://github.com/open-telemetry/opentelemetry-dotnet-contrib/blob/main/src/OpenTelemetry.Contrib.Instrumentation.AWS/README.md'
+  downloadLink: 'https://www.nuget.org/packages/OpenTelemetry.Contrib.Instrumentation.AWS/'
+
 - version: 'AWS Distro for OpenTelemetry Collector Version 0.7.0'
   releaseDate: 'Feb-02-2021'
   license: 'Apache-2.0'
