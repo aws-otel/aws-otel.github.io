@@ -115,11 +115,9 @@ public class WebApiApplication : HttpApplication
     protected void Application_Start()
     {
         this.tracerProvider = Sdk.CreateTracerProviderBuilder()
-            .AddXRayTraceId() // for generating AWS X-Ray compliant trace IDs
             .AddAspNetInstrumentation()
             .AddOtlpExporter()
             .Build();
-        Sdk.SetDefaultTextMapPropagator(new AWSXRayPropagator()); // configure AWS X-Ray propagator
     }
     
     protected void Application_End()
