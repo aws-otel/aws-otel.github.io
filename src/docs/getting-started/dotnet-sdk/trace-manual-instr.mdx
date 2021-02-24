@@ -141,6 +141,7 @@ If you’re using the default sampler, just pass `new ParentBasedSampler(new Alw
 
 ```csharp
 using OpenTelemetry;
+using OpenTelemetry.Contrib.Extensions.AWSXRay.Trace;
 using OpenTelemetry.Trace;
 
 var tracerProvider = Sdk.CreateTracerProviderBuilder()
