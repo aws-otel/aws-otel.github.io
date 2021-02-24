@@ -9,10 +9,6 @@ path: '/docs/getting-started/dotnet-sdk/trace-manual-instr'
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
 import SubSectionSeparator from "components/MdxSubSectionSeparator/subsectionSeparator.jsx"
 
-AWS Distro for OpenTelemetry .NET SDK is a distribution of [OpenTelemetry .NET SDK](https://github.com/open-telemetry/opentelemetry-dotnet),
-configured to trace applications in a format that is compatible with the AWS X-Ray service.
-This enables all the features of the OpenTelemetry project and configures its components to create traces that can be viewed in the AWS X-Ray console and allow propagation of those contexts across multiple downstream AWS services.
-
 In this tutorial, we will introduce how to manually instrument your application step-by-step using AWS Distro for OpenTelemetry .NET SDK.
 
 <SectionSeparator />
@@ -40,6 +36,18 @@ If you plan to call another application instrumented with AWS X-Ray SDK, you’l
 dotnet add package OpenTelemetry.Contrib.Extensions.AWSXRay
 ```
 
+Configure `AWSXRayIdGenerator` and `AWSXRayPropagator` globally in your application as follows. Make sure to call `AddXRayTraceId()` in the very **beginning** when creating `TracerProviderBuilder`
+
+```csharp
+using OpenTelemetry;
+using OpenTelemetry.Contrib.Extensions.AWSXRay.Trace;
+using OpenTelemetry.Trace;
+
+var tracerProviderBuilder = Sdk.CreateTracerProviderBuilder().AddXRayTraceId() // for generating AWS X-Ray compliant trace IDs
+
+Sdk.SetDefaultTextMapPropagator(new AWSXRayPropagator()); // configure AWS X-Ray propagator 
+```
+
 **Note**: You’ll also need to have the [AWS Distro for OpenTelemetry Collector](https://github.com/aws-observability/aws-otel-collector) running to export traces to X-Ray.
 
 <SectionSeparator />
@@ -57,8 +65,7 @@ dotnet add package OpenTelemetry.Extensions.Hosting
 dotnet add package OpenTelemetry.Exporter.OpenTelemetryProtocol
 ```
 
-Next, in your application’s **Startup.cs** file, add the instrumentation and the OTLP exporter as services in the `ConfigureServices` method.
-Make sure to call `AddXRayTraceId()` in the **beginning** when building `TracerProviderBuilder`. If you want to trace AWS SDK calls, make sure to configure `AWSXRayPropagator`.
+Next, in your application’s **Startup.cs** file, add the instrumentation and the OTLP exporter to `TracerProviderBuilder` and build.
 
 ```csharp
 using OpenTelemetry;
@@ -68,9 +75,10 @@ using OpenTelemetry.Trace;
 public void ConfigureServices(IServiceCollection services)
 {
     services.AddControllers();
-    services.AddOpenTelemetryTracing((builder) => builder
+    tracerProviderBuilder
         .AddAspNetCoreInstrumentation()
-        .AddOtlpExporter());          
+        .AddOtlpExporter()
+		.Build();          
 }
 ```
 
@@ -101,8 +109,7 @@ to **Web.config** to add a module to your web server. When installing `OpenTelem
 </system.webServer>
 ```
 
-Now all you need to do is enable the instrumentation for the application startup. This is done in the **Global.asax.cs** as shown below. Make sure to call `AddXRayTraceId()` in the **beginning** when building `TracerProviderBuilder`.
-If you want to trace AWS SDK calls, make sure to configure `AWSXRayPropagator`.
+Now all you need to do is add the instrumentation and exporter to `TracerProviderBuilder` and build. This is done in the **Global.asax.cs** as shown below.
 
 ```csharp
 using OpenTelemetry;
@@ -111,10 +118,9 @@ using OpenTelemetry.Trace;
 
 public class WebApiApplication : HttpApplication
 {
-    private TracerProvider tracerProvider;
     protected void Application_Start()
     {
-        this.tracerProvider = Sdk.CreateTracerProviderBuilder()
+        tracerProvider
             .AddAspNetInstrumentation()
             .AddOtlpExporter()
             .Build();
@@ -122,27 +128,9 @@ public class WebApiApplication : HttpApplication
     
     protected void Application_End()
     {
-        this.tracerProvider?.Dispose();
+        tracerProvider?.Dispose();
     }
 }
-```
-
-<SubSectionSeparator />
-
-### Console
-
-Make sure to call `AddXRayTraceIdWithSampler()` in the **beginning** when building `TracerProviderBuilder`. You’ll need to pass the sampler you’re using in your application.
-If you’re using the default sampler, just pass `new ParentBasedSampler(new AlwaysOnSampler())`. If you want to trace AWS SDK calls, make sure to configure `AWSXRayPropagator`.
-
-```csharp
-using OpenTelemetry;
-using OpenTelemetry.Contrib.Extensions.AWSXRay.Trace;
-using OpenTelemetry.Trace;
-
-var tracerProvider = Sdk.CreateTracerProviderBuilder()
-        .AddXRayTraceIdWithSampler(your_sampler) // for generating AWS X-Ray compliant trace IDs
-        .AddOtlpExporter()
-        .Build();
 ```
 
 <SubSectionSeparator />
@@ -157,7 +145,7 @@ Download the `OpenTelemetry.Contrib.Instrumentation.AWS` package:
 dotnet add package OpenTelemetry.Contrib.Instrumentation.AWS
 ```
 
-Add AWS client instrumentation to your application. The below example is for an ASP.NET Core application.
+Add AWS client instrumentation to `TracerProviderBuilder` and build. The below example is for an ASP.NET Core application.
 
 ```csharp
 using OpenTelemetry;
@@ -167,10 +155,11 @@ using OpenTelemetry.Trace;
 public void ConfigureServices(IServiceCollection services)
 {
     services.AddControllers();
-    services.AddOpenTelemetryTracing((builder) => builder
-        .AddAWSInstrumentation() // for tracing calls to AWS services via AWS SDK for .NET
+  
+    tracerProviderBuilder
+	    .AddAWSInstrumentation() // for tracing calls to AWS services via AWS SDK for .NET
         .AddAspNetCoreInstrumentation()
-        .AddOtlpExporter());   
-    
+        .AddOtlpExporter()
+		.Build();
 }
 ```
