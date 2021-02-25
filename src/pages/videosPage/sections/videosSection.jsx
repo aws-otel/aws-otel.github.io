@@ -23,7 +23,7 @@ class VideosSection extends React.Component {
             </GridItem>
             <GridItem xs={12} sm={12} md={6}>
               <p>Instrumenting AWS Lambda with the AWS Distro for OpenTelemetry</p>
-              <iframe width="500" height="281" src="https://youtu.be/Ty_AToJW5Fc?t=67" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+              <iframe width="500" height="281" src="https://www.youtube.com/embed/Ty_AToJW5Fc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </GridItem>
           </GridContainer>
         </div>
