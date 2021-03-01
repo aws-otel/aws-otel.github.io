@@ -36,7 +36,7 @@ First, include the OpenTelemetry SDK as a compile dependency.
 ##### For Gradle:
 ```java lineNumbers=true
 dependencies {
-    implementation('io.opentelemetry:opentelemetry-sdk:0.15.0')
+    implementation('io.opentelemetry:opentelemetry-sdk:0.17.0')
 }
 ```
 
@@ -46,7 +46,7 @@ dependencies {
   <dependency>
     <groupId>io.opentelemetry</groupId>
     <artifactId>opentelemetry-sdk</artifactId>
-    <version>0.15.0</version>
+    <version>0.17.0</version>
   </dependency>
 </dependencies>
 ```
@@ -60,7 +60,7 @@ automatically initialize tracing, add a dependency on the starter.
 
 ##### For Gradle:
 ```java
-implementation 'io.opentelemetry.instrumentation:opentelemetry-otlp-exporter-starter:0.15.0'
+implementation 'io.opentelemetry.instrumentation:opentelemetry-otlp-exporter-starter:0.17.0-alpha'
 ```
 
 ##### For Maven:
@@ -69,7 +69,7 @@ implementation 'io.opentelemetry.instrumentation:opentelemetry-otlp-exporter-sta
   <dependency>
     <groupId>io.opentelemetry.instrumentation</groupId>
     <artifactId>opentelemetry-otlp-exporter-starter</artifactId>
-    <version>0.15.0</version>
+    <version>0.17.0-alpha</version>
   </dependency>
 </dependencies>
 ```
@@ -81,7 +81,7 @@ main class, or early in the main method, configure the SDK with the OTLP exporte
 OpenTelemetrySdk.builder()
   .addSpanProcessor(BatchSpanProcessor.builder(
     OtlpGrpcSpanExporter.builder()
-      .setEndpoint("localhost:11111")
+      .setEndpoint("http://localhost:11111")
       .build())
     .build())
   .buildAndRegisterGlobal();
@@ -96,7 +96,7 @@ the AWS SDK, add a dependency on the library instrumentation for the AWS SDK.
 
 ##### For Gradle:
 ```java
-implementation 'io.opentelemetry.instrumentation:opentelemetry-aws-sdk-2.2:0.15.0'
+implementation 'io.opentelemetry.instrumentation:opentelemetry-aws-sdk-2.2:0.17.0-alpha'
 ```
 
 ##### For Maven:
@@ -105,7 +105,7 @@ implementation 'io.opentelemetry.instrumentation:opentelemetry-aws-sdk-2.2:0.15.
   <dependency>
     <groupId>io.opentelemetry.instrumentation</groupId>
     <artifactId>opentelemetry-aws-sdk-2.2</artifactId>
-    <version>0.15.0</version>
+    <version>0.17.0-alpha</version>
   </dependency>
 </dependencies>
 ```
@@ -133,7 +133,7 @@ Add a dependency on the AWS extensions to the OpenTelemetry SDK
 
 
 ```java
-implementation 'io.opentelemetry:opentelemetry-sdk-extension-aws:0.15.0'
+implementation 'io.opentelemetry:opentelemetry-sdk-extension-aws:0.17.0'
 ```
 
 ##### For Maven:
@@ -142,7 +142,7 @@ implementation 'io.opentelemetry:opentelemetry-sdk-extension-aws:0.15.0'
   <dependency>
     <groupId>io.opentelemetry</groupId>
     <artifactId>opentelemetry-sdk-extension-aws</artifactId>
-    <version>0.15.0</version>
+    <version>0.17.0</version>
   </dependency>
 </dependencies>
 ```
