@@ -51,7 +51,7 @@ and expects to receive a response with each request. You can learn more about th
 OpenTelemetry can export traces, logs, and metrics to various backends to analyze in order to understand an application’s performance 
 and behavior. There are multiple monitoring backends (also known as end-points) which can support OpenTelemetry using the OTLP protocol. 
 
-In this section, we will getting started configurations to the Collector to export telemetry data to **Honeycomb, Lightstep, and SumoLogic** end-points.
+In this section, we will getting started configurations to the Collector to export telemetry data to **AppDynamics, Honeycomb, Lightstep, and SumoLogic** end-points.
 
 <SectionSeparator />
 
@@ -60,6 +60,55 @@ In this section, we will getting started configurations to the Collector to expo
 For using any backends supported by OpenTelemetry, make sure you have set up the [Collector](https://aws-otel.github.io/docs/getting-started/collector).
 
 <SectionSeparator />
+
+AppDynamics
+
+AppDynamics supports OpenTelemetry by ingesting OTLP directly, so users of the AWS Distro for OpenTelemetry (ADOT) can send tracing data directly to 
+AppDynamics without the need for additional plugins or non-OTLP exporters.
+
+<SubSectionSeparator />
+
+### Requirements
+
+Before you can use the AWS Distro for OpenTelemetry with the AppDynamics endpoint, you need:
+
+You need AppDynamics SaaS Controller= v21.2.0.
+You need to be admitted to the AppDynamics OpenTelemetry private beta program.
+
+<SubSectionSeparator />
+
+### Configuration (Collector)
+
+The configuration will take place in the OTLP exporter in the Collector config YAML file.
+
+* Set the OTLP endpoint through the [OTLP HTTP Exporter](https://github.com/open-telemetry/opentelemetry-collector/tree/master/exporter/otlphttpexporter). To configure your AppDynamics Controller to work with the AWS OTel Collector, edit your `otel-config.yml` configuration file. 
+* Set the AppDynamics API key `<x-api-key>` (Your AppDynamics API key must be defined as an HTTP header. To obtain your unique x-api-key, you should work closely with your AppDynamics account team.)
+* Set the Controller details. Use the [resource processor](https://github.com/open-telemetry/opentelemetry-collector/tree/master/processor/resourceprocessor) to add the AppDynamics Controller host, and port name.
+    * `appdynamics.controller.host`: your AppDynamics Controller host name.
+    * `appdynamics.controller.port`: your AppDynamics Controller port number.
+* Set the trace resource attributes to map the services to AppDynamics tiers and applications respectively.
+    * `service.name` your AppDynamics tier name. trace resource attribute for every service being monitored.
+    * `service.namespace`: your AppDynamics application name. Set corresponding `service.namespace` trace resource attribute for every service being monitored.
+
+See [Ingest OpenTelemetry Trace Data](https://docs.appdynamics.com/display/PRMY21/.Ingest+OpenTelemetry+Trace+Data)
+
+<SubSectionSeparator />
+
+### Example 
+
+```
+processors:
+  resource:
+    attributes:
+      - key: appdynamics.controller.host
+        action: upsert
+        value: "acme.saas.appdynamics.com"
+      - key: appdynamics.controller.port
+        action: upsert
+        value: 443
+```
+
+<SubSectionSeparator />
 
 ## Honeycomb
 
