@@ -15,7 +15,7 @@ Given an environment ID `abc12345` on Dynatrace SaaS, for example, the metrics i
 
 The requests sent to Dynatrace are authenticated using an API token. Creating an API token for your Dynatrace environment is described in the [Dynatrace API documentation](https://www.dynatrace.com/support/help/dynatrace-api/basics/dynatrace-api-authentication/). The only access scope required for exporting metrics is the **Ingest metrics** (`metrics.ingest`) scope listed in the **API v2** section. It is recommended to limit the token's scope to only that one.
 
-## COnfiguring the Dynatrace Metrics Exporter
+## Configuring the Dynatrace Metrics Exporter
 
 To enable the Dynatrace metrics exporter, write the name under exporter section in the OpenTelemetry config file (`local/config.yaml`) and add the `dynatrace` exporter to your metrics pipeline.
 

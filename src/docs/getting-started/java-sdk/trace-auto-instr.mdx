@@ -67,11 +67,11 @@ ENV JAVA_TOOL_OPTIONS=-javaagent:/opt/aws-opentelemetry-agent.jar
 ## Advanced configuration of the auto-instrumentation agent
 By default OpenTelemetry Java agent uses the [OTLP exporter](https://github.com/open-telemetry/opentelemetry-java/tree/master/exporters/otlp)
 and is configured to send data to a [OpenTelemetry collector](https://github.com/open-telemetry/opentelemetry-collector/blob/master/receiver/otlpreceiver/README.md)
-at `localhost:4317`.
+at `http://localhost:4317`.
 
 The agent can be configured using [standard OpenTelemetry options for configuration](https://github.com/open-telemetry/opentelemetry-java-instrumentation#configuration-parameters-subject-to-change).
 For example, to set the random sampling rate for creating traces, you can set the environment variables
-`OTEL_TRACE_SAMPLER=parentbased_traceidratio` and `OTEL_TRACE_SAMPLER_ARG=0.3` to configure a sampling rate of 30%.
+`OTEL_TRACES_SAMPLER=parentbased_traceidratio` and `OTEL_TRACES_SAMPLER_ARG=0.3` to configure a sampling rate of 30%.
 
 <SectionSeparator />
 
