@@ -1,0 +1,110 @@
+---
+title: 'Getting Started with StatsD Receiver in AWS OpenTelemetry Collector'
+description:
+    StatsD receiver is an agent that collects [StatsD metrics](https://github.com/statsd/statsd/blob/master/docs/metric_types.md)
+    and do the aggregation in a customer defined interval(default value is 60s). You can send counters and gauges to StatsD receiver.
+    The StatsD receiver will send the aggregated metrics to the following workflow.
+path: '/docs/components/statsd-receiver'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+
+StatsD receiver is an agent that collects [StatsD metrics](https://github.com/statsd/statsd/blob/master/docs/metric_types.md)
+and does the [aggregation](#aggregation) for a customer defined interval (default value is 60s). The aggregation interval is similar to the flush
+interval in StatsD. You can send counters and gauges to StatsD receiver, which will send the aggregated metrics to the following workflow.
+For example, you can use EMF exporter to send the metrics to CloudWatch.
+
+StatsD receiver currently supports counter and gauge types. The StatsD receiver can be used as a replacement of CloudWatch agent for StatsD.
+
+<SectionSeparator />
+
+## Enabling StatsD Receiver
+
+To enable the StatsD receiver, add the name under the receiver section in the config file `(local/config.yaml)`.
+By default, the receiver listens address `localhost:8125`, collects all metrics and aggregate the metrics in 60s.
+The `transport` can only be udp.
+(For the full list of metrics, see [Available Metrics](#available-metrics)).
+
+The following configuration collects StatsD metrics by using StatsD receiver and sends
+them to CloudWatch using `awsemf` exporter. You can set these configuration values to what works
+for your application. Check out [SETUP](https://aws-otel.github.io/docs/setup/ecs) section for
+configuring AWS Distro for OpenTelemetry Collector in Amazon Elastic Container Service.
+
+```yaml lineNumbers=true
+receivers:
+  statsd:
+    endpoint: 0.0.0.0:8125
+    aggregation_interval: 60s
+    enable_metric_type: false
+exporters:
+  awsemf:
+    namespace: ECS/AWSOTel/Application
+    log_group_name: '/aws/ecs/application/metrics'
+    region: 'us-west-2'
+service:
+  pipelines:
+    metrics:
+      receivers: [statsd]
+      exporters: [awsemf]
+```
+
+<SectionSeparator />
+
+## Available Metrics
+
+### General format:
+
+`<name>:<value>|<type>|@<sample-rate>|#<tag1-key>:<tag1-value>,<tag2-k/v>`
+
+### Counter
+
+`<name>:<value>|c|@<sample-rate>|#<tag1-key>:<tag1-value>`
+
+It supports sample rate.
+
+### Gauge
+
+`name>:<value>|g|@<sample-rate>|#<tag1-key>:<tag1-value>`
+
+Sample rate is not supported for gauges.
+
+## Aggregation
+
+You can set the aggregation interval using configuration parameter: `aggregation_interval`.
+The examples below mean receiving metrics in the same interval.
+
+### Counter
+
+#### Example one:
+
+`statsdTestMetric1:3000|c|#mykey:myvalue` `statsdTestMetric1:4000|c|#mykey:myvalue`
+
+result: get the value after incrementation: 7000 (3000+4000). For counter, the same metric with different value in
+an interval will be incremented.
+
+#### Example two:
+
+`statsdTestMetric1:3000|c|#mykey:myvalue` `statsdTestMetric1:20|c|@0.25|#mykey:myvalue`
+
+result: get the value after incrementation with sample rate: 3080 (3000+20/0.25). For counter, the sample rate will be
+calculated.
+
+### Gauge
+
+#### Example one:
+`statsdTestMetric1:500|g|#mykey:myvalue` `statsdTestMetric1:400|g|#mykey:myvalue`
+
+result: get the latest value: 400. For gauge, the newest value will cover the early value.
+
+#### Example two:
+`statsdTestMetric1:500|g|#mykey:myvalue` `statsdTestMetric1:+2|g|#mykey:myvalue` `statsdTestMetric1:-1|g|#mykey:myvalue`
+
+result: get the value after calculation: 501. For gauge, it supports plus and minus for aggregation.
+
+## other Configuration Parameters
+
+### `enable_metric_type`
+The default value is false, enable the statsd receiver to be able to emit the metric type(gauge, counter, timer(in the future), histogram(in the future)) as a label.
+
+#### Example:
+`statsdTestMetric1:500|g|#mykey:myvalue` with `enable_metric_type: true` will add `metric_type: gauge` label to the downstream.

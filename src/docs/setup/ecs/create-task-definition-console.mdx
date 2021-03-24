@@ -28,6 +28,10 @@ import task17 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinit
 import task18 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition18.png"
 import task19 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition19.png"
 import task20 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition20.png"
+import task21 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition21.png"
+import task22 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition22.png"
+import task23 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition23.png"
+import task24 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition24.png"
 
 In this tutorial, we will demonstrate how to install AWS OTel Collector using Task Definition on the Amazon Elastic
 Container Service (Amazon ECS) through AWS console.
@@ -46,6 +50,8 @@ and click the Create new Task Definition button.
 <img src={task2} alt="Diagram" style="margin: 30px 0;" />
 4. For the task execution role, select the role name you created by clicking Task execution role drop-down menu.
 <img src={task3} alt="Diagram" style="margin: 30px 0;" />
+Select Network Mode to `awsvpc`
+<img src={task24} alt="Diagram" style="margin: 30px 0;" />
 5. Select the Task size:
   * For ECS FARGATE launch type (slected in step 2), Mention task memory and cpu for your task-definition (This example uses 1GB, 0.5 vCPU).
     <img src={task4} alt="Diagram" style="margin: 30px 0;" />
@@ -57,13 +63,13 @@ We can keep everything else default
 <img src={task6} alt="Diagram" style="margin: 30px 0;" />
 7. Set up the OpenTelemetry configuration file for AWS Observability Toolkit (AOT)
 In this section we will set the OpenTelemetry configuration file for our Collector container (AWS OTel Collector).  All the functionality
-of AOC is passive, if your application doesn’t emit the data to the port (X-ray use UDP 2000 and OPTL use TCP 55680 and 55681) then there will be no effect.
+of AOC is passive, if your application doesn’t emit the data to the port (X-ray use UDP 2000, OPTL use TCP 55680 and 55681, StatsD use UDP 8125) then there will be no effect.
    *  Collect Application Metrics and Traces:
 
       In the  Environment Command section add `--config=/etc/ecs/ecs-default-config.yaml` to select the ECS default configuration
       file for AWS Observability Collector (AOC). This will collect Application Metrics and Traces and send them to
       Amazon CloudWatch Metrics and AWS X-Ray. Specifically, this configuration file can collect metrics and traces from
-      the OpenTelemetry SDKs (OTLP) and X-Ray traces from the X-Ray SDKs.
+      the OpenTelemetry SDKs (OTLP), X-Ray traces from the X-Ray SDKs and StatsD metrics from your app.
       <img src={task7} alt="Diagram" style="margin: 30px 0;" />
    *  Collect Application Metrics & Traces and Container Resource Metrics
 
@@ -71,19 +77,19 @@ of AOC is passive, if your application doesn’t emit the data to the port (X-ra
       which is  already included as part of AOT collector, select the ECS default configuration for Container Insights experience.
       This will collect Application Metrics, Traces  and task-level Container Resource Metrics, and send them to Amazon CloudWatch Metrics
       and AWS X-Ray. This configuration file can collect metrics and traces from the OpenTelemetry SDKs (OTLP)
-      and X-Ray traces from the X-Ray SDKs.
+      , X-Ray traces from the X-Ray SDKs and StatsD metrics from your app.
       <img src={task8} alt="Diagram" style="margin: 30px 0;" />
 8. Port mapping setup
 
     **Note:** For ECS Fargate launch type (slected in step 2), you can just skip this step.
 
-    For ECS EC2 launch type, add port mappings, map 2000 for udp (used by AWS X-ray for traces), and 55680 for tcp (used by the collector).
+    For ECS EC2 launch type, add port mappings, map 2000 for udp (used by AWS X-ray for traces), 55680 for tcp (used by the collector) and 8125 for udp (used by StatsD).
     <img src={task9} alt="Diagram" style="margin: 30px 0;" />
 9. In the STORAGE and LOGGING section, let’s enable Auto-configure CloudWatch logs.
    <img src={task10} alt="Diagram" style="margin: 30px 0;" />
    We are done here. Keep other config options as they are. Finish adding the container.
 
-**_Attention: 10 and 11 will add two example applications to show how everything works. Normally, these images should be your business applications. Feel free to skip these steps._**
+**_Attention: 10, 11 and 12 will add three example applications to show how everything works. Normally, these images should be your business applications. Feel free to skip these steps._**
 
 10. Let’s add a sample application container in similar way (you can configure your application like this)
     * 10.1  You can select the container name you want (i.e. webapp ), but we use another image
@@ -108,5 +114,16 @@ of AOC is passive, if your application doesn’t emit the data to the port (X-ra
         <img src={task17} alt="Diagram" style="margin: 30px 0;" />
     3.  Keep the rest information as default and click add.
         <img src={task18} alt="Diagram" style="margin: 30px 0;" />
-12. Click the Create button in the bottom to finish the process. If everything works fine, you will see something like the following.
+12. Let's add another application to send StatsD metrics (you can change this app with yours and send to port 8125).
+    1.  For this example, we use this alpine/socat:latest (Image: alpine/socat:latest).
+        <img src={task21} alt="Diagram" style="margin: 30px 0;" />
+    2.  Add this part to `Entry point` in `ENVIRONMENT` to send some StatsD metrics:
+        `/bin/sh,-c,while true; do echo 'statsdTestMetric:1|c' | socat -v -t 0 - UDP:127.0.0.1:8125; sleep 1; done`
+        Here is the output
+        <img src={task22} alt="Diagram" style="margin: 30px 0;" />
+    3.  In the STARTUP DEPENDENCY ORDERING  select the Container name aws-otel-collector you used in step 6 and in the Condition, select START.
+        <img src={task17} alt="Diagram" style="margin: 30px 0;" />
+    4.  Keep the rest information as default and click add. Now you can see four containers
+        <img src={task23} alt="Diagram" style="margin: 30px 0;" />
+13. Click the Create button in the bottom to finish the process. If everything works fine, you will see something like the following.
     <img src={task19} alt="Diagram" style="margin: 30px 0;" />
