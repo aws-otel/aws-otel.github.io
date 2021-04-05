@@ -60,29 +60,19 @@ If you are setting up the ADOT Collector of AWS EKS, you will need to edit the t
 
 <img src={proxyIngestRoleTrustRelationshipEKSImg} alt="Diagram" style="margin: 30px 0;" />
 
-3. Then, replace the **aws-amp** namespace for the service account to **adot-col**. Your resulting trust policy should reflect the example below:
+3. Locate the string below inside the existing trust policy. 
 
-```json lineNumbers=true 
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Federated": "arn:aws:iam::account-id:oidc-provider/oidc.eks.aws_region.amazonaws.com/id/openid"
-      },
-      "Action": "sts:AssumeRoleWithWebIdentity",
-      "Condition": {
-        "StringEquals": {
-          "oidc.eks.aws_region.amazonaws.com/id/openid:sub": "system:serviceaccount:adot-col:amp-iamproxy-ingest-service-account"
-        }
-      }
-    }
-  ]
-}
+```
+  "system:serviceaccount:<your_prometheus_workspace>:amp-iamproxy-ingest-service-account"
 ```
 
-4. Please make sure the following permissions policy is attached to the IAM role above:
+4. Change the namespace for the service account to **adot-col**. The resulting string should reflect the example below: 
+
+```
+  "system:serviceaccount:adot-col:amp-iamproxy-ingest-service-account"
+```
+
+5. Please make sure the following permissions policy is attached to the IAM role above:
 
 <img src={proxyIngestRolePoliciesEKSImg} alt="Diagram" style="margin: 30px 0;" />
 
