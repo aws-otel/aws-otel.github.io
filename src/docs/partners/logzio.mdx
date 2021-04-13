@@ -1,0 +1,47 @@
+---
+title: 'Logz.io Exporter'
+description: Configure the AWS Distro for OpenTelemetry Collector to send metrics and traces to Logz.io
+path: '/docs/partners/logzio.mdx'
+---
+
+## Overview
+
+Logz.io provides observability and monitoring into infrastructure and applications including logs, metrics, and traces using the best open source tools today including ELK, Prometheus, and Jaeger. The AWS Distro for Open Telemetry includes the [Logzio exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/master/exporter/logzioexporter), which takes OpenTelemetry data (metrics and traces) collected by the AWS OTel Collector and allows for pipelines to sample and process the data before sending it to the Logz.io SaaS application to be analyzed further.
+
+## Prerequisites
+
+1. [Download the AWS OTel Collector](https://github.com/aws-observability/aws-otel-collector/releases).
+2. [Deploy the AWS OTel Collector](https://aws-otel.github.io/docs/getting-started/collector).
+3. [Get a copy of your Logz.io API key](https://app.logz.io/#/dashboard/settings/manage-tokens/api/). If you don't already have a Logz.io account, sign up for a [Logz.io Trial and Community Account](https://logz.io/freetrial/).
+
+## Configuring the exporter
+
+Configure the AWS OTel collector to send metrics and traces to Logz.io by adding a `logzio` exporter to your [OpenTelemetry configuration YAML file](https://opentelemetry.io/docs/collector/configuration/) along with your Logz.io API keys:
+
+# Logzio Exporter
+
+This exporter supports sending trace data to [Logz.io](https://www.logz.io)
+
+The following configuration options are supported:
+
+* `account_token` (Required): Your logz.io account token for your tracing account.
+* `metrics_token` (Required): Your logz.io account token for your metrics account.
+* `region` (Optional): Your logz.io account [region code](https://docs.logz.io/user-guide/accounts/account-region.html#available-regions). Defaults to `us`. Required only if your logz.io region is different than US.
+* `custom_endpoint` (Optional): Custom endpoint, mostly used for dev or testing. This will override the region parameter.
+
+Example:
+
+```yaml
+exporters:
+  logzio:
+    account_token: "youLOGZIOtraceTOKEN"
+    metrics_token: "youLOGZIOmetricsTOKEN"
+    region: "eu"
+```
+This is a sample configuration which would be part of a larger configuration of your OpenTelemetry collector
+ 
+# How customer can access the outputs
+Once the exporter is configured and any metrics and traces have been sent to your Logz.io account, you can see and start exploring the data in the dashboard. Please see more information about Logz.io Kibana Discover dashboard or how to search logs via API.
+
+# Support 
+Need help? Please contact us with any questions in our chatbot which is found in the bottom right corner once you login to your Logz.io account. Support will be with you in 5 minutes of less.
