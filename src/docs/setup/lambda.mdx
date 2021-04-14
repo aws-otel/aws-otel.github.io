@@ -27,7 +27,6 @@ This sample will create AWS Distro for OpenTelemetry Lambda Extension and a samp
 - Run command: `cd sample-apps/java-lambda && ./run.sh -r us-west-2`
 - Open [Lambda console](https://us-west-2.console.aws.amazon.com/lambda/home?region=us-west-2#/functions) in us-west-2, find the new Lambda function `adot-java-sample-function-...`
 the source code of Lambda function contains a metric emitter which forwards metrics to ADOT Lambda Extension
-    <details><summary>source code</summary>
 
     ```
       @Override
@@ -41,21 +40,14 @@ the source code of Lambda function contains a metric emitter which forwards metr
         return message;
       }
     ```
-    </details>
 
 - Invoke Lambda function by clicking the API endpoint in API Gateway, Details
-    <details>
 
     ![](../../assets/docs/sample1.png)
 
-    </details>
-
-- Open [CloudWatch console](https://us-west-2.console.aws.amazon.com/cloudwatch/home?region=us-west-2#metricsV2:graph=~();namespace=~'AWSOTel*2fAWSOTelSampleApp), click the latest metric, will see the `latency` metric sent by this sample application.
-    <details>
+- Open [CloudWatch console](https://us-west-2.console.aws.amazon.com/cloudwatch/home?region=us-west-2), click the latest metric, will see the `latency` metric sent by this sample application.
 
     ![](../../assets/docs/sample2.png)
-
-    </details>
 
 - Open [CloudFormation console](https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks?filteringText=&filteringStatus=active&viewNested=true&hideStacks=false), clean the sample resources by **Delete** stack `adot-java-sample`.
 
@@ -131,3 +123,4 @@ For more information about AWS Distro for OpenTelemetry Collector configuration 
 - `ADOT_DEBUG` - Set to `true` can turn on OpenTelemetry ConsoleExporter in SDK and logging exporter in Collector, to output more details in log for debug.
 - `ADOT_CONFIG` - AWS Distro for OpenTelemetry Collector configuration file path.
 - `ADOT_CONFIG_CONTENT` - AWS Distro for OpenTelemetry Collector configuration file content.
+- `_ADOT_CI` - Reserved environment variable in ADOT CI.
