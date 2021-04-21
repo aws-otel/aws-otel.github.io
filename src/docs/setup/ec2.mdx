@@ -68,6 +68,33 @@ sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -a status
 <img src={img10} alt="Diagram" style="margin: 30px 0;" />
 <div style="height: 40px" />
 
+<SectionSeparator />
+
+## Install AWS Distro for OpenTelemetry Collector on EC2 instance using AWS Systems Manager Distributor
+
+To use [AWS Systems Manager Distributor](https://docs.aws.amazon.com/systems-manager/latest/userguide/distributor.html) to install AWSDistroOTel-Collector package, the EC2 instance need to meet follwoing requiements.
+
+* SSM agent version 2.3.1550.0 or later installed
+* Permissions Policy AmazonSSMManagedInstanceCore attached in IAM Role of EC2 instance
+
+To install AWSDistroOTel-Collector package using AWS Systems Manager Distributor.
+
+1. Based on your preferences, prepare AWS Distro for OpenTelemetry Collector YAML configuration file according to [AWS OTel Collector Configuration](https://github.com/aws-observability/aws-otel-collector/#aws-otel-collector-configuration).
+
+2. Copy AWS Distro for OpenTelemetry Collector YAML configuration file encoded as Base64 to a new SSM parameter in [SSM Parameter Store](https://us-west-2.console.aws.amazon.com/systems-manager/parameters/).
+    * For Linux, `base64 -w0 config.yaml > aoc-config-base64.txt`
+    * For Windows, `certutil.exe -f -encodehex config.yaml aoc-config-base64.txt 0x40000001`
+    * For MacOSX, `base64 -i config.yaml -o aoc-config-base64.txt` 
+
+3. Navigate to the [SSM Distributor](https://console.aws.amazon.com/systems-manager/distributor) console and open the Owned by Amazon tab. Select AWSDistroOTel-Collector and choose Install one time.
+
+4. Update the SSM parameter you created in the first step by replacing "Additional Arguments" with the following (e.g. SSM parameter name is "aoc-config-base64"):
+```
+{"SSM_CONFIG": "{{ssm:aoc-config-base64}}"}
+```
+
+5. Continue to select the EC2 instance in Targets and click Run button to start installation.
+
 **Notes**
 After you finished the tutorial, remember to shut down the new EC2 instance we created in the tutorial in order to avoid additional charges.
 
