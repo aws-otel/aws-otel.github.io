@@ -112,7 +112,7 @@ Next, push this image to a remote repository on either ECR or Dockerhub so that 
 
 ## Demonstration 1: ECS Powered by Fargate
 
-1. [Download the ECS Fargate AMP task definition template from Github.](https://github.com/aws-observability/aws-otel-collector/tree/main/examples/ecs/prometheus-pipeline/ecs-fargate-task-def.json) This definition specifies a Prometheus sample app and an ADOT Collector instance. If you would like to learn more about the sample app, please visit [here](https://github.com/aws-observability/aws-otel-community/tree/master/sample-apps/prometheus).
+1. [Download the ECS Fargate AMP task definition template from Github.](https://github.com/aws-observability/aws-otel-collector/tree/main/examples/ecs/aws-prometheus/ecs-fargate-task-def.json) This definition specifies a Prometheus sample app and an ADOT Collector instance. If you would like to learn more about the sample app, please visit [here](https://github.com/aws-observability/aws-otel-community/tree/master/sample-apps/prometheus).
 2. Fill the following parameters in the task definition templates:
     * `region` - the region the data will be sent to
     * `ecsTaskRoleArn` - AWSOTTaskRole ARN created in the previous section
@@ -120,7 +120,7 @@ Next, push this image to a remote repository on either ECR or Dockerhub so that 
     * `sampleAppImage` - the image to the Prometheus sample app we created above
 3. Follow the [ECS task definition setup instructions](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-task-definition.html), and use the “Fargate Launch Type” instructions step 1 to create a task definition using the given template.
     * Be sure to verify all of the fields match the template
-4. [Download the custom ADOT Collector configuration.](https://github.com/aws-observability/aws-otel-collector/tree/main/examples/ecs/prometheus-pipeline/ecs-fargate-adot-config.yaml) This configuration uses the Prometheus Receiver to scrape from a static target. Notice that our sample app is automatically deployed on port 8080. 
+4. [Download the custom ADOT Collector configuration.](https://github.com/aws-observability/aws-otel-collector/tree/main/examples/ecs/aws-prometheus/ecs-fargate-adot-config.yaml) This configuration uses the Prometheus Receiver to scrape from a static target. Notice that our sample app is automatically deployed on port 8080. 
     * Fill the following parameters in the ADOT Collector configuration:
       * `region` - the region the data will be sent to
       * `endpoint` - the AMP remote_write endpoint which we will export data to
@@ -135,7 +135,7 @@ Note that you must have a cluster created with an EC2 instance available. We cho
 
 <img src={createClusterECSImg} alt="Diagram" style="margin: 30px 0;" />
 
-1. [Download the ECS EC2 AMP task definition template from Github](https://github.com/aws-observability/aws-otel-collector/tree/main/examples/ecs/prometheus-pipeline/ecs-ec2-task-def.json). This definition specifies a Prometheus sample app and an ADOT Collector instance. If you would like to learn more about the sample app, please visit [here](https://github.com/aws-observability/aws-otel-community/tree/master/sample-apps/prometheus).
+1. [Download the ECS EC2 AMP task definition template from Github](https://github.com/aws-observability/aws-otel-collector/tree/main/examples/ecs/aws-prometheus/ecs-ec2-task-def.json). This definition specifies a Prometheus sample app and an ADOT Collector instance. If you would like to learn more about the sample app, please visit [here](https://github.com/aws-observability/aws-otel-community/tree/master/sample-apps/prometheus).
 2. Fill the following parameters in the task definition templates:
     * `region` - the region the data will be sent to
     * `ecsTaskRoleArn` - AWSOTTaskRole ARN created in the previous section
@@ -143,7 +143,7 @@ Note that you must have a cluster created with an EC2 instance available. We cho
     * `sampleAppImage` - the image to the Prometheus sample app we created above
 3. Follow the [ECS task definition setup instructions](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-task-definition.html), and use the “EC2 Launch Type” instructions step 1 to create a task definition using the given template.
     * Be sure to verify all of the fields match the template
-4. [Download the custom ADOT Collector configuration](https://github.com/aws-observability/aws-otel-collector/tree/main/examples/ecs/prometheus-pipeline/ecs-ec2-adot-config.yaml). This configuration uses the Prometheus Receiver to scrape from a static target using an environment variable.
+4. [Download the custom ADOT Collector configuration](https://github.com/aws-observability/aws-otel-collector/tree/main/examples/ecs/aws-prometheus/ecs-ec2-adot-config.yaml). This configuration uses the Prometheus Receiver to scrape from a static target using an environment variable.
     * Fill the following parameters in the ADOT Collector configuration:
         * `region` - the region the data will be sent to
         * `endpoint` - the AMP remote_write endpoint which we will export data to
