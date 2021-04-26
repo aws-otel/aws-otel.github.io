@@ -72,6 +72,8 @@ sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -a status
 
 ## Install AWS Distro for OpenTelemetry Collector on EC2 instance using AWS Systems Manager Distributor
 
+AWS Systems Manager Distributor can simplify and scale distribution, installation, and update process of software package, such as AWS Distro for OpenTelemetry Collector. With Distributor, you manage your software packages from a centralized location. Software packages are securely stored in Systems Manager, providing a centralized repository with version control. You can use Run Command to install AWS Distro for OpenTelemetry Collector on demand, or you can use State Manager to update AWS Distro for OpenTelemetry Collector on target instances automatically or on a schedule.
+
 To use [AWS Systems Manager Distributor](https://docs.aws.amazon.com/systems-manager/latest/userguide/distributor.html) to install AWS OTel Collector on EC2 instances, the target EC2 instances need to meet following requirements.
 
 * SSM agent version 2.3.1550.0 or later installed
@@ -86,14 +88,14 @@ To install AWSDistroOTel-Collector package using AWS Systems Manager Distributor
     * For Windows, `certutil.exe -f -encodehex config.yaml aoc-config-base64.txt 0x40000001`
     * For MacOSX, `base64 -i config.yaml -o aoc-config-base64.txt` 
 
-3. Navigate to the [SSM Distributor](https://console.aws.amazon.com/systems-manager/distributor) console and open the `Owned by Amazon` tab. Select AWSDistroOTel-Collector and choose `Install one time`.
+3. Navigate to the [SSM Distributor](https://console.aws.amazon.com/systems-manager/distributor) console and open the `Owned by Amazon` tab. Select `AWSDistroOTel-Collector` and choose `Install one time`.
 
 4. Update the SSM parameter you created in the first step by replacing "Additional Arguments" with the following (e.g. SSM parameter name is "aoc-config-base64"):
 ```
 {"SSM_CONFIG": "{{ssm:aoc-config-base64}}"}
 ```
 
-5. Continue to select the EC2 instance in Targets and click Run button to start installation. Visit [Install or update packages](https://docs.aws.amazon.com/systems-manager/latest/userguide/distributor-working-with-packages-deploy.html) for more installation options.
+5. Continue to select the EC2 instances by EC2 instance tags, EC2 instance IDs or Resource Group in `Targets` and click `Run` button to start installation. Visit [Install or update packages](https://docs.aws.amazon.com/systems-manager/latest/userguide/distributor-working-with-packages-deploy.html) for more installation options.
 
 **Notes**
 After you finished the tutorial, remember to shut down the new EC2 instance we created in the tutorial in order to avoid additional charges.
