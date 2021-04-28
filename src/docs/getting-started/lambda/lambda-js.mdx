@@ -1,20 +1,19 @@
 ---
-title: 'AWS Distro for OpenTelemetry Lambda Support For Python'
+title: 'AWS Distro for OpenTelemetry Lambda Support For JavaScript'
 description:
     The AWS Distro for OpenTelemetry Lambda (ADOT Lambda) layer for AWS Lambda provides
     a plug and play user experience by automatically instrumenting a Lambda function,
-    by packaging [OpenTelemetry Python](https://github.com/open-telemetry/opentelemetry-python)
+    by packaging [OpenTelemetry JavaScript](https://github.com/open-telemetry/opentelemetry-js)
     together with an out-of-the-box configuration for AWS Lambda and AWS X-Ray.
     Users can enable and disable OpenTelemetry for their Lambda function without changing code.
-path: '/docs/getting-started/lambda/lambda-python'
+path: '/docs/getting-started/lambda/lambda-js'
 ---
 
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
-import SubSectionSeparator from "components/MdxSubSectionSeparator/subsectionSeparator.jsx"
 
 The AWS Distro for OpenTelemetry Lambda (ADOT Lambda) layer for AWS Lambda provides
 a plug and play user experience by automatically instrumenting a Lambda function,
-by packaging [OpenTelemetry Python](https://github.com/open-telemetry/opentelemetry-python)
+by packaging [OpenTelemetry JavaScript](https://github.com/open-telemetry/opentelemetry-js)
 together with an out-of-the-box configuration for AWS Lambda and AWS X-Ray.
 Users can enable and disable OpenTelemetry for their Lambda function without changing code.
 
@@ -22,13 +21,12 @@ Users can enable and disable OpenTelemetry for their Lambda function without cha
 
 ## Requirements
 
-The Lambda layer supports Python 3.8 Lambda runtimes. For more information about supported Python versions,
-see the [OpenTelemetry Python documentation](https://github.com/open-telemetry/opentelemetry-python/blob/master/README.md#supported-runtimes)
-and the package on [PyPi](https://pypi.org/project/opentelemetry-api/).
+The Lambda layer supports Node.JS v10+ Lambda runtimes. For more information about supported JavaScript and Node.JS versions,
+ see the [OpenTelemetry JavaScript documentation](https://github.com/open-telemetry/opentelemetry-js).
 
 ### Add the ARN of the Lambda Layer
 
-In this section, we consume the Lambda layer for use with Python Lambda Functions.
+In this section, we consume the Lambda layer for use with Node.JS Lambda Functions.
  This includes a reduced version of the [AWS Distro for OpenTelemetry Collector (ADOT Collector)](https://github.com/aws-observability/aws-otel-collector),
   which runs as a Lambda extension.
 
@@ -39,7 +37,7 @@ Find the supported regions and ARN in the table below for the ARNs to consume.
 
 |Supported   Regions |Lambda layer ARN format| Contents |
 |---------------------|-------------------------|----------|
-| ap-northeast-1<br/>ap-northeast-2<br/>ap-south-1<br/>ap-southeast-1<br/>ap-southeast-2<br/>ca-central-1<br/>eu-central-1<br/>eu-north-1<br/>eu-west-1<br/>eu-west-2<br/>eu-west-3<br/>sa-east-1<br/>us-east-1<br/>us-east-2<br/>us-west-1<br/>us-west-2 | arn:aws:lambda:\<region\>:901920570463:layer:aws-otel-python38-ver-1-1-0:1 | Contains [OpenTelemetry for Python v1.1.0](https://github.com/open-telemetry/opentelemetry-python/releases/tag/v1.1.0) with [Contrib v0.20b0](https://github.com/open-telemetry/opentelemetry-python-contrib/releases/tag/v0.20b0) <br/><br/> Contains the [ADOT Collector for Lambda v0.9.1](https://github.com/aws-observability/aws-otel-collector/releases/tag/pkg%2Flambdacomponents%2Fv0.9.1)|
+| ap-northeast-1<br/>ap-northeast-2<br/>ap-south-1<br/>ap-southeast-1<br/>ap-southeast-2<br/>ca-central-1<br/>eu-central-1<br/>eu-north-1<br/>eu-west-1<br/>eu-west-2<br/>eu-west-3<br/>sa-east-1<br/>us-east-1<br/>us-east-2<br/>us-west-1<br/>us-west-2 | arn:aws:lambda:\<region\>:901920570463:layer:aws-otel-nodejs-ver-0-18-0:1 | Contains [OpenTelemetry for JavaScript v0.18.0 ](https://github.com/open-telemetry/opentelemetry-js/releases/tag/v0.18.0) with [Contrib v0.20b0](https://github.com/open-telemetry/opentelemetry-python-contrib/releases/tag/v0.20b0) <br/><br/> Contains the [ADOT Collector for Lambda v0.9.1](https://github.com/aws-observability/aws-otel-collector/releases/tag/pkg%2Flambdacomponents%2Fv0.9.1)|
 
 
 ### Enable auto-instrumentation for your Lambda function
@@ -48,7 +46,7 @@ To enable the AWS Distro for OpenTelemetry in your Lambda function, you need to 
 1. Open the Lambda function you intend to instrument in the in AWS console.
 2. In the *Layers in Designer* section, choose *Add a layer*.
 3. Under *specify an ARN*, paste the layer ARN, and then choose *Add*.
-4. Add the environment variable `AWS_LAMBDA_EXEC_WRAPPER` and set to `/opt/otel-instrument`.
+4. Add the environment variable `AWS_LAMBDA_EXEC_WRAPPER` and set to `/opt/otel-handler`.
 5. [Enable active tracing](https://docs.aws.amazon.com/lambda/latest/dg/services-xray.html) for your AWS Lambda function.
 
 Tips:
@@ -77,4 +75,4 @@ By default, the ADOT Lambda layer uses the [config.yaml](https://github.com/aws-
 
 ## Additional Instrumentation
 
-For additional instrumentation, see the [OpenTelemetry Python documentation](https://github.com/open-telemetry/opentelemetry-python).
+For additional instrumentation, see the [OpenTelemetry JavaScript documentation](https://github.com/open-telemetry/opentelemetry-js).
