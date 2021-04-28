@@ -8,9 +8,9 @@
 ## Development Setup
 
 1. Clone this repository onto your local machine
-2. [Download and Set up Gatsby Environment](https://www.gatsbyjs.com/tutorial/part-zero/)
+2. [Download and Set up Gatsby Environment](https://www.gatsbyjs.com/tutorial/part-zero/) Note: When using Gatsby, you will need downgrade your version of Node to 14 prior to installation of gatsby-cli. You can do this via `nvm use 14`.
 3. Open up the project using your preferred code editor
-4. Install the required node modules for this project
+4. Install the required node modules for this project.
     ```
     npm install
     ```
