@@ -57,7 +57,7 @@ the source code of Lambda function contains a metric emitter which forwards metr
 To play ADOT in Lambda container image, the following steps are required: 1. Build the Lambda layer; 2. Include Lambda layer into your Lambda function container image.
 
 ### Build the Lambda layer
-If you have went though Sample you already have ADOT Lambda layer, skip to the next step **Include Lambda layer into your Lambda function container image**
+If you have went though the sample app, you already have ADOT Lambda layer, skip to the next step **Include Lambda layer into your Lambda function container image**
 
 1. Install [SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html) and [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html). For users have trouble in SAM CLI, see [documentation](docs/misc/sam.md).
 2. Run `aws configure` to set aws credential([with administrator permissions](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install-mac.html#serverless-sam-cli-install-mac-iam-permissions)) and default region.
@@ -116,7 +116,7 @@ To customize the Collector config, there are two options:
 * Bring custom config file (and ca/cert/key files) into the Lambda function by the Lambda layer, then set the Collector config by environment variable `ADOT_CONFIG=<your config file path>`
 * Add the environment variable `ADOT_CONFIG_CONTENT=<Full content of your config file>`
 
-For more information about AWS Distro for OpenTelemetry Collector configuration like adding ca/cert/key files, see the Github [README.md](https://github.com/aws-observability/aws-otel-lambda/blob/main/extensions/sample-custom-config/README.md).
+For more information about AWS Distro for OpenTelemetry Collector configuration like adding ca/cert/key files, see the GitHub [README.md](https://github.com/aws-observability/aws-otel-lambda/blob/main/extensions/sample-custom-config/README.md).
 
 #### Environment variables
 
