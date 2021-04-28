@@ -1,10 +1,11 @@
 ---
-title: 'AWS Distro for OpenTelemetry Lambda Support For Python'
+title: 'AWS Distro for OpenTelemetry Lambda'
 description:
-    The AWS Distro for OpenTelemetry Lambda (ADOT Lambda) layer for AWS Lambda provides a plug and play user experience by automatically 
-    instrumenting a Lambda function, by packaging OpenTelemetry Python together with an out-of-the-box configuration for AWS Lambda and 
-    AWS X-Ray. Users can enable and disable OpenTelemetry for their Lambda function without changing code. Currently, this layer is 
-    only for Python Lambda functions.
+    The AWS Distro for OpenTelemetry now supports AWS Lambda layers.
+    ADOT Lambda layers for AWS Lambda provides a plug and play user experience by automatically
+    instrumenting a Lambda function, by packaging OpenTelemetry together with an out-of-the-box configuration
+    for AWS Lambda and AWS X-Ray in an easy to setup  layer. Users can enable and disable OpenTelemetry
+    for their Lambda function without changing code.
 path: '/docs/getting-started/lambda'
 ---
 
@@ -12,96 +13,76 @@ import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.js
 import SubSectionSeparator from "components/MdxSubSectionSeparator/subsectionSeparator.jsx"
 
 
-The AWS Distro for OpenTelemetry Lambda (ADOT Lambda) layer for AWS Lambda provides a plug and play user experience by automatically 
-instrumenting a Lambda function, by packaging [OpenTelemetry Python](https://github.com/open-telemetry/opentelemetry-python) together 
-with an out-of-the-box configuration for AWS Lambda and AWS X-Ray. Users can enable and disable OpenTelemetry for their Lambda function 
-without changing code. Currently, this layer is only for Python Lambda functions.
+The AWS Distro for OpenTelemetry now supports AWS Lambda layers.
+    ADOT Lambda layers for AWS Lambda provides a plug and play user experience by automatically
+    instrumenting a Lambda function, by packaging OpenTelemetry together with an out-of-the-box configuration
+    for AWS Lambda and AWS X-Ray in an easy to setup  layer. Users can enable and disable OpenTelemetry
+    for their Lambda function without changing code.
 
 <SectionSeparator />
 
-## Requirements
+## Getting Started with AWS Lambda layers
 
-The Lambda layer supports Python 3.8 Lambda runtimes. For more information about supported Python versions, see the 
-[OpenTelemetry Python](https://github.com/open-telemetry/opentelemetry-python/blob/master/README.md#supported-runtimes) and the [package on PyPi](https://pypi.org/project/opentelemetry-api/).
+* [ADOT Lambda Layer for Java SDK and ADOT Collector](/docs/getting-started/java-sdk/metric-manual-instr)
+* [ADOT Lambda Layer for Java Auto Agent and ADOT Collector](/docs/getting-started/java-sdk/trace-auto-instr)
+* [ADOT Lambda Layer for JavaScript SDK and ADOT Collector](/docs/getting-started/java-sdk/trace-manual-instr)
+* [ADOT Lambda Layer for Python SDK and ADOT Collector](/docs/getting-started/lambda/lambda-python)
 
-To build the Lambda Layer, install the [AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)and 
-[AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) tools.
+## Manual Steps for Private Lambda Layers
+See the documentation on the [OpenTelemetry Lambda repository](https://github.com/open-telemetry/opentelemetry-lambda/).
 
-Configure the AWS CLI using [aws configure]. Provide your AWS credentials, 
-[with administrator permissions](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install-mac.html#serverless-sam-cli-install-mac-iam-permissions), 
-and your chosen default Region.
+## Custom configuration for the ADOT Collector on Lambda
+The ADOT Lambda layers combines both OpenTelemetry and the ADOT Collector.
+The configuration of the ADOT Collector follows the OpenTelemetry standard.
+By default, the ADOT Lambda layer uses [config.yaml](https://github.com/aws-observability/aws-otel-lambda/blob/main/adot/collector/config.yaml),
+which exports telemetry data to AWS X-Ray.
 
-Note: Lambda layers are a rationalized resource, meaning that they can only be used in the Region in which they are published. Make sure to publish 
-the layer in the same Regions as your Lambda functions.
+To enable debugging, you can use the configuration file to set log level to debug. See the example below.
 
-<SubSectionSeparator />
+To customize the collector configuration, add a configuration yaml file to your function code.
+Once the file has been deployed with a Lambda function, create an environment variable on your Lambda
+function `OPENTELEMETRY_COLLECTOR_CONFIG_FILE` and set it to `/var/task/*<path/<to>/<filename>*`.
+This will tell the extension where to find the collector configuration.
 
-### Build the Lambda Layer 
+Here is a sample configuration file, collector.yaml in the root directory:
+```yaml
+#collector.yaml in the root directory
+#Set an environemnt variable 'OPENTELEMETRY_COLLECTOR_CONFIG_FILE' to '/var/task/<path/<to>/<file>'
 
-In this section, we will pull, build, and publish a reusable Lambda layer for use with Python Lambda Functions. This includes a reduced version of the 
-[AWS Distro for OpenTelemetry Collector (ADOT Collector)](https://github.com/aws-observability/aws-otel-collector), which runs as a Lambda extension.
+receivers:
+  otlp:
+    protocols:
+      grpc:
 
-1. Download a local copy of the [aws-otel-lambda repository from Github](https://github.com/aws-observability/aws-otel-lambda/archive/main.zip).
-2. Unzip the downloaded repository and run the `run.sh` script from the sample-apps directory. This publishes the layer into your personal account.
-    ```
-    cd sample-apps/python-lambda && clear
-    ```
+exporters:
+  logging:
+    loglevel: debug
+  otlp:
+    protocols:
+      http:
+        endpoint: 0.0.0.0:55681
 
-Tips:
-* To publish the layer to other Regions, use  `-r`, for example `./run.sh -r us-west-2`
-* After the layer is published, it can be reused across multiple Lambda functions. You don’t have to republish the layer, unless you would like to upgrade the layer to the latest version.
-
-You will need the layer Amazon Resource Name (ARN) to add it to your Lambda function. To get the ARN from another region, use `-r <region>` as shown previously.
-
+#enables output for traces to xray
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [logging, xray]
 ```
- # Get the Lambda layer ARN
- ./run.sh -l 
+You can set this via the Lambda console, or via the AWS CLI.
+```
+aws lambda update-function-configuration --function-name Function --environment Variables={OPENTELEMETRY_COLLECTOR_CONFIG_FILE=/var/task/collector.yaml}
+```
+You can configure environment variables via CloudFormation template as well:
+```yaml
+Function:
+  Type: AWS::Serverless::Function
+  Properties:
+    ...
+    Environment:
+      Variables:
+        OPENTELEMETRY_COLLECTOR_CONFIG_FILE: /var/task/collector.yaml
 ```
 
-<SubSectionSeparator />
-
-### Enable auto-instrumentation for your Lambda function
-
-To enable the AWS Distro for OpenTelemetry in your Lambda function, you need to add and configure the layer, and then enable tracing.
-
-1. Open the Lambda function you intend to instrument in the in AWS console. 
-2. In the **Layers in Designer** section, choose **Add a layer**.
-3.  Under **specify an ARN**, paste the layer ARN, and then choose **Add**.
-4. Add the environment variable `AWS_LAMBDA_EXEC_WRAPPER = /opt/python/adot-instrument` to your Lambda function. This enable auto-instumentations.
-5. [Enable active tracing](https://docs.aws.amazon.com/lambda/latest/dg/services-xray.html) for your AWS Lambda function.
-
-Tips:
-
-* By default, the layer is configured to 
-[export traces to AWS X-Ray](https://github.com/aws-observability/aws-otel-lambda/blob/main/sample-apps/python-lambda/template.yml#L23), 
-make sure your Lambda role has the required X-Ray permissions.
-
-<SubSectionSeparator />
-
-### Remove OpenTelemetry from your Lambda function
-
-To disable OpenTelemetry for you Lambda function, remove the Lambda layer, remove the environment 
-variable `AWS_LAMBDA_EXEC_WRAPPER`, and disable active tracing, as explained in the section above.
-
-<SectionSeparator />
-
-## Configuration 
-
-The ADOT Python Lambda layer combines both OpenTelemetry Python and the ADOT Collector. The configuration of the ADOT Collector follows the OpenTelemetry standard.
-
-By default, the ADOT Lambda layer uses [config.yaml](https://github.com/aws-observability/aws-otel-lambda/blob/main/extensions/aoc-extension/config.yaml), 
-which exports telemetry data to AWS X-Ray and AWS CloudWatch.
-
-For debugging, you can turn on the logging exporter in the Collector by adding the environment variable `ADOT_DEBUG=true` in the Lambda function.
-
-To fully customize the Collector config, there are two options:
-* Bring customized config file (and ca/cert/key files) into the Lambda function by the Lambda layer, then set the Collector config by environment variable `ADOT_CONFIG=<your config file path>`
-* Add the environment variable `ADOT_CONFIG_CONTENT=<Full content of your config file>`
-
-For more information about ADOT Collector configuration like adding ca/cert/key files, see the Github 
-[README.md](https://github.com/aws-observability/aws-otel-lambda/blob/main/extensions/sample-aoc-config/README.md).
-
-
-
-
-
+For more information about ADOT Collector configuration,
+such as adding ca/cert/key files, see the Github [README.md](https://github.com/aws-observability/aws-otel-lambda/blob/main/extensions/sample-aoc-config/README.md).
