@@ -1,7 +1,7 @@
 ---
 title: 'AWS Distro for OpenTelemetry Lambda Support For Java (Auto-instrumentation Agent)'
 description:
-    The AWS Distro for OpenTelemetry Lambda (ADOT Lambda) layer for Java provides a plug-and-play user experience by automatically instrumenting a AWS Lambda function, by packaging either the ADOT Java Agent (https://aws-otel.github.io/docs/getting-started/java-sdk/trace-auto-instr) or OpenTelemetry Java SDK (https://aws-otel.github.io/docs/getting-started/java-sdk/trace-manual-instr)together with an out-of-the-box configuration for AWS Lambda and AWS X-Ray. Users can enable and disable OpenTelemetry for their Lambda function without changing code.
+    The AWS managed Lambda layer for ADOT Java Auto-instrumentation Agent provides a plug-and-play user experience by automatically instrumenting a AWS Lambda function, by packaging either the ADOT Java Agent (https://aws-otel.github.io/docs/getting-started/java-sdk/trace-auto-instr) or OpenTelemetry Java SDK (https://aws-otel.github.io/docs/getting-started/java-sdk/trace-manual-instr)together with an out-of-the-box configuration for AWS Lambda and AWS X-Ray. Users can enable and disable OpenTelemetry for their Lambda function without changing code.
     With the ADOT Lambda Layer for Java Auto-instrumentation Agent, all supported libraries are automatically instrumented, with no additional configurations needed.
 path: '/docs/getting-started/lambda/lambda-java-auto-instr'
 ---
@@ -9,22 +9,15 @@ path: '/docs/getting-started/lambda/lambda-java-auto-instr'
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
 import SubSectionSeparator from "components/MdxSubSectionSeparator/subsectionSeparator.jsx"
 
-The AWS Distro for OpenTelemetry Lambda (ADOT Lambda) layer for AWS Lambda provides
-a plug and play user experience by automatically instrumenting a Lambda function,
-by packaging [OpenTelemetry Python](https://github.com/open-telemetry/opentelemetry-python)
-together with an out-of-the-box configuration for AWS Lambda and AWS X-Ray.
-Users can enable and disable OpenTelemetry for their Lambda function without changing code.
+The AWS managed Lambda layer for ADOT Java Auto-instumentation Agent provides a plug-and-play user experience by automatically instrumenting a Lambda function, by packaging the [ADOT Java Agent](https://aws-otel.github.io/docs/getting-started/java-sdk/trace-auto-instr) together with an out-of-the-box configuration for AWS Lambda and AWS X-Ray. Users can enable and disable OpenTelemetry for their Lambda function without changing code.
 
 <SectionSeparator />
 
 ## Requirements
 
-The Lambda layer supports Java 8 and 11 Lambda runtimes. For more information about supported Java versions,
-see the [OpenTelemetry Java documentation](https://github.com/open-telemetry/opentelemetry-java).
+The Lambda layer supports Java 8 and 11 Lambda runtimes. For more information about supported Java versions, see the [OpenTelemetry Java documentation](https://github.com/open-telemetry/opentelemetry-java).
 
-Note: ADOT Lambda Layer for Java Auto-Instrumentation Agent - Automatic instrumentation has a notable
-impact on startup time on AWS Lambda and you will generally need to use this along with provisioned
-concurrency and warmup requests to serve production requests without causing timeouts on initial requests while it initializes.
+Note: ADOT Lambda Layer for Java Auto-instrumentation Agent - Automatic instrumentation has a notable impact on startup time on AWS Lambda and you will generally need to use this along with provisioned concurrency and warmup requests to serve production requests without causing timeouts on initial requests while it initializes.
 
 ### Add the ARN of the Lambda Layer
 
