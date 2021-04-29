@@ -45,12 +45,12 @@ trace data for the application.
 kubectl create namespace aws-otel-eks
 ```
 2. An example configuration template can be
-found [under examples in the AWC OTel Collector GitHub](https://github.com/aws-observability/aws-otel-collector/blob/main/examples/eks/eks-sidecar.yaml).
+found [under examples in the AWC OTel Collector GitHub](https://github.com/aws-observability/aws-otel-collector/blob/main/examples/eks/aws-cloudwatch/otel-sidecar.yaml).
 Replace `{{aws-otelImage}}` with the name of the AWS OTel Collector Docker image you built
 (For example, `aottestbed/awscollector:v0.1.12`), and `{{region}}` with the name of the Region where the logs are published (For example, `us-west-2`).
 3. Deploy the application.
 ```
-kubectl apply -f https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/examples/eks/eks-sidecar.yaml
+kubectl apply -f https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/examples/eks/aws-cloudwatch/otel-sidecar.yaml
 ```
 4. View the resources in the `aws-otel-eks` namespace.
 ```

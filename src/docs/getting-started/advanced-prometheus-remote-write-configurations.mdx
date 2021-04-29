@@ -288,7 +288,7 @@ service. We can use the [Blackbox Exporter provided by Prometheus](https://githu
 #### Prerequisite
 
 To use the blackbox exporter, ** we can deploy the configurations 
-[here](https://github.com/aws-observability/aws-otel-collector/blob/main/examples/eks/prometheus-pipeline/prometheus-blackbox-exporter.yaml).
+[here](https://github.com/aws-observability/aws-otel-collector/blob/main/examples/eks/aws-prometheus/prometheus-blackbox-exporter.yaml).
 
 Using the name of the Blackbox Exporter service and the exposed port (9115), we can access the probed metrics. This is done by 
 replacing the `__address__`. If we do not want to probe all services, we can specify a list of target addresses to probe in the `static_configs` 
