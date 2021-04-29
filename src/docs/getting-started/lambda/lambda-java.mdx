@@ -33,7 +33,6 @@ see the [OpenTelemetry Java documentation](https://github.com/open-telemetry/ope
 
 ### Known issues
 
-ADOT Lambda Layer for Java Auto Agent - Automatic instrumentation has a notable impact on startup time on
 AWS Lambda and you will generally need to use this along with provisioned concurrency
 and warmup requests to serve production requests without causing timeouts on initial requests while it initializes.
 
