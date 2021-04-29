@@ -53,9 +53,9 @@ To enable the AWS Distro for OpenTelemetry in your Lambda function, you need to 
 
 Tips:
 
-* By default, the layer is configured to [export traces to AWS X-Ray](https://github.com/aws-observability/aws-otel-lambda/blob/main/sample-apps/python-lambda/template.yml#L23),
- make sure your Lambda role has the required AWS X-Ray permissions.
-  See more on AWS X-Ray permissions for AWS Lambda, see the [AWS Lambda documentation](https://docs.aws.amazon.com/lambda/latest/dg/services-xray.html#services-xray-permissions).
+* By default, the layer is configured to export traces to AWS X-Ray.
+ Make sure your Lambda role has the required AWS X-Ray permissions.
+  For more on AWS X-Ray permissions for AWS Lambda, see the [AWS Lambda documentation](https://docs.aws.amazon.com/lambda/latest/dg/services-xray.html#services-xray-permissions).
 
 ### Remove OpenTelemetry from your Lambda function
 To disable OpenTelemetry for your Lambda function, remove the Lambda layer,
@@ -70,7 +70,7 @@ The configuration of the ADOT Collector follows the OpenTelemetry standard.
 
 By default, the ADOT Lambda layer uses the [config.yaml](https://github.com/aws-observability/aws-otel-lambda/blob/main/adot/collector/config.yaml),
  which exports telemetry data to AWS X-Ray. To customize the Collector config,
- see the [page](/docs/getting-started/lambda)
+ see the [main Lambda section for custom configuration instructions](/docs/getting-started/lambda)
 
 
 <SectionSeparator />
