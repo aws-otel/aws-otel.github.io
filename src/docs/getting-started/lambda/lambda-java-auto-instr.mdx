@@ -1,0 +1,75 @@
+---
+title: 'AWS Distro for OpenTelemetry Lambda Support For Java (Auto-instrumentation Agent)'
+description:
+    The AWS Distro for OpenTelemetry Lambda (ADOT Lambda) layer for Java provides a plug-and-play user experience by automatically instrumenting a AWS Lambda function, by packaging either the ADOT Java Agent (https://aws-otel.github.io/docs/getting-started/java-sdk/trace-auto-instr) or OpenTelemetry Java SDK (https://aws-otel.github.io/docs/getting-started/java-sdk/trace-manual-instr)together with an out-of-the-box configuration for AWS Lambda and AWS X-Ray. Users can enable and disable OpenTelemetry for their Lambda function without changing code.
+    With the ADOT Lambda Layer for Java Auto-instrumentation Agent, all supported libraries are automatically instrumented, with no additional configurations needed.
+path: '/docs/getting-started/lambda/lambda-java-auto-instr'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import SubSectionSeparator from "components/MdxSubSectionSeparator/subsectionSeparator.jsx"
+
+The AWS Distro for OpenTelemetry Lambda (ADOT Lambda) layer for AWS Lambda provides
+a plug and play user experience by automatically instrumenting a Lambda function,
+by packaging [OpenTelemetry Python](https://github.com/open-telemetry/opentelemetry-python)
+together with an out-of-the-box configuration for AWS Lambda and AWS X-Ray.
+Users can enable and disable OpenTelemetry for their Lambda function without changing code.
+
+<SectionSeparator />
+
+## Requirements
+
+The Lambda layer supports Java 8 and 11 Lambda runtimes. For more information about supported Java versions,
+see the [OpenTelemetry Java documentation](https://github.com/open-telemetry/opentelemetry-java).
+
+Note: ADOT Lambda Layer for Java Auto-Instrumentation Agent - Automatic instrumentation has a notable
+impact on startup time on AWS Lambda and you will generally need to use this along with provisioned
+concurrency and warmup requests to serve production requests without causing timeouts on initial requests while it initializes.
+
+### Add the ARN of the Lambda Layer
+
+In this section, we consume the Lambda layer for use with Java Lambda Functions. This includes a reduced version of the [AWS Distro for OpenTelemetry Collector (ADOT Collector)](https://github.com/aws-observability/aws-otel-collector), which runs as a Lambda extension.
+
+Note: Lambda layers are a regionalized resource, meaning that they can only be used in the region in which they are published. Make sure to use the layer in the same region as your Lambda functions.
+
+Find the supported regions and ARN in the table below for the ARNs to consume.
+
+|Supported   Regions |Lambda layer ARN format| Contents |
+|---------------------|-------------------------|----------|
+| ap-northeast-1<br/>ap-northeast-2<br/>ap-south-1<br/>ap-southeast-1<br/>ap-southeast-2<br/>ca-central-1<br/>eu-central-1<br/>eu-north-1<br/>eu-west-1<br/>eu-west-2<br/>eu-west-3<br/>sa-east-1<br/>us-east-1<br/>us-east-2<br/>us-west-1<br/>us-west-2 | aarn:aws:lambda:\<region\>:901920570463:layer:aws-otel-java-agent-ver-1-1-0:1 | Contains [ADOT Java Auto-Instrumentation Agent v1.1.0](https://github.com/aws-observability/aws-otel-java-instrumentation/releases/tag/v1.1.0) <br/><br/> Contains the [ADOT Collector for Lambda  v0.9.1](https://github.com/aws-observability/aws-otel-collector/releases/tag/pkg%2Flambdacomponents%2Fv0.9.1) |
+
+### Enable auto-instrumentation for your Lambda function
+
+To enable the AWS Distro for OpenTelemetry in your Lambda function, you need to add and configure the layer, and then enable tracing.
+
+1. Open the Lambda function you intend to instrument in the in AWS console. 
+2. In the *Layers in Designer* section, choose *Add a layer*.
+3. Under *specify an ARN*, paste the layer ARN, and then choose *Add*.
+4. Add the environment variable AWS_LAMBDA_EXEC_WRAPPER and set to one of the following options:
+    1. `/opt/otel-handler` - for wrapping regular handlers (implementing RequestHandler)
+5. [Enable active tracing](https://docs.aws.amazon.com/lambda/latest/dg/services-xray.html) for your AWS Lambda function.
+
+Tips:
+
+* By default, the layer is configured to export traces to AWS X-Ray. Make sure your Lambda role has the required AWS X-Ray permissions.
+For more on AWS X-Ray permissions for AWS Lambda, see the [AWS Lambda documentation](https://docs.aws.amazon.com/lambda/latest/dg/services-xray.html#services-xray-permissions).
+
+### Remove OpenTelemetry from your Lambda function
+
+To disable OpenTelemetry for your Lambda function, remove the Lambda layer, remove the environment variable AWS_LAMBDA_EXEC_WRAPPER, and disable active tracing, as explained in the section above.
+
+<SectionSeparator />
+
+## Configuration
+
+The ADOT Java Auto-instrumentation Agent layer combines both OpenTelemetry Auto Agent and the ADOT Collector.
+The configuration of the ADOT Collector follows the OpenTelemetry standard.
+
+By default, the ADOT Lambda layer uses the [config.yaml](https://github.com/aws-observability/aws-otel-lambda/blob/main/adot/collector/config.yaml), which exports telemetry data to AWS X-Ray. To customize the Collector config, see the [main Lambda section for custom configuration instructions](/docs/getting-started/lambda).
+
+
+<SectionSeparator />
+
+## Additional Instrumentation
+
+For additional instrumentation, see the [OpenTelemetry Java documentation](https://github.com/open-telemetry/opentelemetry-java).

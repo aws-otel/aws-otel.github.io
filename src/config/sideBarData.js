@@ -52,7 +52,7 @@ export const sideBarData = [
         {label: "JavaScript", link: "/docs/getting-started/javascript-sdk"},
         {label: "Python", link: "/docs/getting-started/python-sdk"},
         {label: ".NET", link: "/docs/getting-started/dotnet-sdk"},
-        {label: "Lambda for Python", link: "/docs/getting-started/lambda"},
+        {label: "Lambda", link: "/docs/getting-started/lambda"},
         {label: "Prometheus (AMP)", link: "/docs/getting-started/prometheus-remote-write-exporter"},
         {label: "Prometheus Configurations", link: "/docs/getting-started/advanced-prometheus-remote-write-configurations"},
         {label: "CloudWatch Metrics", link: "/docs/getting-started/cloudwatch-metrics"},
