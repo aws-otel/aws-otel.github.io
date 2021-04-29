@@ -93,6 +93,8 @@ export const sideBarData = [
         {label: "ECS Container Metrics Receiver", link: "/docs/components/ecs-metrics-receiver"},
         {label: "X-Ray Receiver", link: "/docs/components/x-ray-receiver"},
         {label: "StatsD Receiver", link: "/docs/components/statsd-receiver"},
+        {label: "Jaeger Receiver", link: "/docs/components/jaeger-zipkin-receiver#jaeger-receiver"},
+        {label: "Zipkin Receiver", link: "/docs/components/jaeger-zipkin-receiver#zipkin-receiver"},
       ],
       link: "/docs/null"
     }

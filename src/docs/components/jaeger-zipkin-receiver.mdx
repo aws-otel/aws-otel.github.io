@@ -1,0 +1,64 @@
+---
+title: 'Getting Started with the Jaeger and Zipkin Receivers'
+description:
+    A receiver is how data gets into the OpenTelemetry Collector. Generally, a receiver accepts data in a specified format,
+     translates it into the internal format and passes it to processors and exporters defined in the applicable pipelines.
+path: '/docs/components/jaeger-zipkin-receiver'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+
+Jaeger receiver and Zipkin receiver are included as a part of the AWS Distro for OpenTelemetry (ADOT).
+A receiver is how data gets into the [OpenTelemetry Collector](https://github.com/open-telemetry/opentelemetry-collector).
+ Generally, a receiver accepts data in a specified format, translates it into the collector's internal format and passes it to
+ processors and exporters defined in the applicable pipelines. An exporter is a component in the
+ OpenTelemetry configured to send data to different systems/backends.
+
+<SectionSeparator />
+
+## Jaeger Receiver
+
+Jaeger receiver receives trace data in [Jaeger](https://www.jaegertracing.io/) format, translates it to OpenTelemetry traces format and
+the collector pipeline can pass the data to different backends. You can find more information in OpenTelemetry Collector repository for
+[Jaeger Receiver](https://github.com/open-telemetry/opentelemetry-collector/blob/main/receiver/jaegerreceiver/README.md)
+
+#### Example:
+By default, the Jaeger receiver will not serve any protocol. A protocol must be
+named under the `protocols` object for the jaeger receiver to start. The
+below protocols are supported, each supports an optional `endpoint`
+object configuration parameter.
+
+- `grpc` (default `endpoint` = 0.0.0.0:14250)
+- `thrift_binary` (default `endpoint` = 0.0.0.0:6832)
+- `thrift_compact` (default `endpoint` = 0.0.0.0:6831)
+- `thrift_http` (default `endpoint` = 0.0.0.0:14268)
+
+```yaml
+receivers:
+  jaeger:
+    protocols:
+      grpc:
+  jaeger/withendpoint:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:14260
+```
+
+<SectionSeparator />
+
+## Zipkin Receiver
+
+Zipkin receiver receives spans in [Zipkin](https://zipkin.io/) (V1 and V2) format, translates it to OpenTelemetry traces format and
+the collector pipeline can pass the date to different backends. You can find more information in OpenTelemetry Collector repository for
+[Zipkin Receiver](https://github.com/open-telemetry/opentelemetry-collector/blob/main/receiver/zipkinreceiver/README.md).
+
+#### Example:
+All that is required to enable the Zipkin receiver is to include it in the
+receiver definitions.
+
+```yaml
+receivers:
+  zipkin:
+```
+
+*Note: There is no guarantee that the exact field names will remain stable.*
