@@ -2,7 +2,7 @@
 title: 'AWS Distro for OpenTelemetry Lambda Support For Java (Auto-instrumentation Agent)'
 description:
     The AWS Distro for OpenTelemetry Lambda (ADOT Lambda) layer for Java provides a plug-and-play user experience by automatically instrumenting a AWS Lambda function, by packaging either the ADOT Java Agent (https://aws-otel.github.io/docs/getting-started/java-sdk/trace-auto-instr) or OpenTelemetry Java SDK (https://aws-otel.github.io/docs/getting-started/java-sdk/trace-manual-instr)together with an out-of-the-box configuration for AWS Lambda and AWS X-Ray. Users can enable and disable OpenTelemetry for their Lambda function without changing code.
-    With the ADOT Lambda Layer for Java Auto Agent, all supported libraries are automatically instrumented, with no additional configurations needed.
+    With the ADOT Lambda Layer for Java Auto-instrumentation Agent, all supported libraries are automatically instrumented, with no additional configurations needed.
 path: '/docs/getting-started/lambda/lambda-java-auto-instr'
 ---
 
@@ -22,7 +22,7 @@ Users can enable and disable OpenTelemetry for their Lambda function without cha
 The Lambda layer supports Java 8 and 11 Lambda runtimes. For more information about supported Java versions,
 see the [OpenTelemetry Java documentation](https://github.com/open-telemetry/opentelemetry-java).
 
-Note: ADOT Lambda Layer for Java Auto Agent - Automatic instrumentation has a notable
+Note: ADOT Lambda Layer for Java Auto-Instrumentation Agent - Automatic instrumentation has a notable
 impact on startup time on AWS Lambda and you will generally need to use this along with provisioned
 concurrency and warmup requests to serve production requests without causing timeouts on initial requests while it initializes.
 
@@ -36,7 +36,7 @@ Find the supported regions and ARN in the table below for the ARNs to consume.
 
 |Supported   Regions |Lambda layer ARN format| Contents |
 |---------------------|-------------------------|----------|
-| ap-northeast-1<br/>ap-northeast-2<br/>ap-south-1<br/>ap-southeast-1<br/>ap-southeast-2<br/>ca-central-1<br/>eu-central-1<br/>eu-north-1<br/>eu-west-1<br/>eu-west-2<br/>eu-west-3<br/>sa-east-1<br/>us-east-1<br/>us-east-2<br/>us-west-1<br/>us-west-2 | aarn:aws:lambda:\<region\>:901920570463:layer:aws-otel-java-agent-ver-1-1-0:1 | Contains [ADOT Java Auto Agent v1.1.0](https://github.com/aws-observability/aws-otel-java-instrumentation/releases/tag/v1.1.0) <br/><br/> Contains the [ADOT Collector for Lambda  v0.9.1](https://github.com/aws-observability/aws-otel-collector/releases/tag/pkg%2Flambdacomponents%2Fv0.9.1) |
+| ap-northeast-1<br/>ap-northeast-2<br/>ap-south-1<br/>ap-southeast-1<br/>ap-southeast-2<br/>ca-central-1<br/>eu-central-1<br/>eu-north-1<br/>eu-west-1<br/>eu-west-2<br/>eu-west-3<br/>sa-east-1<br/>us-east-1<br/>us-east-2<br/>us-west-1<br/>us-west-2 | aarn:aws:lambda:\<region\>:901920570463:layer:aws-otel-java-agent-ver-1-1-0:1 | Contains [ADOT Java Auto-Instrumentation Agent v1.1.0](https://github.com/aws-observability/aws-otel-java-instrumentation/releases/tag/v1.1.0) <br/><br/> Contains the [ADOT Collector for Lambda  v0.9.1](https://github.com/aws-observability/aws-otel-collector/releases/tag/pkg%2Flambdacomponents%2Fv0.9.1) |
 
 ### Enable auto-instrumentation for your Lambda function
 
