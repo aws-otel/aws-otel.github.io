@@ -108,6 +108,7 @@ export const sideBarData = [
         {label: "Dynatrace", link: "/docs/partners/dynatrace"},
         {label: "New Relic", link: "/docs/partners/new-relic"},
         {label: "Splunk", link: "/docs/partners/splunk"},
+        {label: "Logz.io", link: "/docs/partners/logzio"},
      ],
      link: "/docs/null"
    }
