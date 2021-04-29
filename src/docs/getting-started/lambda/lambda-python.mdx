@@ -12,19 +12,13 @@ path: '/docs/getting-started/lambda/lambda-python'
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
 import SubSectionSeparator from "components/MdxSubSectionSeparator/subsectionSeparator.jsx"
 
-The AWS Distro for OpenTelemetry Lambda (ADOT Lambda) layer for AWS Lambda provides
-a plug and play user experience by automatically instrumenting a Lambda function,
-by packaging [OpenTelemetry Python](https://github.com/open-telemetry/opentelemetry-python)
-together with an out-of-the-box configuration for AWS Lambda and AWS X-Ray.
-Users can enable and disable OpenTelemetry for their Lambda function without changing code.
+The AWS Distro for OpenTelemetry Lambda (ADOT Lambda) layer for AWS Lambda provides a plug and play user experience by automatically instrumenting a Lambda function, by packaging [OpenTelemetry Python](https://github.com/open-telemetry/opentelemetry-python) together with an out-of-the-box configuration for AWS Lambda and AWS X-Ray. Users can enable and disable OpenTelemetry for their Lambda function without changing code.
 
 <SectionSeparator />
 
 ## Requirements
 
-The Lambda layer supports Python 3.8 Lambda runtimes. For more information about supported Python versions,
-see the [OpenTelemetry Python documentation](https://github.com/open-telemetry/opentelemetry-python/blob/master/README.md#supported-runtimes)
-and the package on [PyPi](https://pypi.org/project/opentelemetry-api/).
+The Lambda layer supports Python 3.8 Lambda runtimes. For more information about supported Python versions, see the [OpenTelemetry Python documentation](https://github.com/open-telemetry/opentelemetry-python/blob/master/README.md#supported-runtimes) and the package on [PyPi](https://pypi.org/project/opentelemetry-api/).
 
 ### Add the ARN of the Lambda Layer
 
@@ -32,8 +26,7 @@ In this section, we consume the Lambda layer for use with Python Lambda Function
  This includes a reduced version of the [AWS Distro for OpenTelemetry Collector (ADOT Collector)](https://github.com/aws-observability/aws-otel-collector),
   which runs as a Lambda extension.
 
-Note: Lambda layers are a rationalized resource, meaning that they can only be used in the Region in which they are published.
- Make sure to use the layer in the same region as your Lambda functions.
+Note: Lambda layers are a rationalized resource, meaning that they can only be used in the Region in which they are published. Make sure to use the layer in the same region as your Lambda functions.
 
 Find the supported regions and ARN in the table below for the ARNs to consume.
 

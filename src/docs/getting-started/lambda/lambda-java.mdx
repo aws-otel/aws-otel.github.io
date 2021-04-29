@@ -1,7 +1,7 @@
 ---
 title: 'AWS Distro for OpenTelemetry Lambda Support For Java'
 description:
-    The AWS Distro for OpenTelemetry Lambda (ADOT Lambda) layer for Java provides
+    The AWS managed Lambda layer for ADOT - Java provides
      a plug-and-play user experience by wrapping an AWS Lambda function,
      and by packaging the [OpenTelemetry Java SDK](https://aws-otel.github.io/docs/getting-started/java-sdk/trace-manual-instr)
      together with an out-of-the-box configuration for AWS Lambda and AWS X-Ray.
@@ -14,14 +14,9 @@ path: '/docs/getting-started/lambda/lambda-java'
 
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
 
-The AWS Distro for OpenTelemetry Lambda (ADOT Lambda) layer for Java provides
-     a plug-and-play user experience by wrapping an AWS Lambda function,
-     and by packaging the [OpenTelemetry Java SDK](https://aws-otel.github.io/docs/getting-started/java-sdk/trace-manual-instr)
-     together with an out-of-the-box configuration for AWS Lambda and AWS X-Ray.
-     Users can enable and disable OpenTelemetry for their Lambda function without changing code.
+The AWS managed Lambda layer for Java provides a plug-and-play user experience by wrapping an AWS Lambda function, and by packaging the [OpenTelemetry Java SDK](https://aws-otel.github.io/docs/getting-started/java-sdk/trace-manual-instr) together with an out-of-the-box configuration for AWS Lambda and AWS X-Ray. Users can enable and disable OpenTelemetry for their Lambda function without changing code.
 
-With the ADOT Lambda Layer for Java, the wrapper has built-in support for instrumenting the AWS SDK automatically.
-     For additional instrumenting functionality, see the documentation on [auto-instrumentation for traces](https://quip-amazon.com/CLFnA0caodZV/AWS-Distro-for-OpenTelemetry-Lambda-Support-For-Java-Auto-instrumentation-Agent).
+With the ADOT Lambda Layer for Java, the wrapper has built-in support for instrumenting the AWS SDK automatically. For additional instrumenting functionality, see the documentation on [auto-instrumentation for traces](https://quip-amazon.com/CLFnA0caodZV/AWS-Distro-for-OpenTelemetry-Lambda-Support-For-Java-Auto-instrumentation-Agent).
 
 
 <SectionSeparator />
@@ -30,11 +25,6 @@ With the ADOT Lambda Layer for Java, the wrapper has built-in support for instru
 
 The Lambda layer supports Java 8 and 11 Lambda runtimes. For more information about supported Java versions,
 see the [OpenTelemetry Java documentation](https://github.com/open-telemetry/opentelemetry-java).
-
-### Known issues
-
-AWS Lambda and you will generally need to use this along with provisioned concurrency
-and warmup requests to serve production requests without causing timeouts on initial requests while it initializes.
 
 ### Add the ARN of the Lambda Layer
 
