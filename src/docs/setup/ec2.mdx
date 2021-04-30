@@ -91,7 +91,7 @@ To install AWSDistroOTel-Collector package using AWS Systems Manager Distributor
 
 1. Based on your preferences, prepare AWS Distro for OpenTelemetry Collector YAML configuration file according to [AWS OTel Collector Configuration](https://github.com/aws-observability/aws-otel-collector/#aws-otel-collector-configuration).
 
-2. SSM parameter doesn't support mulit-line text as String Type. So encode AWS Distro for OpenTelemetry Collector YAML configuration file as Base64 and copy the Base64 string to a new SSM parameter in [SSM Parameter Store](https://us-west-2.console.aws.amazon.com/systems-manager/parameters/). Followings are examples to do Base64 encoding:
+2. SSM parameter doesn't support mulit-line text as String Type. So encode AWS Distro for OpenTelemetry Collector YAML configuration file as Base64 and copy the Base64 string to a new SSM parameter in [SSM Parameter Store](https://us-west-2.console.aws.amazon.com/systems-manager/parameters/). Listed below are examples to do Base64 encoding:
     * Linux: `base64 -w0 config.yaml > aoc-config-base64.txt`
     * Windows: `certutil.exe -f -encodehex config.yaml aoc-config-base64.txt 0x40000001`
     * MacOSX: `base64 -i config.yaml -o aoc-config-base64.txt` 
