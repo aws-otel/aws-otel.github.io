@@ -11,6 +11,14 @@ path: '/docs/setup/ec2'
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
 import { Link } from "gatsby"
 import img10 from "assets/img/docs/img10.png"
+import imgSSM1 from "assets/img/docs/setup/ec2/ssm/imgSSM1.png"
+import imgSSM2 from "assets/img/docs/setup/ec2/ssm/imgSSM2.png"
+import imgSSM3 from "assets/img/docs/setup/ec2/ssm/imgSSM3.png"
+import imgSSM4 from "assets/img/docs/setup/ec2/ssm/imgSSM4.png"
+import imgSSM5 from "assets/img/docs/setup/ec2/ssm/imgSSM5.png"
+import imgSSM6 from "assets/img/docs/setup/ec2/ssm/imgSSM6.png"
+import imgSSM7 from "assets/img/docs/setup/ec2/ssm/imgSSM7.png"
+import imgSSM8 from "assets/img/docs/setup/ec2/ssm/imgSSM8.png"
 
 In this tutorial, we will demonstrate how to set up  AWS Distro for OpenTelemetry Collector (AWS OTel Collector) on
 Amazon Elastic Computer Cloud(EC2) to collect application metrics.
@@ -77,25 +85,47 @@ AWS Systems Manager Distributor can simplify and scale distribution, installatio
 To use [AWS Systems Manager Distributor](https://docs.aws.amazon.com/systems-manager/latest/userguide/distributor.html) to install AWS OTel Collector on EC2 instances, the target EC2 instances need to meet following requirements.
 
 * SSM agent version 2.3.1550.0 or later installed
-* Permissions Policy AmazonSSMManagedInstanceCore attached in IAM Role of EC2 instance
+* Permissions Policy `AmazonSSMManagedInstanceCore` attached in IAM Role of EC2 instance
 
 To install AWSDistroOTel-Collector package using AWS Systems Manager Distributor.
 
 1. Based on your preferences, prepare AWS Distro for OpenTelemetry Collector YAML configuration file according to [AWS OTel Collector Configuration](https://github.com/aws-observability/aws-otel-collector/#aws-otel-collector-configuration).
 
-2. SSM parameter doesn't support mulit-line text as String Type. So encode AWS Distro for OpenTelemetry Collector YAML configuration file as Base64 and copy the Base64 string to a new SSM parameter in [SSM Parameter Store](https://us-west-2.console.aws.amazon.com/systems-manager/parameters/).
-    * For Linux, `base64 -w0 config.yaml > aoc-config-base64.txt`
-    * For Windows, `certutil.exe -f -encodehex config.yaml aoc-config-base64.txt 0x40000001`
-    * For MacOSX, `base64 -i config.yaml -o aoc-config-base64.txt` 
+2. SSM parameter doesn't support mulit-line text as String Type. So encode AWS Distro for OpenTelemetry Collector YAML configuration file as Base64 and copy the Base64 string to a new SSM parameter in [SSM Parameter Store](https://us-west-2.console.aws.amazon.com/systems-manager/parameters/). Listed below are examples to do Base64 encoding:
+    * Linux: `base64 -w0 config.yaml > aoc-config-base64.txt`
+    * Windows: `certutil.exe -f -encodehex config.yaml aoc-config-base64.txt 0x40000001`
+    * MacOSX: `base64 -i config.yaml -o aoc-config-base64.txt` 
 
-3. Navigate to the [SSM Distributor](https://console.aws.amazon.com/systems-manager/distributor) console and open the `Owned by Amazon` tab. Select `AWSDistroOTel-Collector` and choose `Install one time`.
+<img src={imgSSM1} alt="Diagram" style="margin: 30px 0;" />
 
-4. Update the SSM parameter you created in the first step by replacing "Additional Arguments" with the following (e.g. SSM parameter name is "aoc-config-base64"):
+3. Navigate to the [SSM Distributor](https://console.aws.amazon.com/systems-manager/distributor) console and open the **Owned by Amazon** tab. Select `AWSDistroOTel-Collector` and choose **Install one time**.
+<img src={imgSSM2} alt="Diagram" style="margin: 30px 0;" />
+
+4. Update the SSM parameter you created in the first step by replacing **Additional Arguments** with the following (e.g. SSM parameter name is "aoc-config-base64"):
 ```
 {"SSM_CONFIG": "{{ssm:aoc-config-base64}}"}
 ```
+<img src={imgSSM3} alt="Diagram" style="margin: 30px 0;" />
 
-5. Continue to select the EC2 instances by EC2 instance tags, EC2 instance IDs or Resource Group in `Targets` and click `Run` button to start installation. Visit [Install or update packages](https://docs.aws.amazon.com/systems-manager/latest/userguide/distributor-working-with-packages-deploy.html) for more installation options.
+5. Continue to select the EC2 instances by EC2 instance tags, EC2 instance IDs or Resource Group in **Targets** and click **Run** button to start installation. Visit [Install or update packages](https://docs.aws.amazon.com/systems-manager/latest/userguide/distributor-working-with-packages-deploy.html) for more installation options.
+<img src={imgSSM4} alt="Diagram" style="margin: 30px 0;" />
+
+To install AWSDistroOTel-Collector package on EC2 instances of Auto Scaling groups. 
+
+1. Navigate to the [SSM Distributor](https://console.aws.amazon.com/systems-manager/distributor) console and open the **Owned by Amazon** tab. Select `AWSDistroOTel-Collector` and choose **Install on a schedule**.
+<img src={imgSSM5} alt="Diagram" style="margin: 30px 0;" />
+
+2. Update the SSM parameter you created in the previous step by replacing **Additional Arguments** with the following (e.g. SSM parameter name is "aoc-config-base64"):
+```
+{"SSM_CONFIG": "{{ssm:aoc-config-base64}}"}
+```
+<img src={imgSSM6} alt="Diagram" style="margin: 30px 0;" />
+
+3. Select **Specify instance tags** in **Targets**. Add `aws:autoscaling:groupName` as Tag key and name of Auto Scaling group as Tag value. In this example, the name of Auto Scaling group is `my-first-asg`.
+<img src={imgSSM7} alt="Diagram" style="margin: 30px 0;" />
+
+4. Set schedule in **Specify schedule** and default is 30 minutes. So Systems Manager will scan tag of Auto Scaling group and install AWSDistroOTel-Collector package in new EC2 instances every 30 minutes.
+<img src={imgSSM8} alt="Diagram" style="margin: 30px 0;" />
 
 **Notes**
 After you finished the tutorial, remember to shut down the new EC2 instance we created in the tutorial in order to avoid additional charges.
