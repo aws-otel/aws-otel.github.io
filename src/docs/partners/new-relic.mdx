@@ -11,7 +11,8 @@ path: '/docs/partners/newrelic'
 
 This means you can configure the AWS OpenTelemetry Collector to use the OTLP exporter and no longer need this exporter to send data to New Relic.
 
-New Relic's OpenTelemetry Collector Exporter sends `trace`, `metric`, and `resource` data from the AWS OpenTelemetry Collector to New Relic. This capability gives you the power of instrumenting your entire stack for complete visibility and interoperability on the New Relic One platform. Use our curated out-of-the-box experiences and flexible visualization tools to quickly gain insight into how all your apps, systems and components are performing.
+New Relic's OpenTelemetry Collector Exporter sends `trace`, `metric`, and `log` data from the AWS OpenTelemetry Collector to New Relic. This capability gives you the power of instrumenting your entire stack for complete visibility and interoperability on the New Relic One platform. Use our curated out-of-the-box experiences and flexible visualization tools to quickly gain insight into how all your apps, systems and components are performing.
+
 
 ## Requirements
 
@@ -23,7 +24,7 @@ New Relic's OpenTelemetry Collector Exporter sends `trace`, `metric`, and `resou
 
 The following configuration must be added to your existing AWS OTel Collector configuration yaml file.
 
-1. Add the `newrelic` exporter to the list of configured exporters for traces and metrics in the `service` section:
+1. Add the `newrelic` exporter to the list of configured exporters for traces, metrics, and logs in the `service` section:
 
   ```yaml
   service:
@@ -31,6 +32,8 @@ The following configuration must be added to your existing AWS OTel Collector co
       traces:
         exporters: [newrelic]
       metrics:
+        exporters: [newrelic]
+      logs:
         exporters: [newrelic]
   ```
 
@@ -46,7 +49,7 @@ The following configuration must be added to your existing AWS OTel Collector co
 
 #### apikey (Required)
 
-Your New Relic Insights Insert API Key.
+Your New Relic Insights Insert API Key or License Key.
 
 #### timeout (Optional)
 
@@ -54,25 +57,23 @@ Amount of time spent attempting a request before abandoning and dropping data.
 
 Default is 15 seconds.
 
-#### common_attributes (Optional)
+#### Example EU configuration
 
-Attributes to apply to all metrics sent.
+```yaml
+exporters:
+  newrelic:
+    apikey: super-secret-api-key
+    timeout: 30s
 
-#### metrics_url_override (Optional)
+    # host_override is set to send data to New Relic's EU data centers.
+    traces:
+      host_override: trace-api.eu.newrelic.com
+    metrics:
+      host_override: metric-api.eu.newrelic.com
+    logs:
+      host_override: log-api.eu.newrelic.com
+```
 
-Overrides the endpoint to send metrics.
-
-Refer to New Relic
-[documentation](https://docs.newrelic.com/docs/integrations/open-source-telemetry-integrations/opentelemetry/opentelemetry-advanced-configuration#h2-change-endpoints)
-for sending data in the EU region and other common use cases.
-
-#### spans_url_override (Optional)
-
-Overrides the endpoint to send spans.
-
-Refer to New Relic
-[documentation](https://docs.newrelic.com/docs/integrations/open-source-telemetry-integrations/opentelemetry/opentelemetry-advanced-configuration#h2-change-endpoints)
-for sending data in the EU region and other common use cases.
 
 ## Complete example configuration
 
@@ -90,10 +91,6 @@ exporters:
   newrelic:
     apikey: your_ingest_api_key_goes_here
     timeout: 30s
-    common_attributes:
-      server: prod-server-01
-      ready_to_rock: true
-      volume: 11
 
 service:
   pipelines:
@@ -102,6 +99,10 @@ service:
       processors: [batch]
       exporters: [newrelic]
     metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [newrelic]
+    logs:
       receivers: [otlp]
       processors: [batch]
       exporters: [newrelic]
