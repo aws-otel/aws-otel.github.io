@@ -202,6 +202,42 @@ exporters:
 
 <SectionSeparator />
 
+## Open Distro for Elasticsearch
+Open Distro for Elasticsearch (ODFE) supports ingesting enchriched trace data via [Data Prepper](https://opendistro.github.io/for-elasticsearch-docs/docs/trace/get-started/), a standalone application that converts OLTP formatted data to be used by ODFE. Data Prepper supports receiving trace data from OpenTelemetry natively via OTLP. Once you've set up a Data Prepper instance, completing the data pipeline is as simple as editing your YAML config file for the Collector and getting started.
+
+<SubSectionSeparator />
+
+### Requirements
+Before you can use the AWS Distro for OpenTelemetry with Open Distro for Elasticsearch, you need:
+
+* A Data Prepper instance, configured to write to your ODFE cluster. Configuration documentation can be found [here](https://opendistro.github.io/for-elasticsearch-docs/docs/trace/data-prepper/).
+
+<SubSectionSeparator />
+
+### Configuration (Collector)
+The configuration will take place in the OTLP exporter in the Collector config YAML file.
+
+* Configure the Collector to export OTLP.
+* Set the OTLP endpoint to that of your Data Prepper instance or cluster.
+
+<SubSectionSeparator />
+
+### Example
+```yaml lineNumbers=true
+# Data Prepper Collector configuration
+exporters:
+  otlp/data-prepper:
+     # Port 21890 is the default port exposed by Data Prepper.
+    endpoint: <YOUR_DATA_PREPPER_ADDRESS>:21890
+
+service:
+  pipelines:
+    traces:
+      exporters: [otlp/data-prepper]
+```
+
+<SectionSeparator />
+
 ## Sumo Logic
 
 Sumo Logic supports telemetry signals from OpenTelemetry natively via OTLP. If you’re already set up with AWS Distro for
@@ -227,7 +263,7 @@ The configuration will take place in the OTLP/HTTP exporter in the Collector con
 
 ### Example
 
-```yaml lineNumbers=true highlight={7}
+```yaml lineNumbers=true
 # SumoLogic Collector configuration
 exporters:
   otlphttp:
