@@ -1,0 +1,46 @@
+---
+title: 'ECS EC2 Cloudformation Template for instance metrics'
+description:
+    In this tutorial, we will demonstrate how to run OpenTelemetry Collector (AWS Otel Collector) as a daemon on the
+    Amazon Elastic Container Service (Amazon ECS) in Amazon Elastic Compute Cloud (Amazon EC2).
+path: '/docs/setup/ecs/cfn-for-ecs-ec2-instance'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import { Link } from "gatsby"
+
+In this tutorial, we will demonstrate how to run OpenTelemetry Collector (AWS Otel Collector) as a daemon on the
+Amazon Elastic Container Service (Amazon ECS) in Amazon Elastic Compute Cloud (Amazon EC2) mode.
+
+<SectionSeparator />
+
+To Install AWS OTel Collector by using CloudFormation, you have to have a cluster.
+If you are not famaliar with how to create a cluster, you can check this <Link to="/docs/setup/ecs/create-cluster">create-cluster</Link>
+section.
+
+### Setup for ECS EC2 to get instance metrics
+1. Download the CloudFormation template file for installing AWS OTel Collector for ECS EC2. Run the following curl command.
+```
+curl -O https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/deployment-template/ecs/aws-otel-ec2-instance-metrics-daemon-deployment-cfn.yaml
+```
+2. Replace the <PATH_TO_CloudFormation_TEMPLATE> with the path where your template saved in the command, and export the
+   following parameters, and then run CloudFormation command.
+    * `Cluster_Name` - ECS Cluster name setup in Prerequisite step
+    * `AWS_Region` - Region the data will be sent
+    * `PATH_TO_CloudFormation_TEMPLATE` - CFN template path downloaded in Step 1
+    * `command` -  Assign value to the command variable to select the config file path; the AWS Collector
+                   `--config=/etc/ecs/otel-instance-metrics-config.yaml` - To consume ECS EC2 instance metrics
+```console lineNumbers=true
+ClusterName=<Cluster_Name>
+Region=<AWS_Region>
+command=<command>
+aws cloudformation create-stack --stack-name AOCECS-${ClusterName}-${Region} \
+    --template-body file://<PATH_TO_CloudFormation_TEMPLATE> \
+    --parameters ParameterKey=ClusterName,ParameterValue=${ClusterName} \
+                 ParameterKey=CreateIAMRoles,ParameterValue=True \
+                 ParameterKey=command,ParameterValue=${command} \
+    --capabilities CAPABILITY_NAMED_IAM \
+    --region ${Region}
+```
+3. Go to you ECS Console and see if the task is running.
+4. Go to the <Link to="/docs/setup/results-EC2-instance-metrics">Results</Link> section to learn how to check the collected metrics and traces.

@@ -4,7 +4,8 @@ description:
     In this tutorial, we will demonstrate how to run AWS Distro for OpenTelemetry Collector (AWS Otel Collector) as a
     sidecar on the Amazon Elastic Container Service (Amazon ECS) in Fargate and in Amazon Elastic Compute Cloud
     (Amazon EC2) mode. We provide a sample application within the same Amazon ECS task to send monitoring data to
-    AWS OTel Collector.
+    AWS OTel Collector. Also, we will demonstrate how to run AWS Distro for OpenTelemetry Collector (AWS Otel Collector)
+    as a daemon service to collect the EC2 instance metrics from the Amazon Elastic Container Service (Amazon ECS).
 path: '/docs/setup/ecs'
 ---
 
@@ -27,7 +28,7 @@ If you don't have a cluster, follow this <Link to="/docs/setup/ecs/create-cluste
 
 <SectionSeparator />
 
-## 2. Setup the AWS OTel Collector
+## 2. Setup the AWS OTel Collector for Xray, StatsD and ECS Container metrics
 
 There are three different ways to get started by installing AWS OTel Collector as a sidecar in ECS- using CloudFormation template, using Task 
 Definition, and using AWS Management Console. Follow any of the following three options to setup the collector.
@@ -61,21 +62,54 @@ This option shows the whole process step by step to setup AWS OTel Collector usi
 
 <SectionSeparator />
 
-## 3. Results
+## 3. Setup the AWS OTel Collector for ECS EC2 instance Metrics
+
+There are three different ways to get started by installing AWS OTel as a daemon service in ECS- using
+CloudFormation template, using Task Definition, and using AWS Management Console. Follow any of the following
+three options to setup the collector.
+
+### 3.1 Setup using CloudFormation template
+
+The CloudFormation template will create all the necessary resources to get the Collector ready. This option is recommended for the beginners
+who are new to ECS.
+
+- <Link to="/docs/setup/ecs/cfn-for-ecs-ec2-instance">Deploy AOT for ECS EC2 instance metrics</Link>
+
+### 3.2 Setup using ECS Task Definition
+
+This option is recommended for developers who are familier with ECS and know how to run a task using a given task definition.
+
+- <Link to="/docs/setup/ecs/create-iam-policy">Create IAM Policy</Link>
+- <Link to="/docs/setup/ecs/create-iam-role">Create IAM Role</Link>
+- <Link to="/docs/setup/ecs/task-definition-for-ecs-ec2-instance">Create Task Definition</Link>
+- <Link to="/docs/setup/ecs/run-daemon-service">Deploy Task as a daemon service</Link>
+
+### 3.3 Setup using AWS Management Console
+
+This option shows the whole process step by step to setup AWS OTel Collector using AWS Management Console.
+- <Link to="/docs/setup/ecs/create-iam-policy">Create IAM Policy</Link>
+- <Link to="/docs/setup/ecs/create-iam-role">Create IAM Role</Link>
+- <Link to="/docs/setup/ecs/create-task-definition-instance-console">Create Task Definition using AWS Console</Link>
+- <Link to="/docs/setup/ecs/run-daemon-service">Deploy task as a daemon service</Link>
+
+<SectionSeparator />
+
+## 4. Results
 
 * <Link to="/docs/setup/ecs/results-metrics">See container metrics in CloudWatch</Link> 
 * <Link to="/docs/setup/ecs/results-traces">See traces in AWS X-Ray</Link>
 * <Link to="/docs/setup/ecs/results-statsd-metrics">See StatsD metrics in CloudWatch</Link>
+* <Link to="/docs/setup/ecs/results-EC2-instance-metrics">See instance metrics in CloudWatch</Link>
 
 <SectionSeparator />
 
-## 4. Custom OpenTelemetry Configuration
+## 5. Custom OpenTelemetry Configuration
 
 <Link to="/docs/setup/ecs/config-through-ssm">[Optional] Use custom OpenTelemetry configuration file from SSM Parameter</Link> 
 
 <SectionSeparator />
 
-## 5. Reference
+## 6. Reference
 
 * [Getting Started with AWS ECS Container Metrics Receiver](https://aws-otel.github.io/docs/components/ecs-metrics-receiver)
 * [Getting Started with AWS X-Ray Receiver](https://aws-otel.github.io/docs/components/x-ray-receiver)

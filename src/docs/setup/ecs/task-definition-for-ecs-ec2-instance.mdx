@@ -1,0 +1,25 @@
+---
+title: 'Create ECS EC2 Task Definition for EC2 instance with AWS OTel Collector'
+description:
+    In this tutorial, we will demonstrate how to create an ECS Task Definition for ECS EC2 instance metrics with AWS OTel Collector.
+path: '/docs/setup/ecs/task-definition-for-ecs-ec2-instance'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import { Link } from "gatsby"
+import task1 from "assets/img/docs/setup/ecs/task-definition/task-definition-ec2.png"
+
+In this tutorial, we will demonstrate how to create an ECS Task Definition for EC2 with AWS OTel Collector.
+
+<SectionSeparator />
+
+### Setup for ECS EC2
+1. [Download the ECS EC2 instance metrics task definition template](https://github.com/aws-observability/aws-otel-collector/blob/master/examples/ecs/aws-cloudwatch/ecs-ec2-instance-daemon.json) from GitHub.
+2. Fill the following parameters in the task definition templates:
+    * `{{region}}` - the region the data will be sent to
+    * `{{ecsTaskRoleArn}}` - **AWSOTTaskRole** ARN created in the previous section
+    * `{{ecsExecutionRoleArn}}` - **AWSOTTaskExcutionRole** ARN created in the previous section
+    * `command` -  Assign value to the command variable to select the config file path; the AWS Collector comes with
+                   `--config=/etc/ecs/otel-instance-metrics-config.yaml` - To use ECS EC2 instance metrics
+3. Follow the [ECS EC2 setup instructions](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/getting-started-ecs-ec2.html)
+to create a task definition using the given template.

@@ -1,0 +1,86 @@
+---
+title: 'Install AWS OTel Collector By Creating Task Definition Through AWS Console for ECS EC2 instance metrics '
+description:
+    In this tutorial, we will demonstrate how to install AWS OTel Collector using Task Definition on the Amazon
+    Elastic Container Service (Amazon ECS) through AWS console for ECS EC2 instance metrics.
+path: '/docs/setup/ecs/create-task-definition-instance-console'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import { Link } from "gatsby"
+import task_01 from "assets/img/docs/setup/ecs/create-task-definition/instance01.png"
+import task2 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition2.png"
+import task3 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition3.png"
+import task4 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition4.png"
+import task5 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition5.png"
+import task6 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition6.png"
+import task7 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition7.png"
+import task8 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition8.png"
+import task9 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition9.png"
+import task10 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition10.png"
+import task11 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition11.png"
+import task12 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition12.png"
+import task13 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition13.png"
+import task14 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition14.png"
+import task15 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition15.png"
+import task16 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition16.png"
+import task17 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition17.png"
+import task18 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition18.png"
+import task19 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition19.png"
+import task20 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition20.png"
+import task21 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition21.png"
+import task22 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition22.png"
+import task23 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition23.png"
+import task24 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition24.png"
+import task25 from "assets/img/docs/setup/ecs/create-task-definition/instance02.png"
+import task26 from "assets/img/docs/setup/ecs/create-task-definition/instance03.png"
+import task27 from "assets/img/docs/setup/ecs/create-task-definition/instance04.png"
+
+In this tutorial, we will demonstrate how to install AWS OTel Collector using Task Definition on the Amazon Elastic
+Container Service (Amazon ECS) through AWS console.
+
+<SectionSeparator />
+
+1. Go to AWS Management Console and select Elastic Container Service. From the left side navigation,
+select <Link to="https://us-west-2.console.aws.amazon.com/ecs/home?/taskDefinitions#/taskDefinitions">Task Definitions</Link>
+and click the Create new Task Definition button.
+
+2. Select the EC2 as the Launch type and move forward.
+
+<img src={task_01} alt="Diagram" style="margin: 30px 0;" />
+
+3. Put a task-definition name (i.e.aws-otel). And select the role you create in pre section from Taskrole drop-down menu.
+<img src={task2} alt="Diagram" style="margin: 30px 0;" />
+
+4. For the task execution role, select the role name you created by clicking Task execution role drop-down menu.
+<img src={task3} alt="Diagram" style="margin: 30px 0;" />
+Select Network Mode to `Bridge`
+<img src={task25} alt="Diagram" style="margin: 30px 0;" />
+
+5. Select the Task size:
+Mention task memory and task cpu  for your task-definition like use 2048 for memory, 1024 for CPU
+<img src={task5} alt="Diagram" style="margin: 30px 0;" />
+
+6. Go down to the last part Volumes, click the Add volume to add Volumes:
+<img src={task26} alt="Diagram" style="margin: 30px 0;" />
+
+7. In the container definitions section, click the Add Container button. Let’s add the AWS Observability Collector container first.
+Put a container name (i.e. *aws-otel-collector*) and use the *amazon/aws-otel-collector* container image.
+We can keep everything else default
+<img src={task6} alt="Diagram" style="margin: 30px 0;" />
+
+8. Set up the OpenTelemetry configuration file for AWS Observability Toolkit (AOT):
+In the  Environment Command section add `--config=/etc/ecs/otel-instance-metrics-config.yaml` to select the ECS default configuration
+file for AWS Observability Collector (AOC). This will collect the instance level metrics for ECS EC2 instances.
+<img src={task7} alt="Diagram" style="margin: 30px 0;" />
+
+9. Mount points setup :
+Go to the STORAGE AND LOGGING part, click the Add mount point to add the following points:
+<img src={task27} alt="Diagram" style="margin: 30px 0;" />
+
+10. In the STORAGE and LOGGING section, let’s enable Auto-configure CloudWatch logs.
+<img src={task10} alt="Diagram" style="margin: 30px 0;" />
+We are done here. Keep other config options as they are. Finish adding the container.
+
+11. Click the Create button in the bottom to finish the process. If everything works fine, you will see something like the following.
+<img src={task19} alt="Diagram" style="margin: 30px 0;" />
