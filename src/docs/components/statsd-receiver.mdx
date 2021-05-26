@@ -2,7 +2,7 @@
 title: 'Getting Started with StatsD Receiver in AWS OpenTelemetry Collector'
 description:
     StatsD receiver is an agent that collects [StatsD metrics](https://github.com/statsd/statsd/blob/master/docs/metric_types.md)
-    and do the aggregation in a customer defined interval(default value is 60s). You can send counters and gauges to StatsD receiver.
+    and do the aggregation in a customer defined interval(default value is 60s). You can send counters, gauges and timer/histogram to StatsD receiver.
     The StatsD receiver will send the aggregated metrics to the following workflow.
 path: '/docs/components/statsd-receiver'
 ---
@@ -11,10 +11,10 @@ import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.js
 
 StatsD receiver is an agent that collects [StatsD metrics](https://github.com/statsd/statsd/blob/master/docs/metric_types.md)
 and does the [aggregation](#aggregation) for a customer defined interval (default value is 60s). The aggregation interval is similar to the flush
-interval in StatsD. You can send counters and gauges to StatsD receiver, which will send the aggregated metrics to the following workflow.
+interval in StatsD. You can send counters, gauges and timer/histogram to StatsD receiver, which will send the aggregated metrics to the following workflow.
 For example, you can use EMF exporter to send the metrics to CloudWatch.
 
-StatsD receiver currently supports counter and gauge types. The StatsD receiver can be used as a replacement of CloudWatch agent for StatsD.
+StatsD receiver currently supports counter, gauge and timer/histogram types. The StatsD receiver can be used as a replacement of CloudWatch agent StatsD plugin for StatsD/dogStatsD.
 
 <SectionSeparator />
 
@@ -30,12 +30,19 @@ them to CloudWatch using `awsemf` exporter. You can set these configuration valu
 for your application. Check out [SETUP](https://aws-otel.github.io/docs/setup/ecs) section for
 configuring AWS Distro for OpenTelemetry Collector in Amazon Elastic Container Service.
 
+The upstream link(StatsD receiver in OpenTelemetry): [Upstream](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/statsdreceiver)
+
 ```yaml lineNumbers=true
 receivers:
   statsd:
-    endpoint: 0.0.0.0:8125
-    aggregation_interval: 60s
-    enable_metric_type: false
+    endpoint: 0.0.0.0:8125 #default
+    aggregation_interval: 60s #default
+    enable_metric_type: false #default
+    timer_histogram_mapping: #default
+      - statsd_type: "histogram" #default
+        observer_type: "gauge" #default
+      - statsd_type: "timer" #default
+        observer_type: "gauge" #default
 exporters:
   awsemf:
     namespace: ECS/AWSOTel/Application
@@ -67,6 +74,23 @@ It supports sample rate.
 `name>:<value>|g|@<sample-rate>|#<tag1-key>:<tag1-value>`
 
 Sample rate is not supported for gauges.
+
+### Timer
+
+`<name>:<value>|ms|@<sample-rate>|#<tag1-key>:<tag1-value>`
+
+It supports sample rate.
+
+`timer_histogram_mapping` is the configuration for timer/histogram. For `statsd_type`, you could choose `timer`, `timing` or `histogram`. For `observer_type`, you could choose `gauge`. When choosing `gauge`,
+StatsD receiver will send the timer/histogram metric to the downstream component as OTLP gauge without doing any aggregation.
+
+### Histogram
+`<name>:<value>|h|@<sample-rate>|#<tag1-key>:<tag1-value>`
+
+It supports sample rate.
+
+`timer_histogram_mapping` is the configuration for timer/histogram. For `statsd_type`, you could choose `timer`, `timing` or `histogram`. For `observer_type`, you could choose `gauge`. When choosing `gauge`,
+StatsD receiver will send the timer/histogram metric to the downstream component as OTLP gauge without doing any aggregation.
 
 ## Aggregation
 
@@ -100,6 +124,18 @@ result: get the latest value: 400. For gauge, the newest value will cover the ea
 `statsdTestMetric1:500|g|#mykey:myvalue` `statsdTestMetric1:+2|g|#mykey:myvalue` `statsdTestMetric1:-1|g|#mykey:myvalue`
 
 result: get the value after calculation: 501. For gauge, it supports plus and minus for aggregation.
+
+### Timer
+#### Example one(use `observer_type` as `gauge`):
+`statsdTestMetric1:500|ms|#mykey:myvalue` `statsdTestMetric1:400|ms|#mykey:myvalue`
+
+result: send two OTLP gauge metrics to the downstream component. The first one has the value 500, the second one has the value 400.
+
+### Histogram
+#### Example one(use `observer_type` as `gauge`):
+`statsdTestMetric1:500|h|#mykey:myvalue` `statsdTestMetric1:400|h|#mykey:myvalue`
+
+result: send two OTLP gauge metrics to the downstream component. The first one has the value 500, the second one has the value 400.
 
 ## other Configuration Parameters
 
