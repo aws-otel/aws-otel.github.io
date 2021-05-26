@@ -1,3 +1,10 @@
+- version: 'AWS Distro for OpenTelemetry Collector Version 0.10.0'
+  releaseDate: 'May-25-2021'
+  license: 'Apache-2.0'
+  releaseNotesLink: 'https://github.com/aws-observability/aws-otel-collector/releases'
+  documentationLink: 'https://github.com/aws-observability/aws-otel-collector/blob/main/README.md'
+  downloadLink: 'https://hub.docker.com/r/amazon/aws-otel-collector'
+
 - version: 'AWS Distro for OpenTelemetry Collector Version 0.9.0'
   releaseDate: 'Apr-29-2021'
   license: 'Apache-2.0'
