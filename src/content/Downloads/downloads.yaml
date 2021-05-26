@@ -1,7 +1,7 @@
-- version: 'Nuget:OpenTelemetry.Contrib.Instrumentation.AWSLambda v1.0.1'
+- version: 'Nuget:OpenTelemetry.Contrib.Instrumentation.AWSLambda v1.1.0-beta1'
   releaseDate: 'May-26-2021'
   license: 'Apache-2.0'
-  releaseNotesLink: 'https://github.com/open-telemetry/opentelemetry-dotnet-contrib/releases/tag/Instrumentation.AWSLambda-1.0.1'
+  releaseNotesLink: 'https://github.com/open-telemetry/opentelemetry-dotnet-contrib/releases/tag/Instrumentation.AWSLambda-1.1.0-beta1'
   documentationLink: 'https://github.com/open-telemetry/opentelemetry-dotnet-contrib/blob/main/src/OpenTelemetry.Contrib.Instrumentation.AWSLambda/README.md'
   downloadLink: 'https://www.nuget.org/packages/OpenTelemetry.Contrib.Instrumentation.AWSLambda/'
 
