@@ -202,15 +202,15 @@ exporters:
 
 <SectionSeparator />
 
-## Open Distro for Elasticsearch
-Open Distro for Elasticsearch (ODFE) supports ingesting enchriched trace data via [Data Prepper](https://opendistro.github.io/for-elasticsearch-docs/docs/trace/get-started/), a standalone application that converts OLTP formatted data to be used by ODFE. Data Prepper supports receiving trace data from OpenTelemetry natively via OTLP. Once you've set up a Data Prepper instance, completing the data pipeline is as simple as editing your YAML config file for the Collector and getting started.
+## OpenSearch
+OpenSearch supports ingesting enchriched trace data via [Data Prepper](https://github.com/opensearch-project/data-prepper), a standalone application that converts OLTP formatted data for use in OpenSearch. Data Prepper supports receiving trace data from OpenTelemetry natively via OTLP. Once you've set up a Data Prepper instance, completing the data pipeline is as simple as editing your YAML config file for the Collector and getting started.
 
 <SubSectionSeparator />
 
 ### Requirements
-Before you can use the AWS Distro for OpenTelemetry with Open Distro for Elasticsearch, you need:
+Before you can use the AWS Distro for OpenTelemetry with OpenSearch, you need:
 
-* A Data Prepper instance, configured to write to your ODFE cluster. Configuration documentation can be found [here](https://opendistro.github.io/for-elasticsearch-docs/docs/trace/data-prepper/).
+* A Data Prepper instance, configured to write to your OpenSearch cluster. Configuration documentation can be found [here](https://docs-beta.opensearch.org/monitoring-plugins/trace/data-prepper/).
 
 <SubSectionSeparator />
 
