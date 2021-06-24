@@ -1,0 +1,43 @@
+---
+title: 'CloudWatch Container Insights'
+description:
+    CloudWatch Container Insights collects, aggregates, and summarize metrics and logs from your containerized applications and microservices.
+    Container Insights is available for Amazon Elastic Container Service (Amazon ECS),
+    Amazon Elastic Kubernetes Service (Amazon EKS), and Kubernetes platforms on Amazon EC2.
+    Amazon ECS support includes support for Fargate. Prometheus metrics with pre-built CloudWatch dashboards are also supported on these platforms.
+path: '/docs/getting-started/container-insights'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import {Link} from "gatsby"
+
+[CloudWatch Container Insights](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights.html) collect, aggregate,
+and summarize metrics and logs from your containerized applications and microservices. Data are collected as performance log events
+using [embedded metric format](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Embedded_Metric_Format.html).
+These performance log events are entries that use a structured JSON schema that enables high-cardinality data to be ingested and stored at scale.
+Amazon CloudWatch can create the aggregated CloudWatch metrics at the cluster, node, pod, task, and service level from the received EMF data.
+
+CloudWatch Container Insights also [support Prometheus](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights-Prometheus.html)
+with pre-built dashboards on ECS and EKS.
+
+Following is a list of all supported features and environments using ADOT collector:
+
+<!-- NOTE: The `-` list syntax didn't work when item is Link -->
+<!-- TODO: link to other ecs, eks doc when they are merged it -->
+
+<ul>
+    <li>
+        Container Insights
+        <ul>
+            <li>EKS</li>
+            <li>ECS</li>
+        </ul>
+    </li>
+    <li>
+        <Link to="/docs/getting-started/container-insights/prometheus">Container Insights Prometheus</Link>
+        <ul>
+            <li><Link to="/docs/getting-started/container-insights/eks-prometheus">EKS Prometheus</Link></li>
+            <li><Link to="/docs/getting-started/container-insights/ecs-prometheus">ECS Prometheus</Link></li>
+        </ul>
+    </li>
+</ul>

@@ -1,0 +1,344 @@
+---
+title: 'Container Insights ECS Prometheus'
+description:
+    Container Insights ECS Prometheus discovers targets running on ECS EC2 and fargate.
+    Workloads like NGINX, JMX comes with pre-built CloudWatch dashboard.
+path: '/docs/getting-started/container-insights/ecs-prometheus'
+---
+
+import {Link} from "gatsby"
+
+<p>
+    GettingStarted / <Link to="/docs/getting-started/container-insights">Container Insights</Link> / <Link to="/docs/getting-started/container-insights/prometheus">Container Insights Prometheus</Link>
+</p>
+
+
+## Overview
+
+In order to collect metrics from task running on ECS and send it to CloudWatch, you can either use a sidecar or run collector as ECS service for entire cluster.
+For using pre-built dashboard in ClouDWatch Container Insights Prometheus, you have to run a single collector for entire cluster to attach task and service metadata.
+
+ECS tasks with Prometheus endpoints are discovered using extension [ecsobserver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/observer/ecsobserver).
+(Unlike EKS, there is no builtin discovery for ECS [inside prometheus](https://github.com/prometheus/prometheus/tree/main/discovery/aws))
+
+## Steps
+
+Follow these steps to run collector and Prometheus workload on ECS. You can skip some of them if you already have cluster or tasks running.
+
+- Create ECS cluster based on <Link to="/docs/setup/ecs/create-cluster">tutorial</Link> or use [ecs-cli](#create-ecs-cluster-with-ec2-instances)
+- Create <Link to="docs/setup/ecs/create-iam-role">IAM role</Link> and configure [IAM policy](#iam-policy), discovery requires more policies.
+- Create [Configuration](#configuration) as <Link to="/docs/setup/ecs/config-through-ssm">SSM parameter</Link>
+- Create [TaskDefinition](#ecs-task-definition)
+- Launch collector as a [replica service](#deployment) with 1 replica
+- Deploy [sample workloads](#sample-workloads)
+
+## Permission
+
+For discovering ECS tasks, you need to [config IAM policy](#iam-policy). For scraping discovered targets, you need to
+[configure network](#network)
+
+### IAM Policy
+
+Extra IAM policies are required for discover ECS tasks with prometheus metrics.
+Full document with  <Link to="/docs/setup/ecs/create-iam-policy">existing polices</Link> is included in appendix [IAM Policy Document](#iam-policy-document).
+
+NOTE: `ec2` policy is required if you use ECS EC2 with `bridge` network mode. You can remove it if all your tasks are fargate or uses `awsvpc` network mode.
+
+```text
+ec2:DescribeInstances
+ecs:ListTasks
+ecs:ListServices
+ecs:DescribeContainerInstances
+ecs:DescribeServices
+ecs:DescribeTasks
+ecs:DescribeTaskDefinition
+```
+
+### Network
+
+For collector to scrape metrics, connectivity between ECS tasks using private ip is required.
+Depends on how the cluster is created, you may need to configure security group to allow ingress within current VPC as prometheus **pull** metrics.
+The default VPC's security group normally allows ingress within VPC out of box, while some cli tools creates new VPC with stricter rules,
+e.g. [ecs-cli](#create-ecs-cluster-with-ec2-instances).
+
+When defining inbound rules, you can specify a strict port range if your task is using `awsvpc` as network mode
+(btw: ECS Fargate only use `awsvpc`). However, for ECS bridge network mode (only on EC2), host port is random
+so you have to allow inbound on all TCP ports within the VPC.
+
+```bash
+# Enable all TCP inbound within same VPC
+SG=sg-123456
+aws ec2 authorize-security-group-ingress --group-id ${SG} --protocol tcp --port 0-65535 --source-group ${SG}
+```
+
+## Configuration
+
+Configuring Container Insight Prometheus is similar to normal Prometheus pipeline.The overall flow of pipeline is:
+
+- Extension `ecsobserver` call AWS API and write discovered targets to a file in a [folder that already exists](https://github.com/aws-observability/aws-otel-collector/blob/0134db77f6b4f1c8263e7423179a715cb233b485/cmd/awscollector/Dockerfile#L44) e.g. `/etc/ecs_sd_targets.yaml`.
+Detail explanation for `ecsobserver` config is in [its source](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/observer/ecsobserver).
+- Prometheus receiver include the output file from `ecsobserver` using file sd.
+- Prometheus relabel and EMF exporter's metrics selection transform and select right set of labels as dimension.
+
+Full example can be found in [examples/ecs/aws-cloudwatch/ecs-container-insights-prometheus.yaml](https://github.com/aws-observability/aws-otel-collector/tree/main/examples/ecs/aws-cloudwatch/ecs-container-insights-prometheus.yaml).
+It contains discovery and metrics extraction rule for all [workloads](#sample-workloads). NOTE: Remember to replace `{{cluster_name}}` in the example file.
+
+Following is a small example for JMX and NGINX using service and docker label based discovery with inline comments.
+
+```yaml
+extensions:
+  ecs_observer: # extension type is ecs_observer
+    cluster_name: 'my-ecs-cluster' # cluster name need to configured manually
+    cluster_region: 'us-west-2' # region can be configured directly or use AWS_REGION env var
+    result_file: '/etc/ecs_sd_targets.yaml' # the directory for file must already exists
+    refresh_interval: 60s # format is https://golang.org/pkg/time/#ParseDuration
+    # custom name for 'job' so we can rename it back to 'job' using metricstransform processor
+    job_label_name: prometheus_job
+    # NGINX https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights-Prometheus-Setup-nginx-ecs.html
+    services:
+      - name_pattern: '^.*nginx-service$' # NGINX
+        metrics_ports:
+          - 9113
+        job_name: nginx-prometheus-exporter
+    # JMX
+    docker_labels:
+      - port_label: 'ECS_PROMETHEUS_EXPORTER_PORT'
+
+receivers:
+  prometheus:
+    config:
+      scrape_configs:
+        - job_name: "ecssd"
+          file_sd_configs:
+            - files:
+                - '/etc/ecs_sd_targets.yaml' # MUST match the file name in ecs_observer.result_file
+          relabel_configs: # Relabel here because label with __ prefix will be dropped by receiver.
+            - source_labels: [ __meta_ecs_cluster_name ] # ClusterName
+              action: replace
+              target_label: ClusterName
+            - source_labels: [ __meta_ecs_service_name ] # ServiceName
+              action: replace
+              target_label: ServiceName
+            - source_labels: [ __meta_ecs_task_definition_family ] # TaskDefinitionFamily
+              action: replace
+              target_label: TaskDefinitionFamily
+            - source_labels: [ __meta_ecs_task_launch_type ] # LaunchType
+              action: replace
+              target_label: LaunchType
+            - source_labels: [ __meta_ecs_container_name ] # container_name
+              action: replace
+              target_label: container_name
+            - action: labelmap # Convert docker labels on container to metric labels
+              regex: ^__meta_ecs_container_labels_(.+)$ # Capture the key using regex, e.g. __meta_ecs_container_labels_Java_EMF_Metrics -> Java_EMF_Metrics
+              replacement: '$$1'
+
+processors:
+  resource:
+    attributes:
+      - key: receiver # Insert receiver: prometheus for CloudWatch EMF Exporter to add prom_metric_type
+        value: "prometheus"
+        action: insert
+  metricstransform:
+    transforms:
+      - include: ".*" # Rename customized job label back to job
+        match_type: regexp
+        action: update
+        operations:
+          - label: prometheus_job # must match the value configured in ecs_observer
+            new_label: job
+            action: update_label
+
+exporters:
+  awsemf:
+    namespace: ECS/ContainerInsights/Prometheus # Use the exact namespace for builtin dashboard to work
+    log_group_name: "/aws/ecs/containerinsights/my-ecs-cluster/prometheus" # Log group name format is fixed as well, the only variable is cluster name
+    dimension_rollup_option: NoDimensionRollup
+    metric_declarations:
+      # NGINX
+      - dimensions: [ [ ClusterName, TaskDefinitionFamily, ServiceName ] ] # dimension names are same as our relabeled keys.
+        label_matchers:
+          - label_names:
+              - ServiceName
+            regex: '^.*nginx-service$'
+        metric_name_selectors:
+          - "^nginx_.*$"
+      # JMX
+      - dimensions: [ [ ClusterName, TaskDefinitionFamily, area ] ]
+        label_matchers:
+          - label_names:
+              - Java_EMF_Metrics # Label in metrics comes from docker label in task definition
+            regex: ^true$
+        metric_name_selectors:
+          - "^jvm_memory_bytes_used$"
+
+service:
+  extensions: [ ecs_observer ] # extension is declared outside pipelines
+  pipelines:
+    metrics:
+      receivers: [ prometheus ]
+      processors: [ resource, metricstransform ]
+      exporters: [ awsemf ]
+```
+
+## Deployment
+
+Collector needs to run as single instance. We use replica service because it handles task failure.
+Replica is 1 otherwise we will have duplicated metrics.
+
+```bash
+# Run collector as replica service on EC2
+# https://docs.aws.amazon.com/cli/latest/reference/ecs/create-service.html
+aws ecs create-service \
+    --cluster my-ecs-cluster \
+    --service-name adot-ecs-prometheus \
+    --task-definition adot-ecs-prometheus:1 \
+    --desired-count 1
+```
+`
+## Sample Workloads
+
+There are four workloads with pre-built dashboards, [JMX](#jmx) is the easiest to get started with.
+
+### JMX
+
+Detail on example JMX workload can be found from CloudWatch docs [ECS JMX Sample](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights-Prometheus-Sample-Workloads-ECS-javajmx.html)
+and [ECS JMX Metrics Collected](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights-Prometheus-metrics.html#ContainerInsights-Prometheus-metrics-jmx)
+
+Our integration test also includes a [sample java app](https://github.com/aws-observability/aws-otel-test-framework/tree/terraform/sample-apps/jmx).
+
+### NGINX
+
+Detail on example NGINX workload can be found from CloudWatch docs [ECS Nginx Sample](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights-Prometheus-Setup-nginx-ecs.html)
+[nginx-prometheus-exporter](https://github.com/nginxinc/nginx-prometheus-exporter) is an open source project.
+
+### NGINX Plus
+
+NGINX Plus is similar to [NGINX](#nginx) but requires subscription. Instruction for building image and run the workload can be found from CloudWatch docs [Build Nginx Plus Image](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights-Prometheus-Setup-nginx-plus-ecs.html)
+
+### AWS App Mesh
+
+CloudWatch docs has a simple walk through [ECS App Mesh Sample](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights-Prometheus-Sample-Workloads-ECS-appmesh.html).
+Be aware it's not easy to set up Mesh. All the metrics (used in dashboard) are collected from Envoy.
+
+## Appendix
+
+### Create ECS Cluster with EC2 instances
+
+- Download [ecs-cli](https://github.com/aws/amazon-ecs-cli#installing).
+- Create new cluster, take note of the security group and subnet it created.
+- if you missed it, you can still find it from cloudformation console, ecs-cli generates cfn and applies it.
+- Update security group to allow ingress on all tcp port within the cluster, this makes testing easier. However, you might
+want to only allow specific port when using are using non bridge network mode. Bridge network mode assign random host port so you have to allow all.
+- Delete the cluster by either delete the cfn stack or using `ecs-cli down -f -cluster ${CLUSTER_NAME}`
+
+```bash
+# Create ECS EC2 cluster with 2 EC2 instances
+
+export CLUSTER_NAME=aoc-containerinsight-prometheus-example
+ecs-cli up --capability-iam --size 2 --instance-type t2.medium --cluster ${CLUSTER_NAME} --region us-west-2
+
+# Output is like
+# INFO[0000] Using recommended Amazon Linux 2 AMI with ECS Agent 1.51.0 and Docker version 19.03.13-ce
+# INFO[0001] Created cluster                               cluster=aoc-containerinsight-prometheus-example region=us-west-2
+# INFO[0001] Waiting for your cluster resources to be created...
+# INFO[0122] Cloudformation stack status                   stackStatus=CREATE_IN_PROGRESS
+# VPC created: vpc-0fcxxxxx
+# Security Group created: sg-04xxxxx
+# Subnet created: subnet-03xxxx
+# Subnet created: subnet-0exxxx
+# Cluster creation succeeded.
+
+# Update security group to allow ingress on all ports within security group
+SG=sg-04xxxxx
+aws ec2 authorize-security-group-ingress --group-id ${SG} --protocol tcp --port 0-65535 --source-group ${SG}
+aws ec2 describe-security-groups --group-ids ${SG}
+```
+
+### IAM Policy Document
+
+Policy document merged from <Link to="/docs/setup/ecs/create-iam-policy">ECS setup guide</Link> and [Extra IAM Policy](#iam-policy).
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+               "logs:PutLogEvents",
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:DescribeLogGroups",
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries",
+                "cloudwatch:PutMetricData",
+                "ec2:DescribeVolumes",
+                "ec2:DescribeTags",
+                "ssm:GetParameters"
+                "ec2:DescribeInstances",
+                "ecs:ListTasks",
+                "ecs:ListServices",
+                "ecs:DescribeContainerInstances",
+                "ecs:DescribeServices",
+                "ecs:DescribeTasks",
+                "ecs:DescribeTaskDefinition",
+                "ecs:DescribeInstances"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+```
+
+### ECS Task Definition
+
+NOTE: You need to replace placeholder values with actual value
+
+- account id is `123456` and used in ARN for taskRole and executionRole, replace it with your own AWS account id.
+- `amazon/aws-otel-collector:v0.11.0` is using dockerhub (potential throttle) and may not be the latest version.
+- `/aoc/ecs-prometheus` is the name of <Link to="/docs/setup/ecs/config-through-ssm">SSM parameter</Link>.
+- `networkMode` can be `bridge`, `host`, `awsvpc`. For fargate, it has to be `awsvpc`.
+- `logConfiguration` is for log from collector itself, log group for metrics/log collected by collector is configured using `AOT_CONFIG_CONTENT`.
+- `requiresCompatibilities` includes both EC2 and Fargate because collector is scraping metrics via HTTP and does not need special host level access.
+- `cpu` and `memory` must follow [Fargate's requirement]( https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecs-taskdefinition.html)
+e.g. `cpu 255` `memory 511` is invalid pair.
+
+```json
+{
+  "family": "adot-ecs-prometheus",
+  "taskRoleArn": "arn:aws:iam::123456:role/MyEcsTaskRole",
+  "executionRoleArn": "arn:aws:iam::123456:role/MyEcsTaskExecutionRole",
+  "networkMode": "bridge",
+  "containerDefinitions": [
+    {
+      "name": "adot",
+      "image": "amazon/aws-otel-collector:v0.11.0",
+      "secrets": [
+        {
+          "name": "AOT_CONFIG_CONTENT",
+          "valueFrom": "/aoc/ecs-prometheus"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-create-group": "True",
+          "awslogs-group": "/adot/collector",
+          "awslogs-region": "us-west-2",
+          "awslogs-stream-prefix": "ecs-prometheus"
+        }
+      }
+    }
+  ],
+  "requiresCompatibilities": [
+    "EC2",
+    "FARGATE"
+  ],
+  "cpu": "256",
+  "memory": "512"
+}
+```
