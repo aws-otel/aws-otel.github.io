@@ -1,9 +1,8 @@
 ---
-title: 'Using CloudWatch Metrics with AWS Distro for OpenTelemetry'
+title: 'Container Insights EKS Infrastructure Metrics'
 description:
-    CloudWatch Container Insights collects, aggregates, and summarize metrics and logs from your containerized applications and microservices. 
-    In this tutorial, we will walk through how to enable CloudWatch Container Insights with AWS OTel Collector for an EKS EC2 cluster. 
-path: '/docs/getting-started/cloudwatch-container-insight'
+    In this tutorial, we will walk through how to enable CloudWatch Container Insights infrastructure metrics with AWS OTel Collector for an EKS EC2 cluster. 
+path: '/docs/getting-started/container-insights/eks-infra'
 ---
 
 import { Link } from "gatsby"
@@ -11,22 +10,7 @@ import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.js
 import imgLogGroup from "assets/img/docs/gettingStarted/containerInsights/log-group.png"
 import imgPodMetrics from "assets/img/docs/gettingStarted/containerInsights/pod-metrics.png"
 
-[CloudWatch Container Insights](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights.html) collect, aggregate, 
-and summarize metrics and logs from your containerized applications and microservices. Data are collected as as performance log events 
-using [embedded metric format](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Embedded_Metric_Format.html). 
-These performance log events are entries that use a structured JSON schema that enables high-cardinality data to be ingested and stored at scale. 
-Amazon CloudWatch can create the aggregated CloudWatch metrics at the cluster, node, pod, task, and service level from the received EMF data. 
-
-CloudWatch Container Insights has been supported by ECS Agent and CloudWatch Agent to collect infrastructure metrics for many resources such as
-such as CPU, memory, disk, and network. To migrate existing customers to use AWS Distro for OpenTelemetry, we are currently enhancing the 
-AWS OTel Collector to support the same CloudWatch Container Insights experience for the following platforms:  
-  * Amazon ECS 
-  * Amazon EKS
-  * Kubernetes platforms on Amazon EC2
-
-For Amazon ECS, the cluster and service level metrics are already supported ([see the public AWS doc for details](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/deploy-container-insights-ECS-adot.html))
-and the support for instance level metrics is working in progress. For Amazon EKS and Kubernetes platforms on Amazon on EC2, all the infrastructure metrics are supported. 
-In this tutorial, we will walk through how to enable CloudWatch Container Insights with AWS OTel Collector for an EKS EC2 cluster. 
+In this tutorial, we will walk through how to enable CloudWatch Container Insights infrastructure metrics with AWS OTel Collector for an EKS EC2 cluster. 
 
 <SectionSeparator />
 
@@ -36,16 +20,14 @@ To use AWS OTel Collector to collect infrastructure metrics for a service cluste
 Then we can deploy AWS OTel Collector as a daemon set to the cluster by entering the following command:
 ```
 curl https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/deployment-template/eks/otel-container-insight-infra.yaml |
-sed "s/{{cluster_name}}/MyCluster/;s/{{region_name}}/region/" |
 kubectl apply -f -
 ```
-Replace `MyCluster` with the name of the cluster and `region` with the name of the AWS Region of the cluster. You can run the following command
-to confirm the AWS OTel Collector is running:
+You can run the following command to confirm the AWS OTel Collector is running:
 ```
 kubectl get pods -l name=aws-otel-eks-ci -n aws-otel-eks
 ```
 If the results include multiple pods (one for each cluster node) in the Running state, the collector is running and collecting metrics from the cluster.
-The AWS OTel Collector creates a log group named `/aws/containerinsights/MyCluster/performance` and sends the performance log events to this log group.
+The AWS OTel Collector creates a log group named `/aws/containerinsights/{your-cluster}/performance` and sends the performance log events to this log group.
 Each collector pod on a cluster node will publish logs to a log stream with the name of the cluster node. In the screenshot, three log streams are present
 under the log group `/aws/containerinsights/ci-demo/performance` and each corresponds to one cluster node:
 <img src={imgLogGroup} alt="Diagram" style="margin: 30px 0;" />
@@ -56,7 +38,7 @@ a cluster named `ci-demo`:
 <img src={imgPodMetrics} alt="Diagram" style="margin: 30px 0;" /> 
 
 
-## Configurations to support CloudWatch Container Insights for EKS EC2
+## Default configuration to support CloudWatch Container Insights for EKS EC2
 The yaml file used in previous deployment contains the default configuration for AWS OTel Collector to enables CloudWatch Container Insights for EKS. The default
 configuration includes the essential components for collecting infrastructure metric in EKS cluster.
 
@@ -64,7 +46,6 @@ configuration includes the essential components for collecting infrastructure me
 receivers:
   awscontainerinsightreceiver:
 processors:
-  awscontainerinsightprocessor:
   batch/metrics:
     timeout: 60s
 exporters:
@@ -137,7 +118,7 @@ service:
   pipelines:
     metrics:
       receivers: [awscontainerinsightreceiver]
-      processors: [awscontainerinsightprocessor, batch/metrics]
+      processors: [batch/metrics]
       exporters: [awsemf]
 ```
 
@@ -146,8 +127,6 @@ The receiver `awscontainerinsightreceiver` is a component introduced for Contain
 kubernetes api server. The default metric collection interval is 60 second. 
 
 ### Processor
-The processor `awscontainerinsightprocessor` is also a component introduced for ContainerInsights support. Its main purpose is to decorate the metrics 
-collected by the receiver `awscontainerinsightreceiver`. Based on certain rules, it adds different resource attributes to different metrics. 
 The processor `batch/metrics` is used to batch the metrics before sending them to aws emf exporter. This reduces the number of requests that the 
 exporter needs to publish the metrics.
 
@@ -159,6 +138,125 @@ supports the automatic dashboards for Container Insights. Customers can add new 
 or change the `dimensions` to generate different set of metrics using the same `metric_name_selectors`.  
 
 
+## Advanced usage 
+With the default configuration, AWS OTel Collector collects the complete set of metrics as defined in [this AWS public doc](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-metrics.html). 
+To reduce the AWS cost for the cloudwatch metrics and emf logs generated by Container Insights, power users can take the fllowing two approaches to customize AWS OTel Collector.
 
-## Metrics collected by Container Insights
-You can refer to [this AWS public doc](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-metrics.html) for the metrics collected by CloudWatch Container Insights.
+### Filter out emf logs with third-party processors 
+This involves the introduction of other third-party processors to filter out metrics or attributes to reduce the size of emf logs. In the following, we
+demonstrate the basic usage of two processors. For more complicated use cases, you can refer to their readme files for details. 
+
+* [Filter Processor](https://github.com/open-telemetry/opentelemetry-collector/tree/main/processor/filterprocessor) can be used to filter out unwanted metrics. 
+For example, suppose customers want all the node-level metrics (with name prefix `node_`) excepts those for disk io and filesystem (with name prefix `node_diskio` and `node_filesystem`). 
+They can add the filter processor into the pipeline like the following:
+```
+receivers:
+  awscontainerinsightreceiver: 
+
+processors:
+  filter/include:
+  # any names NOT matching filters are excluded from remainder of pipeline
+    metrics:
+      include:
+        match_type: regexp
+        metric_names:
+            # re2 regexp patterns
+            - ^node_.*
+  filter/exclude:
+  # any names matching filters are excluded from remainder of pipeline
+    metrics:
+      exclude:
+        match_type: regexp
+        metric_names:
+            - ^node_diskio_.*
+            - ^node_filesystem_.*
+  batch/metrics:
+    timeout: 60s
+
+exporters:
+  awsemf:
+    ...
+    ...
+
+service:
+  pipelines:
+    metrics:
+      receivers: [awscontainerinsightreceiver]
+      processors: [filter/include, filter/exclude, batch/metrics]
+      exporters: [awsemf]
+```
+
+* [Resource Processor](https://github.com/open-telemetry/opentelemetry-collector/tree/main/processor/resourceprocessor) can be used to remove unwanted attributes.
+For example, if customers wants to remove the `kubernetes` and `Sources` fields from the emf logs, they can add the resource processor to the pipeline like the following:
+```
+receivers:
+  awscontainerinsightreceiver: 
+
+processors:
+  resource:
+    attributes:
+    - key: Sources
+      action: delete
+    - key: kubernetes
+      action: delete
+  batch/metrics:
+    timeout: 60s
+
+exporters:
+  awsemf:
+    ...
+    ...
+
+service:
+  pipelines:
+    metrics:
+      receivers: [awscontainerinsightreceiver]
+      processors: [resource, batch/metrics]
+      exporters: [awsemf]
+```
+
+
+
+### Configure metrics sent by CloudWatch EMF exporter 
+
+The `metric_declaration` section of CloudWatch EMF exporter configuration characterizes the rules to generate metrics from EMF logs. You can customize the section to only generate the wanted metrics. 
+For example, you can keep only pod metrics from the default configuration.  This `metric_declaration` section will look like the following:
+```
+    metric_declarations:
+      # pod metrics
+      - dimensions: [[PodName, Namespace, ClusterName], [Service, Namespace, ClusterName], [Namespace, ClusterName], [ClusterName]]
+        metric_name_selectors:
+          - pod_cpu_utilization
+          - pod_memory_utilization
+          - pod_network_rx_bytes
+          - pod_network_tx_bytes
+          - pod_cpu_utilization_over_pod_limit
+          - pod_memory_utilization_over_pod_limit
+``` 
+To reduce the number of metrics, you can keep only the dimension set `[Service, Namespace, ClusterName]` if you don't care about others:
+```
+    metric_declarations:
+      # pod metrics
+      - dimensions: [[Service, Namespace, ClusterName]]
+        metric_name_selectors:
+          - pod_cpu_utilization
+          - pod_memory_utilization
+          - pod_network_rx_bytes
+          - pod_network_tx_bytes
+          - pod_cpu_utilization_over_pod_limit
+          - pod_memory_utilization_over_pod_limit
+```  
+In addition, you might want to ignore the pod network metrics, you can delete the metrics `pod_network_rx_bytes` and `pod_network_tx_bytes`.
+Suppose you are interested in the dimension `PodName`, you can add it to the dimension set `[Service, Namespace, ClusterName]`. 
+With the above customizations, the final `metric_declarations` will become: 
+```
+    metric_declarations:
+      # pod metrics
+      - dimensions: [[PodName, Namespace, Service]]
+        metric_name_selectors:
+          - pod_cpu_utilization
+          - pod_memory_utilization
+          - pod_cpu_utilization_over_pod_limit
+          - pod_memory_utilization_over_pod_limit
+```  
+This configuration will produce only 4 metrics (rather than 55 metrics as in the default configuration). 
