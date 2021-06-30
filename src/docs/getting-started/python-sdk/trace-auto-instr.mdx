@@ -32,15 +32,16 @@ The OpenTelemetry instrumentation package automates much of the on-boarding proc
 
 ###  Install instrumentation packages
 
-You will need the `opentelemetry-distro` and `opentelemetry-instrumentation` packages from PyPi. This automatically installs the `opentelemetry-api` and `opentelemetry-sdk` packages. `opentelemetry-instrumentation` provides commands to detect, install, and initialize all instrumentation packages supported for your application’s dependencies.
+You will need to install the `opentelemetry-distro`, `opentelemetry-sdk`, and `opentelemetry-instrumentation` packages from PyPi. `opentelemetry-instrumentation` provides commands to detect, install, and initialize all instrumentation packages supported for your application’s dependencies.
 
 Go to the directory of the application which you want to instrument and run the following commands.
 
 ```bash 
 $ # Install required packages for instumentation and tracing support for AWS X-Ray
-$ pip install opentelemetry-distro[otlp]~=0.1
-$ pip install opentelemetry-instrumentation~=0.1
-$ pip install opentelemetry-sdk-extension-aws~=0.1
+$ pip install opentelemetry-distro[otlp]~=0.1 \
+              opentelemetry-instrumentation~=0.1 \
+              opentelemetry-sdk~=1.0 \
+              opentelemetry-sdk-extension-aws~=0.1
 # Automatically install supported instrumentors for the application's dependencies
 $ opentelemetry-bootstrap --action=install
 ``` 
@@ -89,8 +90,8 @@ Starting an application which connects to a Collector running as a sidecar witho
 $ OTEL_EXPORTER_OTLP_INSECURE=True \
 OTEL_EXPORTER_OTLP_ENDPOINT=localhost:4317 \
 opentelemetry-instrument --trace-exporter otlp \
-                        --ids-generator aws_xray \
-                        python ./path/to/your/app.py
+                         --ids-generator aws_xray \
+                         python ./path/to/your/app.py
 ```
 
 Starting an application which connects to a Collector running as a sidecar without TLS using flask:
@@ -100,8 +101,8 @@ $ OTEL_EXPORTER_OTLP_INSECURE=True \
 OTEL_EXPORTER_OTLP_ENDPOINT=localhost:55678 \
 FLASK_APP=./my_flask_app.py \
 opentelemetry-instrument --trace-exporter otlp \
-                        --ids-generator aws_xray \
-                        flask run
+                         --ids-generator aws_xray \
+                         flask run
 ```
 
 Starting an application which connects to a Collector running as a service with TLS:
@@ -110,8 +111,8 @@ Starting an application which connects to a Collector running as a service with 
 $ OTEL_EXPORTER_OTLP_CERTIFICATE=/path/to/my-cert.crt \
 OTEL_EXPORTER_OTLP_ENDPOINT=collector.service.local \
 opentelemetry-instrument --trace-exporter otlp \
-                        --ids-generator aws_xray \
-                        python ./path/to/your/app.py
+                         --ids-generator aws_xray \
+                         python ./path/to/your/app.py
 ```
 
 <SectionSeparator />
