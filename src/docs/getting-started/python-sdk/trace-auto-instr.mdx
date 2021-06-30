@@ -98,7 +98,7 @@ Starting an application which connects to a Collector running as a sidecar witho
 
 ```bash
 $ OTEL_EXPORTER_OTLP_INSECURE=True \
-OTEL_EXPORTER_OTLP_ENDPOINT=localhost:55678 \
+OTEL_EXPORTER_OTLP_ENDPOINT=localhost:4317 \
 FLASK_APP=./my_flask_app.py \
 opentelemetry-instrument --trace-exporter otlp \
                          --ids-generator aws_xray \
