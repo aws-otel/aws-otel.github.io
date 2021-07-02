@@ -24,13 +24,13 @@ Python 3.6+ is required to use ADOT Python. Check your currently installed pytho
 
 ## Getting the SDK and dependencies
 
-Install the following packages from OpenTelemetry Python using pip.
+Install the following packages and its dependencies from OpenTelemetry Python using pip.
 
 ```bash
 $ pip install opentelemetry-api~=1.0 \
               opentelemetry-sdk~=1.0 \
+              opentelemetry-sdk-extension-aws>=0.22b0 \
               opentelemetry-exporter-otlp~=1.0 \
-              opentelemetry-sdk-extension-aws~=0.1
 ```
 
 OpenTelemetry Python distributes many packages, which provide instrumentation for well-known Python dependencies. You need to install the relevant 
@@ -39,8 +39,8 @@ the [OpenTelemetry Registry](https://opentelemetry.io/registry/?s=python).
 
 ```bash
 # Supported instrumentation packages for the dependencies of the example above
-$ pip install opentelemetry-instrumentation-flask~=0.1
-$ pip install opentelemetry-instrumentation-botocore~=0.1
+$ pip install opentelemetry-instrumentation-flask>=0.22b0
+$ pip install opentelemetry-instrumentation-botocore>=0.22b0
 ```
 
 <SectionSeparator />

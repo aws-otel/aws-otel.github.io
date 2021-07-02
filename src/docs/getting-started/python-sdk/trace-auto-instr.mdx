@@ -40,8 +40,8 @@ Go to the directory of the application which you want to instrument and run the 
 
 ```bash 
 $ # Install required packages for instumentation and tracing support for AWS X-Ray
-$ pip install opentelemetry-distro[otlp]~=0.1 \
-              opentelemetry-sdk-extension-aws~=0.1
+$ pip install opentelemetry-distro[otlp]>=0.22b0 \
+              opentelemetry-sdk-extension-aws>=0.22b0
 # Automatically install supported instrumentors for the application's dependencies
 $ opentelemetry-bootstrap --action=install
 ``` 
