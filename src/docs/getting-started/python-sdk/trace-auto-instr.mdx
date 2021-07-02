@@ -57,15 +57,6 @@ Set the `OTEL_PROPAGATORS` environment variable to use the AWS X-Ray Propagator.
 OTEL_PROPAGATORS=aws_xray
 ```
 
-Alternatively, you can set the global propagator in code. Configure the propagator before your code starts, as shown below.
-
-```python lineNumbers=true 
-from opentelemetry import propagate
-from opentelemetry.sdk.extension.aws.trace.propagation.aws_xray_format import AwsXRayFormat
-
-propagate.set_global_textmap(AwsXRayFormat())
-```
-
 <SubSectionSeparator />
 
 ### Run the application 
@@ -73,6 +64,8 @@ propagate.set_global_textmap(AwsXRayFormat())
 Auto instrumentation uses the `opentelemetry-instrument` wrapper executable to automatically initialize the installed instrumentors and start the provided application. Environment variables are used to configure the connection to the ADOT Collector and command line arguments are used to configure trace generation for AWS X-Ray.
 
 The `IdGenerator` can be configured with the environment variables `OTEL_PYTHON_ID_GENERATOR=aws_xray` or the `opentelemetry-instrument` command line argument `--id-generator=aws_xray`.
+
+The `SpanExporter` can be configured with the environment variables `OTEL_TRACES_EXPORTER=otlp` or the `opentelemetry-instrument` command line argument `--trace-exporter=otlp`. However, if `opentelemetry-distro[otlp]` is used, it already uses the `otlp` exporter by default with any more configuration.
 
 The configuration of your SDK exporter depends on how you have configured your ADOT Collector. To learn more about how the ADOT Collector can be configured, refer to the [ADOT Collector Documentation](https://aws-otel.github.io/docs/getting-started/collector).
 
@@ -89,9 +82,9 @@ Starting an application which connects to a Collector running as a sidecar witho
 ```bash
 $ OTEL_EXPORTER_OTLP_INSECURE=True \
 OTEL_EXPORTER_OTLP_ENDPOINT=localhost:4317 \
-opentelemetry-instrument --trace-exporter otlp \
-                         --ids-generator aws_xray \
-                         python ./path/to/your/app.py
+OTEL_PROPAGATORS=aws_xray \
+OTEL_PYTHON_ID_GENERATOR=aws_xray \
+opentelemetry-instrument python ./path/to/your/app.py
 ```
 
 Starting an application which connects to a Collector running as a sidecar without TLS using flask:
@@ -100,9 +93,9 @@ Starting an application which connects to a Collector running as a sidecar witho
 $ OTEL_EXPORTER_OTLP_INSECURE=True \
 OTEL_EXPORTER_OTLP_ENDPOINT=localhost:4317 \
 FLASK_APP=./my_flask_app.py \
-opentelemetry-instrument --trace-exporter otlp \
-                         --ids-generator aws_xray \
-                         flask run
+OTEL_PROPAGATORS=aws_xray \
+OTEL_PYTHON_ID_GENERATOR=aws_xray \
+opentelemetry-instrument flask run
 ```
 
 Starting an application which connects to a Collector running as a service with TLS:
@@ -110,9 +103,9 @@ Starting an application which connects to a Collector running as a service with 
 ```bash
 $ OTEL_EXPORTER_OTLP_CERTIFICATE=/path/to/my-cert.crt \
 OTEL_EXPORTER_OTLP_ENDPOINT=collector.service.local \
-opentelemetry-instrument --trace-exporter otlp \
-                         --ids-generator aws_xray \
-                         python ./path/to/your/app.py
+OTEL_PROPAGATORS=aws_xray \
+OTEL_PYTHON_ID_GENERATOR=aws_xray \
+opentelemetry-instrument python ./path/to/your/app.py
 ```
 
 <SectionSeparator />
