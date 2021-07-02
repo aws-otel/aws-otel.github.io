@@ -32,15 +32,15 @@ The OpenTelemetry instrumentation package automates much of the on-boarding proc
 
 ###  Install instrumentation packages
 
-You will need to install the `opentelemetry-distro`, `opentelemetry-sdk`, and `opentelemetry-instrumentation` packages from PyPi. `opentelemetry-instrumentation` provides commands to detect, install, and initialize all instrumentation packages supported for your application’s dependencies.
+You will need to install the `opentelemetry-distro` package from PyPi. This automatically installs the `opentelemetry-api`, `opentelemetry-sdk`, and `opentelemetry-instrumentation` packages. `opentelemetry-instrumentation` provides commands to detect, install, and initialize all instrumentation packages supported for your application’s dependencies.
+
+Also, you will want to install `opentelemetry-sdk-extension-aws` to make traces compatible with AWS X-Ray.
 
 Go to the directory of the application which you want to instrument and run the following commands.
 
 ```bash 
 $ # Install required packages for instumentation and tracing support for AWS X-Ray
 $ pip install opentelemetry-distro[otlp]~=0.1 \
-              opentelemetry-instrumentation~=0.1 \
-              opentelemetry-sdk~=1.0 \
               opentelemetry-sdk-extension-aws~=0.1
 # Automatically install supported instrumentors for the application's dependencies
 $ opentelemetry-bootstrap --action=install
