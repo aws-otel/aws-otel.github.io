@@ -1,7 +1,7 @@
 ---
 title: 'Container Insights EKS Infrastructure Metrics'
 description:
-    In this tutorial, we will walk through how to enable CloudWatch Container Insights infrastructure metrics with AWS OTel Collector for an EKS EC2 cluster. 
+    In this tutorial, we will walk through how to enable CloudWatch Container Insights infrastructure metrics with ADOT Collector for an EKS EC2 cluster. 
 path: '/docs/getting-started/container-insights/eks-infra'
 ---
 
@@ -10,24 +10,24 @@ import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.js
 import imgLogGroup from "assets/img/docs/gettingStarted/containerInsights/log-group.png"
 import imgPodMetrics from "assets/img/docs/gettingStarted/containerInsights/pod-metrics.png"
 
-In this tutorial, we will walk through how to enable CloudWatch Container Insights infrastructure metrics with AWS OTel Collector for an EKS EC2 cluster. 
+In this tutorial, we will walk through how to enable CloudWatch Container Insights infrastructure metrics with ADOT Collector for an EKS EC2 cluster. 
 
 <SectionSeparator />
 
 ## Getting Started
-To use the AWS OTel Collector to collect infrastructure metrics for a service cluster, we need to make sure [all the prerequisites](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-prerequisites.html) are satisfied.
+To use the ADOT Collector to collect infrastructure metrics for a service cluster, we need to make sure [all the prerequisites](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-prerequisites.html) are satisfied.
 
-Then we can deploy the AWS OTel Collector as a daemon set to the cluster by entering the following command:
+Then we can deploy the ADOT Collector as a daemon set to the cluster by entering the following command:
 ```
-curl https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/deployment-template/eks/otel-container-insight-infra.yaml |
+curl https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/deployment-template/eks/otel-container-insights-infra.yaml |
 kubectl apply -f -
 ```
-You can run the following command to confirm that the AWS OTel Collector is running:
+You can run the following command to confirm that the ADOT Collector is running:
 ```
 kubectl get pods -l name=aws-otel-eks-ci -n aws-otel-eks
 ```
-If the results include multiple pods (one for each cluster node) in the Running state, the collector is running and collecting metrics from the cluster.
-The AWS OTel Collector creates a log group named `/aws/containerinsights/{your-cluster}/performance` and sends the performance log events to this log group.
+If the results include multiple pods (one for each cluster node) in the Running state, the Collector is running and collecting metrics from the cluster.
+The ADOT Collector creates a log group named `/aws/containerinsights/{your-cluster}/performance` and sends the performance log events to this log group.
 Each collector pod on a cluster node will publish logs to a log stream with the name of the cluster node. In the screenshot, three log streams are present
 under the log group `/aws/containerinsights/ci-demo/performance` and each corresponds to one cluster node:
 <img src={imgLogGroup} alt="Diagram" style="margin: 30px 0;" />
@@ -39,7 +39,7 @@ a cluster named `ci-demo`:
 
 
 ## Default configuration to support CloudWatch Container Insights for EKS EC2
-The yaml file used in previous deployment contains the default configuration for AWS OTel Collector to enable CloudWatch Container Insights for EKS. The default
+The yaml file used in previous deployment contains the default configuration for ADOT Collector to enable CloudWatch Container Insights for EKS. The default
 configuration includes the essential components for collecting infrastructure metric in EKS cluster.
 
 ```yaml
@@ -133,14 +133,14 @@ exporter needs to publish the metrics.
 ### Exporter
 The exporter `awsemf` is used to sent the metrics to the CloudWatch backend in the form of EMF logs. In the configuration for `awsemf` exporter, the two 
 placeholders `{ClusterName}` and `{NodeName}` in the log group and log stream names are replaced dynamically with the names of the cluster 
-and the node on which the AWS OTel Collector is running. In the `metric_declarations` section, different types of exported metrics are specified. The current setting 
+and the node on which the ADOT Collector is running. In the `metric_declarations` section, different types of exported metrics are specified. The current setting 
 supports the automatic dashboards for Container Insights. Customers can add new entries in `metric_declarations` section to export other metrics,
 or change the `dimensions` to generate different sets of metrics using the same `metric_name_selectors`.  
 
 
 ## Advanced usage 
-With the default configuration, the AWS OTel Collector collects the complete set of metrics as defined in [this AWS public document](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-metrics.html). 
-To reduce the AWS cost for the CloudWatch metrics and embedded metric format logs generated by Container Insights, you can customize the AWS OTel Collector using the following two methods.
+With the default configuration, the ADOT Collector collects the complete set of metrics as defined in [this AWS public document](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-metrics.html). 
+To reduce the AWS cost for the CloudWatch metrics and embedded metric format logs generated by Container Insights, you can customize the ADOT Collector using the following two methods.
 
 ### Filter out embedded metric format logs with third-party processors 
 This involves the introduction of other third-party processors to filter out metrics or attributes to reduce the size of embedded metric format logs. In the following, we
