@@ -12,7 +12,7 @@ import metricsImg from "assets/img/docs/gettingStarted/container-insights/eks-pr
     GettingStarted / <Link to="/docs/getting-started/container-insights">Container Insights</Link> / <Link to="/docs/getting-started/container-insights#collecting-prometheus-metrics">Container Insights Prometheus</Link>
 </p>
 
-This section explains how to set up Prometheus monitoring with the AWS OTel Collector in a cluster running Amazon EKS or Kubernetes. With [default configurations](https://github.com/aws-observability/aws-otel-collector/tree/main/config/eks/prometheus), the AWS OTel Collector automatically scrapes and imports metrics for the following workloads running in a cluster.
+This section explains how to set up Prometheus monitoring with the ADOT Collector in a cluster running Amazon EKS or Kubernetes. With [default configurations](https://github.com/aws-observability/aws-otel-collector/tree/main/config/eks/prometheus), the AWS OTel Collector automatically scrapes and imports metrics for the following workloads running in a cluster.
 * [AppMesh](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/container-insights-eks-app-mesh.md#install-app-mesh-and-sample-applications)
 * [HAProxy](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/container-insights-eks-haproxy.md#install-haproxy)
 * [JMX](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/container-insights-eks-jmx.md)
@@ -22,7 +22,7 @@ This section explains how to set up Prometheus monitoring with the AWS OTel Coll
 To deploy these sample workloads, please follow the above links for guidance.
 
 ## Set Up IAM Policy
-To use the AWS OTel Collector to collect Prometheus metrics, make sure the following policies are attached to your node instance role.
+To use the ADOT Collector to collect Prometheus metrics, make sure the following policies are attached to your node instance role.
 
 ```bash
 AmazonEKSWorkerNodePolicy
@@ -37,7 +37,7 @@ AmazonPrometheusFullAccess
 ```
 
 ## Deploy the AWS OTel Collector with default configuration
-The default [all-in-one configuration](https://github.com/aws-observability/aws-otel-collector/tree/main/config/eks/prometheus)  is built into the image of AWS OTel Collector and can be used to collect Promethues metrics for all the sample workloads.
+The default [all-in-one configuration](https://github.com/aws-observability/aws-otel-collector/tree/main/config/eks/prometheus)  is built into the image of ADOT Collector and can be used to collect Prometheus metrics for all the sample workloads.
 
 1. Set up variables to export metrics of your EKS cluster to the region where the logs should be published to.
 ```
@@ -60,13 +60,13 @@ export AWS_REGION=<aws-region>
     ```bash
     kubectl get all -naws-otel-eks
     ```
-    * You should be able to see the message `Everything is ready. Begin running and processing data` by fetching logs from the Pod if the AWS OTel Collector is started correctly.
+    * You should be able to see the message `Everything is ready. Begin running and processing data` by fetching logs from the Pod if the ADOT Collector is started correctly.
     ```bash
     kubectl logs -naws-otel-eks $POD_NAME
     ```
 
-## Customize the AWS OTel Collector
-To collect Prometheus metrics that are different from those specified in the default configuration, you can configure AWS OTel Collector with your own configuration.
+## Customize the ADOT Collector
+To collect Prometheus metrics that are different from those specified in the default configuration, you can configure ADOT Collector with your own configuration.
 
 ### Prepare Customized Configuration
 1. In general, the `processors` section should be the same as what is shown below. 
