@@ -59,7 +59,7 @@ ecs:DescribeTaskDefinition
 
 ### Network
 
-For the collector to scrape metrics, connectivity between ECS tasks using private ip is required.
+For the ADOT Collector to scrape metrics, connectivity between ECS tasks using private ip is required.
 Depends on how the cluster is created, you may need to configure security group to allow ingress within current VPC as prometheus **pull** metrics.
 The default VPC's security group normally allows ingress within VPC out of box, while some CLI tools such as [ecs-cli](#create-ecs-cluster-with-ec2-instances)
 creates new VPC with stricter rules.
