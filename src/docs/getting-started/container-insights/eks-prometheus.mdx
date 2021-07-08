@@ -98,7 +98,7 @@ To collect Prometheus metrics that are different from those specified in the def
   kubectl create configmap otel-config --from-file={{filename}} -naws-otel-eks
   ```
 
-### Run aws-otel-collector
+### Run ADOT Collector
 Edit `otel-container-insights-prometheus.yaml` with the following changes:
 
 1. Add volume `otel-config`.
