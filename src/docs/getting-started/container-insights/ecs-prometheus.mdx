@@ -183,7 +183,7 @@ service:
       exporters: [ awsemf ]
 ```
 
-## Deploy Collector
+## Deploy ADOT Collector
 
 ADOT Collector needs to run as single instance. We use the replica service because it handles task failure.
 Replica is 1 otherwise we will have duplicated metrics.
