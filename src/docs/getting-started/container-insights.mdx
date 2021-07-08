@@ -1,0 +1,78 @@
+---
+title: 'Using CloudWatch Container Insights with AWS Distro for OpenTelemetry'
+description:
+    CloudWatch Container Insights collects, aggregates, and summarize metrics and logs from your containerized applications and microservices.
+    Container Insights is available for Amazon Elastic Container Service (Amazon ECS),
+    Amazon Elastic Kubernetes Service (Amazon EKS), and Kubernetes platforms on Amazon EC2.
+    Amazon ECS support includes support for Fargate. Prometheus metrics with pre-built CloudWatch dashboards are also supported on these platforms.
+path: '/docs/getting-started/container-insights'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import {Link} from "gatsby"
+
+[CloudWatch Container Insights](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights.html) collects, aggregates,
+and summarizes metrics from your containerized applications and microservices.
+Data is collected as log events using [embedded metric format](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Embedded_Metric_Format.html).
+These log events are entries that use a structured JSON schema that enables high-cardinality data to be ingested and stored at scale.
+Amazon CloudWatch can create the aggregated CloudWatch metrics from the received EMF data.
+
+CloudWatch Container Insights uses the [CloudWatch agent](https://github.com/aws/amazon-cloudwatch-agent) to collect
+both [infrastructure metrics](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights.html)
+and [Prometheus metrics](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights-Prometheus.html).
+To migrate existing customers to use AWS Distro for OpenTelemetry,
+we have enhanced the [AWS OTel Collector](https://github.com/aws-observability/aws-otel-collector) to support the same CloudWatch Container Insights experience.
+
+## Collecting infrastructure metrics
+
+<!-- NOTE: The `-` list syntax didn't work when item is Link -->
+<!-- TODO: link to other ecs, eks doc when they are merged it -->
+
+CloudWatch Container Insights collects metrics for many resources such as CPU, memory, disk, and network.
+It also provides diagnostic information such as container restart failures.
+The metrics are aggregated at the cluster, node, pod, task, and service level as CloudWatch metrics.
+To collect the infrastructure metrics, AWS OTel Collector uses the [AWS Container Insights Receiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/awscontainerinsightreceiver)
+and the [CloudWatch embedded metric format Exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/awsemfexporter).
+
+The following platforms are supported:
+
+- <Link to="/docs/getting-started/container-insights/eks-infra">Amazon EKS and Kubernetes platforms on Amazon EC2</Link>
+- [Amazon ECS with cluster- and service-level metrics](https://aws-otel.github.io/docs/components/ecs-metrics-receiver)
+- Amazon ECS on Amazon EC2 with instance-level metrics (upcoming)
+
+## Collecting Prometheus metrics
+
+CloudWatch Container Insights monitoring for Prometheus automates the discovery of Prometheus metrics from containerized systems and workloads.
+To collect the Prometheus metrics, the AWS OTel Collector uses [ECSObserver extension](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/observer/ecsobserver),
+Prometheus Receiver and the  [CloudWatch embedded metric format Exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/awsemfexporter).
+
+The following platforms are supported:
+
+- <Link to="/docs/getting-started/container-insights/eks-prometheus">Amazon EKS and Kubernetes platforms on Amazon EC2 and Fargate</Link>
+- <Link to="/docs/getting-started/container-insights/ecs-prometheus">Amazon ECS on Amazon EC2 and Fargate</Link>
+
+### Pre-built dashboards for workloads with Prometheus metrics
+
+CloudWatch console has auto dashboard for workloads listed in following table.
+
+| Environment           | AWS App Mesh | Java JMX | NGINX | NGINX Plus | HAProxy | Memcached |
+|-----------------------|--------------|----------|-------|------------|---------|-----------|
+| <Link to="/docs/getting-started/container-insights/eks-prometheus">EKS</Link> | Y            | Y        | Y     | N          | Y       | Y         |
+| <Link to="/docs/getting-started/container-insights/ecs-prometheus">ECS</Link> | Y            | Y        | Y     | Y          | N       | N         |
+
+Workload without pre-build dashboard can still send metrics to CloudWatch. However, you need to [build your CloudWatch dashboard manually](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/create_dashboard.html).
+
+### Export Prometheus metrics format
+
+Prometheus metrics in Container Insights are exported as both logs and metrics.
+The embedded metric format exporter matches metrics based on the `metrics_declaration` configuration to add extra metadata in structured logs.
+CloudWatch extracts embedded metric format log data to metrics automatically.
+For example assume that you have an EKS cluster called `eks-1` and a ECS cluster called `ecs-1`.
+You will see the following resources in the CloudWatch console. The names of the log groups contain the cluster name. In CloudWatch,
+all clusters are saved in one metric namespace, with different dimension values used to differentiate metrics from different clusters.
+
+| Environment           | Log group                                     | Metrics Namespace                  |
+|-----------------------|-----------------------------------------------|------------------------------------|
+| <Link to="/docs/getting-started/container-insights/eks-prometheus">EKS</Link> | `/aws/containerinsights/eks-1/prometheus`     | `ContainerInsights/Prometheus`     |
+| <Link to="/docs/getting-started/container-insights/ecs-prometheus">ECS</Link> | `/aws/ecs/containerinsights/ecs-1/prometheus` | `ECS/ContainerInsights/Prometheus` |
+
