@@ -190,7 +190,7 @@ Replica is 1 otherwise we will have duplicated metrics.
 If you have a large cluster, you can shard the scrape targets using `hashmod` or use different discovery configurations for multiple collectors.
 
 ```bash
-# Run collector as replica service on EC2
+# Run ADOT Collector as replica service on EC2
 # https://docs.aws.amazon.com/cli/latest/reference/ecs/create-service.html
 aws ecs create-service \
     --cluster my-ecs-cluster \
