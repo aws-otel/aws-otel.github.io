@@ -1,0 +1,182 @@
+---
+title: 'Container Insights EKS Prometheus'
+path: '/docs/getting-started/container-insights/eks-prometheus'
+---
+
+import { Link } from "gatsby"
+import dashboardImg from "assets/img/docs/gettingStarted/container-insights/eks-prometheus-dashboard.png"
+import logsImg from "assets/img/docs/gettingStarted/container-insights/eks-prometheus-logs.png"
+import metricsImg from "assets/img/docs/gettingStarted/container-insights/eks-prometheus-metrics.png"
+
+<p>
+    GettingStarted / <Link to="/docs/getting-started/container-insights">Container Insights</Link> / <Link to="/docs/getting-started/container-insights#collecting-prometheus-metrics">Container Insights for Prometheus Support</Link>
+</p>
+
+This section explains how to set up Prometheus monitoring with the ADOT Collector in a cluster running Amazon EKS or Kubernetes. With [default configurations](https://github.com/aws-observability/aws-otel-collector/tree/main/config/eks/prometheus), the ADOT Collector automatically scrapes and imports metrics for the following workloads running in a cluster.
+* [AppMesh](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/container-insights-eks-app-mesh.md#install-app-mesh-and-sample-applications)
+* [HAProxy](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/container-insights-eks-haproxy.md#install-haproxy)
+* [JMX](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/container-insights-eks-jmx.md)
+* [Memcached](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/container-insights-eks-memcached.md#install-memcached)
+* [Nginx](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/container-insights-eks-nginx.md#install-nginx)
+
+To deploy these sample workloads, please follow the above links for guidance.
+
+## Set Up IAM Policy
+To use the ADOT Collector to collect Prometheus metrics, make sure the following policies are attached to your node instance role.
+
+```bash
+AmazonEKSWorkerNodePolicy
+AmazonEKS_CNI_Policy
+AmazonEC2ContainerRegistryReadOnly
+CloudWatchAgentServerPolicy
+AmazonSSMManagedInstanceCore
+AWSXrayWriteOnlyAccess
+AWSXRayDaemonWriteAccess
+AmazonS3ReadOnlyAccess
+AmazonPrometheusFullAccess
+```
+
+## Deploy the ADOT Collector with default configuration
+The default [all-in-one configuration](https://github.com/aws-observability/aws-otel-collector/tree/main/config/eks/prometheus)  is built into the image of ADOT Collector and can be used to collect Prometheus metrics for all the sample workloads.
+
+1. Set up variables to export metrics of your EKS cluster to the region where the logs should be published to.
+```
+export CLUSTER_NAME=<eks-cluster-name>
+export AWS_REGION=<aws-region>
+```
+
+1. Download the example deployment file [otel-container-insights-prometheus.yaml](https://github.com/aws-observability/aws-otel-collector/blob/main/deployment-template/eks/otel-container-insights-prometheus.yaml).
+
+1. Deploy it to the cluster.
+    ```bash
+    cat otel-container-insights-prometheus.yaml |
+    sed "s/{{region}}/$AWS_REGION/g" | 
+    sed "s/{{cluster_name}}/$CLUSTER_NAME/g" |
+    kubectl apply -f - 
+    ```
+
+1. Check the resources in the `aws-otel-eks` namespace.
+    * Make sure Pods are running.
+    ```bash
+    kubectl get all -naws-otel-eks
+    ```
+    * You should be able to see the message `Everything is ready. Begin running and processing data` by fetching logs from the Pod if the ADOT Collector is started correctly.
+    ```bash
+    kubectl logs -naws-otel-eks $POD_NAME
+    ```
+
+## Customize the ADOT Collector
+To collect Prometheus metrics that are different from those specified in the default configuration, you can configure ADOT Collector with your own configuration.
+
+### Prepare Customized Configuration
+1. In general, the `processors` section should be the same as what is shown below. 
+  ```
+  processors:
+    resourcedetection/ec2:
+      detectors: [ env ]
+      timeout: 2s
+      override: false
+    resource:
+      attributes:
+        - key: TaskId
+          from_attribute: job
+          action: insert
+        - key: receiver
+          value: "prometheus"
+          action: insert
+  ```
+    * `resourcedetection/ec2` is a processor that reads environment variables and converts them to resource attributes. 
+      In the example of [otel-container-insights-prometheus.yaml](https://github.com/aws-observability/aws-otel-collector/blob/main/deployment-template/eks/otel-container-insights-prometheus.yaml),
+      it injects `ClusterName` which is later used by awsemf exporter to generate `log_group_name` .
+    * `resource` is a processor that injects additional resource attributes. We copy the value from `job` to `TaskId` to generate `log_stream_name`. The attribute `receiver: prometheus` is an identifier for optimizing
+      Prometheus metrics before awsemf exporter sending metric logs to CloudWatch.
+
+1. Create ConfigMap `otel-config` in the `aws-otel-eks` namespace with your customized configuration so that it can be consumed by aws-otel-collector Pods.
+  
+  Be sure to rename `{{filename}}` with the actual filename.
+  ```bash
+  kubectl create configmap otel-config --from-file={{filename}} -naws-otel-eks
+  ```
+
+### Run ADOT Collector
+Edit `otel-container-insights-prometheus.yaml` with the following changes:
+
+1. Add volume `otel-config`.
+   ```
+   apiVersion: apps/v1
+   kind: Deployment
+   metadata:
+   ...
+   spec:
+     replicas: 1
+     ...
+     template:
+       spec:
+         containers:
+         ...
+         volumes:
+         - configMap:
+             defaultMode: 420
+             name: otel-config
+           name: otel-config
+   ```
+
+1. Mount volume to the container and define command and arguments. 
+
+   Make sure that `{{filename}}` matches the key in the `otel-config` ConfigMap.
+   ```
+   apiVersion: apps/v1
+   kind: Deployment
+   metadata:
+   ...
+   spec:
+     replicas: 1
+     ...
+     template:
+       spec:
+         containers:
+         - name: aws-otel-collector
+           command: ["/awscollector"]
+           args: [ "--config", "/etc/otel/{{filename}}"]
+           ...
+           volumeMounts:
+           - mountPath: /etc/otel/
+             name: otel-config
+             readOnly: true
+         volumes:
+         - configMap:
+             defaultMode: 420
+             name: otel-config
+           name: otel-config
+  ```
+
+1. Finally roll out the updated deployment to the EKS cluster.
+  ```bash
+  cat otel-container-insights-prometheus.yaml |
+  sed "s/{{region}}/$AWS_REGION/g" | 
+  sed "s/{{cluster_name}}/$CLUSTER_NAME/g" |
+  kubectl apply -f - 
+  ```
+
+## View Your Data
+
+1. View your Container Insights auto-dashboard
+
+   Open the [CloudWatch console](https://console.aws.amazon.com/cloudwatch/). In the AWS Region where your cluster is
+   running, choose `Container Insights - Performance monitoring` in the navigation panel. Then
+   select `EKS Prometheus {{workload_type}}` and `{{cluster_name}}` from the drop down menu in the main panel.
+
+   <img src={dashboardImg} alt="cloudwatch console log" style="margin: 30px 0;"/>
+
+2. View Your Metrics
+
+   To see the CloudWatch metrics, choose Metrics in the navigation panel. The metric are in the
+   `ContainerInsights/Prometheus` namespace.
+
+   <img src={metricsImg} alt="cloudwatch console log" style="margin: 30px 0;"/>
+
+3. View your logs
+
+   To see the CloudWatch Logs events, choose Log groups in the navigation panel. The events are in the log group `/aws/containerinsights/{{cluster_name}}/prometheus`.
+
+   <img src={logsImg} alt="cloudwatch console log" style="margin: 30px 0;"/>
