@@ -185,7 +185,7 @@ service:
 
 ## Deploy Collector
 
-Collector needs to run as single instance. We use the replica service because it handles task failure.
+ADOT Collector needs to run as single instance. We use the replica service because it handles task failure.
 Replica is 1 otherwise we will have duplicated metrics.
 If you have a large cluster, you can shard the scrape targets using `hashmod` or use different discovery configurations for multiple collectors.
 
