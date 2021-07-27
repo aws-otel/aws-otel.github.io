@@ -35,10 +35,10 @@ Find the supported regions and ARN in the table below for the ARNs to consume.
 ### Enable auto-instrumentation for your Lambda function
 To enable the AWS Distro for OpenTelemetry in your Lambda function, you need to add and configure the layer, and then enable tracing.
 
-1. Open the Lambda function you intend to instrument in the in AWS console.
+1. Open the Lambda function you intend to instrument in the AWS console.
 2. In the *Layers in Designer* section, choose *Add a layer*.
 3. Under *specify an ARN*, paste the layer ARN, and then choose *Add*.
-4. Add the environment variable `AWS_LAMBDA_EXEC_WRAPPER` and set to `/opt/otel-handler`.
+4. Add the environment variable `AWS_LAMBDA_EXEC_WRAPPER` and set it to `/opt/otel-handler`.
 5. [Enable active tracing](https://docs.aws.amazon.com/lambda/latest/dg/services-xray.html) for your AWS Lambda function.
 
 Tips:
