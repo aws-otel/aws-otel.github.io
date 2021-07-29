@@ -34,10 +34,13 @@ interface (CLI) and run the command `go mod init main` in the same directory, wh
 To install the necessary prerequisites, run the following command in the same directory that the `go.mod` file is in:
 
 ```bash
+go get go.opentelemetry.io/contrib/propagators/aws/xray 
 go get go.opentelemetry.io/otel 
-go get go.opentelemetry.io/otel/sdk 
-go get go.opentelemetry.io/otel/exporters/otlp 
-go get go.opentelemetry.io/contrib/propagators/aws/xray
+go get go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc
+go get go.opentelemetry.io/otel/sdk/resource
+go get go.opentelemetry.io/otel/sdk/trace
+go get go.opentelemetry.io/otel/semconv
+go get google.golang.org/grpc
 ```
 
 In your `main.go` file, add the following imports:
@@ -48,12 +51,13 @@ package main
 import (
     "context"
     
-    "go.opentelemetry.io/otel"
-    "go.opentelemetry.io/otel/api/global"
-    "go.opentelemetry.io/otel/api/trace"
-    "go.opentelemetry.io/otel/exporters/otlp"
     "go.opentelemetry.io/contrib/propagators/aws/xray"
+    "go.opentelemetry.io/otel"
+    "go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
+    "go.opentelemetry.io/otel/sdk/resource"
     sdktrace "go.opentelemetry.io/otel/sdk/trace"
+    semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
+    "google.golang.org/grpc"
 )
 ```
 
@@ -77,28 +81,23 @@ that data to back-end systems. The base components vendor-agnostic implementatio
 To initialize the OTLP exporter, add the following code to the file the `main.go` file -
 
 ```go lineNumbers=true 
-creds, err := credentials.NewClientTLSFromFile("my-cert.pem", "")
+// Create and start new OTLP trace exporter
+traceExporter, err := otlptracegrpc.New(ctx, otlptracegrpc.WithInsecure(), otlptracegrpc.WithEndpoint("0.0.0.0:4317"), otlptracegrpc.WithDialOption(grpc.WithBlock()))
 if err != nil {
-    // Handle error here...
+     log.Fatalf("%s: %v", "failed to create new OTLP trace exporter", err)
 }
 
-// Create new OTLP Exporter
-exporter, err := otlp.NewExporter(
-    otlp.WithTLSCredentials(creds), 
-    otlp.WithAddress(<INSERT LISTEN ADDRESS HERE>),
-)
-    
+// Create and start new OTLP trace exporter
+metricExporter, err := otlpmetricgrpc.New(ctx, otlpmetricgrpc.WithInsecure(), otlpmetricgrpc.WithEndpoint("0.0.0.0:4317"), otlpmetricgrpc.WithDialOption(grpc.WithBlock()))
 if err != nil {
-    // Handle error here...
+     log.Fatalf("%s: %v", "failed to create new OTLP metric exporter", err)
 }
 ```
 
-This creates a new OTLP exporter with a few options - `WithTLSCredentials()` is a way to intialize gRPC TransportCredentials and you can learn more about it 
-[here](https://pkg.go.dev/google.golang.org/grpc/credentials#TransportCredentials), and `WithAddress()` allows you to set the address 
-that the exporter will connect to the Collector on. If the address is unset, it will instead try to use connect to `DefaultCollectorHost:DefaultCollectorPort`.
+This creates a new OTLP exporter with a few options - `WithInsecure()` disables client transport security for the exporter's gRPC connection, `WithEndpoint()` allows you to set the address that the exporter will connect to the Collector on. If the address is unset, it will instead try to use connect to `DefaultCollectorHost:DefaultCollectorPort`.
 
-If the Collector you are connecting to does not use TLS, for example in a [sidecar deployment](/docs/getting-started/collector/sidecar-vs-service),
-then pass `otlp.WithInsecure()` instead to `otlp.NewExporter`.
+If the Collector you are connecting uses TLS, for example in a [sidecar deployment](/docs/getting-started/collector/sidecar-vs-service),
+pass `otlptracegrpc.WithTLSCredentials` instead of `otlptracegrpc.WithInsecure()`.
 
 <SectionSeparator />
 
@@ -120,16 +119,20 @@ which are components that give the ability to modify and export span data after 
 To create a new trace provider, add the following lines to the `main.go` file:
 
 ```go lineNumbers=true 
-cfg := sdktrace.Config{
-    DefaultSampler: sdktrace.AlwaysSample(),
-}
-   
+res, err := resource.New(ctx,
+	resource.WithAttributes(
+		// the service name used to display traces in backends
+		semconv.ServiceNameKey.String("test-service"),
+	),
+)
+
 idg := xray.NewIDGenerator()
 
 tp := sdktrace.NewTracerProvider(
-    sdktrace.WithConfig(cfg),
-    sdktrace.WithSyncer(exporter),
-    sdktrace.WithIDGenerator(idg),
+    sdktrace.WithSampler(sdktrace.AlwaysSample()),
+	sdktrace.WithResource(res),
+	sdktrace.WithBatcher(traceExporter),
+	sdktrace.WithIDGenerator(idg),
 )
 ```
 
@@ -238,41 +241,35 @@ The function should look something like this:
 
 ```go lineNumbers=true 
 func initTracer() {
-
-    // Create new OTLP Exporter struct
-    driver := otlpgrpc.NewDriver(
-	 otlpgrpc.WithInsecure(),
-	 otlpgrpc.WithEndpoint("localhost:30080"),
-	 otlpgrpc.WithDialOption(grpc.WithBlock()), // useful for testing
-    )
+	// Create and start new OTLP trace exporter
+	traceExporter, err := otlptracegrpc.New(ctx, otlptracegrpc.WithInsecure(), otlptracegrpc.WithEndpoint("0.0.0.0:4317"), otlptracegrpc.WithDialOption(grpc.WithBlock()))
+	if err != nil {
+		log.Fatalf("%s: %v", "failed to create new OTLP trace exporter", err)
+	}
     
-    exporter, err := otlp.NewExporter(ctx, driver)
-    if err != nil {
-        // Handle error here...
-    }
-
-    // AlwaysSample() returns a Sampler that samples every trace.
-    // Be careful about using this sampler in a production application with
-    // significant traffic: a new trace will be started and exported for every request.
-    cfg := sdktrace.Config{
-        DefaultSampler: sdktrace.AlwaysSample(),
-    }
+    	// A custom ID Generator to generate traceIDs that conform to
+    	// AWS X-Ray traceID format
+    	idg := xray.NewIDGenerator()
     
-    // A custom ID Generator to generate traceIDs that conform to
-    // AWS X-Ray traceID format
-    idg := xray.NewIDGenerator()
+    	res, err := resource.New(ctx,
+		resource.WithAttributes(
+			// the service name used to display traces in backends
+			semconv.ServiceNameKey.String("test-service"),
+		),
+	)
 
-    // Create a new TraceProvider object passing in the config, the exporter
-    // and the ID Generator we want to use for our tracing
-    tp := sdktrace.NewTracerProvider(
-        sdktrace.WithConfig(cfg),
-        sdktrace.WithSyncer(exporter),
-        sdktrace.WithIDGenerator(idg),
-    )
+     	// Create a new TraceProvider object passing in the config, the exporter
+   	// and the ID Generator we want to use for our tracing
+	tp := sdktrace.NewTracerProvider(
+    	sdktrace.WithSampler(sdktrace.AlwaysSample()),
+		sdktrace.WithResource(res),
+		sdktrace.WithBatcher(traceExporter),
+		sdktrace.WithIDGenerator(idg),
+	)
 
-    // Set the traceprovider and the propagator we want to use
-    otel.SetTracerProvider(tp)
-    otel.SetTextMapPropagator(xray.Propagator{})
+    	// Set the traceprovider and the propagator we want to use
+    	otel.SetTracerProvider(tp)
+    	otel.SetTextMapPropagator(xray.Propagator{})
 }
 ```
 
@@ -321,23 +318,24 @@ The completed `main.go` file should now look something like this:
 package main
 
 import (
+	"context"
 	"encoding/json"
-	"net/http"
-
 	"github.com/gorilla/mux"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gorilla/mux/otelmux"
 	"go.opentelemetry.io/contrib/propagators/aws/xray"
 	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/exporters/otlp"
-	"go.opentelemetry.io/otel/exporters/otlp/otlpgrpc"
-
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
+	"go.opentelemetry.io/otel/sdk/resource"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
+	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
+	"google.golang.org/grpc"
+	"log"
+	"net/http"
 )
 
 var tracer = otel.Tracer("demo-app")
 
 func main() {
-
 	initTracer()
 
 	// Create a new HTTP router to handle incoming client requests
@@ -351,48 +349,41 @@ func main() {
 
 	// Start the server and listen on localhost:8080
 	http.ListenAndServe(":8080", r)
-
 }
 
 // Function for handling the /hello-world endpoint
 func handler(w http.ResponseWriter, r *http.Request) {
-
 	// Set the header content-type and return hello world
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode("hello world")
-
 }
 
 func initTracer() {
+	ctx := context.Background()
 
-	// Create new OTLP Exporter struct
-	 driver := otlpgrpc.NewDriver(
-	 	otlpgrpc.WithInsecure(),
-		otlpgrpc.WithEndpoint("localhost:30080"),
-	 	otlpgrpc.WithDialOption(grpc.WithBlock()), // useful for testing
-        )
-    
-    	exporter, err := otlp.NewExporter(ctx, driver)
+	// Create and start new OTLP trace exporter
+	traceExporter, err := otlptracegrpc.New(ctx, otlptracegrpc.WithInsecure(), otlptracegrpc.WithEndpoint("0.0.0.0:4317"), otlptracegrpc.WithDialOption(grpc.WithBlock()))
 	if err != nil {
-		// Handle error here...
-	}
-
-	// AlwaysSample() returns a Sampler that samples every trace.
-	// Be careful about using this sampler in a production application with
-	// significant traffic: a new trace will be started and exported for every request.
-	cfg := sdktrace.Config{
-		DefaultSampler: sdktrace.AlwaysSample(),
+		log.Fatalf("%s: %v", "failed to create new OTLP trace exporter", err)
 	}
 
 	// A custom ID Generator to generate traceIDs that conform to
 	// AWS X-Ray traceID format
 	idg := xray.NewIDGenerator()
 
-	// Create a new TraceProvider struct passing in the config, the exporter
+	res, err := resource.New(ctx,
+		resource.WithAttributes(
+			// the service name used to display traces in backends
+			semconv.ServiceNameKey.String("test-service"),
+		),
+	)
+
+	// Create a new TraceProvider object passing in the config, the exporter
 	// and the ID Generator we want to use for our tracing
 	tp := sdktrace.NewTracerProvider(
-		sdktrace.WithConfig(cfg),
-		sdktrace.WithSyncer(exporter),
+		sdktrace.WithSampler(sdktrace.AlwaysSample()),
+		sdktrace.WithResource(res),
+		sdktrace.WithBatcher(traceExporter),
 		sdktrace.WithIDGenerator(idg),
 	)
 
@@ -401,10 +392,6 @@ func initTracer() {
 	otel.SetTextMapPropagator(xray.Propagator{})
 }
 ```
-
-Please note, if your Collector is using TLS, usually because it is deployed as a [service](/docs/getting-started/collector/sidecar-vs-service),
-you will need to use `otlp.WithTLSCredentials` instead of `otlp.WithInsecure`.
-
 <SectionSeparator />
 
 ## Using the AWS ECS Resource Detector
