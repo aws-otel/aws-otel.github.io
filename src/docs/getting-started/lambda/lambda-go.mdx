@@ -36,18 +36,21 @@ Re-upload source zip with function executable renamed to `bootstrap`
 
 ### Code Instrumentation
 
-1. Add OTel Go SDK dependency
+1. Add dependencies for the [ADOT Lambda Go SDK](https://pkg.go.dev/go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda) and the [recommended SDK configuration options for AWS X-Ray](https://pkg.go.dev/go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda/xrayconfig)
 
 ```go
-import 	"go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda"
+import (
+	"go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda/xrayconfig"
+)
 ```
 
-2. Wrap handler in call to Lambda.Start() or Lambda.StartHendler()
+2. Wrap handler in call to Lambda.Start() or Lambda.StartHendler() using the recommended X-Ray configuration options
 
 ```go
-lambda.Start(otellambda.LambdaHandlerWrapper(originalLambdaHandler))
+lambda.Start(otellambda.LambdaHandlerWrapper(originalLambdaHandler, xrayconfig.AllRecommendedOptions()))
 // or
-lambda.StartHandler(otellambda.HandlerWrapper(originalHandler))
+lambda.StartHandler(otellambda.HandlerWrapper(originalHandler, xrayconfig.AllRecommendedOptions()))
 ```
 
 ### Lambda Layer
