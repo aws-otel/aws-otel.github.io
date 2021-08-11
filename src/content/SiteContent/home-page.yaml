@@ -10,7 +10,7 @@ infoSection:
     AWS Distro for OpenTelemetry is a secure, production-ready, AWS-supported distribution of the OpenTelemetry project. 
     Part of the Cloud Native Computing Foundation, OpenTelemetry provides open source APIs, libraries, and agents to collect 
     distributed traces and metrics for application monitoring. With AWS Distro for OpenTelemetry, you can instrument your 
-    applications just once to send correlated metrics and traces to multiple AWS and Partner monitoring solutions. Use 
+    applications just once to send correlated metrics and traces to multiple AWS and third-party monitoring solutions. Use 
     auto-instrumentation agents to collect traces without changing your code. AWS Distro for OpenTelemetry also collects 
     metadata from your AWS resources and managed services, so you can correlate application performance data with underlying 
     infrastructure data, reducing the mean time to problem resolution. Use AWS Distro for OpenTelemetry to instrument your 
@@ -28,7 +28,7 @@ infoSection:
   useCases:
     AWS Distro for OpenTelemetry automates the deep collection and direct exposure of correlated application and infrastructure
     data needed for AWS monitoring and visualization services. Uses cases include sending metrics and traces to AWS and
-    third-party Partner monitoring services, automate collection of traces, collect metadata on application resources as well as
+    third-party monitoring services, automate collection of traces, collect metadata on application resources as well as
     collect, analyze, and alarm on application metrics in CloudWatch.
 
   rightHeading: Open Source

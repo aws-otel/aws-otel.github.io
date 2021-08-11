@@ -1,5 +1,5 @@
 ---
-name: Partner Documentation
+name: Custom Exporter Documentation
 about: 'This is a template for submitting a getting started guide. Please include images in .png format for any diagrams.'
 title: ''
 labels: ''

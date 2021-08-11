@@ -103,13 +103,13 @@ export const sideBarData = [
   {
     node: {
       id: nextId(),
-      label: "Partners",
+      label: "Custom Exporters",
       items: [
-        {label: "Datadog", link: "/docs/partners/datadog"},
-        {label: "Dynatrace", link: "/docs/partners/dynatrace"},
-        {label: "New Relic", link: "/docs/partners/new-relic"},
-        {label: "Splunk", link: "/docs/partners/splunk"},
-        {label: "Logz.io", link: "/docs/partners/logzio"},
+        {label: "Datadog", link: "/docs/custom-exporters/datadog"},
+        {label: "Dynatrace", link: "/docs/custom-exporters/dynatrace"},
+        {label: "New Relic", link: "/docs/custom-exporters/new-relic"},
+        {label: "Splunk", link: "/docs/custom-exporters/splunk"},
+        {label: "Logz.io", link: "/docs/custom-exporters/logzio"},
      ],
      link: "/docs/null"
    }
