@@ -72,22 +72,21 @@ AppDynamics without the need for additional plugins or non-OTLP exporters.
 
 Before you can use the AWS Distro for OpenTelemetry with the AppDynamics endpoint, you need:
 
-You need AppDynamics SaaS Controller >= v21.2.0.
-You need to be admitted to the AppDynamics OpenTelemetry private beta program.
+* You need AppDynamics SaaS Controller >= v21.2.0.
+* You need to be admitted to the AppDynamics OpenTelemetry private beta program.
 
 <SubSectionSeparator />
 
 ### Configuration (Collector)
 
-The configuration will take place in the OTLP exporter in the Collector config YAML file.
+The configuration takes place in the OTLP exporter in the Collector config YAML file.
 
 * Set the OTLP endpoint through the [OTLP HTTP Exporter](https://github.com/open-telemetry/opentelemetry-collector/tree/master/exporter/otlphttpexporter). To configure your AppDynamics Controller to work with the AWS OTel Collector, edit your `otel-config.yml` configuration file.
 * Set the AppDynamics API key `<x-api-key>` (Your AppDynamics API key must be defined as an HTTP header. To obtain your unique x-api-key, you should work closely with your AppDynamics account team.)
-* Set the Controller details. Use the [resource processor](https://github.com/open-telemetry/opentelemetry-collector/tree/master/processor/resourceprocessor) to add the AppDynamics Controller host, and port name.
+* Use resource attributes to add your AppDynamics account information:
     * `appdynamics.controller.account`: Your AppDynamics Controller account name.
     * `appdynamics.controller.host`: your AppDynamics Controller host name.
     * `appdynamics.controller.port`: your AppDynamics Controller port number.
-* Set the trace resource attributes to map the services to AppDynamics tiers and applications respectively.
     * `service.name` your AppDynamics tier name. trace resource attribute for every service being monitored.
     * `service.namespace`: your AppDynamics application name. Set corresponding `service.namespace` trace resource attribute for every service being monitored.
 
