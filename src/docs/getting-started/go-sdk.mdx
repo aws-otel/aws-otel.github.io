@@ -261,10 +261,10 @@ func initTracer() {
      	// Create a new TraceProvider object passing in the config, the exporter
    	// and the ID Generator we want to use for our tracing
 	tp := sdktrace.NewTracerProvider(
-    	sdktrace.WithSampler(sdktrace.AlwaysSample()),
-		sdktrace.WithResource(res),
-		sdktrace.WithBatcher(traceExporter),
-		sdktrace.WithIDGenerator(idg),
+	sdktrace.WithSampler(sdktrace.AlwaysSample()),
+	sdktrace.WithResource(res),
+	sdktrace.WithBatcher(traceExporter),
+	sdktrace.WithIDGenerator(idg),
 	)
 
     	// Set the traceprovider and the propagator we want to use
