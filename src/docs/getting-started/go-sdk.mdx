@@ -119,11 +119,10 @@ which are components that give the ability to modify and export span data after 
 To create a new trace provider, add the following lines to the `main.go` file:
 
 ```go lineNumbers=true 
-res, err := resource.New(ctx,
-	resource.WithAttributes(
-		// the service name used to display traces in backends
-		semconv.ServiceNameKey.String("test-service"),
-	),
+res, err := resource.NewWithAttributes(
+	semconv.SchemaURL,
+	// the service name used to display traces in backends
+	semconv.ServiceNameKey.String("test-service"),
 )
 
 idg := xray.NewIDGenerator()
