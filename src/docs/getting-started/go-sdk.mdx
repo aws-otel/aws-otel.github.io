@@ -129,7 +129,7 @@ res, err := resource.New(ctx,
 idg := xray.NewIDGenerator()
 
 tp := sdktrace.NewTracerProvider(
-    sdktrace.WithSampler(sdktrace.AlwaysSample()),
+	sdktrace.WithSampler(sdktrace.AlwaysSample()),
 	sdktrace.WithResource(res),
 	sdktrace.WithBatcher(traceExporter),
 	sdktrace.WithIDGenerator(idg),
