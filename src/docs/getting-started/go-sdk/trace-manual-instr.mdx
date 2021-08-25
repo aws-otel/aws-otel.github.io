@@ -191,9 +191,7 @@ defer span.End()
 
 ### Adding custom attributes
 
-You can also add custom key-value pairs as attributes onto your spans. If you add special prefixes to these attributes, they will be automatically converted to metadata or annotations in the X-Ray backend. To read more about X-Ray annotations and metadata see the [AWS X-Ray Developer Guide](https://docs.aws.amazon.com/xray/latest/devguide/xray-concepts.html#xray-concepts-annotations).
-
-Below example displays how to add attributes to the span. You can convert some or all attributes to annotations via [collector config](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/7bf2266a025425993a233f66c77a0810ab11a78b/exporter/awsxrayexporter#aws-specific-attributes), and otherwise they are metadata by default.
+You can also add custom key-value pairs as attributes onto your spans. The below example displays how to add attributes to the span. You can convert some or all attributes to annotations via the [collector config](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/7bf2266a025425993a233f66c77a0810ab11a78b/exporter/awsxrayexporter#aws-specific-attributes), and otherwise they are metadata by default. To read more about X-Ray annotations and metadata see the [AWS X-Ray Developer Guide](https://docs.aws.amazon.com/xray/latest/devguide/xray-concepts.html#xray-concepts-annotations).
 ```go lineNumbers=true
 var tracer = otel.Tracer("demo")
 _, span := tracer.Start(
