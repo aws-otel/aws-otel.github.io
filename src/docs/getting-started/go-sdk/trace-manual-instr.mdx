@@ -177,13 +177,15 @@ You can use custom spans to monitor the performance of internal activities that 
 Below example shows how to create custom spans.
 ```go lineNumbers=true
 var tracer = otel.Tracer("demo")
+
 // this span will be translated to a segment in X-Ray backend
 ctx, span := tracer.Start(context.Background(), "segment", trace.WithSpanKind(trace.SpanKindServer))
+
 // this span will be translated to a subsegment in X-Ray backend
 _, span2 := tracer.Start(ctx, "subsegment", trace.WithSpanKind(trace.SpanKindClient))
+
 defer span2.End()
 defer span.End()
-```
 
 <SubSectionSeparator />
 
