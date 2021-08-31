@@ -1,8 +1,8 @@
 ---
 title: 'Getting Started with the OTLP Exporters'
 description:
-    An exporter is a component in the OpenTelemetry Collector configured to send data to different systems/back-ends. Different 
-    exporters converts OpenTelemetry protocol (OTLP) formatted data to their respective predefined back-end format  and exports 
+    An exporter is a component in the OpenTelemetry Collector configured to send data to different systems/back-ends. Different
+    exporters converts OpenTelemetry protocol (OTLP) formatted data to their respective predefined back-end format  and exports
     this data to be interpreted by the back-end or system.
 path: '/docs/components/otlp-exporter'
 ---
@@ -10,46 +10,46 @@ path: '/docs/components/otlp-exporter'
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
 import SubSectionSeparator from "components/MdxSubSectionSeparator/subsectionSeparator.jsx"
 
-An exporter is a component in the OpenTelemetry [Collector](https://github.com/open-telemetry/opentelemetry-collector) configured 
-to send data to different systems/back-ends. Different exporters converts 
-[OpenTelemetry protocol (OTLP)](https://github.com/open-telemetry/opentelemetry-specification/blob/master/specification/protocol/otlp.md) 
+An exporter is a component in the OpenTelemetry [Collector](https://github.com/open-telemetry/opentelemetry-collector) configured
+to send data to different systems/back-ends. Different exporters converts
+[OpenTelemetry protocol (OTLP)](https://github.com/open-telemetry/opentelemetry-specification/blob/master/specification/protocol/otlp.md)
 formatted data to their respective predefined back-end format  and exports this data to be interpreted by the back-end or system.
 
 <SectionSeparator />
 
 ## OTLP Protocol
 
-The [OpenTelemetry Protocol](https://github.com/open-telemetry/opentelemetry-specification/blob/master/specification/protocol/otlp.md) 
-(OTLP) defines the encoding, transport, and delivery mechanism of telemetry data between telemetry sources, intermediate processes such 
-as collectors and telemetry backends. OTLP is a protocol based on requests and responses, for example the client sends requests and the 
-server corresponds with responses. OTLP is currently implemented over two types of transport systems, gRPC and HTTP, specifying the 
-[Protocol Buffers schema](https://developers.google.com/protocol-buffers/docs/overview) (protobuf) used for the payloads. The protobuf 
+The [OpenTelemetry Protocol](https://github.com/open-telemetry/opentelemetry-specification/blob/master/specification/protocol/otlp.md)
+(OTLP) defines the encoding, transport, and delivery mechanism of telemetry data between telemetry sources, intermediate processes such
+as collectors and telemetry backends. OTLP is a protocol based on requests and responses, for example the client sends requests and the
+server corresponds with responses. OTLP is currently implemented over two types of transport systems, gRPC and HTTP, specifying the
+[Protocol Buffers schema](https://developers.google.com/protocol-buffers/docs/overview) (protobuf) used for the payloads. The protobuf
 schema of the messages is the same for OTLP/HTTP and OTLP/gRPC.
 
 <SubSectionSeparator />
 
 ### OTLP/HTTP
 
-The OTLP implementation transport system over HTTP uses protobuf payloads either in binary format or JSON. OTLP/HTTP uses HTTP POST 
-requests to send telemetry data from clients to servers. Implementations may use HTTP/1.1 or HTTP/2 transports, if an HTTP/2 connection 
+The OTLP implementation transport system over HTTP uses protobuf payloads either in binary format or JSON. OTLP/HTTP uses HTTP POST
+requests to send telemetry data from clients to servers. Implementations may use HTTP/1.1 or HTTP/2 transports, if an HTTP/2 connection
 cannot be established it should fallback to HTTP/1.1 transport.
 
 <SubSectionSeparator />
 
 ### OTLP/gRPC
 
-OTLP/gRPC sends telemetry data with unary requests in `ExportTraceServiceRequest` for traces, `ExportMetricsServiceRequest` for metrics, 
-`ExportLogsServiceRequest` for logs. The language independent interface types for these mentioned pipeline data can be found 
-[here](https://github.com/open-telemetry/opentelemetry-proto). The client will continuously send sequences of requests to the server 
-and expects to receive a response with each request. You can learn more about the OTLP protocol 
+OTLP/gRPC sends telemetry data with unary requests in `ExportTraceServiceRequest` for traces, `ExportMetricsServiceRequest` for metrics,
+`ExportLogsServiceRequest` for logs. The language independent interface types for these mentioned pipeline data can be found
+[here](https://github.com/open-telemetry/opentelemetry-proto). The client will continuously send sequences of requests to the server
+and expects to receive a response with each request. You can learn more about the OTLP protocol
 [here](https://github.com/open-telemetry/opentelemetry-specification/blob/master/specification/protocol/otlp.md).
 
 <SectionSeparator />
 
-## Setting up A Monitoring Backend 
+## Setting up A Monitoring Backend
 
-OpenTelemetry can export traces, logs, and metrics to various backends to analyze in order to understand an application’s performance 
-and behavior. There are multiple monitoring backends (also known as end-points) which can support OpenTelemetry using the OTLP protocol. 
+OpenTelemetry can export traces, logs, and metrics to various backends to analyze in order to understand an application’s performance
+and behavior. There are multiple monitoring backends (also known as end-points) which can support OpenTelemetry using the OTLP protocol.
 
 In this section, we share getting started configurations to the Collector to export telemetry data to **AppDynamics, Honeycomb, Lightstep, and SumoLogic** end-points.
 
@@ -72,25 +72,25 @@ AppDynamics without the need for additional plugins or non-OTLP exporters.
 
 Before you can use the AWS Distro for OpenTelemetry with the AppDynamics endpoint, you need:
 
-You need AppDynamics SaaS Controller= v21.2.0.
-You need to be admitted to the AppDynamics OpenTelemetry private beta program.
+* You need AppDynamics SaaS Controller >= v21.2.0.
+* You need to be admitted to the AppDynamics OpenTelemetry private beta program.
 
 <SubSectionSeparator />
 
 ### Configuration (Collector)
 
-The configuration will take place in the OTLP exporter in the Collector config YAML file.
+The configuration takes place in the OTLP exporter in the Collector config YAML file.
 
-* Set the OTLP endpoint through the [OTLP HTTP Exporter](https://github.com/open-telemetry/opentelemetry-collector/tree/master/exporter/otlphttpexporter). To configure your AppDynamics Controller to work with the AWS OTel Collector, edit your `otel-config.yml` configuration file. 
+* Set the OTLP endpoint through the [OTLP HTTP Exporter](https://github.com/open-telemetry/opentelemetry-collector/tree/master/exporter/otlphttpexporter). To configure your AppDynamics Controller to work with the AWS OTel Collector, edit your `otel-config.yml` configuration file.
 * Set the AppDynamics API key `<x-api-key>` (Your AppDynamics API key must be defined as an HTTP header. To obtain your unique x-api-key, you should work closely with your AppDynamics account team.)
-* Set the Controller details. Use the [resource processor](https://github.com/open-telemetry/opentelemetry-collector/tree/master/processor/resourceprocessor) to add the AppDynamics Controller host, and port name.
+* Use resource attributes to add your AppDynamics account information:
+    * `appdynamics.controller.account`: Your AppDynamics Controller account name.
     * `appdynamics.controller.host`: your AppDynamics Controller host name.
     * `appdynamics.controller.port`: your AppDynamics Controller port number.
-* Set the trace resource attributes to map the services to AppDynamics tiers and applications respectively.
     * `service.name` your AppDynamics tier name. trace resource attribute for every service being monitored.
     * `service.namespace`: your AppDynamics application name. Set corresponding `service.namespace` trace resource attribute for every service being monitored.
 
-See [Ingest OpenTelemetry Trace Data](https://docs.appdynamics.com/display/PRO21/Ingest+OpenTelemetry+Trace+Data)
+For custom attributes, see [Ingest OpenTelemetry Trace Data](https://docs.appdynamics.com/display/PRO21/Ingest+OpenTelemetry+Trace+Data)
 
 <SubSectionSeparator />
 
@@ -100,19 +100,42 @@ See [Ingest OpenTelemetry Trace Data](https://docs.appdynamics.com/display/PRO21
 processors:
   resource:
     attributes:
-      - key: appdynamics.controller.host
-        action: upsert
-        value: "acme.saas.appdynamics.com"
-      - key: appdynamics.controller.port
-        action: upsert
-        value: 443
+    - key: appdynamics.controller.account
+      action: upsert
+      value: "acme"
+    - key: appdynamics.controller.host
+      action: upsert
+      value: "acme.saas.appdynamics.com"
+    - key: appdynamics.controller.port
+      action: upsert
+      value: 443
+  batch:
+    timeout: 30s
+    send_batch_size: 8192
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: localhost:55680
+      http:
+        endpoint: localhost:55681
+exporters:
+  otlphttp:
+    endpoint: "https://pdx-sls-agent-api.saas.appdynamics.com"
+    headers: {"x-api-key": "****************"}
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [resource, batch]
+      exporters: [otlphttp]
 ```
 
 <SubSectionSeparator />
 
 ## Honeycomb
 
-Honeycomb supports OpenTelemetry by ingesting OTLP directly, so users of the AWS Distro for OpenTelemetry (ADOT) can send tracing data directly to 
+Honeycomb supports OpenTelemetry by ingesting OTLP directly, so users of the AWS Distro for OpenTelemetry (ADOT) can send tracing data directly to
 Honeycomb without the need for additional plugins or non-OTLP exporters.
 
 <SubSectionSeparator />
@@ -135,7 +158,7 @@ The configuration will take place in the OTLP exporter in the Collector config Y
 
 <SubSectionSeparator />
 
-### Example 
+### Example
 
 ```yaml lineNumbers=true highlight={7,9}
 # Honeycomb Collector configuration
@@ -153,14 +176,14 @@ exporters:
 
 ### Support
 
-If you have any trouble using the AWS Distro for OpenTelemetry with Honeycomb, you can reach out to the ADOT support team 
-or directly to the [Honeycomb support page](https://www.honeycomb.io/support/). 
+If you have any trouble using the AWS Distro for OpenTelemetry with Honeycomb, you can reach out to the ADOT support team
+or directly to the [Honeycomb support page](https://www.honeycomb.io/support/).
 
 <SectionSeparator />
 
 ## Lightstep
 
-Lightstep supports OpenTelemetry natively, via OTLP. If you’re already set up with AWS Distro for OpenTelemetry, then 
+Lightstep supports OpenTelemetry natively, via OTLP. If you’re already set up with AWS Distro for OpenTelemetry, then
 getting data into Lightstep only requires an edit to the YAML config file for the Collector to get started.
 
 <SubSectionSeparator />
@@ -187,7 +210,7 @@ The configuration will take place in the OTLP exporter in the Collector config Y
 
 <SubSectionSeparator />
 
-### Example 
+### Example
 
 ```yaml lineNumbers=true highlight={8}
 # Lightstep Collector configuration
@@ -241,7 +264,7 @@ service:
 ## Sumo Logic
 
 Sumo Logic supports telemetry signals from OpenTelemetry natively via OTLP. If you’re already set up with AWS Distro for
-OpenTelemetry, then exporting data into a SumoLogic backend is as simple as editing your YAML config file for the Collector 
+OpenTelemetry, then exporting data into a SumoLogic backend is as simple as editing your YAML config file for the Collector
 and getting started.
 
 <SubSectionSeparator />
@@ -270,7 +293,7 @@ exporters:
     endpoint: https://YOUR_SUMOLOGIC_HTTP_TRACES_ENDPOINT_URL
 ```
 
-If you are instrumenting your application using OpenTelemetry JavaScript, Java, Python, Go,  Ruby, .NET you can use the SumoLogic 
+If you are instrumenting your application using OpenTelemetry JavaScript, Java, Python, Go,  Ruby, .NET you can use the SumoLogic
 [documentation](https://help.sumologic.com/Traces/Getting_Started_with_Transaction_Tracing/Instrument_your_application_with_OpenTelemetry)
 to set up your application and obtain telemetry data.
 
@@ -285,8 +308,5 @@ or directly to the [Sumo Logic support page](https://support.sumologic.com).
 
 ## Questions, Feedback?
 
-We would love to hear more common configuration scenarios or improvements to this documentation from you! Please submit an issue 
+We would love to hear more common configuration scenarios or improvements to this documentation from you! Please submit an issue
 on the  [aws-otel community page](https://github.com/aws-observability/aws-otel-community) to let us know.
-
-
-
