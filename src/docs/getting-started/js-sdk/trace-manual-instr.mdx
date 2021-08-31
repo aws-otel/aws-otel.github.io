@@ -86,8 +86,8 @@ Install the AWS X-Ray components.
 
 ```bash
 $ npm install \
-  @aws/otel-aws-xray-propagator \
-  @aws/otel-aws-xray-id-generator
+  @opentelemetry/id-generator-aws-xray \
+  @opentelemetry/propagator-aws-xray
 ```
 
 To install a specific version, see the [release tags on the Github releases page](https://github.com/aws-observability/aws-otel-js/releases).
@@ -308,23 +308,36 @@ Include the plugin in the provided tracer.js template:
 ### Tracing AWS SDK Calls
 
 Tracing support to any AWS SDK calls such as Amazon DynamoDB, S3, and etc is provided by the 
-[Open Telemetry AWS SDK Instumentation plugin](https://github.com/aspecto-io/opentelemetry-ext-js/tree/master/packages/plugin-aws-sdk) by [aspecto.io](https://www.aspecto.io/).
+[OpenTelemetry AWS SDK Instrumentation](https://github.com/aspecto-io/opentelemetry-ext-js/tree/master/packages/instrumentation-aws-sdk) by [aspecto.io](https://www.aspecto.io/).
 
 Install the following dependency with npm:
 
 ```
-npm install --save opentelemetry-plugin-aws-sdk
+npm install --save opentelemetry-instrumentation-aws-sdk
 ```
 
-Include the plugin in the provided tracer.js template:
+Then be sure to disable the old plugin-based instrumentation and register the new AWS SDK instrumentation in the provided tracer.js template:
 
-```json lineNumbers=true 
+```js lineNumbers=true 
+const { NodeTracerProvider } = require('@opentelemetry/node');
+const { registerInstrumentations } = require('@opentelemetry/instrumentation');
+const { AwsInstrumentation } = require('opentelemetry-instrumentation-aws-sdk');
+
+const traceProvider = new NodeTracerProvider({
+  // be sure to disable old plugin
   plugins: {
-    "aws-sdk": {
-      enabled: true,
-      // You may use a package name or absolute path to the file.
-      path: "opentelemetry-plugin-aws-sdk",
-    },
+    'aws-sdk': { enabled: false, path: 'opentelemetry-plugin-aws-sdk' }
+  }
+});
+
+registerInstrumentations({
+  traceProvider,
+  instrumentations: [
+    new AwsInstrumentation({
+      // see under for available configuration
+    })
+  ]
+});
 ```
 
 <SubSectionSeparator />

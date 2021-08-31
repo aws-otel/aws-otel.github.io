@@ -45,10 +45,10 @@ Find the supported regions and ARN in the table below for the ARNs to consume.
 ### Enable auto-instrumentation for your Lambda function
 To enable the AWS Distro for OpenTelemetry in your Lambda function, you need to add and configure the layer, and then enable tracing.
 
-1. Open the Lambda function you intend to instrument in the in AWS console.
+1. Open the Lambda function you intend to instrument in the AWS console.
 2. In the *Layers in Designer* section, choose *Add a layer*.
 3. Under *specify an ARN*, paste the layer ARN, and then choose *Add*.
-4. Add the environment variable `AWS_LAMBDA_EXEC_WRAPPER` and set to one of the following options:
+4. Add the environment variable `AWS_LAMBDA_EXEC_WRAPPER` and set it to one of the following options:
     1. `/opt/otel-handler` - for wrapping regular handlers (implementing RequestHandler)
     2. `/opt/otel-proxy-handler` - for wrapping regular handlers (implementing RequestHandler) proxied through API Gateway, enabling HTTP context propagation
     3. `/opt/otel-stream-handler` - for wrapping streaming handlers (implementing RequestStreamHandler), enabling HTTP context propagation for HTTP requests

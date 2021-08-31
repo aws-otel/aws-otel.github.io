@@ -1,0 +1,374 @@
+---
+title: 'Getting Started with the AWS Distro for OpenTelemetry Operator'
+description:
+    This page is about getting started with the ADOT Operator.
+path: '/docs/getting-started/operator'
+---
+
+import operatorImg1 from "assets/img/docs/gettingStarted/operator/img1.png"
+import operatorImg2 from "assets/img/docs/gettingStarted/operator/img2.png"
+
+Welcome to the AWS Distro for OpenTelemetry Operator (ADOT Operator) getting started guide. This guide covers the ADOT Operator,
+how to install it in your Amazon Elastic Kubernetes Service (Amazon EKS) cluster using a Helm chart and how to configure the ADOT
+Collector as Kubernetes Custom Resource (CR), which will be managed by the ADOT Operator. Before reading this guide, we recommend
+you to have an understanding of the basics of [Helm](http://helm.sh/), the package manager for Kubernetes.
+
+<SectionSeparator />
+
+## Introduction
+
+The ADOT Operator is an implementation of a Kubernetes Operator. A Kubernetes Operator is a method of packaging, deploying and
+managing a Kubernetes-native application, which is both deployed on Kubernetes and managed using the Kubernetes APIs and kubectl
+tooling. The Kubernetes Operator is a custom controller, which introduces new object types through Custom Resource Definition (CRD),
+an extension mechanism in Kubernetes. In our case, the CRD that is managed by the ADOT Operator is the Collector.
+
+The ADOT Operator will watch for the Collector and is notified about its presence or modification. When the ADOT Operator receives
+this notification, it will start running in the following orders. First, it will ensure that all the required connections between
+these requests and Kubernetes API server are actually available. Second, it will configure the Collector in the way the user expressed
+in the configuration file. The diagram below shows how the Collector CR request works in a Kubernetes cluster.
+
+<img src={operatorImg1} alt="Diagram" style="margin: 30px 0;" />
+
+<SectionSeparator />
+
+## Install ADOT Operator to Your EKS Cluster
+### Prerequisites
+- Make sure your Kubernetes version is 1.19 or higher 
+  - Run `$ kubectl version | grep "Server Version"` to check
+- Make sure you have Helm v3 or higher installed
+  - See [Installing Helm website](https://helm.sh/docs/intro/install/) for more details
+- Make sure the following TLS certificate requirement is satisfied  
+
+**TLS Certificate Requirement**  
+As mentioned above, the ADOT Operator uses admission webhooks to mutate and validate the Collector CR requests. In Kubernetes,
+in order for the API server to communicate with the webhook component, the webhook requires a TLS certificate that the API server
+is configured to trust. There are three ways for you to generate the required TLS certificate.
+
+- The easiest and default method is to install the [cert-manager](https://cert-manager.io/docs/). In this way, cert-manager will
+  generate a self-signed certificate. _See [cert-manager installation](https://cert-manager.io/docs/installation/kubernetes/) for more details._
+- If you have your desired CA or Issuer, you can also provide your own Issuer by configuring the `admissionWebhooks.certManager.issuerRef` value
+  of the Operator Helm chart. You will need to specify the `kind` (Issuer or ClusterIssuer) and the `name`. For example, during Operator installation,
+  you can provide `--set admissionWebhooks.certManager.issuerRef.kind=YOUR_ISSUER --set admissionWebhooks.certManager.issuerRef.name=YOUR_ISSUER_NAME`
+  options. Note that this method also requires the installation of cert-manager.
+- The last way is to manually modify the secret where the TLS certificate is stored. Make sure you set `admissionWebhooks.certManager.enabled`
+  to `false` during the Operator installation.
+  - Create the namespace for the OpenTelemetry Operator and the secret  
+    `$ kubectl create namespace opentelemetry-operator-system`
+  - Config the TLS certificate using `kubectl create` command
+    ```console
+    $ kubectl create secret tls opentelemetry-operator-controller-manager-service-cert \
+        --cert=path/to/cert/file \
+        --key=path/to/key/file \
+        -n opentelemetry-operator-system
+    ```
+
+### Step 1: Install the ADOT Operator
+First, add Helm repository:
+```console
+$ helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+$ helm repo update
+```
+
+If you didn't create the namespace `opentelemetry-operator-system` before (steps in the third method to generate the TLS cert), the
+OpenTelemetry Operator chart will be installed in the namespace automatically. The installation command example is:
+```console
+$ helm install \
+    my-operator open-telemetry/opentelemetry-operator
+```
+
+However, if you create the namespace and place the TLS cert in the desired secret, you will need to set `createNamespace` to `false` to
+make sure Helm won't try to create an existing namespace, which would cause an error. The installation command example is:
+
+```console
+$ helm install \
+    my-operator open-telemetry/opentelemetry-operator \
+    --set createNamespace=false
+```
+
+Check your ADOT Operator application by running:
+
+```console
+$ helm ls -A
+$ kubectl get all -n opentelemetry-operator-system
+```
+
+### Step 2: Install ADOT Collector as Kubernetes Custom Resource to Your EKS Cluster
+Once the ADOT Operator deployment is ready, you can deploy the ADOT Collector in your EKS cluster. Managed by the Operator, the Collector
+can be deployed as one of four modes: Deployment, DaemonSet, StatefulSet and Sidecar. The default mode is Deployment. We will introduce the
+benefits and use cases of each mode and give an example configuration of the Collector in the last section. The diagram below shows the
+end-to-end workflow of ADOT Operator.
+
+<img src={operatorImg2} alt="Diagram" style="margin: 30px 0;" />
+
+#### Deployment Mode
+
+If you want to get more control of the Collector and create a standalone application, Deployment would be your choice. With Deployment,
+you can relatively easily scale up the Collector to monitor more targets, roll back to an early version if anything unexpected happens,
+pause the Collector, etc. In general, you can manage your Collector instance just as an application.
+
+#### DaemonSet Mode
+
+DaemonSet should satisfy your needs if you want the Collector run as an agent in your Kubernetes nodes. In this case, every Kubernetes
+node will have its own Collector copy which would monitor the pods in it.
+
+#### StatefulSet Mode
+
+There are three main advantages to deploying the Collector as a StatefulSet:
+
+- Predictable names of the Collector instance will be expected  
+  If you use above two approaches to deploy the Collector, the pod name of your Collector instance will be unique (its name plus random sequence).
+  However, each Pod in a StatefulSet derives its hostname from the name of the StatefulSet and the ordinal of the Pod (my-col-0, my-col-1, my-col-2, etc.).
+- Rescheduling will be arranged when a Collector replica fails  
+  If a Collector pod fails in the StatefulSet, Kubernetes will attempt to reschedule a new pod with the same name to the same node.
+  Kubernetes will also attempt to attach the same sticky identity (e.g., volumes) to the new pod.
+- The target allocator could be configured  
+  The target allocator will use a HTTP server to expose the scrape targets to a specific endpoint URL, which will be used by the
+  Prometheus receiver to scrape metrics data. Additionally, the target allocator will use that discovery information to evenly delegate scraping
+  jobs to the collector instances inside a StatefulSet based on a replica's current workload.
+
+#### Sidecar Mode
+
+The biggest advantage of the sidecar mode is that it allows people to offload their telemetry data as fast and reliable as possible
+from their applications. This Collector instance will work on the container level and no new pod will be created, which is perfect to
+keep your EKS cluster clean and easily to be managed. Moreover, you can also use the sidecar mode when you want to use a different collect/export
+strategy, which just suits this application.
+
+Once a Sidecar instance exists in a given namespace, you can have your deployments from that namespace to get a sidecar by either adding
+the annotation `sidecar.opentelemetry.io/inject: "true"` to the pod spec of your application, or to the namespace.
+
+Below is an example configuration to deploy the Collector as sidecar.
+
+```console
+$ kubectl apply -f - <<EOF
+apiVersion: opentelemetry.io/v1alpha1
+kind: OpenTelemetryCollector
+metadata:
+  name: sidecar-for-my-app
+spec:
+  image: public.ecr.aws/aws-observability/aws-otel-collector:latest
+  mode: sidecar
+  config: |
+    receivers:
+      jaeger:
+        protocols:
+          grpc:
+    processors:
+
+    exporters:
+      logging:
+
+    service:
+      pipelines:
+        traces:
+          receivers: [jaeger]
+          processors: []
+          exporters: [logging]
+EOF
+
+$ kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp
+  annotations:
+    sidecar.opentelemetry.io/inject: "true"
+spec:
+  containers:
+  - name: myapp
+    image: jaegertracing/vertx-create-span:operator-e2e-tests
+    ports:
+      - containerPort: 8080
+        protocol: TCP
+EOF
+```
+
+<SectionSeparator />
+
+## Example: Build Your Observability Pipeline from Scratch
+
+Following this tutorial, you can try out the steps itemized in the previous sections and build an end-to-end pipeline from scratch to
+scrape your EKS cluster metrics and ingest them to Prometheus remote-write end point such as the Amazon Managed Service for Prometheus (AMP).
+You can also use the AWS EMF exporter to send these metrics to Amazon CloudWatch Logs.
+
+### Set up EKS Cluster and IAM Role
+
+We will assume you have already had your EKS cluster ready. If not, you can refer to [Getting Started with Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html)
+for more details. Make sure that your Kubernetes version is 1.19 or higher.
+
+Now, let’s attach the needed policies to your IAM role:
+
+- Open your IAM console, select “Roles” in the left menu
+- Search your EKS cluster name and you should see a role name like `eksctl-YOUR-CLUSTER-NAME-NodeInstanceRole-RANDOM-CHARACTERS`, select it
+- Attach `AmazonAPIGatewayPushToCloudWatchLogs` and `AmazonPrometheusFullAccess` policies to this role
+
+### Create an AMP Workspace
+
+- Open your AMP console
+- Type the name for your workspace and click create button
+
+### Set up Helm
+
+If you didn’t have Helm installed in your working environment, refer to the [Helm install website](https://helm.sh/docs/intro/install/) for more details.
+
+### Install cert-manager
+
+In this tutorial, we will just use a self-signed certificate for TLS authentication. Run the following commands to install cert-manager:
+```console
+$ kubectl create namespace cert-manager
+$ helm repo add jetstack https://charts.jetstack.io
+$ helm repo update
+$ helm install \
+    cert-manager jetstack/cert-manager \
+    --namespace cert-manager \
+    --create-namespace \
+    --version v1.4.3
+```
+
+Check if your cert-manager is ready:
+
+```console
+$ kubectl get pod -w -n cert-manager
+```
+
+Make sure the pods are all running.
+
+### Install ADOT Operator
+
+Run the following commands to install the ADOT Operator:
+```console
+$ helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+$ helm repo update
+$ helm install my-operator open-telemetry/opentelemetry-operator
+```
+
+Check if your ADOT Operator is ready:
+```console
+$ kubectl get pod -w -n opentelemetry-operator-system
+```
+
+### Configure the ADOT Collector
+
+After the Operator application is running in your cluster, you can deploy the Collector as custom resources. In this tutorial,
+we will deploy a Collector as Deployment mode to scrape metrics from your EKS cluster infrastructure and ingest the metrics data
+to your AMP workspace and CloudWatch Logs.
+
+Apply the following configuration to deploy the Collector. Remember to substitute the AMP remote write endpoint, AMP region and CloudWatch region with your own.
+```yaml
+apiVersion: opentelemetry.io/v1alpha1
+kind: OpenTelemetryCollector
+metadata:
+  name: example
+spec:
+  image: public.ecr.aws/aws-observability/aws-otel-collector:latest
+  mode: deployment
+  config: |
+    receivers:
+      prometheus:
+        config:
+          scrape_configs:
+            - job_name: 'kubernetes-apiservers'
+              sample_limit: 10000
+              scheme: https
+
+              kubernetes_sd_configs:
+              - role: endpoints
+              tls_config:
+                ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+                insecure_skip_verify: true
+              bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+
+              relabel_configs:
+              - source_labels: [__meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+                action: keep
+                regex: kubernetes;https
+
+    processors:
+      batch:
+        timeout: 30s
+        send_batch_size: 10000
+
+    exporters:
+      awsprometheusremotewrite:
+        endpoint: <YOUR-AMP-REMOTE-WRITE-ENDPOINT>
+        aws_auth:
+          service: "aps"
+          region: <YOUR-AMP-REGION>
+      awsemf:
+        region: <YOUR-CLOUDWATCH-REGION>
+        log_group_name: "/metrics/my-adot-collector"
+        log_stream_name: "adot-stream"
+      logging:
+        loglevel: debug
+
+    service:
+      pipelines:
+        metrics:
+          receivers: [prometheus]
+          processors: []
+          exporters: [awsprometheusremotewrite,awsemf,logging]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: grant-collector-access
+subjects:
+  - kind: ServiceAccount
+    name: example-collector
+    namespace: default
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io
+```
+
+### Verify if the Metrics Data was sent to AMP using the awscurl tool
+
+You can use `awscurl` to check if AMP received the metrics data. The `awscurl` tool is a curl like tool with AWS Signature Version 4
+request signing. It performs requests to AWS services with requests signing using curl interface, and it supports IAM profile
+credentials. To learn more about `awscurl`, please refer to its [Github repository](https://github.com/okigan/awscurl).
+
+To install `awscurl`:
+```console
+$ pip install awscurl
+```
+
+Run the following command to check if AMP received the metrics data `scrape_samples_scraped`. You can also query other metrics data.
+Again, remember to replace the region and workspace ID with your own.
+```console
+$ awscurl --service="aps" --region="YOUR-AMP-REGION" \
+    "https://aps-workspaces.YOUR-AMP-REGION.amazonaws.com/workspaces/YOUR-AMP-WORKSAPCE-ID/api/v1/query?query=scrape_samples_scraped"
+```
+
+### Verify if the Metrics Data was sent to CloudWatch
+- Open CloudWatch console
+- Select “Logs → Log groups” in the left menu
+- Click “/metrics/my-adot-collector” log group
+- Click “adot-stream” log stream
+- See if your metrics data is there
+
+### Cleanup
+Delete the Collector resource:
+```console
+$ kubectl delete -f <<EOF
+apiVersion: opentelemetry.io/v1alpha1
+kind: OpenTelemetryCollector
+metadata:
+name: my-adot-collector
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+name: fabric8-rbac
+EOF
+```
+
+Uninstall the Operator:
+```console
+$ helm uninstall my-operator
+```
+
+Uninstall the cert-manager:
+```console
+$ helm uninstall cert-manager -n cert-manager
+$ kubectl delete ns cert-manager
+```
