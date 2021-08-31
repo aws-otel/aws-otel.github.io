@@ -1,0 +1,207 @@
+---
+title: 'Tracing with the AWS Distro for OpenTelemetry Go SDK'
+description:
+    OpenTelemetry provides different language SDKs to instrument code for collecting telemetry data in the application.
+    In this tutorial, we will introduce how to use OpenTelemetry Go SDK for traces instrumentation in the application.
+path: '/docs/getting-started/go-sdk/trace-manual-instr'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import SubSectionSeparator from "components/MdxSubSectionSeparator/subsectionSeparator.jsx"
+import goImg1 from "assets/img/docs/gettingStarted/goSDK/img1.jpg"
+import goImg2 from "assets/img/docs/gettingStarted/goSDK/img2.jpg"
+import goImg3 from "assets/img/docs/gettingStarted/goSDK/img3.jpg"
+import goImg4 from "assets/img/docs/gettingStarted/goSDK/img4.png"
+import goImg5 from "assets/img/docs/gettingStarted/goSDK/img5.jpg"
+import goImg6 from "assets/img/docs/gettingStarted/goSDK/img6.jpg"
+
+<SectionSeparator />
+
+## Introduction
+Welcome to the AWS Distro for OpenTelemetry (ADOT) Go getting started guide. This walk-through covers the ADOT Go components, how to
+configure the ADOT components to capture traces with OpenTelemetry Go and AWS X-Ray, as well as how to use the AWS Elastic Container Service
+(AWS ECS) and AWS Elastic Kubernetes Service (AWS EKS) resource detectors. Before reading this guide, you should familiarize with
+distributed tracing and the basics of OpenTelemetry. To learn more about getting started with OpenTelemetry Go, see the
+[OpenTelemetry developer documentation](https://opentelemetry.io/docs/go/).
+
+<img src={goImg1} alt="Diagram" style="margin: 30px 0;" />
+
+<SectionSeparator />
+
+## Requirements
+Go `v1.15` or later is required to run an application using OpenTelemetry. Visit the [compatibility chart](https://github.com/open-telemetry/opentelemetry-go#compatibility) of OpenTelemetry Go SDK with different `OS`, `Go Version` and `Architecture`.
+
+Note: You’ll also need to have the [ADOT Collector](https://aws-otel.github.io/docs/getting-started/collector) running to export traces to X-Ray.
+
+<SectionSeparator />
+
+## Installation
+Download and install the following packages to use ADOT Components with OpenTelemetry Go SDK for tracing.
+
+```
+1. X-Ray ID Generator
+2. X-Ray propagator
+3. OTel Go SDK for tracing
+4. OTel Go API for tracing
+5. OTLP gRPC exporter for exporting trace data
+```
+
+To install the above mentioned necessary prerequisites, run the following command in the same directory that the application `go.mod` file is in:
+```
+go get go.opentelemetry.io/contrib/propagators/aws/xray
+go get go.opentelemetry.io/otel
+go get go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc
+go get go.opentelemetry.io/otel/sdk/resource
+go get go.opentelemetry.io/otel/sdk/trace
+```
+
+<SectionSeparator />
+
+## Setting up the Global Tracer
+
+### Sending Traces to AWS X-Ray
+
+This section talks about how to instantiate a new tracer provider with the X-Ray ID generator and sampling config, setting global options (X-Ray propagator, tracer provider) and instantiate OTLP exporter with the collector's address to export trace data.
+
+#### Creating an OpenTelemetry Protocol (OTLP) Exporter
+
+<img src={goImg2} alt="Diagram" style="margin: 30px 0;" />
+
+OpenTelemetry Go requires an exporter to send traces to a backend. Exporters allow telemetry data to be transferred either to the AWS Distro for OpenTelemetry Collector (ADOT Collector), or to a remote system or console for further analysis. The ADOT Collector is a separate process that is designed to be a "sink" for telemetry data emitted by many processes, which can then export
+that data to various back-end systems.
+
+To initialize the OTLP exporter, add the following code to the file the `main.go` file.
+```go lineNumbers=true
+// Create and start new OTLP trace exporter
+traceExporter, err := otlptracegrpc.New(ctx, otlptracegrpc.WithInsecure(), otlptracegrpc.WithEndpoint("0.0.0.0:4317"), otlptracegrpc.WithDialOption(grpc.WithBlock()))
+if err != nil {
+     log.Fatalf("%s: %v", "failed to create new OTLP trace exporter", err)
+}
+```
+
+This creates a new OTLP exporter with a few options - `WithInsecure()` disables client transport security for the exporter's gRPC connection, `WithEndpoint()` allows you to set the address that the exporter will connect to the Collector on. If the address is unset, it will instead try to use connect to `localhost:4317`. If the Collector you are connecting uses TLS, for example in a [sidecar deployment](/docs/getting-started/collector/sidecar-vs-service),
+pass `otlptracegrpc.WithTLSCredentials()` instead of `otlptracegrpc.WithInsecure()`.
+
+#### Creating a Tracer Provider
+
+In order to generate traces, OpenTelemetry Go SDK requires a tracer provider to be created. A tracer provider can have multiple different span processors, which are components that give the ability to modify and export span data after it has been created.
+
+To create a new tracer provider, add the following lines to the `main.go` file.
+```go lineNumbers=true
+idg := xray.NewIDGenerator()
+
+tp := trace.NewTracerProvider(
+	trace.WithSampler(trace.AlwaysSample()),
+	trace.WithBatcher(traceExporter)
+	trace.WithIDGenerator(idg),
+)
+```
+
+Above block of code creates a new `TracerProvider` with a Sampler that samples every trace, and an ID Generator that will generate trace IDs that conform to AWS X-Ray’s format, as well as register the OLTP exporter we created in the previous section.
+
+#### Setting Global Options
+
+In addition to setting a global tracer provider, we will also configure the context propagation option. Context propagation refers to sharing data across multiple processes or services. Propagator structs are configured inside Tracer structs to support context propagation across process boundaries. A context will often have information
+identifying the current span and trace, and can contain arbitrary information as key-value pairs.
+
+To set up global options, we will use the `otel` package and add the following lines to the `main.go` file.
+```go lineNumbers=true
+    otel.SetTracerProvider(tp)
+    otel.SetTextMapPropagator(xray.Propagator{})
+```
+
+<SubSectionSeparator />
+
+### Using the AWS resource Detectors
+
+OpenTelemetry Go SDK has AWS EC2, ECS and EKS resource detector support. The resource detectors are responsible for detecting whether Go application instrumented with OpenTelemetry is running on the respective environment and populating resource attribute for that environment if available. If the resource detector detects that the application
+is not running on an environment (EC2, ECS or EKS), then it will return an empty `resource` struct.
+
+<img src={goImg5} alt="Diagram" style="margin: 30px 0;" />
+Run `go get go.opentelemetry.io/contrib/detectors/aws/ec2` command to import the EC2 resource detector module. The following code snippet demonstrates how to use the EC2 resource detector. Visit OpenTelemetry AWS Resource Detectors [README](https://github.com/open-telemetry/opentelemetry-go-contrib/tree/main/detectors/aws/README.md) to get more information on which environment attributes are being captured by resource detectors.
+```go lineNumbers=true
+// Instantiate a new EC2 Resource detector
+ec2ResourceDetector := ec2.NewResourceDetector()
+resource, err := ec2ResourceDetector.Detect(context.Background())
+
+// Associate resource with TracerProvider
+tracerProvider := trace.NewTracerProvider(
+   trace.WithResource(resource),
+)
+```
+
+<SubSectionSeparator />
+
+<SectionSeparator />
+
+## Instrumenting an Application
+
+Visit the [OpenTelemetry Go SDK repository](https://github.com/open-telemetry/opentelemetry-go-contrib/tree/main/instrumentation) for a list of instrumentation packages that OpenTelemetry Go SDK supports to trace various calls (incoming requests, outgoing HTTP calls and SQL calls). Check out the `example` directory inside each instrumentation package for instrumentation instructions.
+
+### Instrumenting the AWS SDK
+
+Run `go get go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-sdk-go-v2/otelaws` command to import the AWS SDK v2 instrumentation module. Below example displays AWS SDK v2 instrumentation. Check out complete AWS SDK v2 instrumentation [example](https://github.com/open-telemetry/opentelemetry-go-contrib/tree/987c197ab0ca775f06a157f2db689fb9af9337d7/instrumentation/github.com/aws/aws-sdk-go-v2/otelaws/example).
+Note: We currently don't provide support for instrumenting AWS SDK v1 calls.
+```go lineNumbers=true
+var trace = otel.Tracer("demo")
+ctx, span := tracer.Start(context.Background(), "AWS SDK instrumentation")
+defer span.End()
+
+// init aws config
+cfg, err := awsConfig.LoadDefaultConfig(ctx)
+if err != nil {
+		panic("configuration error, " + err.Error())
+}
+
+// instrument all aws clients
+otelaws.AppendMiddlewares(&cfg.APIOptions)
+
+// Call to S3
+s3Client := s3.NewFromConfig(cfg)
+	input := &s3.ListBucketsInput{}
+	result, err := s3Client.ListBuckets(ctx, input)
+	if err != nil {
+		fmt.Printf("Got an error retrieving buckets, %v", err)
+		return
+	}
+```
+
+<SectionSeparator />
+
+## Custom Instrumentation
+
+### Creating Custom Spans
+
+You can use custom spans to monitor the performance of internal activities that are not captured by instrumentation libraries. Note that only spans of kind `Server` are converted into X-Ray segments, all other spans are converted into X-Ray subsegments. For more on segments and subsegments, see the [AWS X-Ray developer guide](https://docs.aws.amazon.com/xray/latest/devguide/xray-concepts.html#xray-concepts-segments).
+
+Below example shows how to create custom spans.
+```go lineNumbers=true
+var tracer = otel.Tracer("demo")
+
+// this span will be translated to a segment in X-Ray backend
+ctx, span := tracer.Start(context.Background(), "segment", trace.WithSpanKind(trace.SpanKindServer))
+
+// this span will be translated to a subsegment in X-Ray backend
+_, span2 := tracer.Start(ctx, "subsegment", trace.WithSpanKind(trace.SpanKindClient))
+
+defer span2.End()
+defer span.End()
+
+<SubSectionSeparator />
+
+### Adding custom attributes
+
+You can also add custom key-value pairs as attributes onto your spans. The below example displays how to add attributes to the span. You can convert some or all attributes to annotations via the [collector config](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/7bf2266a025425993a233f66c77a0810ab11a78b/exporter/awsxrayexporter#aws-specific-attributes), and otherwise they are metadata by default. To read more about X-Ray annotations and metadata see the [AWS X-Ray Developer Guide](https://docs.aws.amazon.com/xray/latest/devguide/xray-concepts.html#xray-concepts-annotations).
+```go lineNumbers=true
+var tracer = otel.Tracer("demo")
+_, span := tracer.Start(
+			context.Background(),
+			"DemoExample",
+			trace.WithAttributes(attribute.String("a", "1")))
+defer span.End()
+```
+
+<SectionSeparator />
+
+## Sample Application
+See [AWS Distro for OpenTelemetry Sample Code with Go SDK](https://github.com/aws-observability/aws-otel-go/tree/main/sampleapp) for instructions on setting up and using the sample app.
