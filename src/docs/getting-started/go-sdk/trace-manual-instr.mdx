@@ -159,12 +159,12 @@ otelaws.AppendMiddlewares(&cfg.APIOptions)
 
 // Call to S3
 s3Client := s3.NewFromConfig(cfg)
-	input := &s3.ListBucketsInput{}
-	result, err := s3Client.ListBuckets(ctx, input)
-	if err != nil {
-		fmt.Printf("Got an error retrieving buckets, %v", err)
-		return
-	}
+input := &s3.ListBucketsInput{}
+result, err := s3Client.ListBuckets(ctx, input)
+if err != nil {
+	fmt.Printf("Got an error retrieving buckets, %v", err)
+	return
+}
 ```
 
 <SectionSeparator />
