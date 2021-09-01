@@ -118,6 +118,7 @@ OpenTelemetry Go SDK has AWS EC2, ECS and EKS resource detector support. The res
 is not running on an environment (EC2, ECS or EKS), then it will return an empty `resource` struct.
 
 <img src={goImg5} alt="Diagram" style="margin: 30px 0;" />
+
 Run `go get go.opentelemetry.io/contrib/detectors/aws/ec2` command to import the EC2 resource detector module. The following code snippet demonstrates how to use the EC2 resource detector. Visit OpenTelemetry AWS Resource Detectors [README](https://github.com/open-telemetry/opentelemetry-go-contrib/tree/main/detectors/aws/README.md) to get more information on which environment attributes are being captured by resource detectors.
 ```go lineNumbers=true
 // Instantiate a new EC2 Resource detector
@@ -158,12 +159,12 @@ otelaws.AppendMiddlewares(&cfg.APIOptions)
 
 // Call to S3
 s3Client := s3.NewFromConfig(cfg)
-	input := &s3.ListBucketsInput{}
-	result, err := s3Client.ListBuckets(ctx, input)
-	if err != nil {
-		fmt.Printf("Got an error retrieving buckets, %v", err)
-		return
-	}
+input := &s3.ListBucketsInput{}
+result, err := s3Client.ListBuckets(ctx, input)
+if err != nil {
+	fmt.Printf("Got an error retrieving buckets, %v", err)
+	return
+}
 ```
 
 <SectionSeparator />
