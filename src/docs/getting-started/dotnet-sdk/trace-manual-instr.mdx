@@ -9,13 +9,13 @@ path: '/docs/getting-started/dotnet-sdk/trace-manual-instr'
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
 import SubSectionSeparator from "components/MdxSubSectionSeparator/subsectionSeparator.jsx"
 
-In this tutorial, we will introduce how to manually instrument your application step-by-step using AWS Distro for OpenTelemetry .NET SDK.
+AWS Distro for OpenTelemetry .NET SDK contains extension library for AWS X-Ray and AWS SDK instrumentation. In this tutorial, we will introduce how to manually instrument your application step-by-step using AWS Distro for OpenTelemetry .NET SDK.
 
 <SectionSeparator />
 
 ## Requirements
 
-The AWS Distro for OpenTelemetry .NET SDK is compatible for .NET framework (net452 and above) and NET Core (netstandard2.0 and above).
+The AWS Distro for OpenTelemetry .NET SDK is compatible for .NET framework (net452 and above) and .NET Core (netstandard2.0 and above).
 
 **Note**: You’ll also need to have the [AWS Distro for OpenTelemetry Collector](https://aws-otel.github.io/docs/getting-started/collector) running to export traces to X-Ray.
 
@@ -29,7 +29,7 @@ In order to instrument your .NET application for tracing, start by downloading t
 dotnet add package OpenTelemetry
 ```
 
-This is the OpenTelemetry SDK for .NET. The SDK deals with concerns such as sampling, processing pipeline, exporting telemetry to a particular backend, etc.
+OpenTelemetry SDK for .NET deals with concerns such as sampling, processing pipeline, exporting telemetry to a particular backend, etc.
 This generally requires additional packages to be downloaded for specific instrumentation or exporter.
 
 The OpenTelemetry SDK generates traces with W3C random ID which X-Ray backend doesn’t currently support.
@@ -54,7 +54,7 @@ By default the OpenTelemetry exporter sends data to an OpenTelemetry collector a
 
 ### Sending Traces to AWS X-Ray
 
-Configure AWS X-Ray id generator, propagator and OTLP exporter to the `TracerProvider` globally in your application as follows. Make sure to call `AddXRayTraceId()` in the very **beginning** when creating `TracerProvider`
+Configure AWS X-Ray id generator, propagator and OTLP exporter globally in your application as follows. Make sure to call `AddXRayTraceId()` in the very **beginning** when creating `TracerProvider`
 
 ```csharp
 using OpenTelemetry;
@@ -68,8 +68,6 @@ var tracerProvider = Sdk.CreateTracerProviderBuilder()
 
 Sdk.SetDefaultTextMapPropagator(new AWSXRayPropagator()); // configure AWS X-Ray propagator 
 ```
-
-<SectionSeparator />
 
 ### Using the AWS resource Detectors
 
@@ -96,8 +94,6 @@ var tracerProvider = Sdk.CreateTracerProviderBuilder()
 Once you have configured all necessary X-Ray components to the `TracerProvider`, you can proceed to [OpenTelemetry .NET SDK's developer guide](https://github.com/open-telemetry/opentelemetry-dotnet#getting-started) to instrument your .NET application. 
 
 OpenTelemetry provides a wide range of instrumentations for popular .NET libraries: [Asp.Net](https://github.com/open-telemetry/opentelemetry-dotnet/tree/main/src/OpenTelemetry.Instrumentation.AspNet#readme), [Asp.Net Core](https://github.com/open-telemetry/opentelemetry-dotnet/tree/main/src/OpenTelemetry.Instrumentation.AspNetCore#readme), [Http](https://github.com/open-telemetry/opentelemetry-dotnet/tree/main/src/OpenTelemetry.Instrumentation.Http#readme), [Grpc](https://github.com/open-telemetry/opentelemetry-dotnet/tree/main/src/OpenTelemetry.Instrumentation.GrpcNetClient#readme), [Redis](https://github.com/open-telemetry/opentelemetry-dotnet/blob/main/src/OpenTelemetry.Instrumentation.StackExchangeRedis/README.md), [Sql](https://github.com/open-telemetry/opentelemetry-dotnet/tree/main/src/OpenTelemetry.Instrumentation.SqlClient#readme) and [EntityFramework](https://github.com/open-telemetry/opentelemetry-dotnet-contrib/tree/main/src/OpenTelemetry.Contrib.Instrumentation.EntityFrameworkCore#readme). Instrumenting a library means that every time the library is used to make or handle a request is automatically wrapped with a populated span.
-
-<SubSectionSeparator />
 
 ### AWS SDK Instrumentation
 
