@@ -54,7 +54,7 @@ By default the OpenTelemetry exporter sends data to an OpenTelemetry collector a
 
 ### Sending Traces to AWS X-Ray
 
-Configure AWS X-Ray id generator, propagator and OTLP exporter globally in your application as follows. Make sure to call `AddXRayTraceId()` in the very **beginning** when creating `TracerProvider`
+Configure AWS X-Ray ID generator, propagator and OpenTelemetry Protocol (OTLP) exporter globally in your application as follows. Make sure to call `AddXRayTraceId()` in the very **beginning** when creating `TracerProvider`
 
 ```csharp
 using OpenTelemetry;
