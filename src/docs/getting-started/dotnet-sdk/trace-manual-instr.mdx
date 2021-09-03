@@ -132,11 +132,14 @@ In .NET, you can use activity API to create custom spans to monitor the performa
 ```csharp
 using System.Diagnostics;
 
-ActivitySource activitySource = new ActivitySource("ActivitySourceName","ActivitySourceVersion");
+ActivitySource activitySource = new ActivitySource("ActivitySourceName", "ActivitySourceVersion");
 var activity = activitySource.StartActivity("ActivityName", ActivityKind.Server); // this will be translated to a X-Ray Segment
+var internalActivity = activitySource.StartActivity("ActivityName", ActivityKind.Internal); // this will be translated to a X-Ray Subsegment
 ```
 
 Note that only spans of kind `Server` are converted into X-Ray segments, all other kind of spans (`Internal`, `Client`, etc.) are converted into X-Ray subsegments. For more on segments and subsegments, see the [AWS X-Ray developer guide](https://docs.aws.amazon.com/xray/latest/devguide/xray-concepts.html#xray-concepts-segments).
+
+### Adding Custom Attributes
 
 You can also add custom key-value pairs as attributes onto your spans. 
 
