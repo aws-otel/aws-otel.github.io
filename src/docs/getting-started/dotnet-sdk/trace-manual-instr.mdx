@@ -82,8 +82,8 @@ using OpenTelemetry.Trace;
 var tracerProvider = Sdk.CreateTracerProviderBuilder()
                         // other configurations
                         .SetResourceBuilder(ResourceBuilder
-                        .CreateDefault()
-                        .AddDetector(new AWSEC2ResourceDetector()))
+                            .CreateDefault()
+                            .AddDetector(new AWSEC2ResourceDetector()))
                         .Build();
 ```
 
