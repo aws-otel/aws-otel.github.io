@@ -119,8 +119,9 @@ export const sideBarData = [
       id: nextId(),
       label: "Know Your Data",
       items: [
-        {label: "Traces", link: "https://github.com/open-telemetry/opentelemetry-specification/blob/master/specification/overview.md"},
-        {label: "Metrics", link: "https://github.com/open-telemetry/opentelemetry-specification/blob/master/specification/overview.md"}
+        {label: "Traces", link: "https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/overview.md#tracing-signal"},
+        {label: "Metrics", link: "https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/overview.md#metric-signal"},
+        {label: "Logs", link: "https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/overview.md#log-signal"}
       ],
       link: "/docs/null"
     }
