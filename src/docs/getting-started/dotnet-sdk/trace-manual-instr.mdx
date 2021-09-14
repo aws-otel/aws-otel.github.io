@@ -103,7 +103,7 @@ For tracing downstream call to AWS services from your .NET application, you will
 dotnet add package OpenTelemetry.Contrib.Instrumentation.AWS
 ```
 
-Call `AddAWSInstrumentation()` to add AWS client instrumentation to `TracerProvider`. The below example is for an ASP.NET Core application.
+Call `AddAWSInstrumentation()` to add AWS SDK client instrumentation to `TracerProvider`. The below example is for an ASP.NET Core application.
 
 ```csharp
 using OpenTelemetry;
