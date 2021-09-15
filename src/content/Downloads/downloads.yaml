@@ -10,7 +10,7 @@
   license: 'Apache-2.0'
   releaseNotesLink: 'https://github.com/aws-observability/aws-otel-collector/releases'
   documentationLink: 'https://aws-otel.github.io/docs/getting-started/operator'
-  downloadLink: 'https://gallery.ecr.aws/aws-observability/aws-otel-operator'
+  downloadLink: 'https://gallery.ecr.aws/aws-observability/adot-operator'
 
 - version: 'AWS Distro for OpenTelemetry Collector Version 0.12.0'
   releaseDate: 'Aug-31-2021'
