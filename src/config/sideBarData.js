@@ -116,7 +116,6 @@ export const sideBarData = [
         {label: "New Relic", link: "/docs/partners/new-relic"},
         {label: "Splunk", link: "/docs/partners/splunk"},
         {label: "Sumo Logic", link: "/docs/components/otlp-exporter#sumo-logic"},
-
       ],
      link: "/docs/null"
    }
