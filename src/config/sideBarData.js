@@ -106,12 +106,18 @@ export const sideBarData = [
       id: nextId(),
       label: "Partners",
       items: [
+        {label: "AppDynamics", link: "/docs/components/otlp-exporter#appdynamics"},
         {label: "Datadog", link: "/docs/partners/datadog"},
         {label: "Dynatrace", link: "/docs/partners/dynatrace"},
+        {label: "Grafana Labs", link: "/docs/components/otlp-exporter#grafana-labs"},
+        {label: "Honeycomb", link: "/docs/components/otlp-exporter#honeycomb"},
+        {label: "Lightstep", link: "/docs/components/otlp-exporter#lightstep"},
+        {label: "Logz.io", link: "/docs/partners/logzio"},
         {label: "New Relic", link: "/docs/partners/new-relic"},
         {label: "Splunk", link: "/docs/partners/splunk"},
-        {label: "Logz.io", link: "/docs/partners/logzio"},
-     ],
+        {label: "Sumo Logic", link: "/docs/components/otlp-exporter#sumo-logic"},
+
+      ],
      link: "/docs/null"
    }
  },
