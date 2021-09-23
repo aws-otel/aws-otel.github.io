@@ -12,7 +12,7 @@ import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.js
 
 ## Introduction
 
-The AWS Distro for OpenTelemetry Java Auto-Instrumentation Agent can be attached to any Java 8+ application to gather
+The AWS Distro for OpenTelemetry (ADOT) Java Auto-Instrumentation Agent can be attached to any Java 8+ application to gather
 telemetry data from a diverse set of libraries and frameworks. The agent will automatically transform code at startup
 to collect tracing data. It is preconfigured for compatibility with X-Ray and AWS services but can also be used with any
 other tracing backend. Out of the box, it propagates traces using all of W3C Trace Context, B3, and X-Amzn-Trace-Id.
@@ -83,7 +83,7 @@ artifact, any usage of it will be disabled by the agent.
 ##### For Gradle:
 ```java lineNumbers=true
 dependencies {
-    implementation("io.opentelemetry:opentelemetry-api:1.5.0")
+    implementation("io.opentelemetry:opentelemetry-api:1.6.0")
 }
 ```
 
@@ -93,7 +93,7 @@ dependencies {
   <dependency>
     <groupId>io.opentelemetry</groupId>
     <artifactId>opentelemetry-api</artifactId>
-    <version>1.5.0</version>
+    <version>1.6.0</version>
   </dependency>
 </dependencies>
 ```
@@ -103,4 +103,6 @@ for more detail on using the OpenTelemetry API.
 
 <SectionSeparator />
 
-* [Sample Spring App using OpenTelemetry Java Auto Instrumentation](https://github.com/aws-samples/one-observability-demo/tree/main/PetAdoptions/petsearch-java)
+## Sample Application
+
+Visit the [Sample Spring App using OpenTelemetry Java Auto-Instrumentation](https://catalog.us-east-1.prod.workshops.aws/v2/workshops/31676d37-bbe9-4992-9cd1-ceae13c5116c/en-US/adot/javawalkthrough).

@@ -25,7 +25,7 @@ If you are using the Auto-Instrumentation Java Agent, refer to the [documentatio
 
 [Java 8 (or later)](https://adoptopenjdk.net/) is required to run an application using OpenTelemetry.
 
-Note: You’ll also need to have the AWS Distro for OpenTelemetry Collector running to export traces to X-Ray.
+Note: You’ll also need to have the AWS Distro for OpenTelemetry (ADOT) Collector running to export traces to X-Ray.
 
 <SectionSeparator />
 
@@ -37,7 +37,7 @@ to align dependency versions for non-contrib components.
 ##### For Gradle:
 ```java lineNumbers=true
 dependencies {
-    api(platform("io.opentelemetry:opentelemetry-bom:1.5.0"))
+    api(platform("io.opentelemetry:opentelemetry-bom:1.6.0"))
 
     implementation("io.opentelemetry:opentelemetry-api")
     implementation("io.opentelemetry:opentelemetry-exporter-otlp")
@@ -46,7 +46,7 @@ dependencies {
 
     implementation("io.opentelemetry:opentelemetry-extension-aws")
     implementation("io.opentelemetry:opentelemetry-sdk-extension-aws")
-    implementation("io.opentelemetry.contrib:opentelemetry-aws-xray:1.5.0")
+    implementation("io.opentelemetry.contrib:opentelemetry-aws-xray:1.6.0")
 }
 ```
 
@@ -57,7 +57,7 @@ dependencies {
     <dependency>
       <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-bom</artifactId>
-      <version>1.5.0</version>
+      <version>1.6.0</version>
       <type>pom</type>
       <scope>import</scope>
     <dependency>
@@ -87,7 +87,7 @@ dependencies {
   <dependency>
     <groupId>io.opentelemetry.contrib</groupId>
     <artifactId>opentelemetry-aws-xray</artifactId>
-    <version>1.5.0</version>
+    <version>1.6.0</version>
   </dependency>
 </dependencies>
 ```
@@ -102,10 +102,14 @@ Initialize the OpenTelemetry SDK with AWS components for exporting to X-Ray as f
 
 ```java
 OpenTelemetrySdk.builder()
+
+        // This will enable your downstream requests to include the X-Ray trace header
         .setPropagators(
             ContextPropagators.create(
                 TextMapPropagator.composite(
                     W3CTraceContextPropagator.getInstance(), AwsXrayPropagator.getInstance())))
+        
+        // This provides basic configuration of a TracerProvider which generates X-Ray compliant IDs
         .setTracerProvider(
             SdkTracerProvider.builder()
                 .addSpanProcessor(
@@ -147,6 +151,7 @@ OpenTelemetrySdk.builder()
                 ...
                 .setResource(
                     Resource.getDefault()
+                        .merge(BeanstalkResource.get())
                         .merge(Ec2Resource.get())
                         .merge(EcsResource.get()
                         .merge(EksResource.get())))
@@ -176,7 +181,7 @@ library instrumentation. When using this, do not include `opentelemetry-bom`.
 ##### For Gradle:
 ```java lineNumbers=true
 dependencies {
-    api(platform("io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom-alpha:1.5.0-alpha"))
+    api(platform("io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom-alpha:1.6.0-alpha"))
 
     implementation("io.opentelemetry:opentelemetry-api")
     implementation("io.opentelemetry:opentelemetry-exporter-otlp")
@@ -195,7 +200,7 @@ dependencies {
     <dependency>
       <groupId>io.opentelemetry.instrumentation</groupId>
       <artifactId>opentelemetry-instrumentation-bom-alpha</artifactId>
-      <version>1.5.0</version>
+      <version>1.6.0</version>
       <type>pom</type>
       <scope>import</scope>
     <dependency>
@@ -225,7 +230,6 @@ dependencies {
 ### Instrumenting the AWS SDK
 
 The `opentelemetry-instrumentation-aws-sdk-2.2` artifact provides instrumentation for the AWS SDK v2.
-
 
 ##### For Gradle:
 ```java lineNumbers=true
