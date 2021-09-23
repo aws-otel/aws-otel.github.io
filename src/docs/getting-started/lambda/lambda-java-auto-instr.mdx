@@ -29,7 +29,7 @@ Find the supported regions and ARN in the table below for the ARNs to consume.
 
 |Supported   Regions |Lambda layer ARN format| Contents |
 |---------------------|-------------------------|----------|
-| ap-northeast-1<br/>ap-northeast-2<br/>ap-south-1<br/>ap-southeast-1<br/>ap-southeast-2<br/>ca-central-1<br/>eu-central-1<br/>eu-north-1<br/>eu-west-1<br/>eu-west-2<br/>eu-west-3<br/>sa-east-1<br/>us-east-1<br/>us-east-2<br/>us-west-1<br/>us-west-2 | arn:aws:lambda:\<region\>:901920570463:layer:aws-otel-java-agent-ver-1-5-0:3 | Contains [ADOT Java Auto-Instrumentation Agent v1.5.0](https://github.com/aws-observability/aws-otel-java-instrumentation/releases/tag/v1.5.0) <br/><br/> Contains the [ADOT Collector for Lambda v0.12.0](https://github.com/aws-observability/aws-otel-collector/releases/tag/pkg%2Flambdacomponents%2Fv0.12.0) |
+| ap-northeast-1<br/>ap-northeast-2<br/>ap-south-1<br/>ap-southeast-1<br/>ap-southeast-2<br/>ca-central-1<br/>eu-central-1<br/>eu-north-1<br/>eu-west-1<br/>eu-west-2<br/>eu-west-3<br/>sa-east-1<br/>us-east-1<br/>us-east-2<br/>us-west-1<br/>us-west-2 | arn:aws:lambda:\<region\>:901920570463:layer:aws-otel-java-agent-ver-1-6-0:1 | Contains [ADOT Java Auto-Instrumentation Agent v1.6.0](https://github.com/aws-observability/aws-otel-java-instrumentation/releases/tag/v1.6.0) <br/><br/> Contains the [ADOT Collector for Lambda v0.13.0](https://github.com/aws-observability/aws-otel-collector/releases/tag/pkg%2Flambdacomponents%2Fv0.13.0) |
 
 ### Enable auto-instrumentation for your Lambda function
 
@@ -49,12 +49,14 @@ For more on AWS X-Ray permissions for AWS Lambda, see the [AWS Lambda documentat
 
 ### Metric Instrumentation in your Lambda Function
 
+**Note:** As of v1.6.0 of the OpenTelemetry Java Agent, metric exporting is disabled by default to preserve stability. To enable exporting metrics for use with backends like Amazon Managed Prometheus, set the environment variable `OTEL_METRICS_EXPORTER=otlp`.
+
 Unlike traces, Metric auto instrumentation has not been supported in OpenTelemetry yet. You would have to manually instrument your code in your Lambda application in order to generate application metrics. We will be using the [OpenTelemetry Java Metrics API](https://github.com/open-telemetry/opentelemetry-java/tree/main/api/metrics/src/main/java/io/opentelemetry/api/metrics) to define our metrics. You can define your metric types in a MetricGenerator.java file.
 
 1. Import the OpenTelemetry Java Metrics API into your dependency file
 ```
 dependencies {
-  implementation platform("io.opentelemetry:opentelemetry-bom:1.5.0")
+  implementation platform("io.opentelemetry:opentelemetry-bom:1.6.0")
   implementation('io.opentelemetry:opentelemetry-api')
 }
 ```
