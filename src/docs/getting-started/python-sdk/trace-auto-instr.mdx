@@ -1,5 +1,5 @@
 ---
-title: 'ADOT Python - Auto-Instrumentation Documentation'
+title: 'Tracing with the AWS Distro for OpenTelemetry Python Auto-Instrumentation and X-Ray'
 description:
     OpenTelemetry provides different language SDKs to instrument code for collecting telemetry data in the application.
     In this tutorial, we will introduce how to use OpenTelemetry Python SDK for traces and metrics instrumentation in the application...
@@ -8,8 +8,6 @@ path: '/docs/getting-started/python-sdk/trace-auto-instr'
 
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
 import SubSectionSeparator from "components/MdxSubSectionSeparator/subsectionSeparator.jsx"
-
-# Tracing with the AWS Distro for OpenTelemetry Python Auto-Instrumentation
 
 ## Introduction
 
@@ -34,7 +32,7 @@ The easiest way to download the packages needed for auto-instrumentation is usin
 ```bash
 # Install required packages for instrumentation and to support tracing with AWS X-Ray
 $ pip install opentelemetry-distro[otlp]>=0.24b0 \
-              opentelemetry-sdk-extension-aws~=1.0.0
+              opentelemetry-sdk-extension-aws~=1.0
 ```
 
 Installing the `opentelemetry-sdk-extension-aws` package automatically installs the `opentelemetry-api`, `opentelemetry-sdk`, and `opentelemetry-instrumentation` packages as dependencies.
@@ -49,8 +47,6 @@ $ opentelemetry-bootstrap --action=install
 ```
 
 For example, if you have `boto3` installed, this command will automatically install the `opentelemetry-instrumentation-botocore` package which auto-instrumentation can subsequently configure automatically. Check out the OpenTelemetry registry for a [full list of instrumentation packages provided by OpenTelemetry Python](https://opentelemetry.io/registry/?s=&component=instrumentation&language=python).
-
-<SubSectionSeparator />
 
 ## Running an Application with Auto-Instrumentation
 
@@ -110,4 +106,4 @@ Because there can only be one global `TracerProvider`, manual instrumentation sh
 
 ## Sample Application
 
-See a [sample Flask App using OpenTelemetry Python SDK Automatic Instrumentation](https://github.com/aws-observability/aws-otel-python/tree/main/integration-test-apps/auto-instrumentation/flask)
+See a [sample Flask App using OpenTelemetry Python SDK Automatic Instrumentation](https://github.com/aws-observability/aws-otel-python/tree/main/integration-test-apps/auto-instrumentation/flask).

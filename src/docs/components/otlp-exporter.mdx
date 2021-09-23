@@ -51,7 +51,7 @@ and expects to receive a response with each request. You can learn more about th
 OpenTelemetry can export traces, logs, and metrics to various backends to analyze in order to understand an application’s performance
 and behavior. There are multiple monitoring backends (also known as end-points) which can support OpenTelemetry using the OTLP protocol.
 
-In this section, we share getting started configurations to the Collector to export telemetry data to **AppDynamics, Honeycomb, Lightstep, and SumoLogic** end-points.
+In this section, we share getting started configurations to the Collector to export telemetry data to **AppDynamics, Honeycomb, Lightstep, New Relic, and SumoLogic** end-points.
 
 <SectionSeparator />
 
@@ -286,6 +286,9 @@ tempo:
       password: PASSWORD
 ```
 
+A full configuration reference is located in the [Grafana Cloud Agent code
+repository](https://github.com/grafana/agent/tree/main/docs/configuration)
+
 <SubSectionSeparator />
 
 ## Honeycomb
@@ -376,6 +379,45 @@ exporters:
     endpoint: ingest.lightstep.com:443
      # Your access token can be found in the project settings page
     headers: {"lightstep-access-token":"<YOUR_ACCESS_TOKEN>"}
+```
+
+<SectionSeparator />
+
+## New Relic
+
+New Relic supports OpenTelemetry natively, via OTLP.  If you’re already set up with the AWS Distro for OpenTelemetry, then
+sending data to New Relic can be accomplished with a simple change to the collector's YAML config file.
+
+<SubSectionSeparator />
+
+### Requirements
+
+Before you can use the AWS Distro for OpenTelemetry with New Relic, you will need:
+
+* A New Relic account. If you don't already have one, you can [sign up for a free account](https://newrelic.com/signup).
+* An [Ingest-License Key](https://one.newrelic.com/launcher/api-keys-ui.launcher) for your account.  Select "Create a Key" and "Ingest-License Key" for the type.
+
+<SubSectionSeparator />
+
+### Configuration (Collector)
+
+The configuration will take place in the OTLP exporter section of the Collector config YAML file.
+
+* Set the OTLP endpoint to [otlp.nr-data.net:4317](https://otlp.nr-data.net:4317/)
+* Add your New Relic Ingest-License key as an OTLP header.
+    * Header name: "api-key"
+
+<SubSectionSeparator />
+
+### Example
+
+```yaml lineNumbers=true highlight={8}
+# New Relic OTLP Collector configuration
+exporters:
+  otlp:
+    endpoint: otlp.nr-data.net:4317
+    headers: 
+      api-key: <YOUR_NEW_RELIC_LICENSE_KEY>
 ```
 
 <SectionSeparator />
