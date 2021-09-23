@@ -5,6 +5,13 @@
   documentationLink: 'https://github.com/aws-observability/aws-otel-collector/blob/v0.13.0/README.md'
   downloadLink: 'https://github.com/aws-observability/aws-otel-collector/releases/tag/v0.13.0'
 
+- version: 'Nuget:OpenTelemetry.Contrib.Extensions.AWSXRay v1.1.0'
+  releaseDate: 'Sept-20-2021'
+  license: 'Apache-2.0'
+  releaseNotesLink: 'https://github.com/open-telemetry/opentelemetry-dotnet-contrib/releases/tag/Extensions.AWSXRay-1.1.0'
+  documentationLink: 'https://github.com/open-telemetry/opentelemetry-dotnet-contrib/blob/main/src/OpenTelemetry.Contrib.Extensions.AWSXRay/README.md'
+  downloadLink: 'https://www.nuget.org/packages/OpenTelemetry.Contrib.Extensions.AWSXRay/'
+
 - version: 'Amazon ECR:AWS Distro for OpenTelemetry Collector'
   releaseDate: 'Aug-31-2021'
   license: 'Apache-2.0'

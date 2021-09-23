@@ -1,5 +1,5 @@
 ---
-title: 'ADOT Python - Manual Instrumentation Documentation'
+title: 'Tracing with the AWS Distro for OpenTelemetry Python SDK and X-Ray'
 description:
     OpenTelemetry provides different language SDKs to instrument code for collecting telemetry data in the application.
     In this tutorial, we will introduce how to use OpenTelemetry Python SDK for traces and metrics instrumentation in the application...
@@ -8,8 +8,6 @@ path: '/docs/getting-started/python-sdk/trace-manual-instr'
 
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
 import SubSectionSeparator from "components/MdxSubSectionSeparator/subsectionSeparator.jsx"
-
-# Tracing with the AWS Distro for OpenTelemetry Python SDK
 
 ## Introduction
 
@@ -110,8 +108,6 @@ Alternatively, set the `OTEL_PROPAGATORS` environment variable to achieve the sa
 OTEL_PROPAGATORS=xray
 ```
 
-<SectionSeparator />
-
 ### Using the AWS resource Detectors
 
 When you install `opentelemetry-sdk-extension-aws`, you automatically get AWS Resource Detectors in the same package. Use the provided `Resource Detectors` to automatically populate attributes under the `resource` namespace of each generated span.
@@ -140,9 +136,9 @@ trace.set_tracer_provider(
 )
 ```
 
-To see what attributes are captured and how to add other resource detectors, refer to each detectors' docstring in the [OpenTelemetry SDK Extension for AWS](https://github.com/open-telemetry/opentelemetry-python-contrib/blob/main/sdk-extension/opentelemetry-sdk-extension-aws) to determine any requirements for that detector.
-
-<SubSectionSeparator />
+To see what attributes are captured and how to add other resource detectors, refer to each detectors' docstring in the
+[OpenTelemetry SDK Extension for AWS](https://github.com/open-telemetry/opentelemetry-python-contrib/blob/main/sdk-extension/opentelemetry-sdk-extension-aws)
+to determine any requirements for that detector.
 
 ### Debug Logging
 
@@ -166,7 +162,7 @@ logger = logging.getLogger(__file__)
 logger.debug("My debug level log.")
 ```
 
-<SubSectionSeparator />
+<SectionSeparator />
 
 ## Instrumenting an Application
 
@@ -188,8 +184,6 @@ RequestsInstrumentor().instrument()
 # Initialize `Instrumentor` for the `flask` web framework
 FlaskInstrumentor().instrument_app(app)
 ```
-
-<SubSectionSeparator />
 
 ### Instrumenting the AWS SDK
 
@@ -229,7 +223,7 @@ BotocoreInstrumentor().instrument()
 
 For more information refer to the upstream documentation for [OpenTelemetry Python boto Instrumentation](https://github.com/open-telemetry/opentelemetry-python-contrib/tree/main/instrumentation/opentelemetry-instrumentation-boto) or [OpenTelemetry Python botocore Instrumentation](https://github.com/open-telemetry/opentelemetry-python-contrib/tree/main/instrumentation/opentelemetry-instrumentation-botocore).
 
-<SubSectionSeparator />
+<SectionSeparator />
 
 ## Custom Instrumentation
 
@@ -260,8 +254,6 @@ with tracer.start_as_current_span("Root Span", kind=trace.SpanKind.SERVER):
 
         return '<h1>Good job! Traces recorded!</h1>'
 ```
-
-<SubSectionSeparator />
 
 ### Adding custom attributes
 
@@ -298,8 +290,8 @@ with tracer.start_as_current_span("Root Span") as span:
     current_span.set_attribute("my_attribute", "foo")
 ```
 
-<SubSectionSeparator />
+<SectionSeparator />
 
 ## Sample Application
 
-See a [sample Flask App using OpenTelemetry Python SDK Manual Instrumentation](https://github.com/aws-observability/aws-otel-python/tree/main/integration-test-apps/manual-instrumentation/flask)
+See a [sample Flask App using OpenTelemetry Python SDK Manual Instrumentation](https://github.com/aws-observability/aws-otel-python/tree/main/integration-test-apps/manual-instrumentation/flask).
