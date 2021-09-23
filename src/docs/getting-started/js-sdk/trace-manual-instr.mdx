@@ -142,7 +142,7 @@ diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
 
 ## Instrumenting an Application
 
-**Warning: Some instrumentations are not yet stable and the attributes they collect are subject to change until the instrumentation reaches 1.0 stability. It is recommended to pin a specific version of an instrumentation to avoid breaking changes.**
+**Warning: Some instrumentations are not yet stable and their configuration and the attributes they collect are subject to change until the instrumentation reaches 1.0 stability. It is recommended to pin a specific version of an instrumentation to avoid breaking changes.**
 
 OpenTelemetry can collect tracing data from various applications automatically using plugins. The plugins offer instrumenting popular frameworks such as 
 Hapi, Express, Redis, GraphQL, and many more. The full list of supported libraries and installation instructions can be found on the 
@@ -161,7 +161,8 @@ npm install --save opentelemetry-instrumentation-aws-sdk
 
 Then be sure to disable the old plugin-based instrumentation and register the new AWS SDK instrumentation in the provided tracer.js template:
 
-```js lineNumbers=true 
+```js lineNumbers=true
+const { AwsInstrumentation } = require('opentelemetry-instrumentation-aws-sdk');
 const { registerInstrumentations } = require('@opentelemetry/instrumentation');
 
 registerInstrumentations({
