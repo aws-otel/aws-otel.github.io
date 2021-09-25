@@ -1,0 +1,29 @@
+---
+title: 'Connecting to Aspecto with the AWS Collector'
+description:
+    Aspecto is an observability platfrom for developers built natively with OpenTelemetry 
+path: '/docs/components/aspecto'
+---
+
+Aspecto supports OpenTelemetry by ingesting OTLP directly, you can configure AWS Distro for OpenTelemetry to send tracing data directly to Aspecto.
+
+## Requirements
+
+To connect to Aspecto, you will need the following:
+
+* An Aspecto API-KEY, you can get it [here](https://app.aspecto.io/app/integration/api-key)
+
+## Collector Configuration
+
+* Configure the Collector to export via OTLP to Aspecto otelcol.aspecto.io:4317
+* Add your Aspecto API as an header.
+  * **Authorization** "<aspecto-api-key>"
+
+## Example
+
+```yaml
+exporters:
+  otlp:
+    endpoint: otelcol.aspecto.io:4317
+    headers: {"Authorization":"<aspecto-api-key>"}
+```
