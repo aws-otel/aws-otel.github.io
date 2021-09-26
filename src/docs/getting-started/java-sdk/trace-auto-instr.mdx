@@ -1,5 +1,5 @@
 ---
-title: 'Tracing with AWS Auto Instrumentation Agent'
+title: 'Tracing with the AWS Distro for OpenTelemetry Java Auto-Instrumentation and X-Ray'
 description:
     Learn how to get started with Java Auto-Instrumentation Agent... This package includes the instrumentation agent,
     instrumentations for all supported libraries and all available data exporters, providing a complete out of the box
@@ -10,33 +10,30 @@ path: '/docs/getting-started/java-sdk/trace-auto-instr'
 
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
 
-The Auto-Instrumentation Java Agent for OpenTelemetry can be attached to any Java 8+ application to gather telemetry data from a diverse
-set of libraries and frameworks. This data can also be exported to different backends in different formats. In addittion,
-the agent can be configured with environment variables or CLI parameters.
+## Introduction
 
-In this tutorial, we will introduce how to use the java agent for automatic trace instrumentation.
+The AWS Distro for OpenTelemetry (ADOT) Java Auto-Instrumentation Agent can be attached to any Java 8+ application to gather
+telemetry data from a diverse set of libraries and frameworks. The agent will automatically transform code at startup
+to collect tracing data. It is preconfigured for compatibility with X-Ray and AWS services but can also be used with any
+other tracing backend. Out of the box, it propagates traces using all of W3C Trace Context, B3, and X-Amzn-Trace-Id.
 
 <SectionSeparator />
 
 ## Requirements
 
-[Java 8 (or later)](https://adoptopenjdk.net/) is required to run an application using OpenTelemetry.Getting the auto-instrumentation agent
+[Java 8 (or later)](https://adoptopenjdk.net/) is required to run an application using OpenTelemetry.
+
+Note: You’ll also need to have the [ADOT Collector](https://aws-otel.github.io/docs/getting-started/collector) running to export traces to X-Ray.
+
+## Installation
 
 Download the [latest version](https://github.com/aws-observability/aws-otel-java-instrumentation/releases/latest/download/aws-opentelemetry-agent.jar).
 
 If you'd prefer to pin to a specific version, check out our [releases](https://github.com/aws-observability/aws-otel-java-instrumentation/releases).
 
-This package includes the instrumentation agent and instrumentation for all supported libraries and all available data exporters,
-providing a complete out-of-the-box experience for tracing. The agent is preconfigured to generate trace IDs compatible
-with [AWS X-Ray](https://aws.amazon.com/xray/), which works with any other tracing system, and enables trace propagation
-using [W3C Trace Context](https://w3c.github.io/trace-context/), [B3](https://github.com/openzipkin/b3-propagation),
-and [X-Ray](https://docs.aws.amazon.com/xray/latest/devguide/xray-concepts.html#xray-concepts-tracingheader).
-
-Note: You’ll also need to have the AWS Distro for OpenTelemetry Collector running to export traces to X-Ray.
-
 <SectionSeparator />
 
-## Running the agent from the command line
+## Running an Application with Auto-Instrumentation
 To run your app with the agent, specify the `-javaagent` flag when starting up your application,
 pointing to the downloaded agent Java Archive (JAR) artifact. In addition, while not required by the agent itself,
 almost all tracing systems require a service name and service namespace defined to identify your application, which you can specify
@@ -49,11 +46,20 @@ OTEL_RESOURCE_ATTRIBUTES=service.name=MyApp,service.namespace=MyTeam java -javaa
 The above command will start up your app with the agent activated, and instrumentation is then activated
 automatically. For many cases, this is all you need to use tracing.
 
-<SectionSeparator />
+### Configuring Auto-Instrumentation
 
-## Running the agent in Docker
-If your app is packaged in Docker, the easiest way to run with the agent is to use the
-`JAVA_TOOL_OPTIONS` environment variable, which automatically sets flags for java. Adding this
+By default OpenTelemetry Java agent uses the [OTLP exporter](https://github.com/open-telemetry/opentelemetry-java/tree/master/exporters/otlp)
+and is configured to send data to a [OpenTelemetry collector](https://github.com/open-telemetry/opentelemetry-collector/blob/master/receiver/otlpreceiver/README.md)
+at `http://localhost:4317`.
+
+The agent can be configured using [standard OpenTelemetry options for configuration](https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/main/docs/agent-config.md).
+For example, to set the random sampling rate for creating traces, you can set the environment variables
+`OTEL_TRACES_SAMPLER=parentbased_traceidratio` and `OTEL_TRACES_SAMPLER_ARG=0.3` to configure a sampling rate of 30%.
+
+### Running the agent in Docker
+
+If your application is packaged in Docker, the easiest way to run with the agent is to use the
+`JAVA_TOOL_OPTIONS` environment variable, which automatically sets flags for Java. Adding this
 snippet to your `Dockerfile` will typically be enough to enable tracing, although if you already set
 `JAVA_TOOL_OPTIONS`, don't forget to make sure to add to your existing setting rather than replacing it.
 
@@ -64,65 +70,39 @@ ENV JAVA_TOOL_OPTIONS=-javaagent:/opt/aws-opentelemetry-agent.jar
 
 <SectionSeparator />
 
-## Advanced configuration of the auto-instrumentation agent
-By default OpenTelemetry Java agent uses the [OTLP exporter](https://github.com/open-telemetry/opentelemetry-java/tree/master/exporters/otlp)
-and is configured to send data to a [OpenTelemetry collector](https://github.com/open-telemetry/opentelemetry-collector/blob/master/receiver/otlpreceiver/README.md)
-at `http://localhost:4317`.
+## Using Manual Instrumentation
 
-The agent can be configured using [standard OpenTelemetry options for configuration](https://github.com/open-telemetry/opentelemetry-java-instrumentation#configuration-parameters-subject-to-change).
-For example, to set the random sampling rate for creating traces, you can set the environment variables
-`OTEL_TRACES_SAMPLER=parentbased_traceidratio` and `OTEL_TRACES_SAMPLER_ARG=0.3` to configure a sampling rate of 30%.
-
-<SectionSeparator />
-
-## Instrumenting within your application
 While the Java agent provides automatic instrumentation for popular frameworks, you might find the need
 to perform instrumentation in your application, for example, to provide custom data or to instrument
 code within the application itself.
 
-### Adding custom attributes
-You can add custom attributes to a `Span` by defining an `AttributeKey` and calling `setAttribute` on the current `Span`.
+To perform manual instrumentation alongside the agent, you only need to use the `opentelemetry-api` aritfact. The
+version of this artifact can not be newer than the version of the agent. Notably, you do not need the `opentelemetry-sdk`
+artifact, any usage of it will be disabled by the agent.
+
+##### For Gradle:
 ```java lineNumbers=true
-@Controller
-public class AppController {
-
-  private static final AttributeKey<String> ORGANIZATION_ID = AttributeKeys.stringKey("organization.id");
-
-  @GetMapping("/")
-  @ResponseBody
-  public String handler() {
-     String organizationId = findOrganizationIdForCurrentUser();
-     Span.current().setAttribute(ORGANIZATION_ID, organizationId);
-  }
+dependencies {
+    implementation("io.opentelemetry:opentelemetry-api:1.6.0")
 }
 ```
-In this example, the Java agent has already created a span corresponding to the Spring
-handler method. You use `Span.current()` to access that span and set the
-attribute for a key that you have defined as a constant by using `AttributeKeys`.
 
-**Note:** When using AWS X-Ray as your tracing backend, you can control whether attributes are uploaded as annotations
-or metadata by configuring the AWS OTel Collector’s
-[indexed keys](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/master/exporter/awsxrayexporter#exporter-configuration).
-By default, all attributes will be metadata.
-
-### Creating spans
-To add a span corresponding to a method in your application, we recommend using the `@WithSpan` annotation.
-```java lineNumbers=true
-import io.opentelemetry.extension.annotations.WithSpan;
-
-public class MyClass {
-  @WithSpan
-  public void MyLogic() {
-      // Span created encapsulating the logic
-  }
-}
+##### For Maven:
+```xml lineNumbers=true
+<dependencies>
+  <dependency>
+    <groupId>io.opentelemetry</groupId>
+    <artifactId>opentelemetry-api</artifactId>
+    <version>1.6.0</version>
+  </dependency>
+</dependencies>
 ```
-This automatically creates a span corresponding to the method with the same name as the method. You
-can use `Span.current()` inside the method to customize it, for example by adding attributes.
 
-You can also use the [Tracer API](https://github.com/open-telemetry/opentelemetry-java/blob/master/QUICKSTART.md#tracing)
-if you need more functionality or want to trace only a block, rather than a method, of code.
+See the [document on manual instrumentation](/docs/getting-started/java-sdk/trace-manual-instr#custom-instrumentation)
+for more detail on using the OpenTelemetry API.
 
-### Using the AWS SDK
-The Java agent includes instrumentation for the AWS SDK, which is enabled by default. This means you don’t need to
-complete any additional steps for detailed tracing of the AWS SDK.
+<SectionSeparator />
+
+## Sample Application
+
+Visit the [Sample Spring App using OpenTelemetry Java Auto-Instrumentation](https://catalog.us-east-1.prod.workshops.aws/v2/workshops/31676d37-bbe9-4992-9cd1-ceae13c5116c/en-US/adot/javawalkthrough).
