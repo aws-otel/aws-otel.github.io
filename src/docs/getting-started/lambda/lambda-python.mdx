@@ -41,14 +41,15 @@ To enable the AWS Distro for OpenTelemetry in your Lambda function, you need to 
 1. Open the Lambda function you intend to instrument in the AWS console.
 2. In the *Layers in Designer* section, choose *Add a layer*.
 3. Under *specify an ARN*, paste the layer ARN, and then choose *Add*.
-4. Add the environment variable `AWS_LAMBDA_EXEC_WRAPPER` and set it to `/opt/otel-instrument`.
-5. [Enable active tracing](https://docs.aws.amazon.com/lambda/latest/dg/services-xray.html) for your AWS Lambda function.
+4. [Enable active tracing](https://docs.aws.amazon.com/lambda/latest/dg/services-xray.html) for your AWS Lambda function.
+5. Add the environment variable `AWS_LAMBDA_EXEC_WRAPPER` and set it to `/opt/otel-instrument`.
 
 Tips:
 
 * By default, the layer is configured to export traces to AWS X-Ray.
- Make sure your Lambda role has the required AWS X-Ray permissions.
-  For more on AWS X-Ray permissions for AWS Lambda, see the [AWS Lambda documentation](https://docs.aws.amazon.com/lambda/latest/dg/services-xray.html#services-xray-permissions).
+ When you enable active tracing, Lambda will try to automatically add the necessary X-Ray permission to your Lambda role if they are missing.
+ In the case it is unsuccessful, make sure your Lambda role has the required AWS X-Ray permissions.
+ For more on AWS X-Ray permissions for AWS Lambda, see the [AWS Lambda documentation](https://docs.aws.amazon.com/lambda/latest/dg/services-xray.html#services-xray-permissions).
 
 ### Remove OpenTelemetry from your Lambda function
 To disable OpenTelemetry for your Lambda function, remove the Lambda layer,
