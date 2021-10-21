@@ -57,6 +57,8 @@ projects:
 blogs:
   - title: AWS Open Source
     link: https://aws.amazon.com/blogs/opensource/
+  - title: AWS Observability Recipes
+    link: https://aws-observability.github.io/aws-o11y-recipes/
   - title: OpenSearch
     link: https://opensearch.org/blog/
   - title: OpenTelemetry
@@ -102,6 +104,7 @@ searchIndex:
 
   Related Blogs
   AWS Open Source
+  AWS Observability Recipes
   OpenSearch
   OpenTelemetry
   "
