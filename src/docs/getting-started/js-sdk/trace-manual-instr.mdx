@@ -150,19 +150,19 @@ Hapi, Express, Redis, GraphQL, and many more. The full list of supported librari
 
 ### Instrumenting the AWS SDK
 
-Tracing support for any AWS SDK calls  Amazon DynamoDB, S3, and others is provided by the 
-[OpenTelemetry AWS SDK Instrumentation](https://github.com/aspecto-io/opentelemetry-ext-js/tree/master/packages/instrumentation-aws-sdk) by [aspecto.io](https://www.aspecto.io/).
+Tracing support for downstream AWS SDK calls to Amazon DynamoDB, S3, and others is provided by the 
+[OpenTelemetry AWS SDK Instrumentation](https://github.com/open-telemetry/opentelemetry-js-contrib/tree/main/plugins/node/opentelemetry-instrumentation-aws-sdk).
 
 Install the following dependency with npm:
 
 ```
-npm install --save opentelemetry-instrumentation-aws-sdk
+npm install --save @opentelemetry/instrumentation-aws-sdk
 ```
 
-Then be sure to disable the old plugin-based instrumentation and register the new AWS SDK instrumentation in the provided tracer.js template:
+Then register the new AWS SDK instrumentation as follows:
 
 ```js lineNumbers=true
-const { AwsInstrumentation } = require('opentelemetry-instrumentation-aws-sdk');
+const { AwsInstrumentation } = require('@opentelemetry/instrumentation-aws-sdk');
 const { registerInstrumentations } = require('@opentelemetry/instrumentation');
 
 registerInstrumentations({
