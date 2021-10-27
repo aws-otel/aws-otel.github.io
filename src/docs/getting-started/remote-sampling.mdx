@@ -36,6 +36,8 @@ service:
 This enables the proxy listening on the default endpoint of `0.0.0.0:2000` - SDK sampling extensions for X-Ray remote
 sampling connect to `localhost:2000` by default and will work out of the box when deploying the collector as a sidecar.
 
+Once you have enabled the proxy extension and configured the remote sampler in your application, you can follow the [AWS X-Ray documentation](https://docs.aws.amazon.com/xray/latest/devguide/xray-console-sampling.html) to define custom sampling rules for incoming requests and see them applied across your entire fleet.
+
 The IAM policy used with the collector also needs permission to fetch sampling rules. This policy would allow the collector
 to export trace data and fetch sampling rules.
 

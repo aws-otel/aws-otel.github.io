@@ -280,39 +280,20 @@ This will enable tracing for all DynamoDB calls using this client.
 
 The `opentelemetry-aws-xray` artifact provides a `Sampler` implementation for use with [X-Ray remote sampling](https://docs.aws.amazon.com/xray/latest/devguide/xray-console-sampling.html).
 
-##### For Gradle:
-```java lineNumbers=true
-dependencies {
-    implementation("io.opentelemetry.contrib:opentelemetry-aws-xray:1.6.0")
-    ...
-}
-```
-
-##### For Maven:
-```xml lineNumbers=true
-<dependencies>
-  <dependency>
-    <groupId>io.opentelemetry.contrib</groupId>
-    <artifactId>opentelemetry-aws-xray</artifactId>
-    <version>1.6.0</version>
-  </dependency>
-  ...
-</dependencies>
-```
-
 When initializing the OpenTelemetry SDK, register the `AwsXrayRemoteSampler`.
 
 ```java lineNumbers=true
 Resource resource = Resource.builder()
   ...
-  .build()
+  .build();
+
 OpenTelemetrySdk.builder()
   .setTracerProvider(SdkTracerProvider.builder()
     .setResource(resource)
     .setSampler(AwsXrayRemoteSampler.newBuilder(resource).build())
     ...
     .build())
-  .build()
+  .build();
 ```
 
 You will also need to [configure the OpenTelemetry collector](/docs/getting-started/remote-sampling)
