@@ -1,0 +1,450 @@
+---
+title: 'Getting Started with the AWS Distro for OpenTelemetry EKS Add-On'
+description:
+    This page is about getting started with the ADOT EKS Add-On.
+path: '/docs/getting-started/eks-adot-add-on'
+---
+import operatorImg1 from "assets/img/docs/gettingStarted/operator/img1.png"
+import operatorImg2 from "assets/img/docs/gettingStarted/operator/img2.png"
+
+
+# Getting Started with the AWS Distro for OpenTelemetry EKS Add-On
+
+## Introduction
+Welcome to the getting started guide for the AWS Distro for OpenTelemetry (ADOT) Elastic Kubernetes Service (EKS) Add-On. This guide will cover what the ADOT components are in this set up including the ADOT Operator and Collector, how to install the ADOT EKS Add-On in your EKS cluster, and how to configure the ADOT Collector, which will be managed by the ADOT Operator to collect data and send to the AWS monitoring service of your choice - e.g. CloudWatch or Amazon Managed Service for Prometheus (AMP) for metrics, and X-Ray for traces. We will also provide an example of what this pipeline looks like to collect and send metrics to CloudWatch or AMP and send traces to X-Ray.
+
+### Use Cases
+The ADOT EKS Add-On is an easy way to install the ADOT Operator inside your EKS cluster for use in your pipeline for metrics and/or trace collection. Previous methods of installing the ADOT Operator, such as using a Helm chart, were more complex and required more steps to be taken by users.
+
+### What is an EKS Add-On?
+An EKS Add-On is software that provides supporting operational capabilities to Kubernetes applications, but is not specific to the application. They provide ease of use and simple installation of various capabilities (depending on the add on itself) for your EKS cluster. More information can be found on the [Amazon EKS add-ons](https://docs.aws.amazon.com/eks/latest/userguide/eks-add-ons.html) page.
+
+### What is Helm?
+As Homebrew is for macOS, [Helm](http://helm.sh/) is the package manager for Kubernetes. Helm offers a way to define, search, and use software that is built for Kubernetes. A Helm chart is a collection of files that describe a related set of Kubernetes resources, which will be deployed in one unit.
+
+Helm is important in the context of the Add-On because the ADOT Operator is deployed through a helm chart. Though it exists under the hood in our Add-On, it’s important to provide context on how it works. Below is an End-to-End set up for a pipeline that utilizes the Add-On.
+
+### End-to-End ADOT set up for EKS ADOT Add-On
+<!-- <img src={operatorImg2} alt="Diagram" style="margin: 30px 0;" /> -->
+
+![EndToEnd](./../../assets/img/docs/gettingStarted/operator/img2.png)
+
+### The ADOT Operator
+The ADOT Operator is an implementation of a Kubernetes Operator. A Kubernetes Operator is a method of packaging, deploying and managing a Kubernetes-native application, which is both deployed on Kubernetes and managed using the Kubernetes APIs and kubectl tooling. The Kubernetes Operator is a custom controller, which introduces new object types through Custom Resource Definition (CRD), an extension mechanism in Kubernetes. In our case, the CRD that is managed by the ADOT Operator is the Collector.
+
+The ADOT Operator will watch for the Collector and is notified about its presence or modification. When the ADOT Operator receives this notification, it will start running in the following order. First, it will ensure that all the required connections between these requests and Kubernetes API server are actually available. Second, it will configure the Collector in the way the user expressed in the configuration file. The diagram below shows how the Collector CR request works in a Kubernetes cluster.
+
+<!-- <img src={operatorImg`} alt="Diagram" style="margin: 30px 0;" /> -->
+
+![OperatorWorkflow](./../../assets/img/docs/gettingStarted/operator/img1.png)
+
+The ADOT EKS Add-On provides a simple, secure way of introducing the ADOT Operator into your EKS cluster. With a single CLI command, you can easily install it into your cluster.
+
+## Install the ADOT EKS Add-On
+
+### Prerequisites
+* Make sure your Kubernetes version is 1.19 or higher with the following command:
+    ```
+    kubectl version | grep "Server Version"
+    ``` 
+* Make sure that you can use kubectl with your EKS cluster by updating your `kubeconfig` if necessary:
+    ```
+    aws eks update-kubeconfig --name cluster_name --region <YOUR_AWS_REGION>
+    ```
+    * Replace `<YOUR_AWS_REGION>` with your own region, e.g. `us-west-2`
+* Make sure you have the AWS CLI installed:
+    * [Install the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
+* Apply the following permissions by running the command:
+    ```
+    kubectl apply -f \ https://amazon-eks.s3.amazonaws.com/docs/addons-otel-permissions.yaml
+    ```
+* Make sure the TLS certificate requirement is satisfied, as described in the next section.
+
+### TLS Certificate Requirement
+The ADOT Operator uses admission webhooks to mutate and validate the Collector CR requests. In Kubernetes, in order for the API server to communicate with the webhook component, the webhook requires a TLS certificate that the API server is configured to trust. There are three ways for you to generate the required TLS certificate.
+
+* The easiest and default method is to install the [cert-manager](https://cert-manager.io/docs/). In this way, cert-manager will generate a self-signed certificate. See [*cert-manager installation*](https://cert-manager.io/docs/installation/) for more details.
+* If you have your desired CA or Issuer, you can also provide your own Issuer by configuring the `admissionWebhooks.certManager.issuerRef` value of the Operator Helm chart. You will need to specify the `kind` (Issuer or ClusterIssuer) and the name. For example, during Operator installation, you can provide `--set admissionWebhooks.certManager.issuerRef.kind=YOUR_ISSUER --set admissionWebhooks.certManager.issuerRef.name=YOUR_ISSUER_NAME` options. Note that this method also requires the installation of cert-manager.
+    * Note that you can use a PCA via the cert-manager, more info can be found [here](https://docs.aws.amazon.com/acm-pca/latest/userguide/PcaWelcome.html)
+* The third way is to manually modify the secret where the TLS certificate is stored. Make sure you set `admissionWebhooks.certManager.enabled` to `false` during the Operator installation.
+    * Create the namespace for the OpenTelemetry Operator and the secret
+    ```
+    kubectl create namespace opentelemetry-operator-system
+    ```
+    * Config the TLS certificate using `kubectl create` command
+    ```
+    kubectl create secret tls opentelemetry-operator-controller-manager-service-cert --cert=path/to/cert/file --key=path/to/key/file -n opentelemetry-operator-system
+    ```
+
+### Known Issues Regarding the cert-manager
+The cert-manager must be installed manually as described above. Ideally, the cert-manager would be installed automatically with the Operator, but this is not yet available. More details can be found in the **TLS certificate-related issues** section of [this](https://aws.amazon.com/blogs/opensource/building-a-helm-chart-for-deploying-the-opentelemetry-operator/) blog post. This blog post also provides more information and more resources regarding not just the cert-manager, but the Operator itself and Helm too.
+
+### Installation
+A single CLI command is used to install the ADOT EKS Add-On into your EKS cluster. The command is as follows:
+```
+aws eks create-addon --addon-name adot --cluster-name your-cluster-name
+```
+Here, we are using the AWS CLI for EKS with the `create-addon` command. The `--addon-name` is `adot` and our `--cluster-name` is the name of the cluster we want to install the Add-On into.
+
+We can check that our Add-On is up and running with the command:
+```
+aws eks describe-addon --addon-name adot --cluster-name your-cluster-name
+```
+Here, when you see that the status is active, meaning `"status": "ACTIVE"`, then the ADOT Operator exists in your cluster and is healthy.
+
+### Using the ADOT Collector with the ADOT Operator
+Once the ADOT EKS Add-On is set up, you can deploy your ADOT Collector into your EKS cluster. The Collector is managed by the Operator, and can be deployed as one of four modes: Deployment, Daemonset, StatefulSet, and Sidecar. Each mode has its own benefits and best use cases; Deployment is used as the default mode.
+
+### Modes
+
+#### Deployment Mode
+If you want to have more control over the Collector and create a standalone application, Deployment would be your choice. With Deployment, you can relatively easily scale up the Collector to monitor more targets, roll back to an early version if anything unexpected happens, pause the Collector, etc. In general, you can manage your Collector instance just as an application.
+
+#### DaemonSet Mode
+DaemonSet should satisfy your needs if you want the Collector to run as an agent in your Kubernetes nodes. In this case, every Kubernetes node will have its own Collector copy which would monitor the pods in it.
+
+#### StatefulSet Mode
+There are three main advantages to deploying the Collector as a StatefulSet:
+
+* **Predictable names of the Collector instance will be expected.**
+    If you use above two approaches to deploy the Collector, the pod name of your Collector instance will be unique (its name plus random sequence). However, each Pod in a StatefulSet derives its hostname from the name of the StatefulSet and the ordinal of the Pod (my-col-0, my-col-1, my-col-2, etc.).
+* **Rescheduling will be arranged when a Collector replica fails.**
+    If a Collector pod fails in the StatefulSet, Kubernetes will attempt to reschedule a new pod with the same name to the same node. Kubernetes will also attempt to attach the same sticky identity (e.g., volumes) to the new pod.
+* **The target allocator could be configured.**
+    The target allocator will use a HTTP server to expose the scrape targets to a specific endpoint URL, which will be used by the Prometheus receiver to scrape metrics data. Additionally, the target allocator will use that discovery information to evenly delegate scraping jobs to the Collector instances inside a StatefulSet based on a replica's current workload.
+
+#### Sidecar Mode
+The biggest advantage of the sidecar mode is that it allows people to offload their telemetry data as fast and reliably as possible from their applications. This Collector instance will work on the container level and no new pod will be created, which is ideal for keeping your EKS cluster clean and easily to be managed. Moreover, you can also use the sidecar mode when you want to use a different collect/export strategy, which suits this application.
+Once a Sidecar instance exists in a given namespace, you can have your deployments from that namespace get a sidecar by either adding the annotation `sidecar.opentelemetry.io/inject: "true"` to the pod spec of your application, or to the namespace.
+
+### Using IRSA to Launch your Collector
+IAM roles for service accounts (IRSA) is a way to associate an IAM role with a Kubernetes service account. This service account can then provide AWS permissions to the containers in any pod that uses that service account. More information can be found on the [IRSA documentation page](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html). Documentation is provided here on how to set it up; in our example that you will see later in this guide, more specific instructions will be provided to fit our example.
+
+### Example Configuration for the ADOT Collector
+Below is an example configuration for deploying the Collector in deployment mode. 
+```
+apiVersion: opentelemetry.io/v1alpha1
+kind: OpenTelemetryCollector
+metadata:
+  name: my-collector-deployment-mode
+spec:
+  image: public.ecr.aws/aws-observability/aws-otel-collector:latest
+  mode: deployment
+  config: |
+    receivers:
+      jaeger:
+        protocols:
+          grpc:
+          
+    processors:
+
+    exporters:
+      logging:
+
+    service:
+      pipelines:
+        traces:
+          receivers: [jaeger]
+          processors: []
+          exporters: [logging]
+
+```
+To deploy the Collector into your EKS cluster, you would use the command:
+```
+kubectl apply -f file-name
+```
+For example, if the configuration file above was named `collector-config.yaml`, you would execute the command 
+```
+kubectl apply -f collector-config.yaml
+```
+
+## Example
+Following this tutorial, you can try out the steps outlined in the previous sections to build an end-to-end pipeline from scratch. The pipeline will scrape metrics and traces from a sample application within your EKS cluster and ingest them to Amazon Managed Service for Prometheus (AMP), CloudWatch, and X-Ray.
+
+### Setting up your EKS Cluster and IAM Role
+We will assume you have already had your EKS cluster ready. If not, you can refer to [Getting Started with Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html) for more details. Make sure that your Kubernetes version is 1.19 or higher. Now, let’s attach the needed policies to your IAM role:
+
+* Open your IAM console, select “Roles” in the left menu
+* Search your EKS cluster name and you should see a role name like `eksctl-YOUR-CLUSTER-NAME-NodeInstanceRole-RANDOM-CHARACTERS`, select it
+* Attach `AmazonAPIGatewayPushToCloudWatchLogs` and `AmazonPrometheusFullAccess` policies to this role
+
+### Creating your AMP Workspace
+* Open your AMP console
+* Type the name for your workspace and click create button
+
+### Apply Permissions
+```
+kubectl apply -f https://amazon-eks.s3.amazonaws.com/docs/addons-otel-permissions.yaml
+```
+### Install cert-manager
+In this tutorial, we will just use a self-signed certificate for TLS authentication. Run the following command to install cert-manager:
+```
+kubectl apply -f \ 
+https://github.com/jetstack/cert-manager/releases/download/v1.1.0/cert-manager.yaml
+```
+
+You can check if your cert-manager is ready with the following command. Make sure all the pods are running:
+```
+kubectl get pod -w -n cert-manager
+```
+### Install the ADOT Operator
+Run the command to install the ADOT EKS Add-On, and the command to check if it is ready:
+```
+aws eks create-addon --addon-name adot --cluster-name your-cluster-name
+aws eks describe-addon --addon-name adot --cluster-name your-cluster-name
+```
+### Set up a Sample Application within your EKS Cluster
+For our example, we will be using a sample application within your cluster. This sample application, along with a traffic generator, will generate metrics and traces and are configured to send them to the Collector. Below are the configurations for them; we will call the traffic generator file `traffic-generator.yaml` and the sample app file `sample-app.yaml`.
+
+`traffic-generator.yaml`:
+```
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    io.kompose.service: traffic-generator
+  name: traffic-generator
+spec:
+  ports:
+    - name: "80"
+      port: 80
+      targetPort: 80
+  selector:
+    io.kompose.service: traffic-generator
+status:
+  loadBalancer: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: traffic-generator
+  name: traffic-generator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: traffic-generator
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        io.kompose.service: traffic-generator
+    spec:
+      containers:
+        - args:
+            - /bin/bash
+            - -c
+            - sleep 10; while :; do curl ot-sample-app:4567/outgoing-http-call > /dev/null 1>&1; sleep 2; curl ot-sample-app:4567/aws-sdk-call > /dev/null 2>&1; sleep 5; done
+          image: ellerbrock/alpine-bash-curl-ssl:latest
+          name: traffic-generator
+          ports:
+            - containerPort: 80
+          resources: {}
+      restartPolicy: Always
+status: {}
+```
+`sample-app.yaml`:
+```
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    io.kompose.service: ot-sample-app-claim0
+  name: ot-sample-app-claim0
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    io.kompose.service: ot-sample-app
+  name: ot-sample-app
+spec:
+  ports:
+    - name: "4567"
+      port: 4567
+      targetPort: 4567
+  selector:
+    io.kompose.service: ot-sample-app
+status:
+  loadBalancer: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: ot-sample-app
+  name: ot-sample-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: ot-sample-app
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        io.kompose.service: ot-sample-app
+    spec:
+      containers:
+        - env:
+            - name: AWS_REGION
+              value: us-west-2
+            - name: LISTEN_ADDRESS
+              value: 0.0.0.0:4567
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: http://my-collector-collector:4317
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: service.namespace=AOCDockerDemo,service.name=AOCDockerDemoService
+          image: public.ecr.aws/aws-otel-test/aws-otel-java-test-spark:v0.11.0
+          name: ot-sample-app
+          ports:
+            - containerPort: 4567
+          resources: {}
+          volumeMounts:
+            - mountPath: /root/.aws
+              name: ot-sample-app-claim0
+      restartPolicy: Always
+      volumes:
+        - name: ot-sample-app-claim0
+  persistentVolumeClaim:
+status: {}
+```
+The sample application and traffic generator were largely taken from an example in the ADOT Collector repository, linked [here](https://github.com/aws-observability/aws-otel-collector/blob/main/examples/docker/docker-compose.yaml). This `docker-compose.yaml` file was translated to the Kubernetes resources you see above using the [Kompose](https://kompose.io/) tool. More information about Kompose can be viewed on their website https://kompose.io/.
+
+Execute these commands to add both the traffic generator and sample app into your cluster:
+```
+kubectl apply -f traffic-generator.yaml
+kubectl apply -f sample-app.yaml
+```
+
+### IRSA Setup
+To use IRSA, there are a couple of steps we need to complete.
+*  First, create an IAM OIDC provider for your cluster by following the steps in the link below:
+    * [Create an IAM OIDC provider for your cluster](https://docs.aws.amazon.com/eks/latest/userguide/enable-iam-roles-for-service-accounts.html)
+* Next, create your service account and IAM role with the following command:
+    ```
+    eksctl create iamserviceaccount \
+        --name <service_account_name> \
+        --namespace <service_account_namespace> \
+        --cluster <cluster_name> \
+        --approve \
+        --override-existing-serviceaccounts
+    ```
+
+    * `<service_account_name>` is the name of the service account you want to create; for our example we will name it `adot-collector`
+    * `<service_account_namespace>` is the namespace your service account will reside in; for our example we will use the `default` namespace
+    * `<cluster_name>` is the name of your cluster
+* Lastly, go to your IAM console at https://console.aws.amazon.com/iam/
+    * Select “Roles” from the left hand side menu and find the IAM role that was just created
+    * Click the “Attach Policies” button and attach the following policies:
+        * **AWSXrayWriteOnlyAccess**
+        * **CloudWatchAgentServerPolicy**
+        * **AmazonPrometheusRemoteWriteAccess**
+
+We will see in our collector configuration below that we add the `serviceAccount: adot-collector` field to our configuration to use IRSA.
+
+### Configure the ADOT Collector 
+After the Operator application is running in your cluster, you can deploy the Collector as a custom resource. In this tutorial, we will deploy a Collector in Deployment mode to scrape metrics and traces from a sample application inside your EKS cluster and ingest the metrics and traces to AMP and CloudWatch for metrics and X-Ray for traces.
+Apply the following configuration to deploy the Collector. Remember to substitute the AMP remote write endpoint and the AMP, CloudWatch, and X-Ray regions with your own.
+```
+apiVersion: opentelemetry.io/v1alpha1
+kind: OpenTelemetryCollector
+metadata:
+  name: my-collector
+spec:
+  image: "public.ecr.aws/aws-observability/aws-otel-collector:latest"
+  mode: deployment # This configuration is omittable.
+  serviceAccount: adot-collector
+  config: |
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+    processors:
+
+    exporters:
+      awsprometheusremotewrite:
+        endpoint: <YOUR_REMOTE_WRITE_ENDPOINT>
+        aws_auth:
+          region: <YOUR_AWS_REGION>
+          service: "aps"
+      awsemf:
+        region: <YOUR_AWS_REGION>
+      awsxray:
+        region: <YOUR_AWS_REGION>
+
+    service:
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: []
+          exporters: [awsxray]
+        metrics:
+          receivers: [otlp]
+          processors: []
+          exporters: [awsprometheusremotewrite, awsemf]
+```
+
+We will name this file `collector-config.yaml`. Execute the command 
+```
+kubectl apply -f collector-config.yaml
+```
+
+### Verify if the Metrics Data is being sent to AMP using the awscurl tool
+You can use `awscurl` to check if AMP received the metrics data. The `awscurl` tool is a curl like tool with AWS Signature Version 4 request signing. It performs requests to AWS services with requests signing using curl interface, and it supports IAM profile credentials. To learn more about `awscurl`, please refer to its [Github repository](https://github.com/okigan/awscurl).
+
+To install `awscurl`, follow the documentation [here](https://github.com/okigan/awscurl/blob/master/README.md#installation).
+
+Run the following command to check if AMP received the metrics data `actualQueueSize`. You can also query other metrics data. Again, remember to replace the region and workspace ID with your own.
+```
+awscurl --service="aps" --region="YOUR_AWS_REGION" \
+"https://aps-workspaces.YOUR_AWS_REGION.amazonaws.com/workspaces/YOUR_AMP_WORKSPACE_ID/api/v1/query?query=actualQueueSize“
+```
+Make sure to replace the `YOUR_AWS_REGION` fields and `YOUR_AMP_WORKSPACE_ID` fields.
+
+### Verify if the Metrics Data is being sent to CloudWatch
+* Open the CloudWatch console
+* Select “Logs → Log groups” in the menu on the left
+* Click “/metrics/AOCDockerDemo/AOCDockerDemoService” log group
+* Click “otel-stream” log stream
+* See if your metrics data is there
+
+### Verify that Trace Data is being sent to X-Ray
+* Open the X-Ray console
+* Select “Traces” in the menu on the left
+* See if your Trace data is there
+
+### Cleanup
+
+Delete the Collector resource:
+```
+kubectl delete -f collector-config.yaml
+```
+Delete your sample app and traffic generator:
+```
+kubectl delete -f traffic-generator.yaml
+kubectl delete -f sample-app.yaml
+```
+Uninstall the ADOT EKS Add-On:
+```
+aws eks delete-addon --addon-name adot --cluster-name your-cluster-name
+```
+Uninstall the cert-manager by following the instructions [here](https://cert-manager.io/docs/installation/kubectl/#uninstalling).
+
+
+## Questions or bugs?
+
+Technical documentation is available on the AWS Distro for OpenTelemetry [developer site](https://aws-otel.github.io/), and you can [download the distribution from GitHub](https://aws-otel.github.io/download). You can also download the latest [ADOT Collector image](https://gallery.ecr.aws/aws-observability/aws-otel-collector) from the [Amazon Elastic Container Registry (Amazon ECR)](https://aws.amazon.com/ecr/) Public Gallery.
+
+To learn more about how you can use AWS Distro for OpenTelemetry (ADOT) to collect data for your observability solution, check out the hands-on [AWS Observability workshop](https://catalog.us-east-1.prod.workshops.aws/v2/workshops/31676d37-bbe9-4992-9cd1-ceae13c5116c/en-US/adot). If you have questions about the distribution, features, or components, file an [issue](https://github.com/aws-observability/aws-otel-community/issues).
+
