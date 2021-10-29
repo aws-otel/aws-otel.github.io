@@ -4,8 +4,6 @@ description:
     This page is about getting started with the ADOT EKS Add-On.
 path: '/docs/getting-started/eks-adot-add-on'
 ---
-import operatorImg1 from "assets/img/docs/gettingStarted/operator/img1.png"
-import operatorImg2 from "assets/img/docs/gettingStarted/operator/img2.png"
 
 
 # Getting Started with the AWS Distro for OpenTelemetry EKS Add-On
@@ -25,7 +23,6 @@ As Homebrew is for macOS, [Helm](http://helm.sh/) is the package manager for Kub
 Helm is important in the context of the Add-On because the ADOT Operator is deployed through a helm chart. Though it exists under the hood in our Add-On, it’s important to provide context on how it works. Below is an End-to-End set up for a pipeline that utilizes the Add-On.
 
 ### End-to-End ADOT set up for EKS ADOT Add-On
-<!-- <img src={operatorImg2} alt="Diagram" style="margin: 30px 0;" /> -->
 
 ![EndToEnd](./../../assets/img/docs/gettingStarted/operator/img2.png)
 
@@ -33,8 +30,6 @@ Helm is important in the context of the Add-On because the ADOT Operator is depl
 The ADOT Operator is an implementation of a Kubernetes Operator. A Kubernetes Operator is a method of packaging, deploying and managing a Kubernetes-native application, which is both deployed on Kubernetes and managed using the Kubernetes APIs and kubectl tooling. The Kubernetes Operator is a custom controller, which introduces new object types through Custom Resource Definition (CRD), an extension mechanism in Kubernetes. In our case, the CRD that is managed by the ADOT Operator is the Collector.
 
 The ADOT Operator will watch for the Collector and is notified about its presence or modification. When the ADOT Operator receives this notification, it will start running in the following order. First, it will ensure that all the required connections between these requests and Kubernetes API server are actually available. Second, it will configure the Collector in the way the user expressed in the configuration file. The diagram below shows how the Collector CR request works in a Kubernetes cluster.
-
-<!-- <img src={operatorImg`} alt="Diagram" style="margin: 30px 0;" /> -->
 
 ![OperatorWorkflow](./../../assets/img/docs/gettingStarted/operator/img1.png)
 
