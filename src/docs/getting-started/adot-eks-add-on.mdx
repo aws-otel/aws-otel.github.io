@@ -331,6 +331,7 @@ To use IRSA, there are a couple of steps we need to complete.
         --name <service_account_name> \
         --namespace <service_account_namespace> \
         --cluster <cluster_name> \
+        --attach-policy-arn <IAM_policy_ARN> \
         --approve \
         --override-existing-serviceaccounts
     ```
@@ -338,6 +339,9 @@ To use IRSA, there are a couple of steps we need to complete.
     * `<service_account_name>` is the name of the service account you want to create; for our example we will name it `adot-collector`
     * `<service_account_namespace>` is the namespace your service account will reside in; for our example we will use the `default` namespace
     * `<cluster_name>` is the name of your cluster
+    * `<IAM_policy_ARN>` is the ARN of one of the three policies we need to attach, for our example we will use `arn:aws:iam::aws:policy/AmazonPrometheusRemoteWriteAccess`
+
+
 * Lastly, go to your IAM console at https://console.aws.amazon.com/iam/
     * Select “Roles” from the left hand side menu and find the IAM role that was just created
     * Click the “Attach Policies” button and attach the following policies:
