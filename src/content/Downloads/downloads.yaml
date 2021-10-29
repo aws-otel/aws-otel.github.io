@@ -5,10 +5,10 @@
   documentationLink: 'https://github.com/aws-observability/aws-otel-collector/blob/v0.14.0/README.md'
   downloadLink: 'https://gallery.ecr.aws/aws-observability/aws-otel-collector'
 
-- version: 'Amazon ECR:AWS Distro for OpenTelemetry Operator v0.37.0'
+- version: 'Amazon ECR:AWS Distro for OpenTelemetry Operator v0.37.1'
   releaseDate: 'Oct-29-2021'
   license: 'Apache-2.0'
-  releaseNotesLink: 'https://github.com/open-telemetry/opentelemetry-operator/releases/tag/v0.37.0'
+  releaseNotesLink: 'https://github.com/open-telemetry/opentelemetry-operator/releases/tag/v0.37.1'
   documentationLink: 'https://aws-otel.github.io/docs/getting-started/operator'
   downloadLink: 'https://gallery.ecr.aws/aws-observability/adot-operator'
 
