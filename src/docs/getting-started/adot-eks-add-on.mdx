@@ -29,7 +29,7 @@ Helm is important in the context of the Add-On because the ADOT Operator is depl
 ### The ADOT Operator
 The ADOT Operator is an implementation of a Kubernetes Operator. A Kubernetes Operator is a method of packaging, deploying and managing a Kubernetes-native application, which is both deployed on Kubernetes and managed using the Kubernetes APIs and kubectl tooling. The Kubernetes Operator is a custom controller, which introduces new object types through Custom Resource Definition (CRD), an extension mechanism in Kubernetes. In our case, the CRD that is managed by the ADOT Operator is the Collector.
 
-The ADOT Operator will watch for the Collector and is notified about its presence or modification. When the ADOT Operator receives this notification, it will start running in the following order. First, it will ensure that all the required connections between these requests and Kubernetes API server are actually available. Second, it will configure the Collector in the way the user expressed in the configuration file. The diagram below shows how the Collector CR request works in a Kubernetes cluster.
+The ADOT Operator will watch for the Collector and is notified about its presence or modification. When the ADOT Operator receives this notification, it will start running in the following order. First, it will ensure that all the required connections between these requests and Kubernetes API server are actually available. Second, it will configure the Collector in the way the user expressed in the configuration file. The diagram below shows how the Collector Custom Resource (CR) request works in a Kubernetes cluster.
 
 ![OperatorWorkflow](./../../assets/img/docs/gettingStarted/operator/img1.png)
 
@@ -59,7 +59,7 @@ The ADOT EKS Add-On provides a simple, secure way of introducing the ADOT Operat
 The ADOT Operator uses admission webhooks to mutate and validate the Collector CR requests. In Kubernetes, in order for the API server to communicate with the webhook component, the webhook requires a TLS certificate that the API server is configured to trust. There are three ways for you to generate the required TLS certificate.
 
 * The easiest and default method is to install the [cert-manager](https://cert-manager.io/docs/). In this way, cert-manager will generate a self-signed certificate. See [*cert-manager installation*](https://cert-manager.io/docs/installation/) for more details.
-* If you have your desired CA or Issuer, you can also provide your own Issuer by configuring the `admissionWebhooks.certManager.issuerRef` value of the Operator Helm chart. You will need to specify the `kind` (Issuer or ClusterIssuer) and the name. For example, during Operator installation, you can provide `--set admissionWebhooks.certManager.issuerRef.kind=YOUR_ISSUER --set admissionWebhooks.certManager.issuerRef.name=YOUR_ISSUER_NAME` options. Note that this method also requires the installation of cert-manager.
+* If you have your desired Certificate Authority (CA) or Issuer, you can also provide your own Issuer by configuring the `admissionWebhooks.certManager.issuerRef` value of the Operator Helm chart. You will need to specify the `kind` (Issuer or ClusterIssuer) and the name. For example, during Operator installation, you can provide `--set admissionWebhooks.certManager.issuerRef.kind=YOUR_ISSUER --set admissionWebhooks.certManager.issuerRef.name=YOUR_ISSUER_NAME` options. Note that this method also requires the installation of cert-manager.
     * Note that you can use a PCA via the cert-manager, more info can be found [here](https://docs.aws.amazon.com/acm-pca/latest/userguide/PcaWelcome.html)
 * The third way is to manually modify the secret where the TLS certificate is stored. Make sure you set `admissionWebhooks.certManager.enabled` to `false` during the Operator installation.
     * Create the namespace for the OpenTelemetry Operator and the secret
@@ -344,10 +344,12 @@ To use IRSA, there are a couple of steps we need to complete.
 
 * Lastly, go to your IAM console at https://console.aws.amazon.com/iam/
     * Select “Roles” from the left hand side menu and find the IAM role that was just created
+      * You can use `aws iam list-roles` to find the name of your IAM role
     * Click the “Attach Policies” button and attach the following policies:
+        * **AmazonPrometheusRemoteWriteAccess**
+          * This should already be attached from the previous command
         * **AWSXrayWriteOnlyAccess**
         * **CloudWatchAgentServerPolicy**
-        * **AmazonPrometheusRemoteWriteAccess**
 
 We will see in our collector configuration below that we add the `serviceAccount: adot-collector` field to our configuration to use IRSA.
 
