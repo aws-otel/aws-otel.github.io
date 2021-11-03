@@ -460,7 +460,7 @@ service:
 
 ## Sumo Logic
 
-Sumo Logic supports telemetry signals from OpenTelemetry natively via OTLP. If you’re already set up with AWS Distro for
+Sumo Logic supports tracing telemetry signal from OpenTelemetry natively via OTLP. If you’re already set up with AWS Distro for
 OpenTelemetry, then exporting data into a SumoLogic backend is as simple as editing your YAML config file for the Collector
 and getting started.
 
@@ -477,7 +477,7 @@ Before you can use the AWS Distro for OpenTelemetry with Sumo Logic you need:
 
 ### Configuration (Collector)
 
-The configuration will take place in the OTLP/HTTP exporter in the Collector config YAML file.
+The configuration will take place in the `batch processor` and `OTLP/HTTP exporter` in the Collector config YAML file.
 
 <SubSectionSeparator />
 
@@ -485,9 +485,20 @@ The configuration will take place in the OTLP/HTTP exporter in the Collector con
 
 ```yaml lineNumbers=true
 # SumoLogic Collector configuration
+processors:
+  batch/traces:
+    timeout: 5s
+    send_batch_size: 512
+    
 exporters:
   otlphttp:
-    endpoint: https://YOUR_SUMOLOGIC_HTTP_TRACES_ENDPOINT_URL
+    traces_endpoint: https://YOUR_SUMOLOGIC_HTTP_TRACES_ENDPOINT_URL
+
+service:
+  pipelines:
+    traces:
+      exporters: [otlphttp]
+      processors: [batch/traces]
 ```
 
 If you are instrumenting your application using OpenTelemetry JavaScript, Java, Python, Go,  Ruby, .NET you can use the SumoLogic
