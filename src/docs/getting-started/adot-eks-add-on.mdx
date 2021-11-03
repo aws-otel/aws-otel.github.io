@@ -351,8 +351,15 @@ To use IRSA, there are a couple of steps we need to complete.
 We will see in our collector configuration below that we add the `serviceAccount: adot-collector` field to our configuration to use IRSA.
 
 ### Configure the ADOT Collector 
-After the Operator application is running in your cluster, you can deploy the Collector as a custom resource. In this tutorial, we will deploy a Collector in Deployment mode to scrape metrics and traces from a sample application inside your EKS cluster and ingest the metrics and traces to AMP and CloudWatch for metrics and X-Ray for traces.
-Apply the following configuration to deploy the Collector. Remember to substitute the AMP remote write endpoint and the AMP, CloudWatch, and X-Ray regions with your own.
+After the Operator application is running in your cluster, you can deploy the Collector as a custom resource. In this tutorial, we will deploy a Collector in Deployment mode to scrape metrics and traces
+from a sample application inside your EKS cluster and ingest the metrics and traces to AMP and CloudWatch for metrics and X-Ray for traces. Apply the following configuration to deploy the Collector. 
+Remember to substitute the AMP remote write endpoint and the AMP, CloudWatch, and X-Ray regions with your own. For more information about Collector configuration, as well as AMP, CloudWatch, and X-Ray exporter configurations, refer 
+to the documentation below:
+* [Collector configuration](https://github.com/open-telemetry/opentelemetry-operator/blob/main/docs/otelcol_cr_spec.md)
+* [AMP configuration](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/awsprometheusremotewriteexporter#readme)
+* [CloudWatch configuration](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/awsemfexporter#readme)
+* [X-Ray configuration](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/awsxrayexporter#readme)
+
 ```yaml
 apiVersion: opentelemetry.io/v1alpha1
 kind: OpenTelemetryCollector
@@ -437,6 +444,9 @@ Uninstall the ADOT EKS Add-On:
 ```
 aws eks delete-addon --addon-name adot --cluster-name your-cluster-name
 ```
+* Note that after uninstalling the ADOT EKS Add-On, if you want to install the Add-On again, you must reinstall permissions first, as seen in the **Apply Permissions** section of the example.
+
+
 Uninstall the cert-manager by following the instructions [here](https://cert-manager.io/docs/installation/kubectl/#uninstalling).
 
 
