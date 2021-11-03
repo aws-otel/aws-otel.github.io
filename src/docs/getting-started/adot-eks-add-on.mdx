@@ -20,7 +20,7 @@ An EKS Add-On is software that provides supporting operational capabilities to K
 ### What is Helm?
 As Homebrew is for macOS, [Helm](http://helm.sh/) is the package manager for Kubernetes. Helm offers a way to define, search, and use software that is built for Kubernetes. A Helm chart is a collection of files that describe a related set of Kubernetes resources, which will be deployed in one unit.
 
-Helm is important in the context of the Add-On because the ADOT Operator is deployed through a helm chart. Though it exists under the hood in our Add-On, it’s important to provide context on how it works. Below is an End-to-End set up for a pipeline that utilizes the Add-On.
+Helm is important in the context of the Add-On because the ADOT Operator is deployed through a helm chart. Although it exists under the hood in our Add-On, it’s important to provide context on how it works. Below is an End-to-End set up for a pipeline that utilizes the Add-On.
 
 ### End-to-End ADOT set up for EKS ADOT Add-On
 
@@ -329,20 +329,20 @@ To use IRSA, there are a couple of steps we need to complete.
 * Next, create your service account and IAM role with the following command:
     ```
     eksctl create iamserviceaccount \
-        --name <service_account_name> \
-        --namespace <service_account_namespace> \
+        --name adot-collector \
+        --namespace default \
         --cluster <cluster_name> \
-        --attach-policy-arn <IAM_policy_ARN> \
-        --attach-policy-arn <IAM_policy_ARN> \
-        --attach-policy-arn <IAM_policy_ARN> \
+        --attach-policy-arn arn:aws:iam::aws:policy/AmazonPrometheusRemoteWriteAccess \
+        --attach-policy-arn arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess \
+        --attach-policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy \
         --approve \
         --override-existing-serviceaccounts
     ```
 
-    * `<service_account_name>` is the name of the service account you want to create; for our example we will name it `adot-collector`
-    * `<service_account_namespace>` is the namespace your service account will reside in; for our example we will use the `default` namespace
-    * `<cluster_name>` is the name of your cluster
-    * The three `<IAM_policy_ARN>` are the ARNs of the three policies we need to attach, as listed below:
+    * The `--name` flag specifies the name of the service account you want to create; for our example we will name it `adot-collector`
+    * The `--namespace` flag specifies the namespace your service account will reside in; for our example we will use the `default` namespace
+    * The `--cluster` flag specifies the `<cluster_name>`, which is the name of your cluster
+    * The three `--attach-policy-arn` flags specify the ARNs of the three policies we need to attach, as listed below:
       * `arn:aws:iam::aws:policy/AmazonPrometheusRemoteWriteAccess`
       * `arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess`
       * `arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy`
