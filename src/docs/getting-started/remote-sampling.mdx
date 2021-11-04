@@ -12,6 +12,8 @@ with OpenTelemetry by configuring the OpenTelemetry Collector to proxy sampling 
 ```yaml
 extensions:
   awsproxy:
+service:
+  extensions: [awsproxy]
 ```
 
 For example, a full configuration that receives spans as OTLP, exports to X-Ray, and enables remote sampling may
@@ -27,6 +29,7 @@ exporters:
 extensions:
   awsproxy:
 service:
+  extensions: [awsproxy]
   pipeline:
     traces:
       receivers: [otlp]
