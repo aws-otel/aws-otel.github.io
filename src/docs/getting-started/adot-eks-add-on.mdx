@@ -9,7 +9,12 @@ path: '/docs/getting-started/eks-adot-add-on'
 # Getting Started with the AWS Distro for OpenTelemetry EKS Add-On
 
 ## Introduction
-Welcome to the getting started guide for the AWS Distro for OpenTelemetry (ADOT) Elastic Kubernetes Service (EKS) Add-On (now in public preview). This guide covers an AWS recommended approach to successfully instrument your applications on EKS, and send metrics and traces to the AWS monitoring service of your choice. It helps you set up ADOT components for the EKS Add-on user experience including the ADOT Operator and Collector. You will also learn how to install the ADOT EKS Add-On in your EKS cluster and how to configure the ADOT Collector followed by walkthrough of the set up and configuration required for collecting and sending metrics to CloudWatch and to the Amazon Managed Service for Prometheus (AMP) as well as sending traces to AWS X-Ray.
+Welcome to the getting started guide for the AWS Distro for OpenTelemetry (ADOT) Elastic Kubernetes Service (EKS) Add-On (now in public preview). Please note ADOT is generally available (GA) for tracing and in public preview for metrics. This guide covers AWS recommended approaches to:
+* Instrument your applications on EKS
+* Send metrics and traces to your preferred AWS monitoring service
+* Set up ADOT components, including the Operator and Collector
+
+It helps you set up ADOT components for the EKS Add-on user experience including the ADOT Operator and Collector. You will also learn how to install the ADOT EKS Add-On in your EKS cluster and how to configure the ADOT Collector followed by walkthrough of the set up and configuration required for collecting and sending metrics to CloudWatch and to the Amazon Managed Service for Prometheus (AMP) as well as sending traces to AWS X-Ray.
 
 ### Use Cases
 Instead of a self managed experience that requires manual configuration, setup and deployment of the ADOT collector in your EKS cluster, this ADOT EKS Add-On provides a simplified experience through native EKS APIs on command line to install the ADOT Operator inside your EKS cluster for your metrics and/or trace collection pipeline.
@@ -21,24 +26,21 @@ Use Cases supported by this add-on include:
 ## Some Definitions
 
 ### What is an EKS Add-On?
-An EKS Add-On is a service that makes it easy for users to simply set up an add-on to support specific capabilities for your EKS cluster. More information can be found on the [Amazon EKS add-ons](https://docs.aws.amazon.com/eks/latest/userguide/eks-add-ons.html) page.
+An EKS Add-On is a service that makes it easy for users to set up software that supports specific capabilities for your EKS cluster. More information can be found on the [Amazon EKS add-ons](https://docs.aws.amazon.com/eks/latest/userguide/eks-add-ons.html) page.
 
-### What is Helm?
-As Homebrew is for macOS, [Helm](http://helm.sh/) is the package manager for Kubernetes.  Helm offers a way to define, search, and use software that is built for Kubernetes. A Helm chart is a collection of files that describe a related set of Kubernetes resources, which will be deployed in one unit. Helm is relevant in this context because the ADOT Operator is deployed under the hood using a Helm chart.
-
-Here is an end-to-end set up for a pipeline that utilizes the ADOT Add-On.
+Here is an end-to-end set up for a pipeline that utilizes the ADOT EKS Add-On.
 
 ![EndToEnd](./../../assets/img/docs/gettingStarted/operator/img2.png)
 *Diagram: EKS ADOT Add-On end to end pipeline*
 
 ### The ADOT Operator
-The ADOT Operator is an implementation of a Kubernetes Operator. A Kubernetes Operator is a method of packaging, deploying and managing a Kubernetes-native application, which is deployed on Kubernetes and managed using the Kubernetes APIs and kubectl tooling. The Kubernetes Operator is a custom controller, which introduces new object types through Custom Resource Definition (CRD), an extension mechanism in Kubernetes. In this case, the CRD that is managed by the ADOT Operator is the Collector.
+The ADOT Operator is an implementation of a [Kubernetes Operator](https://cloud.redhat.com/learn/topics/operators). A Kubernetes Operator is a method of packaging, deploying and managing a Kubernetes-native application, which is deployed on Kubernetes and managed using the Kubernetes APIs and kubectl tooling. The Kubernetes Operator is a custom controller, which introduces new object types through Custom Resource Definition (CRD), an extension mechanism in Kubernetes. In this case, the CRD that is managed by the ADOT Operator is the ADOT Collector.
 
 The ADOT Operator will watch for the Collector and is notified about its presence or modification. When the ADOT Operator receives this notification, it will start running in the following order. First, it will ensure that all the required connections between these requests and Kubernetes API server are actually available. Second, it will configure the Collector in the way the user expressed in the configuration file. The diagram below shows how the Collector CR request works in a Kubernetes cluster.
 
 ![OperatorWorkflow](./../../assets/img/docs/gettingStarted/operator/img1.png)
 
-The ADOT EKS Add-On manages only the Operator that is updated through the add-on infrastructure (we will link to the EKS docs). Please note that the ADOT Collector is released and supported through the regular ADOT releases on [ECR](https://gallery.ecr.aws/aws-observability/aws-otel-collector). If you want to update your ADOT Collector version to the latest release, you will need to [download](https://github.com/aws-observability/aws-otel-collector/blob/v0.14.0/README.md) and replace the old image. If you have any questions please file these on [GitHub](https://github.com/aws-observability/aws-otel-community/issues).
+The EKS Add-On system maintains only the ADOT Operator that is updated through the add-on infrastructure (we will link to the EKS docs). Please note that the ADOT Collector is released and supported through the regular ADOT releases on [ECR](https://gallery.ecr.aws/aws-observability/aws-otel-collector). If you want to update your ADOT Collector version to the latest release, apply a new configuration via CRD with an updated image. If you have any questions please file these on [GitHub](https://github.com/aws-observability/aws-otel-community/issues).
 
 ## Install the ADOT EKS Add-On
 
@@ -59,7 +61,7 @@ The ADOT EKS Add-On manages only the Operator that is updated through the add-on
     ```
     kubectl apply -f \ https://amazon-eks.s3.amazonaws.com/docs/addons-otel-permissions.yaml
     ```
-* Make sure the [TLS certificate](https://cert-manager.io/docs/) requirement is satisfied, as described in the next section.
+* Make sure the [TLS certificate](https://cert-manager.io/docs/) requirement is satisfied, as described in the next section. Note that the ADOT Operator is compatible with `cert-manager` versions <1.6.0. Please do not use version 1.6.0.
 
 ### TLS Certificate Requirement
 The ADOT Operator uses admission [webhooks](https://kubernetes.io/docs/reference/access-authn-authz/webhook/) to mutate and validate the Collector Custom Resource (CR) requests. In Kubernetes, in order for the API server to communicate with the webhook component, the webhook requires a TLS certificate that the API server is configured to trust. There are three ways for you to generate the required TLS certificate. Please note that the cert-manager must be installed manually using one of the three options listed below. 
@@ -551,25 +553,3 @@ Uninstall the cert-manager by following the instructions [here](https://cert-man
 Technical documentation is available on the AWS Distro for OpenTelemetry [developer site](https://aws-otel.github.io/), and you can [download the distribution from GitHub](https://aws-otel.github.io/download). You can also download the latest [ADOT Collector image](https://gallery.ecr.aws/aws-observability/aws-otel-collector) from the [Amazon Elastic Container Registry (Amazon ECR)](https://aws.amazon.com/ecr/) Public Gallery.
 
 To learn more about how you can use AWS Distro for OpenTelemetry (ADOT) to collect data for your observability solution, check out the hands-on [AWS Observability workshop](https://catalog.us-east-1.prod.workshops.aws/v2/workshops/31676d37-bbe9-4992-9cd1-ceae13c5116c/en-US/adot). If you have questions about the distribution, features, or components, file an [issue](https://github.com/aws-observability/aws-otel-community/issues).
-
-### Modes
-
-#### Deployment Mode
-If you want to have more control over the Collector and create a standalone application, Deployment would be your choice. With Deployment, you can relatively easily scale up the Collector to monitor more targets, roll back to an early version if anything unexpected happens, pause the Collector, etc. In general, you can manage your Collector instance just as an application.
-
-#### DaemonSet Mode
-DaemonSet should satisfy your needs if you want the Collector to run as an agent in your Kubernetes nodes. In this case, every Kubernetes node will have its own Collector copy which would monitor the pods in it.
-
-#### StatefulSet Mode
-There are three main advantages to deploying the Collector as a StatefulSet:
-
-* **Predictable names of the Collector instance will be expected.**
-    If you use above two approaches to deploy the Collector, the pod name of your Collector instance will be unique (its name plus random sequence). However, each Pod in a StatefulSet derives its hostname from the name of the StatefulSet and the ordinal of the Pod (my-col-0, my-col-1, my-col-2, etc.).
-* **Rescheduling will be arranged when a Collector replica fails.**
-    If a Collector pod fails in the StatefulSet, Kubernetes will attempt to reschedule a new pod with the same name to the same node. Kubernetes will also attempt to attach the same sticky identity (e.g., volumes) to the new pod.
-* **The target allocator could be configured.**
-    The target allocator will use a HTTP server to expose the scrape targets to a specific endpoint URL, which will be used by the Prometheus receiver to scrape metrics data. Additionally, the target allocator will use that discovery information to evenly delegate scraping jobs to the Collector instances inside a StatefulSet based on a replica's current workload.
-
-#### Sidecar Mode
-The biggest advantage of the sidecar mode is that it allows people to offload their telemetry data as fast and reliably as possible from their applications. This Collector instance will work on the container level and no new pod will be created, which is ideal for keeping your EKS cluster clean and easily to be managed. Moreover, you can also use the sidecar mode when you want to use a different collect/export strategy, which suits this application.
-Once a Sidecar instance exists in a given namespace, you can have your deployments from that namespace get a sidecar by either adding the annotation `sidecar.opentelemetry.io/inject: "true"` to the pod spec of your application, or to the namespace.
