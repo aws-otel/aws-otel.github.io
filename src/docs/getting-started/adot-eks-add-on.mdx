@@ -17,7 +17,7 @@ Welcome to the getting started guide for the AWS Distro for OpenTelemetry (ADOT)
 This guide helps you set up ADOT components for the EKS Add-on user experience including the ADOT Operator and Collector. You will also learn how to install the ADOT EKS Add-On in your EKS cluster and how to configure the ADOT Collector followed by walkthrough of the set up and configuration required for collecting and sending metrics to CloudWatch and to the Amazon Managed Service for Prometheus (AMP) as well as sending traces to AWS X-Ray.
 
 ### Use Cases
-Instead of a self managed experience that requires manual configuration, setup and deployment of the ADOT collector in your EKS cluster, this ADOT EKS Add-On provides a simplified experience through native EKS APIs on command line to install the ADOT Operator inside your EKS cluster for your metrics and/or trace collection pipeline.
+Instead of a self managed experience that requires manual configuration, setup and deployment of the ADOT Collector in your EKS cluster, this ADOT EKS Add-On provides a simplified experience through native EKS APIs on command line to install the ADOT Operator inside your EKS cluster for your metrics and/or trace collection pipeline.
 
 Use Cases supported by this add-on include:
 * Configure, collect and send infrastructure and application metrics from EKS clusters and applications to either AMP or CloudWatch. This is done by using the ADOT Operator to launch the ADOT Collector which supports both OpenTelemetry protocol (OTLP) and Prometheus protocol data format compatibility.
@@ -146,7 +146,7 @@ Successful output should look something like this, note the `"status:"` field:
 {
 "addon": {
     "addonName": "adot",
-    "clusterName": "your-cluster-nam",
+    "clusterName": "your-cluster-name",
     "status": "ACTIVE",
     "addonVersion": "v0.29.0-eksbuild.1",
     "health": {
