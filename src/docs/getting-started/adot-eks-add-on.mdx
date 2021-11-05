@@ -14,14 +14,14 @@ Welcome to the getting started guide for the AWS Distro for OpenTelemetry (ADOT)
 * Send metrics and traces to your preferred AWS monitoring service
 * Set up ADOT components, including the Operator and Collector
 
-It helps you set up ADOT components for the EKS Add-on user experience including the ADOT Operator and Collector. You will also learn how to install the ADOT EKS Add-On in your EKS cluster and how to configure the ADOT Collector followed by walkthrough of the set up and configuration required for collecting and sending metrics to CloudWatch and to the Amazon Managed Service for Prometheus (AMP) as well as sending traces to AWS X-Ray.
+This guide helps you set up ADOT components for the EKS Add-on user experience including the ADOT Operator and Collector. You will also learn how to install the ADOT EKS Add-On in your EKS cluster and how to configure the ADOT Collector followed by walkthrough of the set up and configuration required for collecting and sending metrics to CloudWatch and to the Amazon Managed Service for Prometheus (AMP) as well as sending traces to AWS X-Ray.
 
 ### Use Cases
 Instead of a self managed experience that requires manual configuration, setup and deployment of the ADOT collector in your EKS cluster, this ADOT EKS Add-On provides a simplified experience through native EKS APIs on command line to install the ADOT Operator inside your EKS cluster for your metrics and/or trace collection pipeline.
 
 Use Cases supported by this add-on include:
-* Users can configure, collect and send infrastructure and application metrics from EKS clusters and applications to either AMP or CloudWatch. This is done by using the ADOT Operator to launch the ADOT Collector which supports both OpenTelemetry protocol (OTLP) and Prometheus protocol data format compatibility.
-* Users can configure, collect and send application traces from EKS to X-Ray using the OpenTelemetry protocol data format.
+* Configure, collect and send infrastructure and application metrics from EKS clusters and applications to either AMP or CloudWatch. This is done by using the ADOT Operator to launch the ADOT Collector which supports both OpenTelemetry protocol (OTLP) and Prometheus protocol data format compatibility.
+* Configure, collect and send application traces from EKS to X-Ray using the OpenTelemetry protocol data format.
 
 ## Some Definitions
 
@@ -89,7 +89,7 @@ aws eks create-addon --addon-name adot --cluster-name your-cluster-name
 ```
 Here, we are using the AWS CLI for EKS with the `create-addon` command. The `--addon-name` is `adot` and our `--cluster-name` is the name of the cluster we want to install the Add-On into.
 
-We can check that our Add-On is up and running with the command:
+Check that our Add-On is up and running with the command:
 ```
 aws eks describe-addon --addon-name adot --cluster-name your-cluster-name
 ```
@@ -102,7 +102,7 @@ Once the ADOT EKS Add-On is set up, you can deploy your ADOT Collector into your
 You can associate your IAM role to your EKS service account using IAM roles for service accounts (IRSA). Your service account can then provide AWS permissions to the containers you run in any pod that use that service account. More information about associating your IRSA roles can be found on the [IRSA documentation page](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html).
 
 #### Deploying the Collector
-To deploy the Collector into your EKS cluster, you would use the command 
+To deploy the Collector into your EKS cluster, use the command 
 ```
 kubectl apply -f file-name
 ```
@@ -131,7 +131,7 @@ kubectl apply -f \
 https://github.com/jetstack/cert-manager/releases/download/v1.1.0/cert-manager.yaml
 ```
 
-You can check if your cert-manager is ready with the following command. Make sure all the pods are running:
+Check if your cert-manager is ready with the following command. Make sure all the pods are running:
 ```
 kubectl get pod -w -n cert-manager
 ```
@@ -244,7 +244,7 @@ kubectl apply -f collector-config-amp.yaml
 Remember to substitute the AMP remote write endpoint and the AMP region with your own. 
 
 ### Verify if the Metrics Data is being sent to AMP using the awscurl tool
-You can use `awscurl` to check if AMP received the metrics data. The `awscurl` tool is a curl like tool with AWS Signature Version 4 request signing. It performs requests to AWS services with requests signing using curl interface, and it supports IAM profile credentials. To learn more about `awscurl`, please refer to its [Github repository](https://github.com/okigan/awscurl).
+Use `awscurl` to check if AMP received the metrics data. The `awscurl` tool is a curl like tool with AWS Signature Version 4 request signing. It performs requests to AWS services with requests signing using curl interface, and it supports IAM profile credentials. To learn more about `awscurl`, please refer to its [Github repository](https://github.com/okigan/awscurl).
 
 To install `awscurl`, follow the documentation [here](https://github.com/okigan/awscurl/blob/master/README.md#installation).
 
