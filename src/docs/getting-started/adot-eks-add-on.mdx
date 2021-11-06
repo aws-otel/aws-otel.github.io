@@ -217,7 +217,7 @@ For more information about Collector configuration, as well as AMP, CloudWatch, 
 * Open your AMP console at https://console.aws.amazon.com/prometheus/home
 * Type the name for your workspace and click create button
 
-The Collector configuration below is set up to receive OTLP metrics and export to AMP. 
+The Collector configuration below is set up to receive both OTLP metrics and Prometheus and export to AMP. 
 
 ```yaml
 apiVersion: opentelemetry.io/v1alpha1
@@ -234,6 +234,43 @@ spec:
         protocols:
           grpc:
             endpoint: 0.0.0.0:4317
+      prometheus:
+        config:
+          global:
+            scrape_interval: 15s
+            scrape_timeout: 10s
+          scrape_configs:
+            - job_name: 'storefront'
+              sample_limit: 10000
+              metrics_path: /metrics
+              kubernetes_sd_configs:
+                - role: pod
+              relabel_configs:
+                - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+                  action: keep
+                  regex: true
+                - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+                  action: replace
+                  regex: (.+)
+                  target_label: __metrics_path__
+                - source_labels: [__address__]
+                  action: replace
+                  regex: ([^:]+)(?::\d+)?;(\d+)
+                  replacement: $1:$2
+                  target_label: __address__
+                - action: labelmap
+                  regex: __meta_kubernetes_pod_label_(.+)
+                - source_labels: [__meta_kubernetes_namespace]
+                  action: replace
+                  target_label: EKS_Namespace
+                - source_labels: [__meta_kubernetes_pod_name]
+                  action: replace
+                  target_label: EKS_PodName
+                - source_labels: [__meta_kubernetes_pod_container_name]
+                  action: replace
+                  target_label: EKS_Container
+
+
     processors:
 
     exporters:
@@ -246,7 +283,7 @@ spec:
     service:
       pipelines:
         metrics:
-          receivers: [otlp]
+          receivers: [otlp, prometheus]
           processors: []
           exporters: [awsprometheusremotewrite]
 ```
@@ -261,17 +298,29 @@ Use `awscurl` to check if AMP received the metrics data. The `awscurl` tool is a
 
 To install `awscurl`, follow the documentation [here](https://github.com/okigan/awscurl/blob/master/README.md#installation).
 
-Run the following command to check if AMP received the metrics data `actualQueueSize`. You can also query other metrics data. Again, remember to replace the region and workspace ID with your own.
+Run the following command to check if AMP received the OTLP metrics data `actualQueueSize`.
 ```
 awscurl --service="aps" --region="YOUR_AWS_REGION" \
 "https://aps-workspaces.YOUR_AWS_REGION.amazonaws.com/workspaces/YOUR_AMP_WORKSPACE_ID/api/v1/query?query=actualQueueSize"
 ```
-Make sure to replace the `YOUR_AWS_REGION` fields and `YOUR_AMP_WORKSPACE_ID` fields.
 
 Your output should look something like this:
 ```
 {"status":"success","data":{"resultType":"vector","result":[{"metric":{"__name__":"actualQueueSize","apiName":"/outgoing-http-call","statusCode":"200"},"value":[1636012536.152,"0"]}]}}
 ```
+
+Run the following command to check if AMP received the Prometheus metrics data `scrape_duration_seconds`.
+```
+awscurl --service="aps" --region="YOUR-AMP-REGION" \
+"https://aps-workspaces.YOUR-AMP-REGION.amazonaws.com/workspaces/YOUR-AMP-WORKSPACE-ID/api/v1/query?query=scrape_duration_seconds"
+```
+Your output should look something like this:
+```
+{"status":"success","data":{"resultType":"vector","result":[{"metric":{"EKS_Container":"cert-manager","EKS_Namespace":"cert-manager","EKS_PodName":"cert-manager-858bf78c95-qvq2j","__name__":"scrape_duration_seconds","app":"cert-manager","app_kubernetes_io_component":"controller","app_kubernetes_io_instance":"cert-manager","app_kubernetes_io_name":"cert-manager","instance":"192.168.41.17:9402","job":"storefront","pod_template_hash":"858bf78c95"},"value":[1636159948.136,"0.001410662"]}]}}
+```
+
+Make sure to replace the `YOUR_AWS_REGION` fields and `YOUR_AMP_WORKSPACE_ID` fields for both queries.
+
 ## Setup for sending metrics to CloudWatch
 The Collector configuration below is set up to receive OTLP metrics and export to CloudWatch. 
 
