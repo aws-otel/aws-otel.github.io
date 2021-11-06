@@ -112,6 +112,19 @@ kubectl apply -f collector-config.yaml
 ```
 An example Collector configuration can be seen later in this guide under our “Examples” section. More details on how to use IRSA to launch your Collector will be provided as well.
 
+### ADOT Operator and Collector Lifecycle Management
+
+The ADOT Operator and Collector both are continuously updated and new versions are being released. Check for an update of the ADOT Operator using the command
+```
+aws eks describe-addon --addon-name adot --cluster-name yourcluster-name
+```
+Refer [here](https://docs.aws.amazon.com/eks/latest/userguide/managing-kube-proxy.html) for more information. If a new version of the ADOT Operator is found, update the ADOT EKS Add-On in your cluster with the command
+```
+aws eks update-addon --addon-name adot --cluster-name your-cluster-name
+```
+When a new version of the ADOT Collector is released, reapply the Collector configurations using an updated ADOT Collector image.
+
+
 ## Step by Step Setup
 
 ### Set up your EKS Cluster and IAM Role
