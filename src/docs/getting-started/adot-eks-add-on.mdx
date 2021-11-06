@@ -566,3 +566,34 @@ Uninstall the cert-manager by following the instructions [here](https://cert-man
 Technical documentation is available on the AWS Distro for OpenTelemetry [developer site](https://aws-otel.github.io/), and you can [download the distribution from GitHub](https://aws-otel.github.io/download). You can also download the latest [ADOT Collector image](https://gallery.ecr.aws/aws-observability/aws-otel-collector) from the [Amazon Elastic Container Registry (Amazon ECR)](https://aws.amazon.com/ecr/) Public Gallery.
 
 To learn more about how you can use AWS Distro for OpenTelemetry (ADOT) to collect data for your observability solution, check out the hands-on [AWS Observability workshop](https://catalog.us-east-1.prod.workshops.aws/v2/workshops/31676d37-bbe9-4992-9cd1-ceae13c5116c/en-US/adot). If you have questions about the distribution, features, or components, file an [issue](https://github.com/aws-observability/aws-otel-community/issues).
+
+## Troubleshooting Guide
+
+IMPORTANT: Before looking through the troubleshooting section, make sure you meet all the prerequisites laid out in the guide above, and do not miss any steps during setup. 
+
+### `yaml` File Parsing Error:
+```
+Error: cannot load configuration's parser: error loading config file "/conf/collector.yaml": unable to read the file /conf/collector.yaml:
+```
+* If you are getting this error, try downloading the configuration files with the links provided
+
+### Errors when Creating the Add-On:
+```
+            "issues": [
+                {
+                    "code": "K8sResourceNotFound",
+                    "message": "cert-manager is not installed on this cluster. During preview, you are required to have previously installed cert-manager."
+                }
+            ]
+```
+* Make sure your cert-manager is a version that is supported (<1.6.0)
+
+```
+            "issues": [
+                {
+                    "code": "AccessDenied",
+                    "message": "roles.rbac.authorization.k8s.io \"opentelemetry-operator-leader-election-role\" is forbidden: User \"eks:addon-manager\" cannot patch resource \"roles\" in API group \"rbac.authorization.k8s.io\" in the namespace \"opentelemetry-operator-system\""
+                }
+```
+* This happens when you delete the Add-On and don’t reapply permissions before reinstalling it again
+
