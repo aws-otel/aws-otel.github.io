@@ -462,6 +462,8 @@ spec:
       restartPolicy: Always
 status: {}
 ```
+One important note about `traffic-generator.yaml` is that it makes http calls to `sample-app:4567`. `sample-app` is the name of the Kubernetes service that allows our traffic generator the ability to interact with our sample application, on port `4567`. `sample-app` resolves to the IP address of the `sample-app` pod.
+
 `sample-app.yaml`:
 ```yaml
 apiVersion: v1
@@ -536,6 +538,8 @@ spec:
   persistentVolumeClaim:
 status: {}
 ```
+There are a few important callouts within `sample-app.yaml`. First, under our `Service` resource, we see `port:4567`, which our traffic generator is configured to make http calls to. Next, in our `Deployment` resource, the environment variables section, `env:`, has a few things to note there. First, you want to change your `AWS_REGION` value, `<YOUR_AWS_REGION>`, to your own region. Next, notice that the `LISTEN_ADDRESS` is listening on `0.0.0.0:4567` for http calls from our traffic generator. Most importantly, we see that `OTEL_EXPORTER_OTLP_ENDPOINT` has a value of `http://my-collector-collector:4317`. `my-collector-collector` is the name of the Kubernetes service that allows our sample application to interact with our ADOT Collector, on port `4317`. In our Collector configuration, we will see that the Collector receives metrics/traces from an `endpoint: 0.0.0.0:4317`. 
+
 The sample application and traffic generator were largely taken from an example in the ADOT Collector repository, linked [here](https://github.com/aws-observability/aws-otel-collector/blob/main/examples/docker/docker-compose.yaml). This `docker-compose.yaml` file was translated to the Kubernetes resources you see above using the [Kompose](https://kompose.io/) tool. More information about Kompose can be viewed on their website https://kompose.io/.
 
 Execute these commands to add both the traffic generator and sample app into your cluster:
