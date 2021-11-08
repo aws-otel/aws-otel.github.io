@@ -205,11 +205,12 @@ This is the end of all the setup **before** we configure our collector. The next
 ## Setup the ADOT Collector Configuration 
 After the Operator application is running in your cluster, you can deploy the Collector as a custom resource. In the following sections, we will deploy a Collector in Deployment mode to scrape metrics and traces inside your EKS cluster and ingest the metrics and traces to AMP and CloudWatch for metrics and X-Ray for traces. These metrics and traces will be assumed to be received in OpenTelemetry Protocol (OTLP) format.
 
-For more information about Collector configuration, as well as AMP, CloudWatch, and X-Ray exporter configurations, refer to the documentation below:
+For more information about Collector configuration, as well as Prometheus receiver configuration and AMP, CloudWatch, and X-Ray exporter configurations, refer to the documentation below:
 * [Collector configuration](https://github.com/open-telemetry/opentelemetry-operator/blob/main/docs/otelcol_cr_spec.md)
-* [AMP configuration](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/awsprometheusremotewriteexporter#readme)
-* [CloudWatch configuration](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/awsemfexporter#readme)
-* [X-Ray configuration](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/awsxrayexporter#readme)
+* [Prometheus Receiver configuration](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/prometheusreceiver)
+* [AMP Exporter configuration](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/awsprometheusremotewriteexporter#readme)
+* [CloudWatch Exporter configuration](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/awsemfexporter#readme)
+* [X-Ray Exporter configuration](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/awsxrayexporter#readme)
 
 ## Setup for sending metrics to Amazon Managed Service for Prometheus (AMP)
 
