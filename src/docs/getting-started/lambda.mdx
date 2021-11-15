@@ -53,26 +53,31 @@ receivers:
   otlp:
     protocols:
       grpc:
+        endpoint: 0.0.0.0:55681
 
 exporters:
   logging:
     loglevel: debug
-  otlp:
-    protocols:
-      http:
-        endpoint: 0.0.0.0:55681
+  awsxray:
 
 #enables output for traces to xray
 service:
   pipelines:
     traces:
       receivers: [otlp]
-      exporters: [logging, xray]
+      exporters: [logging, awsxray]
 ```
 You can set this via the Lambda console, or via the AWS CLI.
 ```
 aws lambda update-function-configuration --function-name Function --environment Variables={OPENTELEMETRY_COLLECTOR_CONFIG_FILE=/var/task/collector.yaml}
 ```
+
+As an alternative to uploading your collector.yaml file directly with your code, you can zip your file and upload your zip as a separate Lambda layer.
+You can set this via the Lambda console, or via the AWS CLI.
+```
+aws lambda update-function-configuration --function-name Function --environment Variables={OPENTELEMETRY_COLLECTOR_CONFIG_FILE=/opt/collector.yaml}
+```
+
 You can configure environment variables via CloudFormation template as well:
 ```yaml
 Function:

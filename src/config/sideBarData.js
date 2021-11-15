@@ -52,8 +52,9 @@ export const sideBarData = [
         {label: "JavaScript", link: "/docs/getting-started/javascript-sdk"},
         {label: "Python", link: "/docs/getting-started/python-sdk"},
         {label: ".NET", link: "/docs/getting-started/dotnet-sdk"},
+        {label: "k8s Operator", link: "/docs/getting-started/operator"},
         {label: "Lambda", link: "/docs/getting-started/lambda"},
-        {label: "Prometheus (AMP)", link: "/docs/getting-started/prometheus-remote-write-exporter"},
+        {label: "Managed Service for Prometheus (AMP)", link: "/docs/getting-started/prometheus-remote-write-exporter"},
         {label: "Prometheus Configurations", link: "/docs/getting-started/advanced-prometheus-remote-write-configurations"},
         {label: "CloudWatch Metrics", link: "/docs/getting-started/cloudwatch-metrics"},
         {label: "CloudWatch Container Insights", link: "/docs/getting-started/container-insights"},
@@ -105,12 +106,17 @@ export const sideBarData = [
       id: nextId(),
       label: "Partners",
       items: [
+        {label: "AppDynamics", link: "/docs/components/otlp-exporter#appdynamics"},
         {label: "Datadog", link: "/docs/partners/datadog"},
         {label: "Dynatrace", link: "/docs/partners/dynatrace"},
-        {label: "New Relic", link: "/docs/partners/new-relic"},
-        {label: "Splunk", link: "/docs/partners/splunk"},
+        {label: "Grafana Labs", link: "/docs/components/otlp-exporter#grafana-labs"},
+        {label: "Honeycomb", link: "/docs/components/otlp-exporter#honeycomb"},
+        {label: "Lightstep", link: "/docs/components/otlp-exporter#lightstep"},
         {label: "Logz.io", link: "/docs/partners/logzio"},
-     ],
+        {label: "New Relic", link: "/docs/components/otlp-exporter#new-relic"},
+        {label: "Splunk", link: "/docs/partners/splunk"},
+        {label: "Sumo Logic", link: "/docs/components/otlp-exporter#sumo-logic"},
+      ],
      link: "/docs/null"
    }
  },
@@ -119,8 +125,9 @@ export const sideBarData = [
       id: nextId(),
       label: "Know Your Data",
       items: [
-        {label: "Traces", link: "https://github.com/open-telemetry/opentelemetry-specification/blob/master/specification/overview.md"},
-        {label: "Metrics", link: "https://github.com/open-telemetry/opentelemetry-specification/blob/master/specification/overview.md"}
+        {label: "Traces", link: "https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/overview.md#tracing-signal"},
+        {label: "Metrics", link: "https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/overview.md#metric-signal"},
+        {label: "Logs", link: "https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/overview.md#log-signal"}
       ],
       link: "/docs/null"
     }

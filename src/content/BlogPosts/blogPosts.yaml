@@ -6,21 +6,102 @@ description:
 path: /blog
 
 blogs:
+  - title: "AWS Distro for OpenTelemetry 0.12 adds metrics support for AWS Lambda, Amazon ECS on EC2 metrics, and Amazon EKS metrics in Amazon Managed Prometheus (Preview)"
+    author: "Alolita Sharma and Nizar Tyrewalla"
+    date: "31-Aug-2021"
+    body:
+      "AWS Distro for OpenTelemetry (ADOT) 0.12.0 is now available. You can download the latest ADOT Collector image from the
+      Amazon Elastic Container Registry (Amazon ECR) Public Gallery. Release highlights Amazon Elastic Kubernetes Service (Amazon EKS)
+      Infrastructure metrics and trace collection: Enhanced support in the Collector for gathering Amazon EKS infrastructure metrics and traces ..."
+    link: "https://aws.amazon.com/blogs/opensource/aws-distro-for-opentelemetry-0-12-adds-metrics-support-for-aws-lambda-amazon-ecs-on-ec2-metrics-and-collector-operator-enhancements-for-amazon-managed-prometheus-preview/"
+
+  - title: "Adding AWS X-Ray support to the OpenTelemetry PHP library"
+    author: "Alolita Sharma"
+    date: "25-Aug-2021"
+    body:
+      "In this blog post, AWS observability team intern engineer Oliver Hamuy shares his internship experience on his project
+      to enhance the OpenTelemetry PHP SDK by adding support for AWS X-Ray. Please note that the OpenTelemetry PHP SDK
+      is in development and in alpha state currently ..."
+    link: "https://aws.amazon.com/blogs/opensource/adding-aws-x-ray-support-to-the-opentelemetry-php-library/"
+
+  - title: "Building a Helm chart for deploying the OpenTelemetry Operator"
+    author: "Alolita Sharma"
+    date: "16-Aug-2021"
+    body:
+      "In this post, Shibo Wang, an intern on the AWS Open Source Observability team, shares his experience of designing and
+      building the OpenTelemetry Operator Helm chart and integrating the OpenTelemetry Operator into the AWS Distro for OpenTelemetry (ADOT).
+      This open source Helm chart allows you to install the OpenTelemetry Operator to an on-premises or managed ..."
+    link: "https://aws.amazon.com/blogs/opensource/building-a-helm-chart-for-deploying-the-opentelemetry-operator/"
+
+  - title: "Deployment patterns for the AWS Distro for OpenTelemetry Collector with Amazon Elastic Container Service"
+    author: "Mike George"
+    date: "11-Aug-2021"
+    body:
+      "The AWS Distro for OpenTelemetry (ADOT) is a secure, production-ready, AWS-supported distribution of the OpenTelemetry project.
+      Cloud-native, distributed technology stacks are now the norm, but these architectures introduce operational challenges,
+      which have led to the rise of observability ..."
+    link: "https://aws.amazon.com/blogs/opensource/deployment-patterns-for-the-aws-distro-for-opentelemetry-collector-with-amazon-elastic-container-service/"
+
+  - title: "Adding security workflows to OpenTelemetry"
+    author: "Alolita Sharma"
+    date: "09-Aug-2021"
+    body:
+      "In this blog post, intern engineers Karen Xu and Kelvin Lo describe their experience working in the popular open source project,
+      OpenTelemetry. They describe how they added security scanning workflows to the project, including how it supports
+      a major milestone in readying the software for production use. In any important and widely adopted open source ..."
+    link: "https://aws.amazon.com/blogs/opensource/adding-security-workflows-to-opentelemetry/"
+
+  - title: "AWS Distro for OpenTelemetry (ADOT) 0.11.0 is now available"
+    author: "Alolita Sharma and Nizar Tyrewalla"
+    date: "08-Jul-2021"
+    body:
+      "AWS Distro for OpenTelemetry (ADOT) 0.11.0 is now available. Release highlights include support for Amazon Elastic
+      Kubernetes Service (Amazon EKS) metrics. Amazon EKS metrics can be monitored in Amazon CloudWatch Container Insights
+      and include CPU usage, memory, disk and network status, in addition to other infrastructure metrics ..."
+    link: "https://aws.amazon.com/blogs/opensource/aws-distro-for-opentelemetry-adot-0-11-0-is-now-available/"
+
+  - title: "Using AWS Distro for OpenTelemetry Collector for cross-account metrics collection on Amazon ECS"
+    author: "Rodrigue Koffi and Rafael Pereyra"
+    date: "08-Jun-2021"
+    body:
+      "In November 2020, we announced OpenTelemetry support on AWS with AWS Distro for OpenTelemetry (ADOT),
+      a secure, production-ready, AWS-supported distribution of the Cloud Native Computing Foundation (CNCF) OpenTelemetry project.
+      With ADOT, you can instrument applications to send correlated metrics and traces ..."
+    link: "https://aws.amazon.com/blogs/opensource/using-aws-distro-for-opentelemetry-collector-for-cross-account-metrics-collection-on-amazon-ecs/"
+
+  - title: "Managing AWS Distro for OpenTelemetry Collector with AWS Systems Manager Distributor"
+    author: "Vastin He and Min Xia"
+    date: "01-Jun-2021"
+    body:
+      "AWS Systems Manager Distributor simplifies the distribution, installation, and update process for software packages on
+       managed instances at scale. AWS Systems Manager also provides a secured and centralized repository with version control
+       for these software packages ..."
+    link: "https://aws.amazon.com/blogs/opensource/managing-aws-distro-for-opentelemetry-collector-with-aws-systems-manager-distributor/"
+
+  - title: "AWS Distro for OpenTelemetry 0.10.0 is now available with AWS Lambda layers for .Net"
+    author: "Alolita Sharma and Nizar Tyrewalla"
+    date: "26-May-2021"
+    body:
+      "AWS Distro for OpenTelemetry (ADOT) version 0.10.0 is now available with AWS Lambda layers for AWS X-Ray support in .Net.
+      Latest versions of AWS Lambda layers with AWS X-Ray support are now available for the OpenTelemetry Collector, Java,
+      Java instrumentation, JavaScript, and Python ..."
+    link: "https://aws.amazon.com/blogs/opensource/aws-distro-for-opentelemetry-0-10-0-is-now-available-with-aws-lambda-layers-for-net/"
+
   - title: "AWS Distro for OpenTelemetry adds Lambda layers for more languages and Collector"
     author: "Alolita Sharma and Nizar Tyrewalla"
     date: "29-Apr-2021"
     body:
       "The latest release of the AWS Distro for OpenTelemetry (ADOT) now provides AWS-managed Lambda layers for Java, NodeJS, and Python
-       for an easier getting-started experience for customers sending traces from their applications to AWS X-Ray. ADOT 0.9.0 also now 
+       for an easier getting-started experience for customers sending traces from their applications to AWS X-Ray. ADOT 0.9.0 also now
        provides a Lambda layer for the OpenTelemetry Collector for customers ..."
     link: "https://aws.amazon.com/blogs/opensource/aws-distro-for-opentelemetry-adds-lambda-layers-for-more-languages-and-collector/"
 
-  - title: "AWS One Observability Demo Workshop: What’s new with Prometheus, Grafana, and OpenTelemetry "
+  - title: "AWS One Observability Demo Workshop: What’s new with Prometheus, Grafana, and OpenTelemetry"
     author: "Imaya Kumar Jagannathan, Rodrigue Koffi, and Rafael Pereyra"
     date: "22-Apr-2021"
     body:
-      "Amazon Web Services (AWS) offers a variety of observability services and tools to gain visibility and insights about your 
-      workload’s health and performance. For example, Amazon CloudWatch and AWS X-Ray offer a variety of features to collect, ingest, 
+      "Amazon Web Services (AWS) offers a variety of observability services and tools to gain visibility and insights about your
+      workload’s health and performance. For example, Amazon CloudWatch and AWS X-Ray offer a variety of features to collect, ingest,
       and perform operations on traces, metrics, and log data generated from workloads ..."
     link: "https://aws.amazon.com/blogs/opensource/aws-one-observability-demo-workshop-whats-new-with-prometheus-grafana-and-opentelemetry/"
 
@@ -28,8 +109,8 @@ blogs:
     author: "Manish Dhawaria"
     date: "01-Apr-2021"
     body:
-      "AWS Distro for OpenTelemetry is a secure, Amazon Web Services (AWS)-supported, production-ready distribution of the Cloud 
-      Native Computing Foundation (CNCF) OpenTelemetry project that provides open source APIs, libraries, and agents to collect 
+      "AWS Distro for OpenTelemetry is a secure, Amazon Web Services (AWS)-supported, production-ready distribution of the Cloud
+      Native Computing Foundation (CNCF) OpenTelemetry project that provides open source APIs, libraries, and agents to collect
       distributed traces and metrics for application monitoring ..."
     link: "https://aws.amazon.com/blogs/opensource/tracing-aws-lambda-functions-in-aws-x-ray-with-opentelemetry/"
 
@@ -37,8 +118,8 @@ blogs:
     author: "Alolita Sharma and Nizar Tyrewalla"
     date: "24-Mar-2021"
     body:
-      "The StatsD receiver is part of the OpenTelemetry Collector and collects StatsD metrics for exporting to your 
-      choice of monitoring service. This StatsD receiver collects metrics to send to Amazon CloudWatch. The receiver aggregates 
+      "The StatsD receiver is part of the OpenTelemetry Collector and collects StatsD metrics for exporting to your
+      choice of monitoring service. This StatsD receiver collects metrics to send to Amazon CloudWatch. The receiver aggregates
       and summarizes telemetry data for a user-defined aggregation interval ..."
     link: "https://aws.amazon.com/blogs/opensource/aws-distro-for-opentelemetry-adds-statsd-and-java-support/"
 
@@ -46,8 +127,8 @@ blogs:
     author: "Alolita Sharma and Nizar Tyrewalla"
     date: "24-Feb-2021"
     body:
-      "AWS Distro for OpenTelemetry (ADOT) v 0.7.0 is now available with .NET support. This release adds support 
-      for tracing .NET applications using open source OpenTelemetry’s .NET API and SDK. You can use AWS monitoring 
+      "AWS Distro for OpenTelemetry (ADOT) v 0.7.0 is now available with .NET support. This release adds support
+      for tracing .NET applications using open source OpenTelemetry’s .NET API and SDK. You can use AWS monitoring
       backends, such as AWS X-Ray, as well as partner monitoring solutions"
     link: "https://aws.amazon.com/blogs/opensource/aws-distro-for-opentelemetry-adds-net-tracing-support/"
 
@@ -55,18 +136,18 @@ blogs:
     author: "Alolita Sharma"
     date: "10-Feb-2021"
     body:
-      "As software deployments become increasingly more complex, the ability to better understand our applications and 
-      infrastructure also becomes vitally important. This ability can be achieved through observability, which deals with 
-      understanding the internal state of a system based on its external outputs. This process goes beyond just 
-      simple monitoring.  ..."
+      "As software deployments become increasingly more complex, the ability to better understand our applications and
+      infrastructure also becomes vitally important. This ability can be achieved through observability, which deals with
+      understanding the internal state of a system based on its external outputs. This process goes beyond just
+      simple monitoring ..."
     link: "https://aws.amazon.com/blogs/opensource/building-a-prometheus-remote-write-exporter-for-the-opentelemetry-python-sdk/"
 
   - title: "AWS Distro for OpenTelemetry adds partner exporters for metrics and traces"
     author: "Alolita Sharma and Nizar Tyrewalla"
     date: "02-Feb-2021"
     body:
-      "Today’s release of AWS Distro for OpenTelemetry (ADOT) 0.7.0 adds support for four more partner monitoring 
-      solutions—Datadog, Dynatrace, New Relic, and Splunk—enabling customers to send correlated metrics and traces 
+      "Today’s release of AWS Distro for OpenTelemetry (ADOT) 0.7.0 adds support for four more partner monitoring
+      solutions—Datadog, Dynatrace, New Relic, and Splunk—enabling customers to send correlated metrics and traces
       using OpenTelemetry ..."
     link: "https://aws.amazon.com/blogs/opensource/aws-distro-for-opentelemetry-adds-partner-exporters-for-metrics-and-traces/"
 
@@ -74,8 +155,8 @@ blogs:
     author: "Michael Hausenblas"
     date: "15-Jan-2021"
     body:
-      "In the context of containerized microservices, we face the challenge of being able to tell where along the 
-      request path things happen and efficiently drill into signals. As a developer, you don’t want to fly blind and 
+      "In the context of containerized microservices, we face the challenge of being able to tell where along the
+      request path things happen and efficiently drill into signals. As a developer, you don’t want to fly blind and
       one popular way to provide these insights is distributed tracing ... "
     link: "https://aws.amazon.com/blogs/opensource/migrating-x-ray-tracing-to-aws-distro-for-opentelemetry/"
 
@@ -120,7 +201,7 @@ blogs:
     body:
       "In this post, AWS intern Yang Hu describes how he made his first engineering contributions to the popular open source
       observability project—OpenTelemetry. His contributions to OpenTelemetry included adding a Prometheus Remote Write Exporter
-      to the OpenTelemetry Collector. "
+      to the OpenTelemetry Collector."
     link: "https://aws.amazon.com/blogs/opensource/aws-adds-prometheus-remote-write-exporter-to-opentelemetry-collector/"
 
   - title: "Distributed tracing with OpenTelemetry"
@@ -129,7 +210,7 @@ blogs:
     body:
       "How can we keep an eye on all the services that a request went through? This is where distributed tracing comes
       in. Tracing enables linking processing together between the services that handle a request, even as it goes
-      across network boundaries between containers. "
+      across network boundaries between containers."
     link: "https://aws.amazon.com/blogs/opensource/distributed-tracing-with-opentelemetry/"
 
   - title: "Distributed Tracing using AWS Distro for OpenTelemetry"
@@ -230,7 +311,7 @@ searchIndex:
   Collector and Prometheus Remote Write Exporter. They share their experiences in tackling challenges they faced and
   how they applied lessons learned to ensure the reliability of the AWS Distro for the OpenTelemetry Collector as
   the de facto agent for sending metrics to AWS Managed Service for Prometheus.
-  
+
   AWS adds Prometheus Remote Write Exporter to OpenTelemetry Collector
   Alolita Sharma
   09-Nov-2020
