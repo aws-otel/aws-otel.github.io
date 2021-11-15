@@ -43,7 +43,7 @@ In order to trace your application, the following OpenTelemetry JavaScript packa
 npm install --save \
   @opentelemetry/api \
   @opentelemetry/sdk-trace-node \
-  @opentelemetry/exporter-collector-grpc
+  @opentelemetry/exporter-trace-otlp-grpc
 ```
 
 Install the AWS X-Ray components.
@@ -65,7 +65,7 @@ In order to send trace data to AWS X-Ray via the ADOT Collector, you must config
 ```javascript lineNumbers=true 
 const { SimpleSpanProcessor } = require("@opentelemetry/tracing");
 const { NodeTracerProvider } = require("@opentelemetry/node");
-const { CollectorTraceExporter } = require("@opentelemetry/exporter-collector-grpc");
+const { OTLPTraceExporter } = require("@opentelemetry/exporter-trace-otlp-grpc");
 const { AWSXRayPropagator } = require("@opentelemetry/propagator-aws-xray");
 const { AWSXRayIdGenerator } = require("@opentelemetry/id-generator-aws-xray");
 const { trace } = require("@opentelemetry/api");
@@ -83,7 +83,7 @@ module.exports = (serviceName) => {
   const tracerProvider = new NodeTracerProvider(tracerConfig);
 
   // add OTLP exporter
-  const otlpExporter = new CollectorTraceExporter({
+  const otlpExporter = new OTLPTraceExporter({
     serviceName: serviceName,
     // port configured in the Collector config, defaults to 4317
     url: "localhost:4317"
