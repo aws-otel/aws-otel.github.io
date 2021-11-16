@@ -36,34 +36,58 @@ Re-upload source zip with function executable renamed to `bootstrap`
 
 ### Code Instrumentation
 
-1. Add dependencies for the [ADOT Lambda Go SDK](https://pkg.go.dev/go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda) and the [recommended SDK configuration options for AWS X-Ray](https://pkg.go.dev/go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda/xrayconfig)
+1. Add dependencies for the [ADOT Lambda Go SDK](https://pkg.go.dev/go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda) and the [recommended SDK configuration options for AWS X-Ray](https://pkg.go.dev/go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda/xrayconfig).
 
 ```go
 import (
+    "context"
+    "github.com/aws/aws-lambda-go/lambda"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda/xrayconfig"
+	"go.opentelemetry.io/contrib/propagators/aws/xray"
+    "go.opentelemetry.io/otel"
 )
 ```
-
-2. Wrap handler in call to Lambda.Start() or Lambda.StartHendler() using the recommended X-Ray configuration options
-
+2. Add below code which is using configured tracer provider and shutting down the tracer provider in `main()` function outside of lambda handler. Customer can configure their own custom tracer provider as well and pass it on to the Go Lambda instrumentation wrapper.
 ```go
-lambda.Start(otellambda.InstrumentHandler(originalLambdaHandler, xrayconfig.WithRecommendedOptions()))
+   	ctx := context.Background()
+
+   	tp, err := xrayconfig.NewTracerProvider(ctx)
+   	if err != nil {
+   		fmt.Printf("error creating tracer provider: %v", err)
+   	}
+
+   	defer func(ctx context.Context) {
+   		err := tp.Shutdown(ctx)
+   		if err != nil {
+   			fmt.Printf("error shutting down tracer provider: %v", err)
+   		}
+   	}(ctx)
+
+   	otel.SetTracerProvider(tp)
+   	otel.SetTextMapPropagator(xray.Propagator{})
 ```
+
+3. Wrap handler in call to `lambda.Start()` or `lambda.StartHandler()` in `main()` function using the recommended X-Ray configuration options.
+```go
+   lambda.Start(otellambda.InstrumentHandler(lambda_handler(ctx), xrayconfig.WithRecommendedOptions(tp)... ))
+```
+
+4. At last, use [instrumenting an application](https://aws-otel.github.io/docs/getting-started/go-sdk/trace-manual-instr#instrumenting-an-application) guide to instrument downstream requests inside lambda function.
 
 ### Lambda Layer
 
 This layer includes a reduced version of the [AWS Distro for OpenTelemetry Collector (ADOT Collector)](https://github.com/aws-observability/aws-otel-collector),
   which runs as a Lambda extension.
 
-Note: Lambda layers are a rationalized resource, meaning that they can only be used in the Region in which they are published.
+Note: Lambda layers are a regionalized resource, meaning that they can only be used in the Region in which they are published.
  Make sure to use the layer in the same region as your Lambda functions.
 
 Find the supported regions and ARN in the table below for the ARNs to consume.
 
 |Supported   Regions |Lambda layer ARN format| Contents |
 |---------------------|-------------------------|----------|
-| ap-northeast-1<br/>ap-northeast-2<br/>ap-south-1<br/>ap-southeast-1<br/>ap-southeast-2<br/>ca-central-1<br/>eu-central-1<br/>eu-north-1<br/>eu-west-1<br/>eu-west-2<br/>eu-west-3<br/>sa-east-1<br/>us-east-1<br/>us-east-2<br/>us-west-1<br/>us-west-2 | arn:aws:lambda:\<region\>:901920570463:layer:aws-otel-collector-ver-0-36-0:1 | Contains the [ADOT Collector for Lambda v0.11.0](https://github.com/aws-observability/aws-otel-collector/releases/tag/pkg%2Flambdacomponents%2Fv0.11.0)|
+| ap-northeast-1<br/>ap-northeast-2<br/>ap-south-1<br/>ap-southeast-1<br/>ap-southeast-2<br/>ca-central-1<br/>eu-central-1<br/>eu-north-1<br/>eu-west-1<br/>eu-west-2<br/>eu-west-3<br/>sa-east-1<br/>us-east-1<br/>us-east-2<br/>us-west-1<br/>us-west-2 | arn:aws:lambda:\<region\>:901920570463:layer:aws-otel-collector-ver-0-39-0:1 | Contains the [ADOT Collector for Lambda v0.15.0](https://github.com/aws-observability/aws-otel-collector/releases/tag/pkg%2Flambdacomponents%2Fv0.15.0)|
 
 
 ### Enable Tracing
