@@ -63,7 +63,7 @@ npm install --save \
 In order to send trace data to AWS X-Ray via the ADOT Collector, you must configure the X-Ray ID generator, X-Ray propagator, and collector gRPC exporter on the global tracer provider.
 
 ```javascript lineNumbers=true 
-const { SimpleSpanProcessor } = require("@opentelemetry/tracing");
+const { BatchSpanProcessor } = require("@opentelemetry/tracing");
 const { NodeTracerProvider } = require("@opentelemetry/node");
 const { CollectorTraceExporter } = require("@opentelemetry/exporter-collector-grpc");
 const { AWSXRayPropagator } = require("@opentelemetry/propagator-aws-xray");
@@ -94,7 +94,7 @@ module.exports = (serviceName) => {
       fs.readFileSync("./client.crt")
     )
   });
-  tracerProvider.addSpanProcessor(new SimpleSpanProcessor(otlpExporter));
+  tracerProvider.addSpanProcessor(new BatchSpanProcessor(otlpExporter));
 
   // Register the tracer provider with an X-Ray propagator
   tracerProvider.register({
