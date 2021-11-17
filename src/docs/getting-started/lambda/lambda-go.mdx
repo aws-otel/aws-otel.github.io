@@ -70,7 +70,7 @@ import (
 
 3. Wrap handler in call to `lambda.Start()` or `lambda.StartHandler()` in `main()` function using the recommended X-Ray configuration options.
 ```go
-   lambda.Start(otellambda.InstrumentHandler(lambda_handler(ctx), xrayconfig.WithRecommendedOptions(tp)... ))
+lambda.Start(otellambda.InstrumentHandler(lambda_handler(ctx), xrayconfig.WithRecommendedOptions(tp)... ))
 ```
 
 4. At last, use [instrumenting an application](https://aws-otel.github.io/docs/getting-started/go-sdk/trace-manual-instr#instrumenting-an-application) guide to instrument downstream requests inside lambda function.
