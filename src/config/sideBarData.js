@@ -59,6 +59,8 @@ export const sideBarData = [
         {label: "CloudWatch Metrics", link: "/docs/getting-started/cloudwatch-metrics"},
         {label: "CloudWatch Container Insights", link: "/docs/getting-started/container-insights"},
         {label: "X-Ray", link: "/docs/getting-started/x-ray"},
+        {label: "ECS Configurations", link: "/docs/getting-started/ecs-config"},
+
       ],
       link: "/docs/null"
     }

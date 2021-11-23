@@ -1,0 +1,442 @@
+---
+title: 'Understanding your Configurations'
+description:
+    In this guide, we'll be explaining the types of services each of the configuration utilizes
+    and the code block of the configurations.
+path: '/docs/getting-started/ecs-configurations/ecs-config-section'
+---
+
+We have 5 different configurations that you can select from, depending on your monitoring service destination. See below for details.
+
+## AMP Configurations for metrics
+
+Amazon Managed Services for Prometheus (AMP) allows us to easily establish both monitoring and alerting services for container environments on EKS, ECS, Lambda, and many other AWS services. Specifically, AMP collects metrics in the form of time series data from containers & nodes and stores them. Metrics information is stored with the timestamp at which it was recorded and can contain many forms of data that the user chooses to include such as spans, query duration, etc. 
+
+Here is a list of metrics that we can collect using the [java-sample-app](https://github.com/aws-observability/aws-otel-java-instrumentation/tree/main/sample-apps/springboot) and AMP configuration.
+
+| Metrics	                  | Definition		                 	                 	                 	                 	        |
+| --------------------------- | -------------------------------------------------------------------------------------------------------	|
+| http_server_active_requests | HTTP requests are messages sent by the client to initiate an action on the server	                    |
+| http_server_duration_count  | The average amount of time it takes for a queried metric to deliver	   							        |
+| queuesize	                  | Size of HTTP queue  requests that provides time for new connections to become available on the server,	|
+| runtime_jvm_gc_count	      | Java virtual machine runtime metrics																	|
+| runtime_jvm_gc_time	      | Java virtual machine runtime metrics																	|
+| runtime_jvm_memory_area	  | Java virtual machine runtime metrics																	|
+| runtime_jvm_memory_pool	  | Java virtual machine runtime metrics																	|
+| spansExportedByExporter	  | Number of spans that are exported by the exporter														|
+| spansSeenByExporter	      | Number of spans that are seen by the exporter															|
+
+### Configuring dimensions
+
+While visualizing the Amazon Managed Services for Prometheus (AMP) metrics in Amazon Managed Services for Grafana (AMG), you can query and select a metric using the metric browser. When deploying your configuration, you will have multiple metrics coming from different tasks and clusters. As a result, you can use the following dimensions in your query to identify and analyze the metrics related to specific task or cluster. Below are are the possible dimensions with a description of what each dimension mean.
+
+|Metric Dimension	         |Definition	                    |
+|------------------------- |------------------------------	|
+|aws_ecs_cluster_name	     |ECS Cluster Name	              |
+|aws_ecs_service_name	     |ECS Service Name	              |
+|aws_ecs_task_arn	         |Task ARN ID	                    |
+|aws_ecs_task_family       |Task Family name	              |
+|aws_ecs_task_id	         |Task ID	                        |
+|aws_ecs_task_known_status |ECS Task Status	                |
+|aws_ecs_task_launch_type	 |ECS Task launch type	          |
+|aws_ecs_task_version	     |ECS Task family revision number	|
+|cloud_account_id	         |AWS Account ID	                |
+|cloud_availability_zone	 |AWS Availability Zone        	  |
+|cloud_region	             |AWS region	                    |
+
+Below is an example of a configuration which utilizes ECS and AMP to output metrics for you to visualize on a service such as AMG.
+
+**[ecs-amp.yaml](https://github.com/aws-observability/aws-otel-collector/blob/main/config/ecs/ecs-amp.yaml)**
+
+```yaml lineNumbers=true 
+extensions:
+  health_check:
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+  awsecscontainermetrics:
+
+processors:
+  batch/metrics:
+    timeout: 60s
+  resourcedetection:
+    detectors:
+      - env
+      - system
+      - ecs
+      - ec2
+  filter:
+    metrics:
+      include:
+        match_type: strict
+        metric_names:
+          - ecs.task.memory.reserved
+          - ecs.task.memory.utilized
+          - ecs.task.cpu.reserved
+          - ecs.task.cpu.utilized
+          - ecs.task.network.rate.rx
+          - ecs.task.network.rate.tx
+          - ecs.task.storage.read_bytes
+          - ecs.task.storage.write_bytes
+          - container.duration
+
+exporters:
+  awsprometheusremotewrite:
+    endpoint: $AWS_PROMETHEUS_ENDPOINT
+    resource_to_telemetry_conversion:
+      enabled: true
+
+service:
+  pipelines:
+    metrics/application:
+      receivers: [otlp]
+      processors: [resourcedetection, batch/metrics]
+      exporters: [awsprometheusremotewrite]
+    metrics:
+      receivers: [awsecscontainermetrics]
+      processors: [filter]
+      exporters: [awsprometheusremotewrite]
+
+  extensions: [health_check]
+```
+
+## Amazon CloudWatch Configuration for Application metrics
+
+Amazon CloudWatch collects and processes raw data from Amazon ECS into readable, near real-time metrics. It receives time-series metrics and trace data in real time. Our receiver generates data points and Amazon CloudWatch presents this data within the Amazon CloudWatch console. With Amazon CloudWatch, we able to display more data points for you to observe, one sample count in Amazon CloudWatch is the aggregate of multiple data points in one minute.
+
+Here is a list of metrics that you can receive from your exporter by using the java-sample-app and Amazon CloudWatch Configuration.
+
+| Metrics	                  | Definition		                 	                 	                 	                 	        |
+| --------------------------- | -------------------------------------------------------------------------------------------------------	|
+| http_server_active_requests | HTTP requests are messages sent by the client to initiate an action on the server	                    |
+| http_server_duration_count  | The average amount of time it takes for a queried metric to deliver	   							        |
+| queuesize	                  | Size of HTTP queue  requests that provides time for new connections to become available on the server,	|
+| runtime_jvm_gc_count	      | Java virtual machine runtime metrics																	|
+| runtime_jvm_gc_time	      | Java virtual machine runtime metrics																	|
+| runtime_jvm_memory_area	  | Java virtual machine runtime metrics																	|
+| runtime_jvm_memory_pool	  | Java virtual machine runtime metrics																	|
+| spansExportedByExporter	  | Number of spans that are exported by the exporter														|
+| spansSeenByExporter	      | Number of spans that are seen by the exporter															|
+
+Below is an example of a configuration which utilizes ECS and Amazon CloudWatch.
+
+**[ecs-cloudwatch.yaml](https://github.com/aws-observability/aws-otel-collector/blob/main/config/ecs/ecs-cloudwatch.yaml)**
+
+```yaml lineNumbers=true 
+extensions:
+  health_check:
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch/metrics:
+    timeout: 60s
+  resourcedetection:
+    detectors:
+      - env
+      - ecs
+      - ec2
+  resource:
+    attributes:
+      - key: TaskDefinitionFamily
+        from_attribute: aws.ecs.task.family
+        action: insert
+      - key: aws.ecs.task.family
+        action: delete
+      - key: InstanceId
+        from_attribute: host.id
+        action: insert
+      - key: host.id
+        action: delete
+      - key: TaskARN
+        from_attribute: aws.ecs.task.arn
+        action: insert
+      - key: aws.ecs.task.arn
+        action: delete
+      - key: TaskDefinitionRevision
+        from_attribute: aws.ecs.task.revision
+        action: insert
+      - key: aws.ecs.task.revision
+        action: delete
+      - key: LaunchType
+        from_attribute: aws.ecs.launchtype
+        action: insert
+      - key: aws.ecs.launchtype
+        action: delete
+      - key: ClusterARN
+        from_attribute: aws.ecs.cluster.arn
+        action: insert
+      - key: aws.ecs.cluster.arn
+        action: delete
+      - key: cloud.provider
+        action: delete
+      - key: cloud.platform
+        action: delete
+      - key: cloud.account.id
+        action: delete
+      - key: cloud.region
+        action: delete
+      - key: cloud.availability_zone
+        action: delete
+      - key: aws.log.group.names
+        action: delete
+      - key: aws.log.group.arns
+        action: delete
+      - key: aws.log.stream.names
+        action: delete
+      - key: host.image.id
+        action: delete
+      - key: host.name
+        action: delete
+      - key: host.type
+        action: delete
+
+exporters:
+  awsemf/application:
+    namespace: ECS/AWSOTel/Application
+    log_group_name: '/aws/ecs/application/metrics'
+    dimension_rollup_option: NoDimensionRollup
+    resource_to_telemetry_conversion:
+      enabled: true
+
+service:
+  pipelines:
+    metrics/application:
+      receivers: [otlp]
+      processors: [resourcedetection, resource, batch/metrics]
+      exporters: [awsemf/application]
+
+  extensions: [health_check]
+```
+
+## X-Ray Configuration for traces
+
+AWS X-Ray helps developers analyze and debug production, distributed applications, such as those built using a microservices architecture. With X-Ray, you can understand how your application and its underlying services are performing to identify and troubleshoot the root cause of performance issues and errors.
+
+Using the X-Ray configuration, you can monitor application traces including the performance of API calls to other components or services. For any trace request to your application, you can see detailed information from not only the request and response, but also calls that your application makes to downstream AWS resources, micro-services, databases and HTTP web APIs.
+
+**[ecs-xray.yaml](https://github.com/aws-observability/aws-otel-collector/blob/main/config/ecs/ecs-xray.yaml)**
+
+```yaml lineNumbers=true 
+extensions:
+  health_check:
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch/traces:
+    timeout: 1s
+    send_batch_size: 50
+  resourcedetection:
+    detectors:
+      - env
+      - system
+      - ecs
+      - ec2
+
+exporters:
+  awsxray:
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [resourcedetection, batch/traces]
+      exporters: [awsxray]
+
+  extensions: [health_check]
+```
+
+## Amazon CloudWatch and X-Ray Configuration for Metrics and Traces
+
+By utilizing this configuration you will be able to see datapoints for both metrics and traces in Amazon CloudWatch and X-Ray.
+
+**[ecs-cloudwatch-xray.yaml](https://github.com/aws-observability/aws-otel-collector/blob/main/config/ecs/ecs-cloudwatch-xray.yaml)**
+
+```yaml lineNumbers=true 
+extensions:
+  health_check:
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch/traces:
+    timeout: 1s
+    send_batch_size: 50
+  batch/metrics:
+    timeout: 60s
+  resourcedetection:
+    detectors:
+      - env
+      - ecs
+      - ec2
+  resource:
+    attributes:
+      - key: TaskDefinitionFamily
+        from_attribute: aws.ecs.task.family
+        action: insert
+      - key: aws.ecs.task.family
+        action: delete
+      - key: InstanceId
+        from_attribute: host.id
+        action: insert
+      - key: host.id
+        action: delete
+      - key: TaskARN
+        from_attribute: aws.ecs.task.arn
+        action: insert
+      - key: aws.ecs.task.arn
+        action: delete
+      - key: TaskDefinitionRevision
+        from_attribute: aws.ecs.task.revision
+        action: insert
+      - key: aws.ecs.task.revision
+        action: delete
+      - key: LaunchType
+        from_attribute: aws.ecs.launchtype
+        action: insert
+      - key: aws.ecs.launchtype
+        action: delete
+      - key: ClusterARN
+        from_attribute: aws.ecs.cluster.arn
+        action: insert
+      - key: aws.ecs.cluster.arn
+        action: delete
+      - key: cloud.provider
+        action: delete
+      - key: cloud.platform
+        action: delete
+      - key: cloud.account.id
+        action: delete
+      - key: cloud.region
+        action: delete
+      - key: cloud.availability_zone
+        action: delete
+      - key: aws.log.group.names
+        action: delete
+      - key: aws.log.group.arns
+        action: delete
+      - key: aws.log.stream.names
+        action: delete
+      - key: host.image.id
+        action: delete
+      - key: host.name
+        action: delete
+      - key: host.type
+        action: delete
+
+exporters:
+  awsxray:
+  awsemf/application:
+    namespace: ECS/AWSOTel/Application
+    log_group_name: '/aws/ecs/application/metrics'
+    dimension_rollup_option: NoDimensionRollup
+    resource_to_telemetry_conversion:
+      enabled: true
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [resourcedetection, batch/traces]
+      exporters: [awsxray]
+    metrics/application:
+      receivers: [otlp]
+      processors: [resourcedetection, resource, batch/metrics]
+      exporters: [awsemf/application]
+
+  extensions: [health_check]
+```
+
+## AMP and X-Ray Configuration for Metrics and Traces
+
+By utilizing this configuration you will be able to see datapoints from both metrics and traces in Amazon Managed Services for Prometheus (AMP) and X-Ray. 
+
+**[ecs-amp-xray.yaml](https://github.com/aws-observability/aws-otel-collector/blob/main/config/ecs/ecs-amp-xray.yaml)**
+```yaml lineNumbers=true 
+extensions:
+  health_check:
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+  awsecscontainermetrics:
+
+processors:
+  batch/traces:
+    timeout: 1s
+    send_batch_size: 50
+  batch/metrics:
+    timeout: 60s
+  resourcedetection:
+    detectors:
+      - env
+      - system
+      - ecs
+      - ec2
+  filter:
+    metrics:
+      include:
+        match_type: strict
+        metric_names:
+          - ecs.task.memory.reserved
+          - ecs.task.memory.utilized
+          - ecs.task.cpu.reserved
+          - ecs.task.cpu.utilized
+          - ecs.task.network.rate.rx
+          - ecs.task.network.rate.tx
+          - ecs.task.storage.read_bytes
+          - ecs.task.storage.write_bytes
+          - container.duration
+
+exporters:
+  awsxray:
+  awsprometheusremotewrite:
+    endpoint: $AWS_PROMETHEUS_ENDPOINT
+    resource_to_telemetry_conversion:
+      enabled: true
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [resourcedetection, batch/traces]
+      exporters: [awsxray]
+    metrics/application:
+      receivers: [otlp]
+      processors: [resourcedetection, batch/metrics]
+      exporters: [awsprometheusremotewrite]
+    metrics:
+      receivers: [awsecscontainermetrics]
+      processors: [filter]
+      exporters: [awsprometheusremotewrite]
+
+  extensions: [health_check]
+```
