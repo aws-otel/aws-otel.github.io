@@ -276,6 +276,29 @@ DynamoDbClient.builder()
 
 This will enable tracing for all DynamoDB calls using this client.
 
+### Using X-Ray Remote Sampling
+
+The `opentelemetry-aws-xray` artifact provides a `Sampler` implementation for use with [X-Ray remote sampling](https://docs.aws.amazon.com/xray/latest/devguide/xray-console-sampling.html).
+
+When initializing the OpenTelemetry SDK, register the `AwsXrayRemoteSampler`.
+
+```java lineNumbers=true
+Resource resource = Resource.builder()
+  ...
+  .build();
+
+OpenTelemetrySdk.builder()
+  .setTracerProvider(SdkTracerProvider.builder()
+    .setResource(resource)
+    .setSampler(AwsXrayRemoteSampler.newBuilder(resource).build())
+    ...
+    .build())
+  .build();
+```
+
+You will also need to [configure the OpenTelemetry collector](/docs/getting-started/remote-sampling)
+to allow the application to fetch sampling configuration.
+
 <SectionSeparator />
 
 ## Custom Instrumentation

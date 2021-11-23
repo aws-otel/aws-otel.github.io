@@ -43,7 +43,7 @@ In order to trace your application, the following OpenTelemetry JavaScript packa
 npm install --save \
   @opentelemetry/api \
   @opentelemetry/sdk-trace-node \
-  @opentelemetry/exporter-collector-grpc
+  @opentelemetry/exporter-trace-otlp-grpc
 ```
 
 Install the AWS X-Ray components.
@@ -63,9 +63,9 @@ npm install --save \
 In order to send trace data to AWS X-Ray via the ADOT Collector, you must configure the X-Ray ID generator, X-Ray propagator, and collector gRPC exporter on the global tracer provider.
 
 ```javascript lineNumbers=true 
-const { SimpleSpanProcessor } = require("@opentelemetry/tracing");
+const { BatchSpanProcessor } = require("@opentelemetry/tracing");
 const { NodeTracerProvider } = require("@opentelemetry/node");
-const { CollectorTraceExporter } = require("@opentelemetry/exporter-collector-grpc");
+const { OTLPTraceExporter } = require("@opentelemetry/exporter-trace-otlp-grpc");
 const { AWSXRayPropagator } = require("@opentelemetry/propagator-aws-xray");
 const { AWSXRayIdGenerator } = require("@opentelemetry/id-generator-aws-xray");
 const { trace } = require("@opentelemetry/api");
@@ -83,7 +83,7 @@ module.exports = (serviceName) => {
   const tracerProvider = new NodeTracerProvider(tracerConfig);
 
   // add OTLP exporter
-  const otlpExporter = new CollectorTraceExporter({
+  const otlpExporter = new OTLPTraceExporter({
     serviceName: serviceName,
     // port configured in the Collector config, defaults to 4317
     url: "localhost:4317"
@@ -94,7 +94,7 @@ module.exports = (serviceName) => {
       fs.readFileSync("./client.crt")
     )
   });
-  tracerProvider.addSpanProcessor(new SimpleSpanProcessor(otlpExporter));
+  tracerProvider.addSpanProcessor(new BatchSpanProcessor(otlpExporter));
 
   // Register the tracer provider with an X-Ray propagator
   tracerProvider.register({
@@ -150,19 +150,19 @@ Hapi, Express, Redis, GraphQL, and many more. The full list of supported librari
 
 ### Instrumenting the AWS SDK
 
-Tracing support for any AWS SDK calls  Amazon DynamoDB, S3, and others is provided by the 
-[OpenTelemetry AWS SDK Instrumentation](https://github.com/aspecto-io/opentelemetry-ext-js/tree/master/packages/instrumentation-aws-sdk) by [aspecto.io](https://www.aspecto.io/).
+Tracing support for downstream AWS SDK calls to Amazon DynamoDB, S3, and others is provided by the 
+[OpenTelemetry AWS SDK Instrumentation](https://github.com/open-telemetry/opentelemetry-js-contrib/tree/main/plugins/node/opentelemetry-instrumentation-aws-sdk).
 
 Install the following dependency with npm:
 
 ```
-npm install --save opentelemetry-instrumentation-aws-sdk
+npm install --save @opentelemetry/instrumentation-aws-sdk
 ```
 
-Then be sure to disable the old plugin-based instrumentation and register the new AWS SDK instrumentation in the provided tracer.js template:
+Then register the AWS SDK instrumentation as follows:
 
 ```js lineNumbers=true
-const { AwsInstrumentation } = require('opentelemetry-instrumentation-aws-sdk');
+const { AwsInstrumentation } = require('@opentelemetry/instrumentation-aws-sdk');
 const { registerInstrumentations } = require('@opentelemetry/instrumentation');
 
 registerInstrumentations({

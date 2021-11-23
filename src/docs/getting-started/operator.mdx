@@ -221,7 +221,7 @@ $ helm install \
     cert-manager jetstack/cert-manager \
     --namespace cert-manager \
     --create-namespace \
-    --version v1.4.3
+    --version v1.5.4
 ```
 
 Check if your cert-manager is ready:
@@ -349,16 +349,16 @@ $ awscurl --service="aps" --region="YOUR-AMP-REGION" \
 ### Cleanup
 Delete the Collector resource:
 ```console
-$ kubectl delete -f <<EOF
+$ kubectl delete -f - <<EOF
 apiVersion: opentelemetry.io/v1alpha1
 kind: OpenTelemetryCollector
 metadata:
-name: my-adot-collector
+  name: example
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-name: fabric8-rbac
+  name: grant-collector-access
 EOF
 ```
 
@@ -369,6 +369,6 @@ $ helm uninstall my-operator
 
 Uninstall the cert-manager:
 ```console
-$ helm uninstall cert-manager -n cert-manager
+$ helm --namespace cert-manager delete cert-manager
 $ kubectl delete ns cert-manager
 ```
