@@ -1,0 +1,32 @@
+[Run AWS OTel Collector Examples with Docker Setup Steps](https://aws-otel.github.io/docs/setup/docker-images#steps) docker-compose.yaml:
+
+```yaml
+version: "2"
+services:
+
+  # AWS Observability Collector
+  aws-ot-collector:
+    image: aottestbed/awscollector:v0.1.11
+    command: ["--log-level=DEBUG"]
+    environment:
+      - AWS_ACCESS_KEY_ID=<to_be_added>
+      - AWS_SECRET_ACCESS_KEY=<to_be_added>
+      - AWS_REGION=<to_be_added>
+    volumes:
+      - ~/.aws:/root/.aws
+    ports:
+      - "1777:1777"   # pprof extension
+      - "55679:55679" # zpages extension
+      - "55680:55680" # OTLP receiver
+      - "13133"       # health_check
+
+  # Metric and Trace Sample Data Generator
+  ot-metric-emitter:
+    image: josephwy/integ-test-emitter:0.9.1
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=aws-ot-collector:55680
+      - OTEL_RESOURCE_ATTRIBUTES=service.namespace=AOCDockerDemo,service.name=AOCDockerDemoService
+      - S3_REGION=us-west-2
+    depends_on:
+      - aws-ot-collector
+```
