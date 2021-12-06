@@ -59,7 +59,7 @@ export const sideBarData = [
         {label: "CloudWatch Metrics", link: "/docs/getting-started/cloudwatch-metrics"},
         {label: "CloudWatch Container Insights", link: "/docs/getting-started/container-insights"},
         {label: "X-Ray", link: "/docs/getting-started/x-ray"},
-        {label: "ECS Configurations", link: "/docs/getting-started/ecs-config"},
+        {label: "ECS Configurations", link: "/docs/getting-started/using-ecs-console-for-ecs-adot-observability"},
 
       ],
       link: "/docs/null"
@@ -73,6 +73,7 @@ export const sideBarData = [
         {label: "Permissions", link: "/docs/setup/permissions"},
         {label: "Docker Images", link: "/docs/setup/docker-images"},
         {label: "ECS", link: "/docs/setup/ecs"},
+	{label: "ECS Console Setup", link: "/docs/getting-started/ecs-configurations/ecs-console-setup"},  
         {label: "EC2", link: "/docs/setup/ec2"},
         {label: "EKS", link: "/docs/setup/eks"},
         {label: "On-Premises", link: "/docs/setup/on-premises"},
