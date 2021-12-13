@@ -1,6 +1,9 @@
 name: Gatsby Publish
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   build:
@@ -9,8 +12,8 @@ jobs:
       - uses: actions/checkout@v1
       - uses: enriikke/gatsby-gh-pages-action@v2
         env:
-          GH_API_KEY: ${{ secrets.TOKEN }}
+          GH_API_KEY: ${{ secrets.GITHUB_TOKEN }}
         with:
-          access-token: ${{ secrets.DEMO }}
+          access-token: ${{ secrets.demo }}
           deploy-branch: gh-pages
 #          gatsby-args: --prefix-paths
