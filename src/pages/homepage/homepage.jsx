@@ -14,6 +14,7 @@ import GetInvolvedSection from "./sections/getInvolvedSection"
 import WhatsNewSection from "./sections/whatsNewSection"
 import HowItWorksSection from "./sections/howItWorksSection"
 import {Link} from "gatsby";
+import BackgroundImage from "assets/img/himalia_bg.jpg";
 
 class HomePage extends React.Component {
 
@@ -32,7 +33,7 @@ class HomePage extends React.Component {
                     }}
                     {...rest}
                 />
-              <Parallax image={require("assets/img/himalia_bg.jpg")}>
+              <Parallax image={BackgroundImage}>
                 <div className={classes.container}>
                   <GridContainer>
                     <GridItem>

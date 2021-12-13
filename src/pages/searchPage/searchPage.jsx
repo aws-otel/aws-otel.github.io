@@ -7,6 +7,7 @@ import Parallax from "components/Parallax/Parallax.jsx"
 import HeaderLinks from "components/Header/HeaderLinks.jsx"
 import SearchPageStyle from "../../assets/jss/material-kit-react/views/searchPage.jsx"
 import SearchHeader from "components/Search/header.js"
+import BackgroundImage from "assets/img/himalia_bg.jpg"
 
 class SearchPage extends React.Component {
 
@@ -26,7 +27,7 @@ class SearchPage extends React.Component {
               }}
               {...rest}
           />
-          <Parallax small image={require("assets/img/himalia_bg.jpg")}>
+          <Parallax small image={BackgroundImage}>
           </Parallax>
 
           <div className={classNames(classes.main, classes.mainRaised)} >

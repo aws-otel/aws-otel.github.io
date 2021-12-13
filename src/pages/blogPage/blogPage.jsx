@@ -7,6 +7,7 @@ import Parallax from "components/Parallax/Parallax.jsx";
 import HeaderLinks from "components/Header/HeaderLinks.jsx";
 import BlogPageStyle from "assets/jss/material-kit-react/views/blogPage.jsx";
 import MainBodySection from "./sections/mainBodySection.jsx"
+import BackgroundImage from "assets/img/himalia_bg.jpg"
 
 class BlogPage extends React.Component {
   render() {
@@ -24,7 +25,7 @@ class BlogPage extends React.Component {
               }}
               {...rest}
           />
-          <Parallax small image={require("assets/img/himalia_bg.jpg")}>
+          <Parallax small image={BackgroundImage}>
           </Parallax>
 
           <div className={classNames(classes.main, classes.mainRaised)} >

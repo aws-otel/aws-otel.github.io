@@ -1,9 +1,9 @@
 /* @jsx jsx */
 import React from 'react'
-import { jsx, css } from '@emotion/core'
+import { jsx, css } from '@emotion/react'
 import PropTypes from 'prop-types'
 import { MdEdit } from 'react-icons/md'
-import { useTheme } from 'emotion-theming'
+import { useTheme } from '@emotion/react'
 
 export default function EditGithub({ githubEditUrl }) {
   const theme = useTheme()

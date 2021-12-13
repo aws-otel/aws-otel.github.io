@@ -8,6 +8,7 @@ import HeaderLinks from "components/Header/HeaderLinks.jsx"
 import DownloadPageStyle from "../../assets/jss/material-kit-react/views/downloadPage.jsx"
 import DownloadItems from "./sections/downloadItems"
 import SelectComponent from "./sections/selectComponent"
+import BackgroundImage from "assets/img/himalia_bg.jpg"
 
 class DownloadPage extends React.Component {
 
@@ -39,7 +40,7 @@ class DownloadPage extends React.Component {
               }}
               {...rest}
           />
-          <Parallax small image={require("assets/img/himalia_bg.jpg")}>
+          <Parallax small image={BackgroundImage}>
           </Parallax>
 
           <div className={classNames(classes.main, classes.mainRaised)} >
