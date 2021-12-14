@@ -7,7 +7,7 @@ import Parallax from "components/Parallax/Parallax.jsx";
 import HeaderLinks from "components/Header/HeaderLinks.jsx";
 import AboutPageStyle from "assets/jss/material-kit-react/views/aboutPage.jsx";
 import MainBodySection from "./sections/mainBodySection";
-import BackgroundImage from "assets/img/himalia_bg.jpg"
+import BackgroundImage from "assets/img/adot_bg.jpg"
 
 class AboutPage extends React.Component {
   render() {

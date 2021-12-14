@@ -31,7 +31,7 @@ export default function Layout({
   return (
     <div style={{backgroundColor: "white"}}>
       <MyHeader
-        brand={require("assets/img/himalia-logo.png")}
+        brand={require("assets/img/adot-logo.png")}
         rightLinks={<HeaderLinks />}
         color="dark"
       />

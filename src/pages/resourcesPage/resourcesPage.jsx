@@ -8,7 +8,7 @@ import HeaderLinks from "components/Header/HeaderLinks.jsx";
 import ResourcesPageStyle from "assets/jss/material-kit-react/views/resourcesPage.jsx";
 import RelatedProjectsSection from "./sections/relatedProjectsSection";
 import RelatedBlogsSection from "./sections/relatedBlogsSection";
-import BackgroundImage from "assets/img/himalia_bg.jpg"
+import BackgroundImage from "assets/img/adot_bg.jpg"
 
 class ResourcesPage extends React.Component {
   render() {

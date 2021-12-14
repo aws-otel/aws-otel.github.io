@@ -8,7 +8,7 @@ import HeaderLinks from "components/Header/HeaderLinks.jsx"
 import DownloadPageStyle from "../../assets/jss/material-kit-react/views/downloadPage.jsx"
 import DownloadItems from "./sections/downloadItems"
 import SelectComponent from "./sections/selectComponent"
-import BackgroundImage from "assets/img/himalia_bg.jpg"
+import BackgroundImage from "assets/img/adot_bg.jpg"
 
 class DownloadPage extends React.Component {
 

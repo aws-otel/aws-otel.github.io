@@ -7,7 +7,7 @@ import Parallax from "components/Parallax/Parallax.jsx";
 import HeaderLinks from "components/Header/HeaderLinks.jsx";
 import CodeOfConductPageStyle from "assets/jss/material-kit-react/views/codeOfConductPage.jsx";
 import MainBodySection from "./sections/mainBodySection";
-import BackgroundImage from "assets/img/himalia_bg.jpg"
+import BackgroundImage from "assets/img/adot_bg.jpg"
 
 class CodeOfConductPage extends React.Component {
   render() {

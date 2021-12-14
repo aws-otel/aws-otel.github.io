@@ -7,7 +7,7 @@ import Parallax from "components/Parallax/Parallax.jsx"
 import HeaderLinks from "components/Header/HeaderLinks.jsx"
 import SearchPageStyle from "../../assets/jss/material-kit-react/views/searchPage.jsx"
 import SearchHeader from "components/Search/header.js"
-import BackgroundImage from "assets/img/himalia_bg.jpg"
+import BackgroundImage from "assets/img/adot_bg.jpg"
 
 class SearchPage extends React.Component {
 

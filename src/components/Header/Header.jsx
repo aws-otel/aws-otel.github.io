@@ -11,7 +11,7 @@ import Hidden from "@material-ui/core/Hidden";
 import Drawer from "@material-ui/core/Drawer";
 import Menu from "@material-ui/icons/Menu";
 import headerStyle from "assets/jss/material-kit-react/components/headerStyle.jsx";
-import logo from "assets/img/himalia-logo.png";
+import logo from "assets/img/adot-logo.png";
 
 class Header extends React.Component {
   constructor(props) {

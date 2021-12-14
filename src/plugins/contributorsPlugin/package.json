@@ -1,5 +1,5 @@
 {
-  "name": "gatsby-starter-plugin",
+  "name": "github-contributors-plugin",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,7 +10,5 @@
   "keywords": [
     "gatsby",
     "gatsby-plugin"
-  ],
-  "author": "Kyle Gill <kyle.robert.gill@gmail.com>",
-  "license": "0BSD"
+  ]
 }

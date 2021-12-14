@@ -7,7 +7,7 @@ import Parallax from "components/Parallax/Parallax.jsx"
 import HeaderLinks from "components/Header/HeaderLinks.jsx"
 import GetInvolvedPageStyle from "assets/jss/material-kit-react/views/getInvolvedPage.jsx"
 import MainBodySection from "./sections/mainBodySection.jsx"
-import BackgroundImage from "assets/img/himalia_bg.jpg"
+import BackgroundImage from "assets/img/adot_bg.jpg"
 
 class GetInvolvedPage extends React.Component {
   render() {

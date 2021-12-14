@@ -8,7 +8,7 @@ import HeaderLinks from "components/Header/HeaderLinks.jsx"
 
 import AnnouncementPageStyle from "assets/jss/material-kit-react/views/announcementsPage.jsx"
 import MainBodySection from "./sections/mainBodySection.jsx"
-import BackgroundImage from "assets/img/himalia_bg.jpg"
+import BackgroundImage from "assets/img/adot_bg.jpg"
 
 class AnnouncementsPage extends React.Component {
   render() {

@@ -62,7 +62,7 @@ export default function Sidebar({ isMenuOpen }) {
     return (
         <Container isMenuOpen={isMenuOpen}>
             {/*<LogoContainer>*/}
-            {/*    <Link to="https://open-o11y.github.io/himalia-site-gatsby/" aria-label="Go to home page">*/}
+            {/*    <Link to="https://open-o11y.github.io/adot-site-gatsby/" aria-label="Go to home page">*/}
             {/*        <Logo aria-hidden="true" />*/}
             {/*    </Link>*/}
             {/*</LogoContainer>*/}

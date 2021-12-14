@@ -7,7 +7,7 @@ import Parallax from "components/Parallax/Parallax.jsx"
 import HeaderLinks from "components/Header/HeaderLinks.jsx"
 import ContributingPageStyle from "assets/jss/material-kit-react/views/contributingPage.jsx"
 import MainBodySection from "./sections/mainBodySection"
-import BackgroundImage from "assets/img/himalia_bg.jpg"
+import BackgroundImage from "assets/img/adot_bg.jpg"
 
 class ContributingPage extends React.Component {
   render() {
