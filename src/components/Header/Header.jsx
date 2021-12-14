@@ -11,7 +11,7 @@ import Hidden from "@material-ui/core/Hidden";
 import Drawer from "@material-ui/core/Drawer";
 import Menu from "@material-ui/icons/Menu";
 import headerStyle from "assets/jss/material-kit-react/components/headerStyle.jsx";
-import logo from "assets/img/adot-logo.png";
+import LogoImage from "assets/img/adot-logo.png";
 
 class Header extends React.Component {
   constructor(props) {
@@ -70,7 +70,7 @@ class Header extends React.Component {
       [classes.absolute]: absolute,
       [classes.fixed]: fixed
     });
-    const brandComponent = <Link to="/"><Button className={classes.title}><img src={logo} alt="..." style={{height: "60px", width: "70px"}} /></Button></Link>
+    const brandComponent = <Link to="/"><Button className={classes.title}><img src={LogoImage} alt="..." style={{height: "60px", width: "70px"}} /></Button></Link>
     return (
       <AppBar className={appBarClasses}>
         <Toolbar className={classes.container}>
