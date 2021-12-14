@@ -1,12 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-// import { useStaticQuery, graphql } from 'gatsby';
-// import { useSidebar } from '@rocketseat/gatsby-theme-docs-core';
 import { sideBarData } from "../../../../config/sideBarData"
 
 import {
     Container,
-    // LogoContainer,
     List,
     Heading,
     Item,
@@ -14,13 +11,10 @@ import {
 } from './styles';
 import ExternalLink from './ExternalLink';
 import InternalLink from './InternalLink';
-import { Link } from "gatsby"
-// import Logo from '../Logo';
 
-function ListWithSubItems({ children, text, link }) {
+function ListWithSubItems({ children, text }) {
     return (
         <>
-            {/* <Heading><Link to={link} style={{"color": "black"}}>{text}</Link></Heading> */}
             <Heading>{text}</Heading>
             <SubItem>{children}</SubItem>
         </>
@@ -32,24 +26,8 @@ function isExternalUrl(url) {
 }
 
 export default function Sidebar({ isMenuOpen }) {
-  //   const {
-  //       site: {
-  //           siteMetadata: { basePath },
-  //       },
-  //   } = useStaticQuery(graphql`
-  //   {
-  //     site {
-  //       siteMetadata {
-  //         basePath
-  //       }
-  //     }
-  //   }
-  // `);
 
-    // const data = useSidebar();
     const data = sideBarData;
-    // console.log(data)
-    // console.log(sideBarData)
 
     function renderLink(link, label) {
         return isExternalUrl(link) ? (
@@ -61,11 +39,6 @@ export default function Sidebar({ isMenuOpen }) {
 
     return (
         <Container isMenuOpen={isMenuOpen}>
-            {/*<LogoContainer>*/}
-            {/*    <Link to="https://open-o11y.github.io/adot-site-gatsby/" aria-label="Go to home page">*/}
-            {/*        <Logo aria-hidden="true" />*/}
-            {/*    </Link>*/}
-            {/*</LogoContainer>*/}
             <nav>
                 <List>
                     {data.map(({ node: { label, link, items, id } }) => {
