@@ -15,6 +15,7 @@ import WhatsNewSection from "./sections/whatsNewSection"
 import HowItWorksSection from "./sections/howItWorksSection"
 import {Link} from "gatsby";
 import BackgroundImage from "assets/img/adot_bg.jpg";
+import LogoImage from "assets/img/adot-logo.png";
 
 class HomePage extends React.Component {
 
@@ -23,7 +24,7 @@ class HomePage extends React.Component {
         return (
             <div className={classes.coloredBackground}>
                 <Header
-                    brand={require("assets/img/adot-logo.png")}
+                    brand={LogoImage}
                     rightLinks={<HeaderLinks />}
                     fixed
                     color="transparent"

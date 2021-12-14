@@ -12,6 +12,7 @@ import { Container, Main, Children } from './styles'
 import MyHeader from "../../../../components/Header/Header.jsx"
 import HeaderLinks from "../../../../components/Header/HeaderLinks.jsx"
 import Footer from "../../../../components/Footer/Footer"
+import LogoImage from "assets/img/adot-logo.png";
 
 export default function Layout({
   children,
@@ -31,7 +32,7 @@ export default function Layout({
   return (
     <div style={{backgroundColor: "white"}}>
       <MyHeader
-        brand={require("assets/img/adot-logo.png")}
+        brand={LogoImage}
         rightLinks={<HeaderLinks />}
         color="dark"
       />
