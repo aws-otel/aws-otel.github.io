@@ -4,4 +4,4 @@
 
 1. Upgraded the Nodejs version to 16.
 2. Upgraded Gatsby to v3.
-3. Updated the image names from himalia to adot.
+3. Updated the image names to be prefixed with adot.
