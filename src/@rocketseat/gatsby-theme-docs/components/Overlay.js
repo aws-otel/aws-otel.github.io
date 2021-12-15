@@ -1,6 +1,6 @@
 /* @jsx jsx */
 // import React from 'react'
-import { css, jsx } from '@emotion/core'
+import { css, jsx } from '@emotion/react'
 import PropTypes from 'prop-types'
 
 export default function Overlay({ isMenuOpen, ...rest }) {

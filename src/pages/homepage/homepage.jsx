@@ -14,6 +14,8 @@ import GetInvolvedSection from "./sections/getInvolvedSection"
 import WhatsNewSection from "./sections/whatsNewSection"
 import HowItWorksSection from "./sections/howItWorksSection"
 import {Link} from "gatsby";
+import BackgroundImage from "assets/img/adot_bg.jpg";
+import LogoImage from "assets/img/adot-logo.png";
 
 class HomePage extends React.Component {
 
@@ -22,7 +24,7 @@ class HomePage extends React.Component {
         return (
             <div className={classes.coloredBackground}>
                 <Header
-                    brand={require("assets/img/himalia-logo.png")}
+                    brand={LogoImage}
                     rightLinks={<HeaderLinks />}
                     fixed
                     color="transparent"
@@ -32,7 +34,7 @@ class HomePage extends React.Component {
                     }}
                     {...rest}
                 />
-              <Parallax image={require("assets/img/himalia_bg.jpg")}>
+              <Parallax image={BackgroundImage}>
                 <div className={classes.container}>
                   <GridContainer>
                     <GridItem>
