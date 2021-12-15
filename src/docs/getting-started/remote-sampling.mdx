@@ -5,9 +5,9 @@ description:
 path: '/docs/getting-started/remote-sampling'
 ---
 
-[AWS X-Ray remote sampling](https://docs.aws.amazon.com/xray/latest/devguide/xray-console-sampling.html) is supported
-with OpenTelemetry by configuring the OpenTelemetry Collector to proxy sampling requests to AWS X-Ray using the
-`awsproxy` extension. Enable the extension by adding this snippet to your collector configuration.
+## Enable awsproxy extension
+
+Enable the extension by adding this snippet to your collector configuration.
 
 ```yaml
 extensions:
@@ -69,3 +69,15 @@ to export trace data and fetch sampling rules.
 without authentication. If not using any other authentication mechanism in front of the collector, it is recommended to
 configure network policy to only allow network connectivity to applications that should be allowed to access X-Ray with
 the above IAM permissions, for example using network firewall rules.**
+
+## Remote Sampling Implementation specific Caveats
+
+Below mentioned table displays X-Ray sampling attributes and X-Ray equivalent OTel sampling attributes used by the OTel remote sampling implementation. Here's how you can [configure X-Ray sampling attributes](https://docs.aws.amazon.com/xray/latest/devguide/xray-console-sampling.html#xray-console-config) in AWS X-Ray Console. Below mentioned caveats to keep in mind when using OTel remote sampling implementation.
+
+1. Some of the X-Ray equivalent OTel sampling fields are instrumentation specific like `HTTP_TARGET`, `HTTP_URL`, `HTTP_METHOD` and `HTTP_HOST`. If instrumentation you're using in your application won't set them then remote sampling implementation would not have all these fields to match against in that case it would only use available fields like `SERVICE_NAME` and `CLOUD_PLATFORM`
+2. Sampling implementation would match `URLPath` (X-Ray sampling attribute set on AWS X-Ray Console) with `HTTP_TARGET` as well as `HTTP_URL` and if it finds a match with one of them it would consider matched
+
+|X-Ray Sampling Attributes | X-Ray equivalent OTel Sampling Semantic Attributes |
+|---------------------|-------------------------|
+| ServiceName <br/> ServiceType <br/> URLPath <br/> Host <br/> HTTPMethod <br/>  Attributes <br/> | ResourceAttributes.SERVICE_NAME <br/> ResourceAttributes.CLOUD_PLATFORM <br/> SemanticAttributes.HTTP_TARGET/SemanticAttributes.HTTP_URL <br/> SemanticAttributes.HTTP_HOST <br/> SemanticAttributes.HTTP_METHOD <br/>  Attributes <br/>|
+

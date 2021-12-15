@@ -280,7 +280,7 @@ This will enable tracing for all DynamoDB calls using this client.
 
 The `opentelemetry-aws-xray` artifact provides a `Sampler` implementation for use with [X-Ray remote sampling](https://docs.aws.amazon.com/xray/latest/devguide/xray-console-sampling.html).
 
-When initializing the OpenTelemetry SDK, register the `AwsXrayRemoteSampler`.
+When initializing the OpenTelemetry SDK, register the `AwsXrayRemoteSampler`. Moreover, You can also set the `pollingInterval` and `endpoint` when initializing sampler shown in below code snippet.
 
 ```java lineNumbers=true
 Resource resource = Resource.builder()
@@ -290,7 +290,9 @@ Resource resource = Resource.builder()
 OpenTelemetrySdk.builder()
   .setTracerProvider(SdkTracerProvider.builder()
     .setResource(resource)
-    .setSampler(AwsXrayRemoteSampler.newBuilder(resource).build())
+    .setSampler(AwsXrayRemoteSampler.newBuilder(resource).setEndpoint("http://localhost:2000")
+                                                                      .setPollingInterval(Duration.ofSeconds(5))
+                                                                      .build())
     ...
     .build())
   .build();
