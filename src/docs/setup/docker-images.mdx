@@ -33,12 +33,12 @@ Open and Edit `docker-compose.yaml` file with the expected `AWS_ACCESS_KEY_ID`, 
 The region is where the data will be sent to.
 
 (**Note,** if you can’t access the repo, you can download `docker-compose.yaml` file at
-[here](https://drive.corp.amazon.com/documents/xiami@/AWS-Observability/docker-compose.yaml) and edit
+[here](https://github.com/aws-otel/aws-otel.github.io/blob/main/src/docs/docker-compose.mdx) and edit
 `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and `AWS_REGION` with the expected values.
 
 ```yaml
 image: amazon/aws-otel-collector:latest
-command: ["--config=/etc/otel-agent-config.yaml", "--log-level=DEBUG"]
+command: ["--config=/etc/otel-agent-config.yaml"]
 environment:
   - AWS_ACCESS_KEY_ID=<to_be_added>
   - AWS_SECRET_ACCESS_KEY=<to_be_added>

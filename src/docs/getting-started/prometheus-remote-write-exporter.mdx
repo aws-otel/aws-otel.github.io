@@ -70,10 +70,6 @@ receivers:
         sample_limit: 10000
         kubernetes_sd_configs:
         - role: endpoints
-        tls_config:
-          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-          insecure_skip_verify: true
-        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
 ```
 
 **Note:** To perform Kubernetes service discovery, you will need to set up the proper permissions and RBAC authorization for the service account 

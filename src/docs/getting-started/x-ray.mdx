@@ -15,10 +15,10 @@ The OpenTelemetry Collector has three key components: the receiver, exporter, an
 is responsible for receiving data via gRPC or HTTP using the 
 [OpenTelemetry protocol (OTLP)](https://github.com/open-telemetry/opentelemetry-specification/blob/master/specification/protocol/otlp.md). 
 The AWS X-Ray exporter available in the OpenTelemetry Collector converts OTLP formatted trace data to the AWS X-Ray format and then exports 
-this data to the AWS X-Ray service. The processor component pre-processes data before it is exported, for example it is able to modify attributes, 
-limit memory usage, or enable retries. 
+this data to the AWS X-Ray service.
 
-In this guide, we will demonstrate how to configure the AWS Distro for the OpenTelemetry(ADOT) Collector for use with AWS X-Ray.
+In this guide, we will demonstrate how to configure the AWS Distro for the OpenTelemetry (ADOT) Collector for use with AWS X-Ray.
+To learn more about AWS X-Ray, see the [X-Ray Developer Guide](https://docs.aws.amazon.com/xray/latest/devguide/aws-xray.html).
 
 <SectionSeparator />
 
@@ -36,9 +36,12 @@ In order to set up the ADOT Collector on a particular platform such as EKS, ECS,
 * [EKS](https://aws-otel.github.io/docs/setup/eks)
 * [On-Premises](https://aws-otel.github.io/docs/setup/on-premises)
 
+ADOT also includes fully managed AWS Lambda Layers, which include an OpenTelemetry SDK and the ADOT Collector to auto-instrument your function for tracing with X-Ray.
+See [AWS Distro for OpenTelemetry Lambda](/docs/getting-started/lambda) to get started.
+
 <SectionSeparator />
 
-## Configuring the AWS X-Ray Receiver
+## Configuring the OTLP Receiver
 
 To enable the OTLP receiver, we include the “otlp” flag in the definitions. You will have to set the “endpoint” consisting of `<host>:<port>` for 
 the gRPC or HTTP protocols. You can change the endpoints depending on how you set up your instrumentation with OpenTelemetry.
@@ -50,12 +53,12 @@ receivers:
   otlp:
     protocols:
       grpc:
-        endpoint: 0.0.0.0:55680
+        endpoint: 0.0.0.0:4317
       http:
         endpoint: 0.0.0.0:55681
 ```
 
-*Note: A protocol can be disabled by not specifying it in the list of protocols. *
+*Note: A protocol can be disabled by not specifying it in the list of protocols.*
 
 <SectionSeparator />
 
@@ -79,23 +82,24 @@ exporters:
 *Note: These configurations are optional*
 
 ### Enable The Customized X-Ray Annotations
-By using OpenTelemetry SDK, we can add the customized attributes for each trace subsegment. By default, these OTel
-attributes will be converted into `metadta` attributes in X-Ray raw data. If we need to convert all of OTel attributes or the selected attributes
-into X-Ray `annotation`. We can follow the steps below for enabling annotation conversion.
+By using OpenTelemetry SDK, we can add the customized attributes for each trace subsegment. By default, these OpenTelemetry
+attributes will be converted into `metadata` attributes in X-Ray raw data. If we need to convert some or all OpenTelemetry attributes
+into X-Ray `annotation`, we can follow the steps below for enabling annotation conversion.
 
-#### Step 1: create an attribute by using OTel SDK
+#### Step 1: create an attribute by using OpenTelemetry SDK
 For example:
 ```
 setAttribute(“TransactionId”, <value>)
 setAttribute(“AccountId”, <value>)
 ```
-#### Step 2: In the collector, set the config in one of the two ways
-For specific attributes to be indexed
+*Note: More detailed instructions for adding attributes can be found in individual languages' guides*
+#### Step 2: In the collector, set the config in one of two ways
+For specific attributes to be indexed:
 ```yaml lineNumbers=true
 awsxray:
   indexed_attributes: ["TransactionId", "AccountId"]
 ```
-For all attributes to be indexed
+For all attributes to be indexed:
 ```yaml lineNumbers=true
 awsxray:
   index_all_attributes: true
@@ -103,26 +107,7 @@ awsxray:
 
 <SectionSeparator />
 
-## Configuring Processors
-
-By default, there are no processors enabled by default. A processor pre-processes data before it is exported, for example modify attributes, 
-limits memory usage, or enables retries. A processor must be enabled for every data source and a full list of processors can be found 
-[here](https://github.com/open-telemetry/opentelemetry-collector/blob/master/processor/README.md#general-information).
-
-#### Example:
-
-```yaml lineNumbers=true 
-processors:
-  # you can define additional processors here
-  # this configuration is used to place a limit on memory usage
-  memory_limiter:
-    limit_mib: 100
-    check_interval: 5s
-```
-
-<SectionSeparator />
-
-## Sample Configuration (Putting it Together)
+## Sample Collector Configuration (Putting it Together)
 
 This is a sample configuration without additional configurations in the exporter:
 
@@ -131,7 +116,7 @@ receivers:
   otlp:
     protocols:
       grpc:
-        endpoint: 0.0.0.0:55680
+        endpoint: 0.0.0.0:4317
       http:
         endpoint: 0.0.0.0:55681
 
@@ -139,7 +124,7 @@ exporters:
   awsxray:
 
 processors:
-  memory_limiter:
+  memorylimiter:
     limit_mib: 100
     check_interval: 5s
 
@@ -147,7 +132,7 @@ service:
   pipelines:
     traces:
       processors:
-        - memory_limiter
+        - memorylimiter
       receivers:
         - otlp
       exporters:
@@ -156,14 +141,15 @@ service:
 
 <SectionSeparator />
 
-## Using the Language SDKs
+## Using the ADOT SDKs
 
-AWS Distro for OpenTelemetry (ADOT) currently supports applications written in Java, JavaScript, Python, and Go. Check out the Getting Started guides for the respective languages. 
+AWS Distro for OpenTelemetry currently supports applications written in Go, Java, JavaScript, .NET, and Python. Check out the Getting Started guides for the respective languages. 
 
+* [Go](/docs/getting-started/go-sdk)
 * [Java](/docs/getting-started/java-sdk)
 * [JavaScript](/docs/getting-started/javascript-sdk)
+* [.NET](/docs/getting-started/dotnet-sdk)
 * [Python](/docs/getting-started/python-sdk)
-* [Go](/docs/getting-started/go-sdk)
 
 If the OpenTelemetry Collector is configured correctly and an application is instrumented to generate traces, we should be able see the traces on the AWS X-Ray console.
 
@@ -173,5 +159,6 @@ If the OpenTelemetry Collector is configured correctly and an application is ins
 
 ## Questions, Issues, Missing Documentation
 
-We would love to hear more common configuration scenarios or improvements to this documentation from you! Please submit an issue 
-on the [aws-otel community page](https://github.com/aws-observability/aws-otel-community) to let us know.
+If you have questions or issues with this guide, you can submit an issue 
+on the [AWS Observability community page](https://github.com/aws-observability/aws-otel-community) to let us know.
+This website is also open source, so you can submit a pull request directly to [update this guide on GitHub](https://github.com/aws-otel/aws-otel.github.io).

@@ -1,5 +1,5 @@
 ---
-title: 'ADOT Python - Auto Instrumentation Documentation'
+title: 'Tracing with the AWS Distro for OpenTelemetry Python Auto-Instrumentation and X-Ray'
 description:
     OpenTelemetry provides different language SDKs to instrument code for collecting telemetry data in the application.
     In this tutorial, we will introduce how to use OpenTelemetry Python SDK for traces and metrics instrumentation in the application...
@@ -9,105 +9,104 @@ path: '/docs/getting-started/python-sdk/trace-auto-instr'
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
 import SubSectionSeparator from "components/MdxSubSectionSeparator/subsectionSeparator.jsx"
 
+## Introduction
 
-The AWS Distro for OpenTelemetry Python (ADOT Python) provides functionality to [OpenTelemetry Python](https://github.com/open-telemetry/opentelemetry-python) for use with AWS X-Ray. OpenTelemetry Python supports automatic instrumentation, which instruments your application to gather telemetry data from a diverse set of libraries and frameworks with minimal configuration. This data can then be exported to different back-ends in different formats.
+OpenTelemetry Python supports automatic instrumentation. It automatically produces spans with telemetry data describing the values used by the python frameworks in your application without adding a single line of code. This telemetry data can then be exported to a backend like AWS X-Ray using the ADOT Python `opentelemetry-sdk-extension-aws` package. We also strongly recommend using the `opentelemetry-propagator-aws-xray` package to support propagating the trace context across AWS services. This propagator handles the extraction and injecting of the [AWS X-Ray Tracing header](https://docs.aws.amazon.com/xray/latest/devguide/xray-concepts.html#xray-concepts-tracingheader) for requests from or to remote services.
 
-In this tutorial, we will introduce automatic instrumentation using ADOT Python for AWS X-Ray.
+In this guide, we walk through the steps needed to trace an application with auto-instrumentation.
 
 <SectionSeparator />
 
 ## Requirements
 
-Python 3.6+ is required to use OpenTelemetry Python. Check your currently installed Python version using `python3 -V`.
-For more information about supported Python versions, see the [OpenTelemetry Python API package on PyPi](https://pypi.org/project/opentelemetry-api/).
+Python 3.6 or later is required to run an application using OpenTelemetry.
 
-Make sure you have AWS Distro for OpenTelemetry Collector (ADOT Collector) running. To set up the collector, see 
-[Getting Started with the AWS Distro for OpenTelemetry Collector](https://aws-otel.github.io/docs/getting-started/collector).
+Note: You’ll also need to have the [ADOT Collector](https://aws-otel.github.io/docs/getting-started/collector) running to export traces to X-Ray.
 
 <SectionSeparator />
 
-## Getting the SDKs and dependencies
+## Installation
 
-The OpenTelemetry instrumentation package automates much of the on-boarding process. See the package usage later in this documentation.
+The easiest way to download the packages needed for auto-instrumentation is using pip:
 
-###  Install instrumentation packages
+```bash
+# Install required packages for instrumentation and to support tracing with AWS X-Ray
+$ pip install opentelemetry-distro[otlp]>=0.24b0 \
+              opentelemetry-sdk-extension-aws~=2.0 \
+              opentelemetry-propagator-aws-xray~=1.0
+```
 
-You will need to install the `opentelemetry-distro` package from PyPi. This automatically installs the `opentelemetry-api`, `opentelemetry-sdk`, and `opentelemetry-instrumentation` packages. `opentelemetry-instrumentation` provides commands to detect, install, and initialize all instrumentation packages supported for your application’s dependencies.
+The `opentelemetry-distro` package provides methods which configure the OpenTelemetry SDK with some basic defaults. These methods are used by Auto Instrumentation. Because you added the `[otlp]` "extra" command, the `opentelemetry-exporter-otlp` package (used to send traces to the ADOT Collector) is also automatically installed.
 
-Also, you will want to install `opentelemetry-sdk-extension-aws` to make traces compatible with AWS X-Ray.
+Installing the `opentelemetry-sdk-extension-aws` package automatically installs the `opentelemetry-api`, `opentelemetry-sdk`, and `opentelemetry-instrumentation` packages as dependencies. You also need the `opentelemetry-propagator-aws-xray` package to obtain the `AwsXRayPropagator` class used to propagate the trace context across AWS services.
 
-Go to the directory of the application which you want to instrument and run the following commands.
+`opentelemetry-instrumentation` provides commands to detect, install, and initialize all instrumentation packages supported for your application’s dependencies. Notably, it installs the `opentelemetry-bootstrap` and `opentelemetry-instrument` executables on your system.
 
-```bash 
-$ # Install required packages for instumentation and tracing support for AWS X-Ray
-$ pip install opentelemetry-distro[otlp]>=0.22b0 \
-              opentelemetry-sdk-extension-aws>=0.22b0
-# Automatically install supported instrumentors for the application's dependencies
+Go to the directory of the python application which you want to instrument. Here, use the `opentelemetry-bootstrap` command to automatically detect and install OpenTelemetry python packages. These packages contain `Instrumentors` that will instrument the packages your system has downloaded and that your application is already using.
+
+```bash
+# Automatically install supported Instrumentors for the application's dependencies
 $ opentelemetry-bootstrap --action=install
-``` 
-
-<SubSectionSeparator />
-
-### Setting the global propagators
-
-To allow the span context to propagate downstream when the application makes calls to external services, configure the global propagator. 
-Set the `OTEL_PROPAGATORS` environment variable to use the AWS X-Ray Propagator.
-
-```
-OTEL_PROPAGATORS=aws_xray
 ```
 
-<SubSectionSeparator />
+For example, if you have `boto3` installed, this command will automatically install the `opentelemetry-instrumentation-botocore` package which auto-instrumentation can subsequently configure automatically. Check out the OpenTelemetry registry for a [full list of instrumentation packages provided by OpenTelemetry Python](https://opentelemetry.io/registry/?s=&component=instrumentation&language=python).
 
-### Run the application 
+## Running an Application with Auto-Instrumentation
 
-Auto instrumentation uses the `opentelemetry-instrument` wrapper executable to automatically initialize the installed instrumentors and start the provided application. Environment variables are used to configure the connection to the ADOT Collector and command line arguments are used to configure trace generation for AWS X-Ray.
+Auto-instrumentation uses the `opentelemetry-instrument` executable functions as a wrapper to automatically initialize the `Instrumentors` installed by the `opentelemetry-bootstrap` command and start the provided application.
 
-The `IdGenerator` can be configured with the environment variables `OTEL_PYTHON_ID_GENERATOR=aws_xray` or the `opentelemetry-instrument` command line argument `--id-generator=aws_xray`.
+The AWS X-Ray Id Generator can be configured using an environment variable as `OTEL_PYTHON_ID_GENERATOR=aws_xray`, and the AWS X-Ray Propagator can be configured using `OTEL_PROPAGATORS=xray`.
 
-The `SpanExporter` can be configured with the environment variables `OTEL_TRACES_EXPORTER=otlp` or the `opentelemetry-instrument` command line argument `--trace-exporter=otlp`. However, if `opentelemetry-distro[otlp]` is used, it already uses the `otlp` exporter by default with any more configuration.
+Currently, it is not possible to configure the Resource Detectors using auto-instrumentation.
+
+Putting this all together, starting your application using auto-instrumentation can be as simple as the following:
+
+```bash
+$ OTEL_PROPAGATORS=xray \
+OTEL_PYTHON_ID_GENERATOR=xray \
+opentelemetry-instrument python3 ./path/to/your/app.py
+```
+
+### Configuring Auto-Instrumentation
+
+Environment variables are the primary way in which the OpenTelemetry SDK for Python is configured to enable compatibility with the AWS X-Ray backend. Some key environment variables are:
+
+* `OTEL_PYTHON_ID_GENERATOR`
+* `OTEL_PROPAGATORS`
+* `OTEL_TRACES_EXPORTER`
+* `OTEL_EXPORTER_OTLP_ENDPOINT`
+* `OTEL_EXPORTER_OTLP_CERTIFICATE`
+
+The `IdGenerator` can be configured to use the AWS X-Ray Id Generator with an environment variable as `OTEL_PYTHON_ID_GENERATOR=aws_xray` to ensure spans use an Id format compatible with the AWS X-Ray backend.
+
+The global propagator can be configured to use the AWS X-Ray Propagator with an environment variable as `OTEL_PROPAGATORS=xray` to allow the span context to propagate downstream when the application makes calls to external services.
+
+The `SpanExporter` can be configured with an environment variables `OTEL_TRACES_EXPORTER=otlp` to export spans in the format required by the ADOT Collector. However, if `opentelemetry-distro[otlp]` is used, it already uses the `otlp` exporter by default without the need for any more configuration.
 
 The configuration of your SDK exporter depends on how you have configured your ADOT Collector. To learn more about how the ADOT Collector can be configured, refer to the [ADOT Collector Documentation](https://aws-otel.github.io/docs/getting-started/collector).
 
-We can use the `OTEL_EXPORTER_OTLP_ENDPOINT=localhost:55678` environment variable to set the address that the exporter will use to connect to the collector. If the address is unset, it will instead try to connect to `localhost:4317`.
-
-If the Collector the application will connect to is running without TLS configured, the `OTEL_EXPORTER_OTLP_INSECURE=True` environment variable is used to disable client transport security for an SDK OTLP exporter’s connection. This will use the gRPC insecure_channel() method as explained in the [gRPC Python Documentation](https://grpc.github.io/grpc/python/grpc.html?highlight=insecure#grpc.insecure_channel). This option should never be used in production, non-sidecar deployments.
+We can use the `OTEL_EXPORTER_OTLP_ENDPOINT=localhost:4317` environment variable to set the address that the exporter will use to connect to the collector. If unset, the SDK will try to connect to `http://localhost:4317` by default. Note that because the scheme is `http` by default, you have to explicitly set it to be `https` if necessary.
 
 If the Collector the application will connect to is running with TLS configured, the `OTEL_EXPORTER_OTLP_CERTIFICATE=/path/to/my-cert.crt` environment variable is used to give a path to credentials to be used to establish a secure connection for the app’s exporter. The credentials at this path should be the public certificate of the collector, or one of its root certificates. If no certificate is found, the gRPC method `ssl_channel_credentials()` will attempt to “retrieve the PEM-encoded root certificates from a default location chosen by gRPC runtime” as explained in the [gRPC Python Documentation](https://grpc.github.io/grpc/python/grpc.html?highlight=ssl_channel_credentials).
 
-#### Examples on running the application
-
-Starting an application which connects to a Collector running as a sidecar without TLS:
-
-```bash
-$ OTEL_EXPORTER_OTLP_INSECURE=True \
-OTEL_EXPORTER_OTLP_ENDPOINT=localhost:4317 \
-OTEL_PROPAGATORS=aws_xray \
-OTEL_PYTHON_ID_GENERATOR=aws_xray \
-opentelemetry-instrument python ./path/to/your/app.py
-```
-
-Starting an application which connects to a Collector running as a sidecar without TLS using flask:
-
-```bash
-$ OTEL_EXPORTER_OTLP_INSECURE=True \
-OTEL_EXPORTER_OTLP_ENDPOINT=localhost:4317 \
-FLASK_APP=./my_flask_app.py \
-OTEL_PROPAGATORS=aws_xray \
-OTEL_PYTHON_ID_GENERATOR=aws_xray \
-opentelemetry-instrument flask run
-```
-
-Starting an application which connects to a Collector running as a service with TLS:
+Thus, an advanced configuration of auto-instrumentation may look like this:
 
 ```bash
 $ OTEL_EXPORTER_OTLP_CERTIFICATE=/path/to/my-cert.crt \
 OTEL_EXPORTER_OTLP_ENDPOINT=collector.service.local \
-OTEL_PROPAGATORS=aws_xray \
-OTEL_PYTHON_ID_GENERATOR=aws_xray \
-opentelemetry-instrument python ./path/to/your/app.py
+OTEL_PROPAGATORS=xray \
+OTEL_PYTHON_ID_GENERATOR=xray \
+opentelemetry-instrument python3 ./path/to/your/app.py
 ```
 
 <SectionSeparator />
 
-Custom tracing works the same way when using automatic instrumentation or manual instrumentation. For information about custom trace instrumentation, see our [docs on manual instrumentation](/docs/getting-started/python-sdk/trace-manual-instr).
+## Using Manual Instrumentation
+
+Because there can only be one global `TracerProvider`, manual instrumentation should not instantiate its own `TracerProvider` if used together alongside auto-instrumentation. Given that the same `TracerProvider` is used, custom tracing works the same way when using automatic instrumentation or manual instrumentation. For information about custom trace instrumentation, see our [docs on manual instrumentation](/docs/getting-started/python-sdk/trace-manual-instr).
+
+<SectionSeparator />
+
+## Sample Application
+
+See a [sample Flask App using OpenTelemetry Python SDK Automatic Instrumentation](https://github.com/aws-observability/aws-otel-python/tree/main/integration-test-apps/auto-instrumentation/flask).

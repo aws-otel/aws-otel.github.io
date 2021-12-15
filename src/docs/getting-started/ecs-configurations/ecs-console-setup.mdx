@@ -1,0 +1,113 @@
+---
+title: 'Prerequisites and Configuration Setup Using ECS Console'
+description:
+    In this guide, we will be providing you a step-by-step approach on how to deploy these configuration
+    using the ECS Console
+path: '/docs/getting-started/ecs-configurations/ecs-console-setup'
+---
+
+import taskdef1 from "assets/img/docs/gettingStarted/ecs-configurations/taskdef1.png"
+import taskdef2 from "assets/img/docs/gettingStarted/ecs-configurations/taskdef2.png"
+import taskdef3 from "assets/img/docs/gettingStarted/ecs-configurations/taskdef3.png"
+import taskdef4 from "assets/img/docs/gettingStarted/ecs-configurations/taskdef4.png"
+
+import clustersetup1 from "assets/img/docs/gettingStarted/ecs-configurations/clustersetup1.png"
+import clustersetup2 from "assets/img/docs/gettingStarted/ecs-configurations/clustersetup2.png"
+import clustersetup3 from "assets/img/docs/gettingStarted/ecs-configurations/clustersetup3.png"
+
+import taskdeploy1 from "assets/img/docs/gettingStarted/ecs-configurations/taskdeploy1.png"
+import taskdeploy2 from "assets/img/docs/gettingStarted/ecs-configurations/taskdeploy2.png"
+import taskdeploy3 from "assets/img/docs/gettingStarted/ecs-configurations/taskdeploy3.png"
+import taskdeploy4 from "assets/img/docs/gettingStarted/ecs-configurations/taskdeploy4.png"
+import taskdeploy5 from "assets/img/docs/gettingStarted/ecs-configurations/taskdeploy5.png"
+import taskdeploy6 from "assets/img/docs/gettingStarted/ecs-configurations/taskdeploy6.png"
+
+
+## Prerequisites 
+
+Before diving into the configuration setup with ECS Console V2, you have to setup the task role in order to give permissions for each of these tasks to access their prospective technologies. 
+
+
+1. Follow instructions to setup task execution permission & role.
+    * [ECS execution role](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_execution_IAM_role.html)
+2. Open the IAM console [here](https://console.aws.amazon.com/iam/)
+
+3. In order for Prometheus to operate properly it requires many permissions. Create an Amazon Managed Prometheus policies to role by selecting the *policies* tab in the navigation pane.
+
+4. Choose **Create policy**, and then choose JSON.
+    * Follow instructions to create [AMP IAM Policies](https://docs.aws.amazon.com/prometheus/latest/userguide/AMP-and-IAM.html).
+    * AmazonPrometheusFullAccess 
+    * AmazonPrometheusConsoleFullAccess 
+    * AmazonPrometheusQueryAccess 
+    * AmazonPrometheusRemoteWriteAccess 
+5. The AWS Distro for OpenTelemetry Collector requires permissions for Amazon CloudWatch Logs for metric publishing, and for Amazon X-Ray for sending traces. Create an Amazon CloudWatch and X-Ray policies by selecting the **policies** tab in the navigation pane.
+
+6. Choose **Create policy**, and then choose JSON.
+    * follow instructions to create [IAM Policy](https://aws-otel.github.io/docs/setup/permissions#create-iam-policy)
+7. Now that you’ve created your policies and role, you must now attach these policies to your ECS task role that you’ve created in your first step.
+
+8. Navigate back to the IAM console [here](https://console.aws.amazon.com/iam/) and selecting the role tab in the navigation pane.
+
+9. Find your created role.
+
+10. Select **Attach Policies** and attach your newly created policies.
+
+
+In this part of the getting started guide, you can set up the configurations by utilizing the newly developed ECS console for streamlined deployments of all of the above configurations.
+
+## Task Definition Setup
+
+*Step 1:* In the first step of the ECS Console, you will be able to specify task definition family name, image URI if you would like to setup monitoring, container port mappings, and the **necessary environment variables** to setup your container ‘s environment (sample application).
+<img src={taskdef1} alt="Diagram" style="margin: 30px 0;" />
+
+*Step 2:* In the second step, you will need to set up the environment with the necessary settings such as app environment, task size, task role, and storage. 
+
+**Note:** Please make sure the ask role has the correct IAM policies created in the prerequisite section. These are the required permissions for Amazon CloudWatch for metrics, AWS X-Ray for traces, and for Amazon Managed Service For Prometheus to access and query data.
+<img src={taskdef2} alt="Diagram" style="margin: 30px 0;" />
+
+*Step 3:* In this part of the getting started guide, you can set up the configurations by utilizing the newly developed ECS console for streamlined deployments of all of the above configurations.
+
+After configuring the environment, you will have the option to select **Monitoring and Logging** in the UI below. In this section, Monitoring and Logging, you will be able to select configurations for log collection, metric collection or trace collection here.
+<img src={taskdef3} alt="Diagram" style="margin: 30px 0;" />
+
+In the next screen, you can select the log collection parameters and criteria to which log collection service to utilize. You can also specify criteria for collection of trace data to [AWS X-Ray](https://docs.aws.amazon.com/xray/latest/devguide/xray-console.html) and utilize the AWS X-Ray console to observe traces. In the metric collection section, you can select the destination to send your metric metadata to [Amazon CloudWatch](https://aws.amazon.com/cloudwatch/) or Amazon Managed Service for Prometheus ([AMP](https://docs.aws.amazon.com/prometheus/latest/userguide/AMP-onboard-create-workspace.html)) by specifying the AMP endpoint.
+<img src={taskdef4} alt="Diagram" style="margin: 30px 0;" />
+
+**Note:** Before utilizing Amazon Managed Service for Prometheus, we must create a Amazon Managed Service for Prometheus workspace so we can obtain the endpoint to send the data to Prometheus. Follow this [guide](https://docs.aws.amazon.com/prometheus/latest/userguide/AMP-onboard-create-workspace.html) to set up Amazon Managed Service for Prometheus and input the **Endpoint - remote write URL** into the Amazon Managed Service for Prometheus endpoint section of metric collection. One option to viewing your application metrics from Prometheus is utilizing Amazon Grafana which can be setup by following this [guide](https://aws.amazon.com/blogs/mt/amazon-managed-grafana-getting-started/).
+
+## Cluster Setup
+*Step 1:* In the first step, enter the cluster name and move to networking.
+<img src={clustersetup1} alt="Diagram" style="margin: 30px 0;" />
+
+*Step 2:* In the networking tab, the VPCs is created by default. Select all of the public & private subnets (if available).
+You can also create a new customized VPC by following the steps [here](https://docs.aws.amazon.com/directoryservice/latest/admin-guide/gsg_create_vpc.html). If you want to create a VPC with public & private subnets follow the steps [here](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-public-private-vpc.html).
+<img src={clustersetup2} alt="Diagram" style="margin: 30px 0;" />
+
+*Step 3:* You can enable Container Insights at the Amazon ECS cluster level to receive those metrics. For more information, see [Amazon ECS CloudWatch Container Insights](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cloudwatch-container-insights.html).
+<img src={clustersetup3} alt="Diagram" style="margin: 30px 0;" />
+
+Once, you have verified the networking, infrastructure and monitoring. create the cluster.
+
+## Deployment of task
+
+*Step 1:* To deploy the task, select the cluster you have created, go to services and choose deploy.
+<img src={taskdeploy1} alt="Diagram" style="margin: 30px 0;" />
+
+*Step 2:* In the deployment configuration, select the task definition under family drop down. Assign a unique service name and specify the number of tasks to launch.
+<img src={taskdeploy2} alt="Diagram" style="margin: 30px 0;" />
+
+*Step 3:* Create a new load balancer by selecting the drop down option Application Load Balancer.
+<img src={taskdeploy3} alt="Diagram" style="margin: 30px 0;" />
+
+You need to specify the port and protocol that load balancer will listen to and also create a target group to route requests to your deployed tasks.
+<img src={taskdeploy4} alt="Diagram" style="margin: 30px 0;" />
+
+*Step 4:* In the networking section, you can choose the default VPC and subnets. There will be an existing default security group that you can select. If that option is not available create a new security group for your VPC. Depending on your task, you can assign a Public IP address to your ENI.
+<img src={taskdeploy5} alt="Diagram" style="margin: 30px 0;" />
+
+*Step 5:* After configuring the deployment configurations, load balancing and networking, click on deploy.
+<img src={taskdeploy6} alt="Diagram" style="margin: 30px 0;" />
+
+Please wait for few minutes until the task is deployed and running.
+
+In order to view your metrics and traces Amazon provides many monitoring services such as [AWS X-Ray](https://docs.aws.amazon.com/xray/latest/devguide/xray-gettingstarted.html) , [Amazon Managed Grafana](https://aws.amazon.com/blogs/mt/amazon-managed-grafana-getting-started/) , and [Amazon CloudWatch](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/GettingStarted.html) .

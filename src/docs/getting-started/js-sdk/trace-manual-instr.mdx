@@ -1,5 +1,5 @@
 ---
-title: 'Tracing with the AWS Distro for OpenTelemetry JavaScript SDK'
+title: 'Tracing with the AWS Distro for OpenTelemetry JavaScript SDK and X-Ray'
 description:
     This project contains components of the OpenTelemetry Javascript SDK for OpenTelemetry, a framework to collect traces
     and metrics from applications. In order to trace data from various web applications, OpenTelemetry provides plugins
@@ -18,349 +18,194 @@ import { Link } from "gatsby"
 
 ## Introduction
 
-In this Getting Started guide, we will introduce how to instrument a JavaScript application for traces to use with an AWS X-Ray backend.
+The AWS Distro for OpenTelemetry (ADOT) JavaScript contains some components from the upstream OpenTelemetry Javascript SDK. This guide will go over how to configure the relevant components of the ADOT SDK to send trace data to the AWS X-Ray backend.
 
-The AWS Distro for OpenTelemetry (ADOT) contains some components from the upstream OpenTelemetry Javascript SDK. This SDK collects traces 
-and metrics from applications. OpenTelemetry provides plugins to automatically trace data from multiple web applications. As OpenTelemetry 
-is not configured for AWS X-Ray by default, configuration has to be made in the `NodeTracerProvider` provided by the OpenTelemetry API.
+The diagram below shows the data path for exporting traces from an application instrumented with OpenTelemetry to AWS X-Ray.
 
 <img src={img15} alt="Diagram" style="margin: 30px 0;" />
 
-The diagram above shows the data path of exporting from an application instrumented with OpenTelemetry to AWS X-Ray. It starts with instrumenting 
-our app with a configured tracer, then we export traces to the Collector, and finally, the Collector will export to AWS X-Ray.
-
 <SubSectionSeparator />
-
-### What is AWSXRayIdGenerator?
-
-By default, OpenTelemetry uses the standard W3C trace format which generates a purely random trace ID. This differs from the traceID format that 
-AWS X-Ray uses where the first 4 bytes of the trace ID represents the start time of the trace. OpenTelemetry provides an extension point for us 
-to use the AWS X-Ray `IdGenerator` to allow us to use a custom generator that conforms to the 
-[X-Ray requirement](https://docs.aws.amazon.com/xray/latest/devguide/xray-api-sendingdata.html). We 
-[implemented an AWS XRay IdGenerator](https://github.com/aws-observability/aws-otel-js/tree/master/packages/opentelemetry-id-generator-aws-xray) 
-which generates traces with the first 8 hexadecimals set to the start time according to AWS X-Ray trace ID format.
-
-<SubSectionSeparator />
-
-### What is AWSXRayPropagator?
-
-By default, OpenTelemetry uses the W3C Trace Context format for propagating spans, and out-of-the-box supports B3 and Jaeger propagation. 
-The `HttpTextFormat` interface allows other propagators to be implemented, so we implemented an 
-[AWS Propagator](https://github.com/aws-observability/aws-otel-js/tree/master/packages/opentelemetry-propagator-aws-xray)that conforms 
-with the [X-Ray trace header format](https://docs.aws.amazon.com/xray/latest/devguide/xray-concepts.html#xray-concepts-tracingheader). 
-
-<SubSectionSeparator />
-
-### What is a Resource?
-
-A resource, defined by OpenTelemetry, is an immutable representation of the entity producing telemetry. For example, a process running in a 
-container on Kubernetes may have a container name, container ID, and namespace. All of these attributes can be included in a resource object. 
-When a resource is defined and registered with the tracer provider, all spans produced by the Tracer will automatically include the resource attributes.
-
-More information about OpenTelemetry can be found in the OpenTelemetry [specifications](https://github.com/open-telemetry/opentelemetry-specification/blob/master/specification/resource/sdk.md).
-
-<SectionSeparator />
 
 ## Requirements
 
-[Node JS v8.50 (or later)](https://nodejs.org/en/download/) is required to run an application using OpenTelemetry.
+[Node.js v10 (or later)](https://nodejs.org/en/download/) is required to run an application using OpenTelemetry.
 
 Note: You’ll also need to have the ADOT Collector running to export traces to AWS X-Ray. See the ADOT Collector 
 [documentation](https://aws-otel.github.io/docs/getting-started/collector) for setup instructions.
 
 <SectionSeparator />
 
-## Installing the SDK and Dependencies
+## Installation
 
-In order to trace your application, the following OpenTelemetry packages will be required to be installed in your applications main directory.
+In order to trace your application, the following OpenTelemetry JavaScript packages must be installed in your application's main directory.
 
 ```bash
-$ npm install \
+npm install --save \
   @opentelemetry/api \
-  @opentelemetry/node \
-  @opentelemetry/tracing \
-  @opentelemetry/exporter-collector-grpc
+  @opentelemetry/sdk-trace-node \
+  @opentelemetry/exporter-trace-otlp-grpc
 ```
 
 Install the AWS X-Ray components.
 
 ```bash
-$ npm install \
-  @aws/otel-aws-xray-propagator \
-  @aws/otel-aws-xray-id-generator
+npm install --save \
+  @opentelemetry/id-generator-aws-xray \
+  @opentelemetry/propagator-aws-xray
 ```
-
-To install a specific version, see the [release tags on the Github releases page](https://github.com/aws-observability/aws-otel-js/releases).
 
 <SectionSeparator />
 
-## Instrumenting an Application
+## Setting up the Global Tracer
 
-OpenTelemetry can collect tracing data from various applications automatically using plugins. The plugins offer instrumenting popular frameworks such as 
-Hapi, Express, Redis, GraphQL, and many more. The full list of supported libraries and installation instructions can be found 
-[here](https://github.com/open-telemetry/opentelemetry-js-contrib#node-plugins).
+### Sending Traces to AWS X-Ray
 
-OpenTelemetry allows the user to automatically collect telemetry data and export them to the backend of choice, to give observability with 
-distributed systems. We will be going through how to instrument a simple HTTP server below.
-
-<SubSectionSeparator />
-
-### Configure Global Tracer for AWS X-Ray
-
-The following tracer configuration file for AWS X-Ray is uniform for all applications and the following code can be copied into a file named `tracer.js`:
-
-*Note: Any additional configurations will be modified in here.*
+In order to send trace data to AWS X-Ray via the ADOT Collector, you must configure the X-Ray ID generator, X-Ray propagator, and collector gRPC exporter on the global tracer provider.
 
 ```javascript lineNumbers=true 
-const { SimpleSpanProcessor } = require("@opentelemetry/tracing");
-const { NodeTracerProvider } = require('@opentelemetry/node');
-const { CollectorTraceExporter } = require('@opentelemetry/exporter-collector-grpc');
-const { AWSXRayPropagator } = require('AWSXRayPropagator');
-const { AwsXRayIdGenerator } = require('AWSXRayIdGenerator');
-const { propagation, trace } = require("@opentelemetry/api");
+const { BatchSpanProcessor } = require("@opentelemetry/tracing");
+const { NodeTracerProvider } = require("@opentelemetry/node");
+const { OTLPTraceExporter } = require("@opentelemetry/exporter-trace-otlp-grpc");
+const { AWSXRayPropagator } = require("@opentelemetry/propagator-aws-xray");
+const { AWSXRayIdGenerator } = require("@opentelemetry/id-generator-aws-xray");
+const { trace } = require("@opentelemetry/api");
 
 module.exports = (serviceName) => {
-  // set global propagator
-  propagation.setGlobalPropagator(new AWSXRayPropagator());
-
-  // create a provider for activating and tracking with AWS IdGenerator
+  // create a provider using the AWS ID Generator
   const tracerConfig = {
-    idGenerator: new AwsXRayIdGenerator(),
-  // Any instrumentation plugins will be declared here
-    plugins: {},
-  // Any resources can be declared here
+    idGenerator: new AWSXRayIdGenerator(),
+    // any instrumentations can be declared here
+    instrumentations: [],
+    // any resources can be declared here
     resources: {},
   };
+
   const tracerProvider = new NodeTracerProvider(tracerConfig);
 
   // add OTLP exporter
-  const otlpExporter = new CollectorTraceExporter({
+  const otlpExporter = new OTLPTraceExporter({
     serviceName: serviceName,
-    // port configured in the Collector config, defaults to 55680
-    url: "localhost:55680"
+    // port configured in the Collector config, defaults to 4317
+    url: "localhost:4317"
     // credentials only required if tls setup on Collector instance
     credentials: grpc.credentials.createSsl(
-      fs.readFileSync('./ca.crt'),
-      fs.readFileSync('./client.key'),
-      fs.readFileSync('./client.crt')
+      fs.readFileSync("./ca.crt"),
+      fs.readFileSync("./client.key"),
+      fs.readFileSync("./client.crt")
     )
   });
-  tracerProvider.addSpanProcessor(new SimpleSpanProcessor(otlpExporter));
+  tracerProvider.addSpanProcessor(new BatchSpanProcessor(otlpExporter));
 
-  // Register the tracer
-  tracerProvider.register();
+  // Register the tracer provider with an X-Ray propagator
+  tracerProvider.register({
+    propagator: new AWSXRayPropagator()
+  });
 
   // Return an tracer instance
   return trace.getTracer("sample-instrumentation");
 }
 ```
 
-<SubSectionSeparator />
+### Using the AWS Resource Detectors
 
-### Sample Application 
+The ADOT JavaScript SDK supports automatically recording metadata in EC2, Elastic Beanstalk, ECS, and EKS environments. To install the package containing the
+resource detectors, run:
 
-For this guide, we will be tracing a sample hello-world application and this code can be copied into a file named `server.js`
+```bash
+npm install --save @opentelemetry/resource-detector-aws
+```
 
-```javascript lineNumbers=true 
-'use strict';
-const tracer = require('./tracer')('');
-const http = require('http');
+You can add one or more of the detectors to your `tracerConfig`:
 
-/** Starts a HTTP server that receives requests on localhost:8080. */
-function startServer(address) {
-  // Creates a server
-  const server = http.createServer(handleRequest);
-  // Starts the server
-  server.listen(address, (err) => {
-    if (err) {
-      throw err;
-    }
-    console.log(`Node HTTP listening on ${address}`);
-  });
-}
+```js
+import { detectResources } from '@opentelemetry/resources';
+import { awsEc2Detector } from '@opentelemetry/resource-detector-aws'
+const resource = await detectResources({
+   detectors: [awsEc2Detector],
+})
 
-function handleRequest(req, res) {  
-   try {
-    req.on('error', (err) => console.log(err));
-    req.on('data', (chunk) => body.push(chunk));
-    req.on('end', () => {
-        res.end('Hello World!');
-      });
-  } catch (err) {
-    console.error(err);
-  }
-}
+const tracerProvider = new NodeTracerProvider({ resource });
+```
 
-startServer(8080);
+To see what attributes are captured and how to add other resource detectors, see the [OpenTelemetry documentation](https://github.com/open-telemetry/opentelemetry-js-contrib/tree/main/detectors/node/opentelemetry-resource-detector-aws#readme).
+
+### Debug Logging
+
+To enable debug logging for the OpenTelemetry SDK, configure the provided Diag logger as follows. Do this as early in your program as possible to capture all OpenTelemetry SDK behavior.
+
+```js
+const { DiagConsoleLogger, DiagLogLevel, diag } = require('@opentelemetry/api');
+diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
 ```
 
 <SubSectionSeparator />
 
-### Start Tracing
+## Instrumenting an Application
 
-All that has to be done now is to declare the tracer at the top of your application file, i.e. `server.js`
+**Warning: Some instrumentations are not yet stable and their configuration and the attributes they collect are subject to change until the instrumentation reaches 1.0 stability. It is recommended to pin a specific version of an instrumentation to avoid breaking changes.**
 
-```
-const tracer = require('./tracer')('your app name');
-```
+OpenTelemetry can collect tracing data from various applications automatically using plugins. The plugins offer instrumenting popular frameworks such as 
+Hapi, Express, Redis, GraphQL, and many more. The full list of supported libraries and installation instructions can be found on the 
+[OpenTelemetry JavaScript Contrib repo](https://github.com/open-telemetry/opentelemetry-js-contrib#node-instrumentations).
 
-Start application via terminal:
+### Instrumenting the AWS SDK
 
-```
-node server.js
-```
-
-Whenever a request is made to the application, the tracer will automatically collect telemetry data from the application, export to 
-the collector, and the Collector will send traces AWS X-Ray.
-
-Visit the sample application via url localhost:8080:
-
-<img src={jsImg1} alt="Diagram" style="margin: 30px 0;" />
-
-If the Collector has been set up successfully with the proper endpoints, AWS credentials and the application is instrumented correctly, 
-we should see the following in the AWS X-Ray console:
-
-<img src={jsImg2} alt="Diagram" style="margin: 30px 0;" />
-
-This trace can be analyzed by clicking into it:
-
-<img src={jsImg3} alt="Diagram" style="margin: 30px 0;" />
-
-<SectionSeparator />
-
-## Additional Configurations
-
-As shown in the example, it is very easy to start instrumenting a simple HTTP application. This section includes the usage of plugins to instrument different 
-libraries, adding resources to populate traces with information about the entity, adding custom attributes, and manually creating spans.
-
-<SubSectionSeparator />
-
-### Adding Resources
-
-Adding resources to the traces will provide more information and insight about the application. In particular, there are multiple resource detectors 
-which add information about the environment in the traces. This includes the Amazon Elastic Kubernetes service, Elastic Container Service, Elastic 
-Compute Cloud, and AWS Beanstalk. If your application is deployed on any of the named services, you may want to include these resource detectors to include 
-additional information about the environment themselves; this may include containerID, container name, version and deployment ID.
+Tracing support for downstream AWS SDK calls to Amazon DynamoDB, S3, and others is provided by the 
+[OpenTelemetry AWS SDK Instrumentation](https://github.com/open-telemetry/opentelemetry-js-contrib/tree/main/plugins/node/opentelemetry-instrumentation-aws-sdk).
 
 Install the following dependency with npm:
 
 ```
-npm install --save @opentelemetry/resource-detector-aws \
-                   @opentelemetry/resources
+npm install --save @opentelemetry/instrumentation-aws-sdk
 ```
 
-Import the dependencies in `tracer.js`:
+Then register the AWS SDK instrumentation as follows:
 
-```
-const { awsEc2Detector, awsEksDetector, awsEcsDetector, awsBeanstalkDetector } = require('@opentelemetry/resource-detector-aws');
-const { detectResources } = require('@opentelemetry/resources/build/src/platform/node/detect-resources');
-```
+```js lineNumbers=true
+const { AwsInstrumentation } = require('@opentelemetry/instrumentation-aws-sdk');
+const { registerInstrumentations } = require('@opentelemetry/instrumentation');
 
-Detect the resources using the code snippet:
-
-``` javascript lineNumbers=true 
-var resources;
-  detectResources({ detectors: [awsEc2Detector, awsEksDetector, awsEcsDetector, awsBeanstalkDetector] })
-  .then((res) => {
-    resources = res;
-    console.log("detected resource: " + JSON.stringify(resources));
-  }).catch((e) => {console.log(e);});
-```
-
-Include the plugin in the provided `tracer.js` template:
-
-```
-resources: resources,
-```
-
-The tracer will automatically include any resource information into its traces once an application is instrumented. Only include the specific 
-resource detector if your application is hosted on the corresponding Amazon service to reduce overhead. However, the detectors will not throw an 
-error or include unexpected information if it is declared and the application is not running in the corresponding environment.
-
-<SubSectionSeparator />
-
-### Instrumenting Different Frameworks
-
-The full list of supported plugins and installation instructions can be found 
-[here](https://github.com/open-telemetry/opentelemetry-js-contrib#node-plugins). For example, to start instrumenting an express:
-
-Install the following dependency with npm:
-
-```
-npm install --save @opentelemetry/plugin-express
-```
-
-Include the plugin in the provided tracer.js template:
-
-```json 
-  // Any instrumentation plugins will be declared here
-    plugins: {
-      express: {
-      enabled: true,
-      // You may use a package name or absolute path to the file.
-      path: '@opentelemetry/plugin-express',
-    }
-  }
+registerInstrumentations({
+  instrumentations: [
+    new AwsInstrumentation({
+      // see the upstream documentation for available configuration
+    })
+  ]
+});
 ```
 
 <SubSectionSeparator />
 
-### Tracing AWS SDK Calls
+## Custom Instrumentation
 
-Tracing support to any AWS SDK calls such as Amazon DynamoDB, S3, and etc is provided by the 
-[Open Telemetry AWS SDK Instumentation plugin](https://github.com/aspecto-io/opentelemetry-ext-js/tree/master/packages/plugin-aws-sdk) by [aspecto.io](https://www.aspecto.io/).
+### Creating Custom Spans
 
-Install the following dependency with npm:
+You can use custom spans to monitor the performance of internal activities that are not captured by instrumentation libraries. 
+Note that only spans of kind `Server` are converted into X-Ray segments, all other spans are converted into X-Ray subsegments. 
+For more on segments and subsegments, see the [AWS X-Ray developer guide](https://docs.aws.amazon.com/xray/latest/devguide/xray-concepts.html#xray-concepts-segments).
 
+```javascript 
+const { SpanKind } = require("@opentelemetry/api")
+
+const serverSpan = tracer.startActiveSpan('server', { kind: SpanKind.SERVER });  // This span will appear as a segment in X-Ray
+const internalSpan = tracer.startActiveSpan('operation', { kind: SpanKind.INTERNAL });  // This span will appear as a subsegment in X-Ray
+//...
+internalSpan.end();
+serverSpan.end();
 ```
-npm install --save opentelemetry-plugin-aws-sdk
-```
-
-Include the plugin in the provided tracer.js template:
-
-```json lineNumbers=true 
-  plugins: {
-    "aws-sdk": {
-      enabled: true,
-      // You may use a package name or absolute path to the file.
-      path: "opentelemetry-plugin-aws-sdk",
-    },
-```
-
-<SubSectionSeparator />
 
 ### Adding Custom Attributes
 
-You can add custom attributes to a `Span` by defining an `AttributeKey` and calling `setAttribute`
-on the current `Span`. The JavaScript SDK creates spans via it’s supported web framework plugins. You can use 
-`TracingContextUtils.getCurrentSpan()` to access the current span and set the attribute for a key that you have defined as a constant by using `AttributeKeys`.
+You can also add custom key-value pairs as attributes onto your spans. Attributes are converted to metadata by default. 
+If you [configure your collector](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/7bf2266a025425993a233f66c77a0810ab11a78b/exporter/awsxrayexporter#exporter-configuration), you can convert some or all of the attributes to annotations. 
+To read more about X-Ray annotations and metadata see the [AWS X-Ray Developer Guide](https://docs.aws.amazon.com/xray/latest/devguide/xray-concepts.html#xray-concepts-annotations).
 
-```javascript lineNumbers=true 
-const { context, propagation, trace } = require("@opentelemetry/api");
-
-const tracer = require('./xray-tracer')('your app name');
-
-//...
-
-function SetSpanAttribute() {
-  const span = tracer.getCurrentSpan()
-  String exampleAttribute = exampleAttribute();
-  TracingContextUtils.getCurrentSpan().setAttribute(EXAMPLE_ATTRIBUTE, exampleAttribute);
-}
-```
-
-*Note: When using AWS X-Ray as your tracing backend, you can control whether attributes are uploaded as annotations or metadata by configuring the ADOT 
-Collector’s [indexed keys](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/master/exporter/awsxrayexporter#exporter-configuration). 
-Additionally, you can set attributes as annotations by enabling it in the collector configuration for X-Ray exporter.
-See the instructions [here](/docs/getting-started/x-ray/#enable-the-customized-x-ray-annotations).
-
-#### Creating Spans
-
-Spans can be manually created using the standard OpenTelemetry API. This will be modified in the application code to do any manual span instrumentation, 
-you may desire to inquire more information about a certain request, etc.
-
-```javascript lineNumbers=true 
-const span = tracer.startSpan('op');
-//...
+```javascript
+const span = tracer.startActiveSpan('sample');
+span.setAttribute('key', 'value');
 span.end();
 ```
+
+## Sample Application 
+
+See the [AWS Distro for OpenTelemetry Sample Code with JavaScript SDK](https://github.com/aws-observability/aws-otel-js/tree/main/sample-apps) for instructions on setting up and using the sample app.

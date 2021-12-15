@@ -1,5 +1,5 @@
 ---
-title: 'Tracing with the AWS Distro for OpenTelemetry Go SDK'
+title: 'Tracing with the AWS Distro for OpenTelemetry Go SDK and X-Ray'
 description:
     OpenTelemetry provides different language SDKs to instrument code for collecting telemetry data in the application.
     In this tutorial, we will introduce how to use OpenTelemetry Go SDK for traces instrumentation in the application.
@@ -158,12 +158,12 @@ otelaws.AppendMiddlewares(&cfg.APIOptions)
 
 // Call to S3
 s3Client := s3.NewFromConfig(cfg)
-	input := &s3.ListBucketsInput{}
-	result, err := s3Client.ListBuckets(ctx, input)
-	if err != nil {
-		fmt.Printf("Got an error retrieving buckets, %v", err)
-		return
-	}
+input := &s3.ListBucketsInput{}
+result, err := s3Client.ListBuckets(ctx, input)
+if err != nil {
+	fmt.Printf("Got an error retrieving buckets, %v", err)
+	return
+}
 ```
 
 <SectionSeparator />
