@@ -70,7 +70,7 @@ without authentication. If not using any other authentication mechanism in front
 configure network policy to only allow network connectivity to applications that should be allowed to access X-Ray with
 the above IAM permissions, for example using network firewall rules.**
 
-## Remote Sampling Implementation specific Caveats
+## OTel Remote Sampling Implementation Caveats
 
 Below mentioned table displays X-Ray sampling attributes and X-Ray equivalent OTel sampling attributes used by the OTel remote sampling implementation. Here's how you can [configure X-Ray sampling attributes](https://docs.aws.amazon.com/xray/latest/devguide/xray-console-sampling.html#xray-console-config) in AWS X-Ray Console. Below mentioned caveats to keep in mind when using OTel remote sampling implementation.
 
@@ -79,5 +79,5 @@ Below mentioned table displays X-Ray sampling attributes and X-Ray equivalent OT
 
 |X-Ray Sampling Attributes | X-Ray equivalent OTel Sampling Semantic Attributes |
 |---------------------|-------------------------|
-| ServiceName <br/> ServiceType <br/> URLPath <br/> Host <br/> HTTPMethod <br/>  Attributes <br/> | ResourceAttributes.SERVICE_NAME <br/> ResourceAttributes.CLOUD_PLATFORM <br/> SemanticAttributes.HTTP_TARGET/SemanticAttributes.HTTP_URL <br/> SemanticAttributes.HTTP_HOST <br/> SemanticAttributes.HTTP_METHOD <br/>  Attributes <br/>|
+| ServiceName<br/>ServiceType<br/>URLPath<br/>Host<br/>HTTPMethod<br/>Attributes | ResourceAttributes.SERVICE_NAME<br/>ResourceAttributes.CLOUD_PLATFORM<br/>SemanticAttributes.HTTP_TARGET/SemanticAttributes.HTTP_URL<br/>SemanticAttributes.HTTP_HOST<br/>SemanticAttributes.HTTP_METHOD<br/>Attributes |
 
