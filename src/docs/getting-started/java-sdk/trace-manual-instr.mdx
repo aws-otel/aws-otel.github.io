@@ -296,7 +296,7 @@ OpenTelemetrySdk.builder()
   .setTracerProvider(SdkTracerProvider.builder()
     .setResource(resource)
     .setSampler(AwsXrayRemoteSampler.newBuilder(resource).setEndpoint("http://localhost:2000")
-                                                                      .setPollingInterval(Duration.ofSeconds(5))
+                                                                      .setPollingInterval(Duration.ofSeconds(300))
                                                                       .build())
     ...
     .build())
