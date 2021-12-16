@@ -4,6 +4,13 @@ description:
 path: /announcements
 
 announcements:
+  - title: "Amazon ECS announces a new integration with AWS Distro for OpenTelemetry"
+    date: "23-Nov-2021"
+    blurb:
+      "Amazon Elastic Container Service (Amazon ECS) now enables customers to quickly get started to monitor and
+      debug their applications with traces and custom metrics using AWS Distro for OpenTelemetry (ADOT). "
+    link: "https://aws.amazon.com/about-aws/whats-new/2021/11/amazon-ecs-new-integration-aws-distro-opentelemetry/"
+
   - title: "AWS Distro for OpenTelemetry adds Prometheus and Lambda support and other cool features"
     date: "15-Dec-2020"
     blurb:
