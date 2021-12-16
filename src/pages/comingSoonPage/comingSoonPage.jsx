@@ -7,6 +7,7 @@ import Parallax from "components/Parallax/Parallax.jsx"
 import HeaderLinks from "components/Header/HeaderLinks.jsx"
 import ComingSoonPageStyle from "assets/jss/material-kit-react/views/comingSoonPage.jsx"
 import MainBodySection from "./sections/mainBodySection.jsx"
+import BackgroundImage from "assets/img/adot_bg.jpg"
 
 class ComingSoonPage extends React.Component {
   render() {
@@ -24,7 +25,7 @@ class ComingSoonPage extends React.Component {
               }}
               {...rest}
           />
-          <Parallax small image={require("assets/img/himalia_bg.jpg")}>
+          <Parallax small image={BackgroundImage}>
           </Parallax>
 
           <div className={classNames(classes.main, classes.mainRaised)} >
