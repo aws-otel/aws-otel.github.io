@@ -22,49 +22,21 @@ module.exports = {
       resolve: `gatsby-plugin-google-analytics`,
       options: {
         trackingId: 'UA-180925204-1',
-      }
+      },
     },
     {
       resolve: require.resolve(`./src/plugins/contributorsPlugin`),
       options: {
-        repo: "aws-observability/aws-otel-test-framework",
+        repos: [
+          "aws-observability/aws-otel-collector",
+          "aws-observability/aws-otel-java-instrumentation",
+          "aws-observability/aws-otel-js",
+          "aws-observability/aws-otel-community",
+          "aws-observability/aws-otel-playground",
+          "aws-observability/aws-otel-test-framework"
+        ],
         token: process.env.GH_API_KEY,
-      }
-    },
-    {
-      resolve: require.resolve(`./src/plugins/contributorsPlugin`),
-      options: {
-        repo: "aws-observability/aws-otel-collector",
-        token: process.env.GH_API_KEY,
-      }
-    },
-    {
-      resolve: require.resolve(`./src/plugins/contributorsPlugin`),
-      options: {
-        repo: "aws-observability/aws-otel-java-instrumentation",
-        token: process.env.GH_API_KEY,
-      }
-    },
-    {
-      resolve: require.resolve(`./src/plugins/contributorsPlugin`),
-      options: {
-        repo: "aws-observability/aws-otel-js",
-        token: process.env.GH_API_KEY,
-      }
-    },
-    {
-      resolve: require.resolve(`./src/plugins/contributorsPlugin`),
-      options: {
-        repo: "aws-observability/aws-otel-community",
-        token: process.env.GH_API_KEY,
-      }
-    },
-    {
-      resolve: require.resolve(`./src/plugins/contributorsPlugin`),
-      options: {
-        repo: "aws-observability/aws-otel-playground",
-        token: process.env.GH_API_KEY,
-      }
+      },
     },
     `gatsby-transformer-yaml`,
     {

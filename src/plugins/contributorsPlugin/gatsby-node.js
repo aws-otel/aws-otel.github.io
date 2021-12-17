@@ -20,8 +20,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-const GitHub = require ("github-base")
-const camelcaseKeys = require ( "camelcase-keys")
+const GitHub = require("github-base")
+const camelcaseKeys = require("camelcase-keys")
 
 exports.sourceNodes = async (
     { actions, createNodeId, createContentDigest },
@@ -29,23 +29,22 @@ exports.sourceNodes = async (
 ) => {
     const github = new GitHub(options);
 
-    const contributors = (await github
-        .paged(`/repos/:${options.repo}/contributors`, options, null)
-        .then((res) => res.pages))
-        .flat()
-        .map((page) => page.body)
-        .flat();
+    const loginsSet = new Set()
+
+    const responses = await Promise.all(options.repos.map((repo) => github.paged(`/repos/:${repo}/contributors`, options, null)));
+
+    const contributors = responses.map((res) => res.pages.flat().map((page) => page.body).flat()).flat();
+
     const logins = contributors.map(node => node.login);
+    logins.forEach((login) => loginsSet.add(login));
 
     const profiles = await Promise.all(
-        logins.map(login =>
+        [...loginsSet].map(login =>
             github.get(`/users/${login}`, options).then((res) => res.body)
         )
     );
 
-    const loginToProfile = Object.fromEntries(
-        profiles.map(profile => [profile.login, profile])
-    );
+    const loginToProfile = Object.fromEntries(profiles.map(profile => [profile.login, profile]));
 
     contributors.forEach(node => {
         const profile = loginToProfile[node.login];
