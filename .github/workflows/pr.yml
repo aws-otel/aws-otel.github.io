@@ -35,7 +35,7 @@ jobs:
       - run: npm ci
       - run: npm run build
         env:
-          GH_API_KEY: ${{ secrets.GH }}
+          GH_API_KEY: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload site as actions artifact
         if: ${{ runner.os == 'Linux' }}
         uses: actions/upload-artifact@v2
