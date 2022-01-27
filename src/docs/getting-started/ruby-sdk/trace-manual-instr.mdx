@@ -11,15 +11,15 @@ import SubSectionSeparator from "components/MdxSubSectionSeparator/subsectionSep
 
 ## Introduction
 
-With OpenTelemetry Ruby manual instrumentation, you configure the OpenTelemetry SDK within your application's with just a few lines of code. OTel Ruby then automatically produces spans with telemetry data describing the values used by the Ruby gems in your application. This telemetry can then be exported to a backend like AWS X-Ray using the `OpenTelemetry::Propagator::XRay::IDGenerator` found in the ADOT Ruby `opentelemetry-propagator-xray` gem. We also strongly recommend using the `OpenTelemetry::Propagator::XRay::TextMapPropagator` propagator found in the same gem to support propagating the trace context across AWS services. This propagator handles the extraction and injecting of the [AWS X-Ray Tracing header](https://docs.aws.amazon.com/xray/latest/devguide/xray-concepts.html#xray-concepts-tracingheader) for requests from or to remote services.
+With OpenTelemetry Ruby manual instrumentation, you configure the OpenTelemetry SDK within your application with just a few lines of code. OpenTelemetry Ruby then automatically produces spans with telemetry data describing the values used by the Ruby gems in your application. This telemetry can then be exported to a backend like AWS X-Ray using the `OpenTelemetry::Propagator::XRay::IDGenerator` found in the ADOT Ruby `opentelemetry-propagator-xray` gem. We also strongly recommend using the `OpenTelemetry::Propagator::XRay::TextMapPropagator` propagator found in the same gem to support propagating the trace context across AWS services. This propagator handles the extraction and injecting of the [AWS X-Ray Tracing header](https://docs.aws.amazon.com/xray/latest/devguide/xray-concepts.html#xray-concepts-tracingheader) for requests from or to remote services.
 
-In this guide, we walk through the steps needed to trace an application with auto instrumentation.
+In this guide, we walk through the steps needed to trace an application with manual instrumentation.
 
 <SectionSeparator />
 
 ## Requirements
 
-Ruby 2.5 or later is required to run an application using OpenTelemetry according to [the OpenTelemetry Ruby Documentation]((https://opentelemetry.io/docs/instrumentation/ruby/getting_started/#requirements)).
+Ruby 2.5 or later is required to run an application using OpenTelemetry according to [the OpenTelemetry Ruby Documentation](https://opentelemetry.io/docs/instrumentation/ruby/getting_started/#requirements).
 
 Note: You’ll also need to have the [ADOT Collector](https://aws-otel.github.io/docs/getting-started/collector) running to export traces to X-Ray.
 
@@ -102,7 +102,7 @@ By default, OpenTelemetry Ruby SDK [is already configured to initialize an OTLP 
 OTEL_TRACES_EXPORTER=otlp
 ```
 
-Otherwise, intiailizing with code is shown below.
+Otherwise, initializing with code is shown below.
 
 To configure for a connection to an ADOT Collector running as a sidecar, we can set up the OTLP Exporter as follows:
 
@@ -265,23 +265,13 @@ gem install opentelemetry-instrumentation-aws_sdk -v '~> 0.2.1'
 
 **NOTE:** Since these instrumentations are not yet stable, we recommend installing it at a pinned version.
 
-Instrumenting the AWS SDK is as easy as initializing the OpenTelemetry Ruby SDK Configurator to use the `OpenTelemetry::Instrumentation::AwsSdk` `Instrumentation` class. This initialization is done as soon as possible in your application so that subsequent calls using the SDK are wrapped by OpenTelemetry. This give OpenTelemetry the chance to record relevant information used by the SDK at the time of your application's call and export the information as spans.
-
-Configuring it explicitly looks can look like the following. We set `suppress_internal_instrumentation` to `true` because we want calls that go into the AWS SDK to be terminal requests without tracing underlying HTTP calls and other things which would make the trace noise-y.
+To instrument requests made to services with the AWS SDK, configure the Ruby SDK as shown. We set `suppress_internal_instrumentation` to `true` because we want calls that go into the AWS SDK to be terminal requests without tracing underlying HTTP calls and other things which would make the trace noise-y.
 
 ```ruby lineNumbers=true
 OpenTelemetry::SDK.configure do |c|
   c.use 'OpenTelemetry::Instrumentation::AwsSdk', {
     suppress_internal_instrumentation: true
   }
-end
-```
-
-Alternatively, once you've downloaded the `Instrumentation` gem, you can simply tell the OpenTelemetry SDK to trace all `Instrumentation`s including the `OpenTelemetry::Instrumentation::AwsSdk` Instrumentation.
-
-```ruby lineNumbers=true
-OpenTelemetry::SDK.configure do |c|
-  c.use_all()
 end
 ```
 
