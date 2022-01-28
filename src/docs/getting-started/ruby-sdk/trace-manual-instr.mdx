@@ -69,25 +69,21 @@ $ gem install opentelemetry-instrumentation-faraday -v '~> 0.19' \
 
 ### Sending Traces to AWS X-Ray
 
-Manual Instrumentation with OpenTelemetry Ruby involves configuring the OpenTelemetry Ruby SDK. Below we discuss where configuration should take place based on the Ruby program you are instrumenting.
+Manual Instrumentation with OpenTelemetry Ruby involves configuring the OpenTelemetry Ruby SDK. Below we discuss different methods you have for configuring the OpenTelemetry Ruby SDK.
 
-#### From a Rails Application
+#### Basic Configuration
 
-For a ruby on rails application, OpenTelemetry Ruby [recommends using a Rails initializer](https://opentelemetry.io/docs/instrumentation/ruby/getting_started/#initialization) to configure the OpenTelemetry Ruby SDK. ADOT provides a [working example of such an intializer in our sample app repo](https://github.com/aws-observability/aws-otel-ruby/blob/main/sample-apps/manual-instrumentation/ruby-on-rails/config/initializers/opentelemetry.rb).
+This section describes recommended configuration to initialize OpenTelemetry Ruby SDK for tracing with X-Ray.
 
-In a Ruby on Rails app, you will not need to require packages in your application code because of [autoloading](https://guides.rubyonrails.org/getting_started.html#autoloading). This assumes you are using `bundler` and a Gemfile.
+For a ruby on rails application, [OpenTelemetry Ruby Initialization Documentation](https://opentelemetry.io/docs/instrumentation/ruby/getting_started/#initialization) recommends placing your configuration code in a Rails initializer. ADOT provides a [working example of such an initializer in our sample app repo](https://github.com/aws-observability/aws-otel-ruby/blob/main/sample-apps/manual-instrumentation/ruby-on-rails/config/initializers/opentelemetry.rb).
 
-#### From other Ruby Programs
+In a Ruby on Rails app, you will not need to require packages in your application code because of [autoloading](https://guides.rubyonrails.org/getting_started.html#autoloading). This assumes you are using `bundler` and a Gemfile. Otherwise, if you included the gems with the `require: false` option or you are not using `bundler`, you will need to "require" the gems distributed by OpenTelemetry manually.
 
-This section describes recommended configuration needed for OpenTelemetry X-Ray tracing with X-Ray.
+For all manually instrumented Ruby programs, you must use the `OpenTelemetry::SDK.configure` method below to configure the OpenTelemetry Ruby SDK.
 
-##### Quick Setup
+The default OpenTelemetry OTLP Exporter with the Batch Processor is a great way to group traces and export them in a way that the [ADOT Collector](https://aws-otel.github.io/docs/getting-started/collector) can receive them.
 
-When you instrument a non-rails Ruby program, or if you included the gems with the `require: false` option, you will need to "require" the gems distributed by OpenTelemetry manually.
-
-Next, the default OpenTelemetry OTLP Exporter with the Batch Processor is a great way to group traces and export them in a way that the [ADOT Collector](https://aws-otel.github.io/docs/getting-started/collector) can receive them.
-
-Finally, using the X-Ray ID Generator is **required** to make your OpenTelemetry traces appear in X-Ray, while the X-Ray Propagator is **strongly recommended** in order to inject and extract the X-Ray Tracing header for downstream requests made by your application.
+Additionally, using the X-Ray ID Generator is **required** to make your OpenTelemetry traces appear in X-Ray, while the X-Ray Propagator is **strongly recommended** in order to inject and extract the X-Ray Tracing header for downstream requests made by your application.
 
 Putting this all together, we come up with the following:
 
@@ -128,9 +124,9 @@ OpenTelemetry::SDK.configure do |c|
 end
 ```
 
-With this, your Ruby application has configured OpenTelemetry Ruby to trace for the X-Ray backend service! To automatically trace popular Ruby gems, jump to the next section to learn about [instrumenting with OpenTelemetry Ruby Instrumentations](#instrumenting-an-application).
+With this, your Ruby application has configured OpenTelemetry Ruby for compatibility with the X-Ray backend service! To automatically trace popular Ruby gems, jump to the next section to learn about [instrumenting with OpenTelemetry Ruby Instrumentations](#instrumenting-an-application).
 
-##### Advanced Setup
+#### Advanced Configuration
 
 From above, we learned that configuring OpenTelemetry Ruby required specifying 3 core steps
 * which Exporter to use to export to the [ADOT Collector](https://aws-otel.github.io/docs/getting-started/collector)
@@ -156,8 +152,8 @@ Finally, to allow the span context to propagate downstream when the application 
 
 The `OTEL_PROPAGATORS` environment variable can be configured to have the OpenTelemetry Ruby SDK automatically find and initialize the propagator.
 
-```
-OTEL_PROPAGATORS=xray
+```bash
+export OTEL_PROPAGATORS=xray
 ```
 
 The propagator should be configured as soon as possible in your application's code so that subsequent downstream requests get the OpenTelemetry trace context injected into its HTTP headers. This is what allows your traces to be connected and for you to see a complete Service Graph in the X-Ray console.
@@ -180,7 +176,7 @@ export OTEL_TRACES_SAMPLER_ARG=0.10
 
 Alternatively, this can be set on the global TracerProvider after the OpenTelemetry Ruby SDK has been configured:
 
-```ruby
+```ruby lineNumbers=true
 OpenTelemetry.tracer_provider.sampler = Samplers.parent_based(root: Samplers.trace_id_ratio_based(0.10))
 ```
 
@@ -194,7 +190,7 @@ The ADOT Ruby SDK supports automatically detecting and recording metadata from r
 
 For example, if tracing with OpenTelemetry Ruby on an AWS EC2 instance, you can automatically populate `resource` attributes by initializing the OpenTelemetry Ruby SDK `TraceProvider` to use the `AwsEc2ResourceDetector`:
 
-```ruby
+```ruby lineNumbers=true
 OpenTelemetry::SDK.configure do |c|
   c.service_name = 'aws-otel-manual-rails-sample'
 
@@ -209,8 +205,8 @@ end
 
 By default, OpenTelemetry Ruby SDK logs at the `info` level. Its level can be configured using the `OTEL_LOG_LEVEL` environment variable.
 
-```
-OTEL_LOG_LEVEL=debug
+```bash
+export OTEL_LOG_LEVEL=debug
 ```
 
 Separate from OpenTelemetry, you can use code and set the Base Logger to modify the logging level throughput your application.
@@ -274,10 +270,10 @@ If you are using `bundler`, you can include it in in the Gemfile.
 gem 'opentelemetry-instrumentation-aws_sdk', '~> 0.2.1'
 ```
 
-Otherwise you can install it directly.
+Otherwise you can install it directly using your shell.
 
 ```bash
-gem install opentelemetry-instrumentation-aws_sdk -v '~> 0.2.1'
+$ gem install opentelemetry-instrumentation-aws_sdk -v '~> 0.2.1'
 ```
 
 **NOTE:** Since these instrumentations are not yet stable, we recommend installing it at a pinned version.
