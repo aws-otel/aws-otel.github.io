@@ -77,13 +77,13 @@ For a ruby on rails application, OpenTelemetry Ruby [recommends using a Rails in
 
 In a Ruby on Rails app, you will not need to require packages in your application code because of [autoloading](https://guides.rubyonrails.org/getting_started.html#autoloading). This assumes you are using `bundler` and a Gemfile.
 
-#### From a normal Ruby Program
+#### From other Ruby Programs
 
 This section describes recommended configuration needed for OpenTelemetry X-Ray tracing with X-Ray.
 
 ##### Quick Setup
 
-When you instrument a normal Ruby program, or if you included the gems with the `require: false` option, you will need to "require" the gems distributed by OpenTelemetry manually.
+When you instrument a non-rails Ruby program, or if you included the gems with the `require: false` option, you will need to "require" the gems distributed by OpenTelemetry manually.
 
 Next, the default OpenTelemetry OTLP Exporter with the Batch Processor is a great way to group traces and export them in a way that the [ADOT Collector](https://aws-otel.github.io/docs/getting-started/collector) can receive them.
 
@@ -140,7 +140,8 @@ From above, we learned that configuring OpenTelemetry Ruby required specifying 3
 By default, OpenTelemetry Ruby SDK [is already configured to initialize an OTLP exporter](https://github.com/open-telemetry/opentelemetry-ruby/tree/main/exporter/otlp#how-do-i-get-started). The exporter can also be completely [configured using environment variables](https://github.com/open-telemetry/opentelemetry-ruby/tree/main/exporter/otlp#how-can-i-configure-the-otlp-exporter).
 
 ```bash
-OTEL_TRACES_EXPORTER=otlp && OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
+export OTEL_TRACES_EXPORTER=otlp
+export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
 ```
 
 The `OTEL_EXPORTER_OTLP_ENDPOINT` value allows you to set the address that the exporter will use to connect to the collector. If unset, the SDK will try to connect to `http://localhost:4318` by default. Note that because the scheme is `http` by default, you have to explicitly set it to be `https` if necessary.
@@ -151,7 +152,7 @@ If the Collector the application will connect to is running with TLS configured,
 
 Next, because the AWS X-Ray ID Generator can only be configured through code, you cannot use an environment variable to select it. The ID Generator must be used at the time OpenTelemetry Ruby SDK is configured.
 
-Finally,tTo allow the span context to propagate downstream when the application makes calls to external services, configure the global propagator to use the AWS X-Ray Propagator.
+Finally, to allow the span context to propagate downstream when the application makes calls to external services, configure the global propagator to use the AWS X-Ray Propagator.
 
 The `OTEL_PROPAGATORS` environment variable can be configured to have the OpenTelemetry Ruby SDK automatically find and initialize the propagator.
 
@@ -169,17 +170,18 @@ You can combine the `xray` propagator with other propagators like `tracecontext`
 
 By default, the OpenTelemetry Ruby SDK follows the parent span's sampling decision if it exists, and samples 100% of incoming requests otherwise. This is known as the `parentbased_always_on` sampler.
 
-To reduce the sampling rate, configure OpenTelemetry Ruby SDK to use the `parentbased_traceidratio` sampler. This can be configured using [the OpenTelemetry Specification defined environment variables](https://github.com/open-telemetry/opentelemetry-specification/blob/7b504383f53b02b10f62ef78fa008fdfd18c633e/specification/sdk-environment-variables.md#general-sdk-configuration):
+To reduce the sampling rate, configure OpenTelemetry Ruby SDK to use the `parentbased_traceidratio` sampler. This can be configured using [the OpenTelemetry Specification defined environment variables](https://github.com/open-telemetry/opentelemetry-specification/blob/7b504383f53b02b10f62ef78fa008fdfd18c633e/specification/sdk-environment-variables.md#general-sdk-configuration). For instance, to reduce the sampling rate to 10% of requests, set the following environment variables:
 
 
 ```bash
-OTEL_TRACES_SAMPLER=traceidratio && OTEL_TRACES_SAMPLER_ARG=0.10
+export OTEL_TRACES_SAMPLER=parentbased_traceidratio
+export OTEL_TRACES_SAMPLER_ARG=0.10
 ```
 
 Alternatively, this can be set on the global TracerProvider after the OpenTelemetry Ruby SDK has been configured:
 
 ```ruby
-OpenTelemetry.tracer_provider.sampler = Samplers.trace_id_ratio_based(0.10)
+OpenTelemetry.tracer_provider.sampler = Samplers.parent_based(root: Samplers.trace_id_ratio_based(0.10))
 ```
 
 Currently, OpenTelemetry Ruby does not support centralized sampling.
@@ -309,11 +311,11 @@ tracer = OpenTelemetry.tracer_provider.tracer('my-tracer')
 
 tracer.in_span('Root Span', kind: :server) do |root_span|
 
-    p 'Started a root span'
+    p 'Started a root span, this will be a segment in the X-Ray console'
 
     tracer.in_span('Child Span') do |child_span|
 
-        p 'Started a child span'
+        p 'Started a child span, this will be a subsegment in the X-Ray console'
 
         ec2_client = Aws::EC2::Client.new
         result = ec2_client.describe_instances
