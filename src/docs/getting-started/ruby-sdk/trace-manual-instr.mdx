@@ -69,13 +69,27 @@ $ gem install opentelemetry-instrumentation-faraday -v '~> 0.19' \
 
 ### Sending Traces to AWS X-Ray
 
-For a ruby on rails application, OpenTelemetry Ruby [recommends using a Rails initializer](https://opentelemetry.io/docs/instrumentation/ruby/getting_started/#initialization) to configure the OpenTelemetry Ruby SDK. ADOT provides a [working example of such an intializer in our sample app repo](https://github.com/aws-observability/aws-otel-ruby/blob/main/sample-apps/manual-instrumentation/ruby-on-rails/config/initializers/opentelemetry.rb). A [railtie](https://api.rubyonrails.org/classes/Rails/Railtie.html) could also be used for this purpose.
+Manual Instrumentation with OpenTelemetry Ruby involves configuring the OpenTelemetry Ruby SDK. Below we discuss where configuration should take place based on the Ruby program you are instrumenting.
+
+#### From a Rails Application
+
+For a ruby on rails application, OpenTelemetry Ruby [recommends using a Rails initializer](https://opentelemetry.io/docs/instrumentation/ruby/getting_started/#initialization) to configure the OpenTelemetry Ruby SDK. ADOT provides a [working example of such an intializer in our sample app repo](https://github.com/aws-observability/aws-otel-ruby/blob/main/sample-apps/manual-instrumentation/ruby-on-rails/config/initializers/opentelemetry.rb).
 
 In a Ruby on Rails app, you will not need to require packages in your application code because of [autoloading](https://guides.rubyonrails.org/getting_started.html#autoloading). This assumes you are using `bundler` and a Gemfile.
 
-However, if you tracing a normal Ruby program, or have included gems with the `, require: false` option, the code below shows step by step how to configure the OpenTelemetry Ruby SDK in any normal Ruby program.
+#### From a normal Ruby Program
 
-First, you will need to "require" the gems you use for your application and the ones used by OpenTelemetry manually. 
+This section describes recommended configuration needed for OpenTelemetry X-Ray tracing with X-Ray.
+
+##### Quick Setup
+
+When you instrument a normal Ruby program, or if you included the gems with the `require: false` option, you will need to "require" the gems distributed by OpenTelemetry manually.
+
+Next, the default OpenTelemetry OTLP Exporter with the Batch Processor is a great way to group traces and export them in a way that the [ADOT Collector](https://aws-otel.github.io/docs/getting-started/collector) can receive them.
+
+Finally, using the X-Ray ID Generator is **required** to make your OpenTelemetry traces appear in X-Ray, while the X-Ray Propagator is **strongly recommended** in order to inject and extract the X-Ray Tracing header for downstream requests made by your application.
+
+Putting this all together, we come up with the following:
 
 ```ruby lineNumbers=true
 # Basic packages for your application
@@ -89,53 +103,55 @@ require 'opentelemetry-sdk'
 
 # Import the gem containing the AWS X-Ray for OTel Ruby ID Generator and propagator
 require 'opentelemetry-propagator-xray'
+
+# Configure OpenTelmetry Ruby SDK
+OpenTelemetry::SDK.configure do |c|
+  # Set the service name to identify your application in the X-Ray backend service map
+  c.service_name = 'aws-otel-manual-rails-sample'
+
+  c.span_processors = [
+      # Use the BatchSpanProcessor to send traces in groups instead of one at a time
+      Trace::Export::BatchSpanProcessor.new(
+          # Use the default OLTP Exporter to send traces to the ADOT Collector
+          OpenTelemetry::Exporter::OTLP::Exporter.new(
+            # The ADOT Collector is running as a sidecar and listening on port 4318
+            endpoint="http://localhost:4318"
+          )
+      )
+    ]
+
+  # The X-Ray ID Generator generates spans with X-Ray backend compliant IDs
+  c.id_generator = OpenTelemetry::Propagator::XRay::IDGenerator
+
+  # The X-Ray Propagator injects the X-Ray Tracing Header into downstream calls
+  c.propagators = [OpenTelemetry::Propagator::XRay::TextMapPropagator.new]
+end
 ```
 
-Next, configure the Global Tracer Provider. This involves configuring
-* which Exporter to use to export to the ADOT Collector
+With this, your Ruby application has configured OpenTelemetry Ruby to trace for the X-Ray backend service! To automatically trace popular Ruby gems, jump to the next section to learn about [instrumenting with OpenTelemetry Ruby Instrumentations](#instrumenting-an-application).
+
+##### Advanced Setup
+
+From above, we learned that configuring OpenTelemetry Ruby required specifying 3 core steps
+* which Exporter to use to export to the [ADOT Collector](https://aws-otel.github.io/docs/getting-started/collector)
 * which ID Generator to use to generate Trace IDs
-* which Instrumentation Gems to use to automatically trace calls to other gems
+* which Propagator to use to propagate Trace Context to downstream calls
 
 By default, OpenTelemetry Ruby SDK [is already configured to initialize an OTLP exporter](https://github.com/open-telemetry/opentelemetry-ruby/tree/main/exporter/otlp#how-do-i-get-started). The exporter can also be completely [configured using environment variables](https://github.com/open-telemetry/opentelemetry-ruby/tree/main/exporter/otlp#how-can-i-configure-the-otlp-exporter).
 
 ```bash
-OTEL_TRACES_EXPORTER=otlp
+OTEL_TRACES_EXPORTER=otlp && OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
 ```
 
-Otherwise, initializing with code is shown below.
-
-To configure for a connection to an ADOT Collector running as a sidecar, we can set up the OTLP Exporter as follows:
-
-```ruby lineNumbers=true
-# Sends generated traces in the OTLP format to an ADOT Collector running on port 4318
-otlp_exporter = OpenTelemetry::Exporter::OTLP::Exporter.new(endpoint="http://localhost:4318")
-# Processes traces in batches as opposed to immediately one after the other
-span_processor = Trace::Export::BatchSpanProcessor.new(otlp_exporter)
-```
-
-The `endpoint=` argument allows you to set the address that the exporter will use to connect to the collector. If unset, the SDK will try to connect to `http://localhost:4318` by default. Note that because the scheme is `http` by default, you have to explicitly set it to be `https` if necessary.
+The `OTEL_EXPORTER_OTLP_ENDPOINT` value allows you to set the address that the exporter will use to connect to the collector. If unset, the SDK will try to connect to `http://localhost:4318` by default. Note that because the scheme is `http` by default, you have to explicitly set it to be `https` if necessary.
 
 If the Collector the application will connect to is running without TLS configured, the `http` scheme is used to disable client transport security for the OTLP exporter's connection. This option should never be used in production, non-sidecar deployments.
 
 If the Collector the application will connect to is running with TLS configured, the `https` scheme and the `certificate_file=/path/to/cert.pem` argument should be used to give a path to credentials that allow the application to establish a secure connection for the app's exporter. The credentials at this path should be the public certificate of the collector, or one of its root certificates.
 
-With the exporter created, initialize OpenTelemetry Ruby SDK to use it:
+Next, because the AWS X-Ray ID Generator can only be configured through code, you cannot use an environment variable to select it. The ID Generator must be used at the time OpenTelemetry Ruby SDK is configured.
 
-```ruby
-OpenTelemetry::SDK.configure do |c|
-  c.span_processors = [span_processor]
-end
-```
-
-Next, because the AWS X-Ray backend service requires compliant Trace IDs, create an instance of the ID generator during initialization as follows:
-
-```ruby
-OpenTelemetry::SDK.configure do |c|
-  c.id_generator = OpenTelemetry::Propagator::XRay::IDGenerator
-end
-```
-
-To allow the span context to propagate downstream when the application makes calls to external services, configure the global propagator to use the AWS X-Ray Propagator.
+Finally,tTo allow the span context to propagate downstream when the application makes calls to external services, configure the global propagator to use the AWS X-Ray Propagator.
 
 The `OTEL_PROPAGATORS` environment variable can be configured to have the OpenTelemetry Ruby SDK automatically find and initialize the propagator.
 
@@ -143,37 +159,36 @@ The `OTEL_PROPAGATORS` environment variable can be configured to have the OpenTe
 OTEL_PROPAGATORS=xray
 ```
 
-On the other hand, you can set the global propagator in code as follows.
+The propagator should be configured as soon as possible in your application's code so that subsequent downstream requests get the OpenTelemetry trace context injected into its HTTP headers. This is what allows your traces to be connected and for you to see a complete Service Graph in the X-Ray console.
 
-```ruby
-OpenTelemetry::SDK.configure do |c|
-  c.propagators = [OpenTelemetry::Propagator::XRay::TextMapPropagator.new]
-end
+Likewise, configuring the X-Ray Propagator means incoming requests to your application can parse out an OpenTelemetry Trace context and use the same Trace ID to pick up tracing where the upstream service left off.
+
+You can combine the `xray` propagator with other propagators like `tracecontext` and `b3` just fine, but it is recommended you put `xray` last because the propagator later in the list will override previous propagators.
+
+### Configuring Sampling
+
+By default, the OpenTelemetry Ruby SDK follows the parent span's sampling decision if it exists, and samples 100% of incoming requests otherwise. This is known as the `parentbased_always_on` sampler.
+
+To reduce the sampling rate, configure OpenTelemetry Ruby SDK to use the `parentbased_traceidratio` sampler. This can be configured using [the OpenTelemetry Specification defined environment variables](https://github.com/open-telemetry/opentelemetry-specification/blob/7b504383f53b02b10f62ef78fa008fdfd18c633e/specification/sdk-environment-variables.md#general-sdk-configuration):
+
+
+```bash
+OTEL_TRACES_SAMPLER=traceidratio && OTEL_TRACES_SAMPLER_ARG=0.10
 ```
 
-Either way, the propagator should be configured as soon as possible in your application's code.
-
-Putting this all together we have something like the following:
+Alternatively, this can be set on the global TracerProvider after the OpenTelemetry Ruby SDK has been configured:
 
 ```ruby
-OpenTelemetry::SDK.configure do |c|
-  c.service_name = 'aws-otel-manual-rails-sample'
-
-  c.span_processors = [
-      Trace::Export::BatchSpanProcessor.new(
-          OpenTelemetry::Exporter::OTLP::Exporter.new(endpoint="http://localhost:4318")
-      )
-    ]
-  c.id_generator = OpenTelemetry::Propagator::XRay::IDGenerator
-  c.propagators = [OpenTelemetry::Propagator::XRay::TextMapPropagator.new]
-end
+OpenTelemetry.tracer_provider.sampler = Samplers.trace_id_ratio_based(0.10)
 ```
 
-### Using the AWS resource Detectors
+Currently, OpenTelemetry Ruby does not support centralized sampling.
+
+<!-- ### Using the AWS resource Detectors
 
 TODO: Update this section when ADOT Ruby Resource Detectors have been contributed upstream. They will most likely be found [alongside other 3rd party Resource Detectors on the OpenTelmetry Ruby GitHub Repository](https://github.com/open-telemetry/opentelemetry-ruby/tree/main/resource_detectors/lib/opentelemetry/resource/detectors)
 
-<!-- The ADOT Ruby SDK supports automatically detecting and recording metadata from resources such as EC2, Elastic Beanstalk, ECS, and EKS.
+The ADOT Ruby SDK supports automatically detecting and recording metadata from resources such as EC2, Elastic Beanstalk, ECS, and EKS.
 
 For example, if tracing with OpenTelemetry Ruby on an AWS EC2 instance, you can automatically populate `resource` attributes by initializing the OpenTelemetry Ruby SDK `TraceProvider` to use the `AwsEc2ResourceDetector`:
 
@@ -292,9 +307,12 @@ require 'opentelemetry-api'
 # Get a tracer from the Global Tracer Provider
 tracer = OpenTelemetry.tracer_provider.tracer('my-tracer')
 
-tracer.in_span('Root Span') do |root_span|
+tracer.in_span('Root Span', kind: :server) do |root_span|
+
     p 'Started a root span'
+
     tracer.in_span('Child Span') do |child_span|
+
         p 'Started a child span'
 
         ec2_client = Aws::EC2::Client.new
@@ -331,6 +349,7 @@ tracer.in_span('Root Span',
         ]
     },
     kind: :server) do |root_span|
+
     p 'Started a root span'
 
     span.set_attribute('my_attribute', 'foo')
