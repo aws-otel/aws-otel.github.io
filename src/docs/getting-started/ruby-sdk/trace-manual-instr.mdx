@@ -1,7 +1,7 @@
 ---
 title: 'Tracing with the AWS Distro for OpenTelemetry Ruby SDK and X-Ray'
 description:
-    OpenTelemetry provides different language SDKs to instrument code for collecting telemetry data in the application.
+    OpenTelemetry provides several language SDKs to instrument code for collecting telemetry data in the application.
     In this tutorial, we will introduce how to use OpenTelemetry Ruby SDK for traces and metrics instrumentation in the application...
 path: '/docs/getting-started/ruby-sdk/trace-manual-instr'
 ---
@@ -11,9 +11,9 @@ import SubSectionSeparator from "components/MdxSubSectionSeparator/subsectionSep
 
 ## Introduction
 
-With OpenTelemetry Ruby manual instrumentation, you configure the OpenTelemetry SDK within your application with just a few lines of code. OpenTelemetry Ruby then automatically produces spans with telemetry data describing the values used by the Ruby gems in your application. This telemetry can then be exported to a backend like AWS X-Ray using the `OpenTelemetry::Propagator::XRay::IDGenerator` found in the ADOT Ruby `opentelemetry-propagator-xray` gem. We also strongly recommend using the `OpenTelemetry::Propagator::XRay::TextMapPropagator` propagator found in the same gem to support propagating the trace context across AWS services. This propagator handles the extraction and injecting of the [AWS X-Ray Tracing header](https://docs.aws.amazon.com/xray/latest/devguide/xray-concepts.html#xray-concepts-tracingheader) for requests from or to remote services.
+With OpenTelemetry Ruby manual instrumentation, you configure the OpenTelemetry SDK within your application with just a few lines of code. OpenTelemetry Ruby then automatically produces trace spans with telemetry data describing the values used by the Ruby gems in your application. This telemetry data can then be exported to a backend like AWS X-Ray using the `OpenTelemetry::Propagator::XRay::IDGenerator` found in the ADOT Ruby `opentelemetry-propagator-xray` gem. We also strongly recommend using the `OpenTelemetry::Propagator::XRay::TextMapPropagator` propagator found in the same gem to support propagating the trace context across AWS services. This propagator handles the extraction and injecting of the [AWS X-Ray Tracing header](https://docs.aws.amazon.com/xray/latest/devguide/xray-concepts.html#xray-concepts-tracingheader) for requests from or to remote services.
 
-In this guide, we walk through the steps needed to trace an application with manual instrumentation.
+In this guide, we walkthrough the steps needed to trace an application with manual instrumentation.
 
 <SectionSeparator />
 
@@ -73,7 +73,7 @@ Manual Instrumentation with OpenTelemetry Ruby involves configuring the OpenTele
 
 #### Basic Configuration
 
-This section describes recommended configuration to initialize OpenTelemetry Ruby SDK for tracing with X-Ray.
+This section describes recommended configuration to initialize OpenTelemetry Ruby SDK for tracing with AWS X-Ray.
 
 For a ruby on rails application, [OpenTelemetry Ruby Initialization Documentation](https://opentelemetry.io/docs/instrumentation/ruby/getting_started/#initialization) recommends placing your configuration code in a Rails initializer. ADOT provides a [working example of such an initializer in our sample app repo](https://github.com/aws-observability/aws-otel-ruby/blob/main/sample-apps/manual-instrumentation/ruby-on-rails/config/initializers/opentelemetry.rb).
 
@@ -124,7 +124,7 @@ OpenTelemetry::SDK.configure do |c|
 end
 ```
 
-With this, your Ruby application has configured OpenTelemetry Ruby for compatibility with the X-Ray backend service! To automatically trace popular Ruby gems, jump to the next section to learn about [instrumenting with OpenTelemetry Ruby Instrumentations](#instrumenting-an-application).
+With this, your Ruby application has configured OpenTelemetry Ruby for compatibility with the AWS X-Ray service! To automatically trace popular Ruby gems, jump to the next section to learn about [instrumenting with OpenTelemetry Ruby Instrumentations](#instrumenting-an-application).
 
 #### Advanced Configuration
 
@@ -166,6 +166,7 @@ You can combine the `xray` propagator with other propagators like `tracecontext`
 
 By default, the OpenTelemetry Ruby SDK follows the parent span's sampling decision if it exists, and samples 100% of incoming requests otherwise. This is known as the `parentbased_always_on` sampler.
 
+#### Reduce Sampling Rate
 To reduce the sampling rate, configure OpenTelemetry Ruby SDK to use the `parentbased_traceidratio` sampler. This can be configured using [the OpenTelemetry Specification defined environment variables](https://github.com/open-telemetry/opentelemetry-specification/blob/7b504383f53b02b10f62ef78fa008fdfd18c633e/specification/sdk-environment-variables.md#general-sdk-configuration). For instance, to reduce the sampling rate to 10% of requests, set the following environment variables:
 
 
@@ -366,4 +367,4 @@ See [OpenTelemetry Ruby's own documentation on adding attributes to spans](https
 
 ## Sample Application
 
-See a [sample Ruby on Rails App using OpenTelemetry Ruby SDK Manual Instrumentation](https://github.com/aws-observability/aws-otel-ruby/blob/main/sample-apps/manual-instrumentation/ruby-on-rails).
+See the [sample Ruby on Rails App using OpenTelemetry Ruby SDK Manual Instrumentation](https://github.com/aws-observability/aws-otel-ruby/blob/main/sample-apps/manual-instrumentation/ruby-on-rails).
