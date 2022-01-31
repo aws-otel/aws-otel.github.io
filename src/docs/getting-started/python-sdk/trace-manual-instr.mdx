@@ -27,7 +27,7 @@ Note: You’ll also need to have the [ADOT Collector](https://aws-otel.github.io
 
 ## Installation
 
-Install the following packages and its dependencies from OpenTelemetry Python using pip.
+Install the following packages and their dependencies from OpenTelemetry Python using pip.
 
 ```bash
 $ pip install opentelemetry-sdk-extension-aws~=2.0 \
@@ -35,7 +35,7 @@ $ pip install opentelemetry-sdk-extension-aws~=2.0 \
               opentelemetry-exporter-otlp~=1.5 \
 ```
 
-OpenTelemetry Python distributes many packages, which provide instrumentation for well-known Python dependencies. You need to install the relevant instrumentation package for every dependency you want to generate traces for. To see supported frameworks and libraries, check out the [OpenTelemetry Registry](https://opentelemetry.io/registry/?s=python).
+OpenTelemetry Python distributes many packages, which provide instrumentation for well-known Python dependencies. You need to install the relevant instrumentation package for every dependency you want to generate traces for. To see supported frameworks and libraries, check out the [OpenTelemetry Registry](https://opentelemetry.io/registry/?s=python&component=instrumentation).
 
 For example, use pip to install the follow instrumentation libraries:
 
@@ -171,7 +171,7 @@ logger.debug("My debug level log.")
 
 OpenTelemetry provides a wide range of instrumentations for popular python libraries such as Flask, Django, Redis, MySQL, PyMongo and many more. Instrumenting a library means that every time the library is used to make or handle a request, that library call is automatically wrapped with a populated span contain the relevant values that were used. Web framework, downstream HTTP, SQL, gRPC, and other requests can all be recorded using OpenTelemetry.
 
-A full list of support instrumentation packages and configuration instructions can be found on the [OpenTelemetry Python Contrib repo](https://github.com/open-telemetry/opentelemetry-python-contrib/tree/main/instrumentation).
+A full list of supported instrumentation packages and configuration instructions can be found on the [OpenTelemetry Python Contrib repo](https://github.com/open-telemetry/opentelemetry-python-contrib/tree/main/instrumentation).
 
 To enable tracing of the calls made by your package dependencies, you need to import and initialize the relevant `Instrumentor` classes. `Instrumentor`s have individual
 initialization requirements, so refer to the `Instrumentor`’s package documentation for configuration details.
@@ -268,7 +268,9 @@ from opentelemetry import trace
 # Get a tracer from the Global Tracer Provider
 tracer = trace.get_tracer(__name__)
 
-with tracer.start_as_current_span("Root Span") as span:
+with tracer.start_as_current_span(
+    "Root Span",
+    kind=trace.SpanKind.SERVER) as span:
 
     print('Started a root span')
 
@@ -283,7 +285,9 @@ from opentelemetry import trace
 # Get a tracer from the Global Tracer Provider
 tracer = trace.get_tracer(__name__)
 
-with tracer.start_as_current_span("Root Span") as span:
+with tracer.start_as_current_span(
+    "Root Span",
+    kind=trace.SpanKind.SERVER) as span:
 
     print('Started a root span')
 
