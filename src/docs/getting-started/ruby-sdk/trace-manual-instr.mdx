@@ -13,7 +13,7 @@ import SubSectionSeparator from "components/MdxSubSectionSeparator/subsectionSep
 
 With OpenTelemetry Ruby manual instrumentation, you configure the OpenTelemetry SDK within your application with just a few lines of code. OpenTelemetry Ruby then automatically produces trace spans with telemetry data describing the values used by the Ruby gems in your application. This telemetry data can then be exported to a backend like AWS X-Ray using the `OpenTelemetry::Propagator::XRay::IDGenerator` found in the ADOT Ruby `opentelemetry-propagator-xray` gem. We also strongly recommend using the `OpenTelemetry::Propagator::XRay::TextMapPropagator` propagator found in the same gem to support propagating the trace context across AWS services. This propagator handles the extraction and injecting of the [AWS X-Ray Tracing header](https://docs.aws.amazon.com/xray/latest/devguide/xray-concepts.html#xray-concepts-tracingheader) for requests from or to remote services.
 
-In this guide, we walkthrough the steps needed to trace an application with manual instrumentation.
+In this guide, we walk through the steps needed to trace an application with manual instrumentation.
 
 <SectionSeparator />
 
