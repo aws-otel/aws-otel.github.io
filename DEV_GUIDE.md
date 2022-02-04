@@ -80,6 +80,6 @@
 | `/src/assets`       | Contains images and styling for the site                                                                      |
 | `/src/components`   | Contains the React Components used throughout the site                                                        |
 | `/src/config`       | Defines routing for technical documentation pages and side navigation bar                                     |
-| `/src/content`      | Holds the site's static content using YAML format                                                             |
+| `/src/content`      | Holds the site's static content using YAML formatand blog pages under `/blogs` using mdx markdown             |
 | `/src/docs`         | Holds the technical documentation pages content using MDX markdown                                            |
 | `/src/pages`        | Files for each site page                                                                                      |
