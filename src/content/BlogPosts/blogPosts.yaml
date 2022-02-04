@@ -12,7 +12,7 @@ blogs:
     body:
       "AWS Distro for OpenTelemetry 0.16 is now available. You can download the latest AWS Distro for OpenTelemetry Collector image
       from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery."
-    link: "/blog/v0-16-0"
+    link: "/docs/v0.16.0"
 
   - title: "AWS Distro for OpenTelemetry 0.14 is now available with updated Lambda layers"
     author: "Alolita Sharma and Raman Aulakh"
