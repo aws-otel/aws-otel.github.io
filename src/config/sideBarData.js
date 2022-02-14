@@ -51,6 +51,7 @@ export const sideBarData = [
         {label: "Java", link: "/docs/getting-started/java-sdk"},
         {label: "JavaScript", link: "/docs/getting-started/javascript-sdk"},
         {label: "Python", link: "/docs/getting-started/python-sdk"},
+        {label: "Ruby", link: "/docs/getting-started/ruby-sdk"},
         {label: ".NET", link: "/docs/getting-started/dotnet-sdk"},
         {label: "k8s Operator", link: "/docs/getting-started/operator"},
         {label: "Lambda", link: "/docs/getting-started/lambda"},
