@@ -34,7 +34,7 @@ TaskDefinition we created to run AWS OpenTelemetry Collector and click the `Crea
 
 **1.2. Add Environment Variable**
 
-From the container definition section, click the **AWS OTel Collector** container (image: `amazon/aws-otel-collector`) and go 
+From the container definition section, click the **ADOT Collector** container (image: `amazon/aws-otel-collector`) and go 
 to the **Environment variables** section. Add a new environment variable- **AOT_CONFIG_CONTENT**. Select ValueFrom 
 which will tell ECS to get the value from SSM Parameter, and set **otel-collector-config** (SSM parameter name which
 we will create in the next section) as the value. Finish updating the task definition and create a new revision.

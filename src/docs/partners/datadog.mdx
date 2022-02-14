@@ -6,17 +6,17 @@ path: '/docs/partners/datadog'
 
 ## Overview
 
-Datadog provides monitoring and insights into infrastructure and application performance across your entire stack. The AWS Distro for Open Telemetry includes the [Datadog exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/master/exporter/datadogexporter), which takes OpenTelemetry data (metrics and traces) collected by the AWS OTel Collector and forwards it on to Datadog. From there, you can use Datadog tools and dashboards to analyze and solve performance problems in your distributed apps.
+Datadog provides monitoring and insights into infrastructure and application performance across your entire stack. The AWS Distro for Open Telemetry includes the [Datadog exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/master/exporter/datadogexporter), which takes OpenTelemetry data (metrics and traces) collected by the ADOT Collector and forwards it on to Datadog. From there, you can use Datadog tools and dashboards to analyze and solve performance problems in your distributed apps.
 
 ## Prerequisites
 
-1. [Download the AWS OTel Collector](https://github.com/aws-observability/aws-otel-collector/releases).
-2. [Deploy the AWS OTel Collector](https://aws-otel.github.io/docs/getting-started/collector).
+1. [Download the ADOT Collector](https://github.com/aws-observability/aws-otel-collector/releases).
+2. [Deploy the ADOT Collector](https://aws-otel.github.io/docs/getting-started/collector).
 3. [Get a copy of your Datadog API key](https://docs.datadoghq.com/account_management/api-app-keys/). If you don't already have a Datadog account, sign up for a [Datadog Free Trial](https://www.datadoghq.com/free-datadog-trial/).
 
 ## Configuring the exporter
 
-Configure the AWS OTel collector to send metrics and traces to Datadog by adding a `datadog` exporter to your [OpenTelemetry configuration YAML file](https://opentelemetry.io/docs/collector/configuration/) along with your Datadog API key:
+Configure the ADOT collector to send metrics and traces to Datadog by adding a `datadog` exporter to your [OpenTelemetry configuration YAML file](https://opentelemetry.io/docs/collector/configuration/) along with your Datadog API key:
 
 ```yaml lineNumbers=true
 datadog:

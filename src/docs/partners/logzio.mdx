@@ -11,12 +11,12 @@ import tokens from "assets/img/logzio-tokens.png"
 
 ## Overview
 
-Logz.io provides observability and monitoring into infrastructure and applications including logs, metrics, and traces using the best open source tools today including ELK, Prometheus, and Jaeger. The AWS Distro for Open Telemetry includes the [Logzio exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/master/exporter/logzioexporter), which takes OpenTelemetry data (metrics and traces) collected by the AWS OTel Collector and allows for pipelines to sample and process the data before sending it to the Logz.io SaaS application to be analyzed further.
+Logz.io provides observability and monitoring into infrastructure and applications including logs, metrics, and traces using the best open source tools today including ELK, Prometheus, and Jaeger. The AWS Distro for Open Telemetry includes the [Logzio exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/master/exporter/logzioexporter), which takes OpenTelemetry data (metrics and traces) collected by the ADOT Collector and allows for pipelines to sample and process the data before sending it to the Logz.io SaaS application to be analyzed further.
 
 ## Prerequisites
 
-1. [Download the AWS OTel Collector](https://github.com/aws-observability/aws-otel-collector/releases).
-2. [Deploy the AWS OTel Collector](https://aws-otel.github.io/docs/getting-started/collector).
+1. [Download the ADOT Collector](https://github.com/aws-observability/aws-otel-collector/releases).
+2. [Deploy the ADOT Collector](https://aws-otel.github.io/docs/getting-started/collector).
 3. [Get a copy of your Logz.io API keys](https://app.logz.io/#/dashboard/settings/manage-tokens/api/). Depending on the data you’re about to send to Logz.io (Metrics data or Tracing data, or both), you’ll need to grab a Metrics token and a Tracing token.
 
 <img src={tokens} alt="Tokens" style="margin: 30px 0;" />
