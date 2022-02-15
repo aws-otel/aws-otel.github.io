@@ -13,7 +13,7 @@ import { Link } from "gatsby"
 
 Metrics auto instrumentation has not been supported in AOT/OpenTelemetry yet. We have to manually instrumenting code in the application to generate application metrics. Here is an example with steps for modifying application code to create metrics with JavaScript SDK.
 
-OpenTelemetry JavaScript SDK has provided metrics API for metrics instrumentation in applications. You can follow the steps and sample code below to create OpenTelemetry Metrics and send it over to AWS OTel Collector.
+OpenTelemetry JavaScript SDK has provided metrics API for metrics instrumentation in applications. You can follow the steps and sample code below to create OpenTelemetry Metrics and send it over to ADOT Collector.
 
 In this tutorial, we will introduce how to use OpenTelemetry JavaScript SDK for metric instrumentation in the application.
 
@@ -24,7 +24,7 @@ In this tutorial, we will introduce how to use OpenTelemetry JavaScript SDK for 
 [Node JS v8.50 (or later)](https://nodejs.org/en/download/) is required to run an application using OpenTelemetry.
 
 Note: You’ll also need to have the AWS Distro for OpenTelemetry Collector running to export metrics to Amazon CloudWatch.
-See the AWS OTel Collector documentation for setup instructions.
+See the ADOT Collector documentation for setup instructions.
 
 <SectionSeparator />
 
@@ -45,7 +45,7 @@ $ npm install \
 ## Instrumenting Code
 Once OpenTelemetry Dependencies have been imported to application, we can start to instrument code for creating metrics.
 
-1. Initiate OpenTelemetry Metrics exporter to send metrics to AWS Otel Collector
+1. Initiate OpenTelemetry Metrics exporter to send metrics to ADOT Collector
 ```javascript lineNumbers=true
 const metricExporter = new CollectorMetricExporter({
   serviceName: 'aws-otel-js-sample',
@@ -102,7 +102,7 @@ setInterval(() => {
 These steps provided the sample code for applications to create application metrics.
 
 Please follow <Link to="/docs/getting-started/cloudwatch-metrics">Getting Started Sending CloudWatch Metrics with AWS OpenTelemetry</Link>
- to setup AWS OTel Collector for sending metrics to CloudWatch. Once AWS OTel Collector is installed to collect the metrics data.
+ to setup ADOT Collector for sending metrics to CloudWatch. Once ADOT Collector is installed to collect the metrics data.
  You should see the following metrics present on your CloudWatch Console.
 
 <img src={img2} alt="Diagram" style="margin: 30px 0;" />

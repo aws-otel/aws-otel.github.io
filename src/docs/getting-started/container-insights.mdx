@@ -21,7 +21,7 @@ CloudWatch Container Insights uses the [CloudWatch agent](https://github.com/aws
 both [infrastructure metrics](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights.html)
 and [Prometheus metrics](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights-Prometheus.html).
 To migrate existing customers to use AWS Distro for OpenTelemetry,
-we have enhanced the [AWS OTel Collector](https://github.com/aws-observability/aws-otel-collector) to support the same CloudWatch Container Insights experience.
+we have enhanced the [ADOT Collector](https://github.com/aws-observability/aws-otel-collector) to support the same CloudWatch Container Insights experience.
 
 ## Collecting infrastructure metrics
 
@@ -31,7 +31,7 @@ we have enhanced the [AWS OTel Collector](https://github.com/aws-observability/a
 CloudWatch Container Insights collects metrics for many resources such as CPU, memory, disk, and network.
 It also provides diagnostic information such as container restart failures.
 The metrics are aggregated at the cluster, node, pod, task, and service level as CloudWatch metrics.
-To collect the infrastructure metrics, AWS OTel Collector uses the [AWS Container Insights Receiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/awscontainerinsightreceiver)
+To collect the infrastructure metrics, ADOT Collector uses the [AWS Container Insights Receiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/awscontainerinsightreceiver)
 and the [CloudWatch embedded metric format Exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/awsemfexporter).
 
 The following platforms are supported:
@@ -43,7 +43,7 @@ The following platforms are supported:
 ## Collecting Prometheus metrics
 
 CloudWatch Container Insights monitoring for Prometheus automates the discovery of Prometheus metrics from containerized systems and workloads.
-To collect the Prometheus metrics, the AWS OTel Collector uses [ECSObserver extension](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/observer/ecsobserver),
+To collect the Prometheus metrics, the ADOT Collector uses [ECSObserver extension](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/observer/ecsobserver),
 Prometheus Receiver and the  [CloudWatch embedded metric format Exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/awsemfexporter).
 
 The following platforms are supported:
