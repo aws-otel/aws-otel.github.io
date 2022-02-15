@@ -83,7 +83,7 @@ eksctl create iamserviceaccount \
 --approve
 ```
 
-2. Deploy the ADOT Collector as a Kubernetes StatefulSet using the [eks-fargate-container-insights.yaml](https://github.com/aws-observability/aws-otel-collector/blob/main/deployment-template/eks/eks-fargate-container-insights.yaml) after replacing the placeholder variable `YOUR-EKS-CLUSTER-NAME` in the manifest with the name of your EKS cluster and replacing `region=us-east-1` in the `emfexporter` if you are not using `us-east-1` region.
+2. Deploy the ADOT Collector as a Kubernetes StatefulSet using the [eks-fargate-container-insights.yaml](https://github.com/aws-observability/aws-otel-collector/blob/main/deployment-template/eks/otel-fargate-container-insights.yaml) after replacing the placeholder variable `YOUR-EKS-CLUSTER-NAME` in the manifest with the name of your EKS cluster and replacing `region=us-east-1` in the `emfexporter` if you are not using `us-east-1` region.
 
 3. Deploy a sample stateless workload to the cluster with the following deployment manifest.
 
