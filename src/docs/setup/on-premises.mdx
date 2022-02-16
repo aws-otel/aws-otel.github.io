@@ -1,46 +1,46 @@
 ---
 title: 'Set up AWS Distro for OpenTelemetry Collector On-Premises'
 description:
-    In this tutorial, we will demonstrate installing  AWS Distro for OpenTelemetry Collector (AWS OTel Collector)
-    binaries for on-premises hosts. For supported platforms, see the AWS OTel Collector README on GitHub.
+    In this tutorial, we will demonstrate installing  AWS Distro for OpenTelemetry Collector (ADOT Collector)
+    binaries for on-premises hosts. For supported platforms, see the ADOT Collector README on GitHub.
 path: '/docs/setup/on-premises'
 ---
 
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
 import img14 from "assets/img/docs/img14.png"
 
-In this tutorial, we will demonstrate installing  AWS Distro for OpenTelemetry Collector (AWS OTel Collector) binaries
-for on-premises hosts. For supported platforms, see the [AWS OTel Collector README](https://github.com/aws-observability/aws-otel-collector) on GitHub.
+In this tutorial, we will demonstrate installing  AWS Distro for OpenTelemetry Collector (ADOT Collector) binaries
+for on-premises hosts. For supported platforms, see the [ADOT Collector README](https://github.com/aws-observability/aws-otel-collector) on GitHub.
 
 <SectionSeparator />
 
-## Install the AWS OTel Collector
+## Install the ADOT Collector
 1. Set up the required [AWS credential file](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html).
-2. Logon your on-premise host and download AWS OTel Collector source code
+2. Logon your on-premise host and download ADOT Collector source code
 from [AWS Observability GitHub Repository](https://github.com/aws-observability/aws-otel-collector) and build RPM file with the following command.
 ```
 git clone https://github.com/aws-observability/aws-otel-collector.git
 make package-rpm
 ```
-3. Install the AWS OTel Collector RPM by the following command on the host.
+3. Install the ADOT Collector RPM by the following command on the host.
 ```
 sudo rpm -Uvh ./aws-otel-collector.rpm
 ```
-4. After RPM is installed, it will create  AWS OTel Collector in directory `/opt/aws/aws-otel-collector/` with the
+4. After RPM is installed, it will create  ADOT Collector in directory `/opt/aws/aws-otel-collector/` with the
 following folder layout.
 <img src={img14} alt="Diagram" style="margin: 30px 0;" />
 
-5. After  AWS OTel Collector is installed on the host, the following commands can be used to start, stop, and check the running status.
-    a) Start  AWS OTel Collector with CTL script. The config.yaml is optional; if it’s not provided, the default
+5. After  ADOT Collector is installed on the host, the following commands can be used to start, stop, and check the running status.
+    a) Start  ADOT Collector with CTL script. The config.yaml is optional; if it’s not provided, the default
     [config](https://github.com/mxiamxia/aws-opentelemetry-collector/blob/master/config.yaml) is applied.
     ```
     sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -c </path/config.yaml> -a start
     ```
-    b) Stop  AWS OTel Collector process
+    b) Stop  ADOT Collector process
     ```
     sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -a stop
     ```
-    c) Check the status of  AWS OTel Collector
+    c) Check the status of  ADOT Collector
     ```
     sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl  -a status
     ```

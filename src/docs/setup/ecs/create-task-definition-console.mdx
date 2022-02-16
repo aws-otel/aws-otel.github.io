@@ -1,7 +1,7 @@
 ---
-title: 'Install AWS OTel Collector By Creating Task Definition Through AWS Console '
+title: 'Install ADOT Collector By Creating Task Definition Through AWS Console '
 description:
-    In this tutorial, we will demonstrate how to install AWS OTel Collector using Task Definition on the Amazon
+    In this tutorial, we will demonstrate how to install ADOT Collector using Task Definition on the Amazon
     Elastic Container Service (Amazon ECS) through AWS console.
 path: '/docs/setup/ecs/create-task-definition-console'
 ---
@@ -33,7 +33,7 @@ import task22 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinit
 import task23 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition23.png"
 import task24 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition24.png"
 
-In this tutorial, we will demonstrate how to install AWS OTel Collector using Task Definition on the Amazon Elastic
+In this tutorial, we will demonstrate how to install ADOT Collector using Task Definition on the Amazon Elastic
 Container Service (Amazon ECS) through AWS console.
 
 <SectionSeparator />
@@ -62,7 +62,7 @@ Put a container name (i.e. *aws-otel-collector*) and use the *amazon/aws-otel-co
 We can keep everything else default
 <img src={task6} alt="Diagram" style="margin: 30px 0;" />
 7. Set up the OpenTelemetry configuration file for AWS Observability Toolkit (AOT)
-In this section we will set the OpenTelemetry configuration file for our Collector container (AWS OTel Collector).  All the functionality
+In this section we will set the OpenTelemetry configuration file for our Collector container (ADOT Collector).  All the functionality
 of AOC is passive, if your application doesn’t emit the data to the port (X-ray use UDP 2000, OPTL use TCP 55680 and 55681, StatsD use UDP 8125) then there will be no effect.
    *  Collect Application Metrics and Traces:
 

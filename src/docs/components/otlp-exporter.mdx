@@ -81,7 +81,7 @@ Before you can use the AWS Distro for OpenTelemetry with the AppDynamics endpoin
 
 The configuration takes place in the OTLP exporter in the Collector config YAML file.
 
-* Set the OTLP endpoint through the [OTLP HTTP Exporter](https://github.com/open-telemetry/opentelemetry-collector/tree/master/exporter/otlphttpexporter). To configure your AppDynamics Controller to work with the AWS OTel Collector, edit your `otel-config.yml` configuration file.
+* Set the OTLP endpoint through the [OTLP HTTP Exporter](https://github.com/open-telemetry/opentelemetry-collector/tree/master/exporter/otlphttpexporter). To configure your AppDynamics Controller to work with the ADOT Collector, edit your `otel-config.yml` configuration file.
 * Set the AppDynamics API key `<x-api-key>` (Your AppDynamics API key must be defined as an HTTP header. To obtain your unique x-api-key, you should work closely with your AppDynamics account team.)
 * Use resource attributes to add your AppDynamics account information:
     * `appdynamics.controller.account`: Your AppDynamics Controller account name.

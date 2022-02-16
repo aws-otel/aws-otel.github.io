@@ -1,10 +1,10 @@
 ---
 title: 'Setting up AWS Distro for OpenTelemetry Collector in Amazon Elastic Kubernetes Service'
 description:
-    In this tutorial, we will demonstrate how to run the AWS Distro for OpenTelemetry(AWS OTel Collector) Collector as
+    In this tutorial, we will demonstrate how to run the AWS Distro for OpenTelemetry(ADOT Collector) Collector as
     sidecar on the Amazon Elastic Kubernetes Service (Amazon EKS). Sidecar is a microservices design pattern where a
     companion service runs next to your primary microservice, augmenting its abilities or intercepting resources it is
-    utilizing. We recommend deploying AWS OTel Collector on Amazon EKS as a sidecar, defining it in the same task
+    utilizing. We recommend deploying ADOT Collector on Amazon EKS as a sidecar, defining it in the same task
     definition as your application.
 path: '/docs/setup/eks'
 ---
@@ -15,7 +15,7 @@ import img11 from "assets/img/docs/img11.png"
 import img12 from "assets/img/docs/img12.png"
 import img13 from "assets/img/docs/img13.png"
 
-In this tutorial, we will demonstrate how to run the AWS Distro for OpenTelemetry(AWS OTel Collector) Collector as
+In this tutorial, we will demonstrate how to run the AWS Distro for OpenTelemetry(ADOT Collector) Collector as
 sidecar on the Amazon Elastic Kubernetes Service (Amazon EKS).
 
 <SectionSeparator />
@@ -35,10 +35,10 @@ see the <Link to="/docs/setup/permissions">Permissions</Link> section.
 
 <SectionSeparator />
 
-## Deploy AWS OTel Collector on Amazon EKS as sidecar
+## Deploy ADOT Collector on Amazon EKS as sidecar
 Sidecar is a microservice design pattern where a companion service runs next to your primary microservice, augmenting its
-abilities or intercepting resources it is utilizing. We recommend deploying AWS OTel Collector on Amazon EKS as a sidecar,
-defining it in the same task definition as your application. This allows the AWS OTel Collector to collect the metric and
+abilities or intercepting resources it is utilizing. We recommend deploying ADOT Collector on Amazon EKS as a sidecar,
+defining it in the same task definition as your application. This allows the ADOT Collector to collect the metric and
 trace data for the application.
 1. Create a Kubernetes namespace.
 ```
@@ -46,7 +46,7 @@ kubectl create namespace aws-otel-eks
 ```
 2. An example configuration template can be
 found [under examples in the AWC OTel Collector GitHub](https://github.com/aws-observability/aws-otel-collector/blob/main/examples/eks/aws-cloudwatch/otel-sidecar.yaml).
-Replace `{{aws-otelImage}}` with the name of the AWS OTel Collector Docker image you built
+Replace `{{aws-otelImage}}` with the name of the ADOT Collector Docker image you built
 (For example, `aottestbed/awscollector:v0.1.12`), and `{{region}}` with the name of the Region where the logs are published (For example, `us-west-2`).
 3. Deploy the application.
 ```
@@ -63,7 +63,7 @@ kubectl -n aws-otel-eks describe deployment aws-otel-eks-sidecar
 ```
 <img src={img12} alt="Diagram" style="margin: 30px 0;" />
 The example template runs the AWS-OTel-Collector as a sidecar to send application metrics and traces on Amazon EKS.
-We run two applications: the main application (`aws-otel-emitter`) and the AWS OTel Collector (`aws-otel-collector`).
+We run two applications: the main application (`aws-otel-emitter`) and the ADOT Collector (`aws-otel-collector`).
 After the setup is finished, we should see the following sample metrics in Amazon CloudWatch console.
 <img src={img13} alt="Diagram" style="margin: 30px 0;" />
 
