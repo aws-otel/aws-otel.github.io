@@ -9,7 +9,7 @@ announcements:
     blurb:
       "Amazon CloudWatch Container Insights adds metric collection support for applications running on Amazon Elastic Kubernetes Service (EKS) 
       with AWS Fargate using AWS Distro for OpenTelemetry (ADOT)"
-    link: "[TODO]"
+    link: "https://aws.amazon.com/about-aws/whats-new/2022/02/amazon-cloudwatch-eks-fargate-distro-opentelemetry/"
 
   - title: "Amazon ECS announces a new integration with AWS Distro for OpenTelemetry"
     date: "23-Nov-2021"
