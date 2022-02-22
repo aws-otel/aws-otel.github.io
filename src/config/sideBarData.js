@@ -36,7 +36,7 @@ export const sideBarData = [
   {
     node: {
       id: nextId(),
-      label: "Performance Testing",
+      label: "Testing",
       items: null,
       link: "https://aws-observability.github.io/aws-otel-collector/benchmark/report"
     }
