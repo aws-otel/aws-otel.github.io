@@ -33,6 +33,14 @@ export const sideBarData = [
       link: "/download"
     }
   },
+  {
+    node: {
+      id: nextId(),
+      label: "Testing",
+      items: null,
+      link: "https://aws-observability.github.io/aws-otel-collector/benchmark/report"
+    }
+  },
   // {
   //   node: {
   //     id: nextId(),
