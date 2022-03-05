@@ -1,3 +1,10 @@
+- version: 'Amazon ECR:AWS Distro for OpenTelemetry Operator v0.45.0'
+  releaseDate: 'Mar-04-2022'
+  license: 'Apache-2.0'
+  releaseNotesLink: 'https://github.com/open-telemetry/opentelemetry-operator/releases/tag/v0.45.0'
+  documentationLink: 'https://aws-otel.github.io/docs/getting-started/operator'
+  downloadLink: 'https://gallery.ecr.aws/aws-observability/adot-operator'
+
 - version: 'AWS Distro for OpenTelemetry Collector Version 0.17.0'
   releaseDate: 'Mar-03-2022'
   license: 'Apache-2.0'
