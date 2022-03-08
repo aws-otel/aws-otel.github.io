@@ -6,6 +6,13 @@ description:
 path: /blog
 
 blogs:
+  - title: "AWS Distro for OpenTelemetry Lambda Layers now supports ARM64 architecture. "
+    author: "Pavan Sai Vasireddy and Nathaniel Ruiz Nowell"
+    date: "07-Mar-2022"
+    body:
+      "ADOT Lambda Layers distribute ADOT Collector v0.17.0 with new layers supporting ARM64 Lambda functions"
+    link: "/docs/lambdalayermarch"
+
   - title: "AWS Distro for OpenTelemetry 0.17 is now available with updated Lambda layers"
     author: "Alolita Sharma and Bryan Aguilar"
     date: "02-Mar-2022"
