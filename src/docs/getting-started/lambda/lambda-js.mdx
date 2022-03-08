@@ -25,11 +25,17 @@ In this section, we consume the Lambda layer for use with Node.JS Lambda Functio
 
 Note: Lambda layers are a regionalized resource, meaning that they can only be used in the Region in which they are published. Make sure to use the layer in the same region as your Lambda functions.
 
-Find the supported regions and ARN in the table below for the ARNs to consume.
+Find the supported regions and AMD64 (x86_64) layer ARN in the table below for the ARNs to consume.
 
-|Supported   Regions |Lambda layer ARN format| Contents |
+|Supported   Regions  |Lambda layer ARN format  | Contents |
 |---------------------|-------------------------|----------|
-| ap-northeast-1<br/>ap-northeast-2<br/>ap-south-1<br/>ap-southeast-1<br/>ap-southeast-2<br/>ca-central-1<br/>eu-central-1<br/>eu-north-1<br/>eu-west-1<br/>eu-west-2<br/>eu-west-3<br/>sa-east-1<br/>us-east-1<br/>us-east-2<br/>us-west-1<br/>us-west-2 | arn:aws:lambda:\<region\>:901920570463:layer:aws-otel-nodejs-amd64-ver-1-0-1:1 | Contains [OpenTelemetry for JavaScript v1.0.1](https://github.com/open-telemetry/opentelemetry-js/releases/tag/stable%2Fv1.0.1) with [Lambda instrumentation v0.28.1](https://github.com/open-telemetry/opentelemetry-js-contrib/releases/tag/instrumentation-aws-lambda-v0.28.1) <br/><br/> Contains the [ADOT Collector for Lambda v0.16.0](https://github.com/aws-observability/aws-otel-collector/releases/tag/pkg%2Flambdacomponents%2Fv0.16.0)|
+| ap-northeast-1<br/>ap-northeast-2<br/>ap-south-1<br/>ap-southeast-1<br/>ap-southeast-2<br/>ca-central-1<br/>eu-central-1<br/>eu-north-1<br/>eu-west-1<br/>eu-west-2<br/>eu-west-3<br/>sa-east-1<br/>us-east-1<br/>us-east-2<br/>us-west-1<br/>us-west-2 | arn:aws:lambda:\<region\>:901920570463:layer:aws-otel-nodejs-amd64-ver-1-0-1:2 |Contains [OpenTelemetry for JavaScript v1.0.1](https://github.com/open-telemetry/opentelemetry-js/releases/tag/stable%2Fv1.0.1) with [Lambda instrumentation v0.29.0](https://github.com/open-telemetry/opentelemetry-js-contrib/releases/tag/instrumentation-aws-lambda-v0.29.0) <br/><br/> Contains the [ADOT Collector for Lambda v0.17.0](https://github.com/aws-observability/aws-otel-collector/releases/tag/pkg%2Flambdacomponents%2Fv0.17.0)|
+
+Find the supported regions and ARM64 layer ARN in the table below for the ARNs to consume.
+
+|Supported   Regions  |Lambda layer ARN format  | Contents |
+|---------------------|-------------------------|----------|
+| ap-northeast-1<br/>ap-south-1<br/>ap-southeast-1<br/>ap-southeast-2<br/>eu-central-1<br/>eu-west-1<br/>eu-west-2<br/>us-east-1<br/>us-east-2<br/>us-west-2 | arn:aws:lambda:\<region\>:901920570463:layer:aws-otel-nodejs-arm64-ver-1-0-1:2 | Contains [OpenTelemetry for JavaScript v1.0.1](https://github.com/open-telemetry/opentelemetry-js/releases/tag/stable%2Fv1.0.1) with [Lambda instrumentation v0.29.0](https://github.com/open-telemetry/opentelemetry-js-contrib/releases/tag/instrumentation-aws-lambda-v0.29.0) <br/><br/> Contains the [ADOT Collector for Lambda v0.17.0](https://github.com/aws-observability/aws-otel-collector/releases/tag/pkg%2Flambdacomponents%2Fv0.17.0)|
 
 
 ### Enable auto-instrumentation for your Lambda function
