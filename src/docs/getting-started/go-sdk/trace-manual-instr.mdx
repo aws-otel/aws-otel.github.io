@@ -173,7 +173,7 @@ if err != nil {
 
 AWS X-Ray remote sampler can be initialized using `NewRemoteSampler` API. `NewRemoteSampler` can be configured with below options.
 
-| **NewRemoteSampler API options **                      | **Description**                                                      | **Default Value**       |
+| **NewRemoteSampler API options**                       | **Description**                                                      | **Default Value**       |
 |--------------------------------------------------------|----------------------------------------------------------------------|-------------------------|
 | WithEndpoint(endpoint url.URL)                         | Endpoint used to communicate with the `awsproxy` collector extension | http://localhost:2000   |
 | WithSamplingRulesPollingInterval(time.Duration)        | Duration between polling of the GetSamplingRules API                 | 300 seconds             |
