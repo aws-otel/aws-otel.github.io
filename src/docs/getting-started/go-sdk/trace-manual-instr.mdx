@@ -169,6 +169,34 @@ if err != nil {
 
 <SectionSeparator />
 
+## Using X-Ray Remote Sampling
+
+AWS X-Ray remote sampler can be initialized using `NewRemoteSampler` API. `NewRemoteSampler` can be configured with below options.
+
+| **NewRemoteSampler API options **                      | **Description**                                                      | **Default Value**       |
+|--------------------------------------------------------|----------------------------------------------------------------------|-------------------------|
+| WithEndpoint(endpoint url.URL)                         | Endpoint used to communicate with the `awsproxy` collector extension | http://localhost:2000   |
+| WithSamplingRulesPollingInterval(time.Duration)        | Duration between polling of the GetSamplingRules API                 | 300 seconds             |
+| WithLogger(l logr.Logger)                              | logging for remote sampler                                           | stdr                    |
+
+```go lineNumbers=true
+   ctx := context.Background()
+
+   endpoint, err := url.Parse("http://127.0.0.1:2000"); if err != nil {
+         return
+   }
+
+   // instantiate remote sampler with options
+   rs, err := NewRemoteSampler(ctx, "service_name", "cloud_platform", WithEndpoint(endpoint), WithSamplingRulesPollingInterval(350 * time.Second)); if err != nil {
+         return
+   }
+
+   // attach remote sampler to tracer provider
+   tp := trace.NewTracerProvider(trace.WithSampler(rs),)
+```
+
+<SectionSeparator />
+
 ## Custom Instrumentation
 
 ### Creating Custom Spans
