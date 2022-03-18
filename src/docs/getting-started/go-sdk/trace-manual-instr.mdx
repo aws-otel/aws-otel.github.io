@@ -173,11 +173,11 @@ if err != nil {
 
 AWS X-Ray remote sampler can be initialized using `NewRemoteSampler` API. `NewRemoteSampler` can be configured with below options.
 
-| **NewRemoteSampler API options**                                | **Description**                                                      | **Default Configuration**  |
-|-----------------------------------------------------------------|----------------------------------------------------------------------|----------------------------|
-| WithEndpoint(endpoint url.URL)                                  | Endpoint used to communicate with the `awsproxy` collector extension | http://localhost:2000      |
-| WithSamplingRulesPollingInterval(interval time.Duration)        | Duration between polling of the GetSamplingRules API                 | 300 seconds                |
-| WithLogger(l logr.Logger)                                       | logging for remote sampler                                           | go-logr/stdr               |
+| **NewRemoteSampler API options**                                  | **Description**                                                      | **Default Configuration**                          |
+|-------------------------------------------------------------------|----------------------------------------------------------------------|----------------------------------------------------|
+| `WithEndpoint(endpoint url.URL)`                                  | Endpoint used to communicate with the `awsproxy` collector extension | http://localhost:2000                              |
+| `WithSamplingRulesPollingInterval(interval time.Duration)`        | Duration between polling of the GetSamplingRules API                 | 300 seconds                                        |
+| `WithLogger(l logr.Logger)`                                       | logging for remote sampler                                           | [go-logr/stdr](https://github.com/go-logr/stdr)    |
 
 ```go lineNumbers=true
    ctx := context.Background()
