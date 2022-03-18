@@ -171,7 +171,7 @@ if err != nil {
 
 ## Using X-Ray Remote Sampling
 
-AWS X-Ray remote sampler can be initialized using `NewRemoteSampler` API. `NewRemoteSampler` can be configured with below options.
+AWS X-Ray remote sampler can be initialized using `NewRemoteSampler` API. `NewRemoteSampler` can be configured with below options. Alternatively, customers can use [`traceIDRatioBasedSampler`](https://pkg.go.dev/go.opentelemetry.io/otel/sdk/trace#TraceIDRatioBased) for sampling.
 
 | **NewRemoteSampler API options**                                  | **Description**                                                      | **Default Configuration**                          |
 |-------------------------------------------------------------------|----------------------------------------------------------------------|----------------------------------------------------|
