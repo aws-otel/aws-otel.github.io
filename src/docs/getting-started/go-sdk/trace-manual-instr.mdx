@@ -169,9 +169,27 @@ if err != nil {
 
 <SectionSeparator />
 
-## Using X-Ray Remote Sampling
+## Configuring Sampling
 
-AWS X-Ray remote sampler can be initialized using `NewRemoteSampler` API. `NewRemoteSampler` can be configured with below options. Alternatively, customers can use [`traceIDRatioBasedSampler`](https://pkg.go.dev/go.opentelemetry.io/otel/sdk/trace#TraceIDRatioBased) for sampling.
+By default, the OpenTelemetry Go SDK samples 100% of incoming requests by using [`AlwaysSample`](https://pkg.go.dev/go.opentelemetry.io/otel/sdk/trace#AlwaysSample).
+
+### Reduce Sampling Rate
+
+To reduce the sampling rate, configure OpenTelemetry Go SDK to use [`TraceIDRatioBased`](https://pkg.go.dev/go.opentelemetry.io/otel/sdk/trace#TraceIDRatioBased) sampler. Below is the code
+snippet to configure the `TraceIDRatioBased` sampler to sample 10% of requests.
+
+```go lineNumbers=true
+ // initialize the traceIDRatioBasedSampler
+ traceIDRationBasedSampler := trace.TraceIDRatioBased(0.10)
+
+ // attach traceIDRatioBasedSampler to tracer provider
+ tp := trace.NewTracerProvider(trace.WithSampler(traceIDRationBasedSampler),)
+```
+
+### Sampling using AWS X-Ray Remote Sampler
+
+AWS X-Ray remote sampler can be initialized using `NewRemoteSampler` API. `NewRemoteSampler` can be configured with below options. If AWS X-Ray remote sampler is not able to fetch sampling rules or targets from AWS X-Ray  due to any reason like networking or config issues(collector) then remote sampler uses fallback sampler as the sampler. Fallback sampler always samples 1 req/sec and 5% of additional requests during that second. Moreover, remote sampler uses `TraceIDRatioBased` sampler to enforce [`Rate`](https://docs.aws.amazon.com/xray/latest/devguide/xray-console-sampling.html#xray-console-config) set by customers on AWS X-Ray Console after
+[`Reservoir`](https://docs.aws.amazon.com/xray/latest/devguide/xray-console-sampling.html#xray-console-config) quota is consumed.
 
 | **NewRemoteSampler API options**                                  | **Description**                                                      | **Default Configuration**                          |
 |-------------------------------------------------------------------|----------------------------------------------------------------------|----------------------------------------------------|
