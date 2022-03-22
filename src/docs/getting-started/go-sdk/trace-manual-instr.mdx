@@ -180,10 +180,10 @@ snippet to configure the `TraceIDRatioBased` sampler to sample 10% of requests.
 
 ```go lineNumbers=true
  // initialize the traceIDRatioBasedSampler
- traceIDRationBasedSampler := trace.TraceIDRatioBased(0.10)
+ traceIDRatioBasedSampler := trace.TraceIDRatioBased(0.10)
 
  // attach traceIDRatioBasedSampler to tracer provider
- tp := trace.NewTracerProvider(trace.WithSampler(traceIDRationBasedSampler))
+ tp := trace.NewTracerProvider(trace.WithSampler(traceIDRatioBasedSampler))
 ```
 
 ### Sampling using AWS X-Ray Remote Sampler
