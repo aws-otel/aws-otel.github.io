@@ -191,6 +191,8 @@ snippet to configure the `TraceIDRatioBased` sampler to sample 10% of requests.
 AWS X-Ray remote sampler can be initialized using `NewRemoteSampler` API. `NewRemoteSampler` can be configured with below options. If AWS X-Ray remote sampler is not able to fetch sampling rules or targets from AWS X-Ray  due to networking or config issues(collector) then remote sampler uses fallback sampler. Fallback sampler always samples 1 req/sec and 5% of additional requests during that second. Moreover, remote sampler uses `TraceIDRatioBased` sampler to enforce [`Rate`](https://docs.aws.amazon.com/xray/latest/devguide/xray-console-sampling.html#xray-console-config) set by customers on AWS X-Ray Console after
 [`Reservoir`](https://docs.aws.amazon.com/xray/latest/devguide/xray-console-sampling.html#xray-console-config) quota is consumed.
 
+NOTE: ctx passed in `NewRemoteSampler` API is being used in background go routine which serves `getSamplingRules` and `getSamplingTargets` API call. So any cancellation in context would also kill the go routine. Ideally, passed context should not be scoped to any kind of startup processes where context is short lived.
+
 | **NewRemoteSampler API options**                                  | **Description**                                                      | **Default Configuration**                          |
 |-------------------------------------------------------------------|----------------------------------------------------------------------|----------------------------------------------------|
 | `WithEndpoint(endpoint url.URL)`                                  | Endpoint used to communicate with the `awsproxy` collector extension | http://localhost:2000                              |
