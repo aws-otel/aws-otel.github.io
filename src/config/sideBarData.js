@@ -63,7 +63,7 @@ export const sideBarData = [
         {label: ".NET", link: "/docs/getting-started/dotnet-sdk"},
         {label: "k8s Operator", link: "/docs/getting-started/operator"},
         {label: "Lambda", link: "/docs/getting-started/lambda"},
-        {label: "Managed Service for Prometheus (AMP)", link: "/docs/getting-started/prometheus-remote-write-exporter"},
+        {label: "Amazon Managed Service for Prometheus (AMP)", link: "/docs/getting-started/prometheus-remote-write-exporter"},
         {label: "Prometheus Configurations", link: "/docs/getting-started/advanced-prometheus-remote-write-configurations"},
         {label: "CloudWatch Metrics", link: "/docs/getting-started/cloudwatch-metrics"},
         {label: "CloudWatch Container Insights", link: "/docs/getting-started/container-insights"},
