@@ -1,0 +1,41 @@
+---
+title: 'AWS Distro for OpenTelemetry Collector Configuration'
+description:
+    This page introduces Collector configuration for the ADOT Collector.
+path: '/docs/getting-started/adot-eks-add-on/config-intro'
+---
+
+## Collector Configuration Introduction
+
+After the ADOT Operator is running in your cluster, you can deploy the ADOT Collector as a custom resource.
+In these instructions, we will deploy a Collector in Deployment mode to perform the following:
+
+* Scrape metrics and traces inside your EKS cluster.
+* Ingest the metrics to Amazon Managed Prometheus
+* Ingest metrics for CloudWatch
+* Ingest traces for X-Ray.
+
+Traces are received in OpenTelemetry Protocol (OTLP) format. Metrics are received in Prometheus format.
+Other deployment modes of the Collector, such as the Daemonset or Statefulset mode are called for in more advance use cases. We explore one of these advanced use cases [here](/docs/getting-started/adot-eks-add-on/config-advanced).
+For more information about Collector configuration, as well as OTLP and Prometheus receiver configurations and Amazon Managed Prometheus, CloudWatch, and X-Ray exporter configurations, refer to the documentation below:
+
+* [Collector CRD configuration](https://github.com/open-telemetry/opentelemetry-operator/blob/main/docs/api.md)
+* [OTLP Receiver configuration](https://github.com/open-telemetry/opentelemetry-collector/tree/main/receiver/otlpreceiver)
+* [Prometheus Receiver configuration](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/prometheusreceiver)
+* [AWS Prometheus Remote Write Exporter configuration](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/awsprometheusremotewriteexporter#readme)
+* [AWS CloudWatch EMF Exporter configuration](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/awsemfexporter#readme)
+* [AWS X-Ray Exporter configuration](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/awsxrayexporter#readme)
+
+Below, we have our three Collector configurations, one for Amazon Managed Prometheus, CloudWatch, and X-Ray each. Note that it is possible to combine Collector configurations together, i.e. you can have a Collector set up with more than one receiver, processor, or exporter, and multiple pipelines will be built based on that.
+
+## [Previous Topic: Installation](/docs/getting-started/adot-eks-add-on/installation)
+
+## Next Topics:
+
+### [Collector Configuration for Amazon Managed Prometheus](/docs/getting-started/adot-eks-add-on/config-amp)
+
+### [Collector Configuration for AWS CloudWatch](/docs/getting-started/adot-eks-add-on/config-cloudwatch)
+
+### [Collector Configuration for AWS X-Ray](/docs/getting-started/adot-eks-add-on/config-xray)
+
+### [Advanced Collector Configuration for Amazon Managed Prometheus](/docs/getting-started/adot-eks-add-on/config-advanced)
