@@ -5,9 +5,25 @@ description:
 path: '/docs/getting-started/adot-eks-add-on'
 ---
 
+import operatorImg1 from "assets/img/docs/gettingStarted/operator/img1.png"
+import operatorImg2 from "assets/img/docs/gettingStarted/operator/img2.png"
+
+## Table of Contents
+
+### [Introduction](/docs/getting-started/adot-eks-add-on#introduction-1)
+### [Requirements](/docs/getting-started/adot-eks-add-on/requirements)
+### [Installation](/docs/getting-started/adot-eks-add-on/installation)
+### [Collector Configuration Introduction](/docs/getting-started/adot-eks-add-on/config-intro)
+#### [Collector Configuration for Amazon Managed Prometheus](/docs/getting-started/adot-eks-add-on/config-amp)
+#### [Collector Configuration for AWS CloudWatch](/docs/getting-started/adot-eks-add-on/config-cloudwatch)
+#### [Collector Configuration for AWS X-Ray](/docs/getting-started/adot-eks-add-on/config-xray)
+#### [Advanced Collector Configuration for Amazon Managed Prometheus](/docs/getting-started/adot-eks-add-on/config-advanced)
+### [Update and Cleanup](/docs/getting-started/adot-eks-add-on/update-and-cleanup)
+
+
 ## Introduction
 
-Welcome to the getting started guide for AWS Distro for OpenTelemetry (ADOT) using Elastic Kubernetes Service (EKS) add-ons. This guide shows you how to leverage Amazon EKS add-ons to install and manage ADOT within your Amazon EKS cluster. [ADOT](https://aws-otel.github.io/) is generally available (GA) for tracing and can also be used for metrics. Amazon EKS add-ons support for ADOT enables a simplified experience through EKS APIs to install one component of ADOT, the ADOT Operator, in your Amazon EKS cluster for your metrics and/or trace collection pipeline. Amazon EKS add-ons support reduces the amount of configuration, setup, and deployment that would be required otherwise. For more information, see [Amazon EKS add-ons](https://docs.aws.amazon.com/eks/latest/userguide/eks-add-ons.html).
+Welcome to the getting started guide for AWS Distro for OpenTelemetry (ADOT) using Elastic Kubernetes Service (EKS) add-ons. This guide shows you how to leverage Amazon EKS add-ons to install and manage ADOT within your Amazon EKS cluster. [ADOT](https://aws-otel.github.io/) is generally available (GA) for tracing and can also be used for metrics. Amazon EKS add-ons support for ADOT enables a simplified experience through EKS APIs to install one component of ADOT, the [ADOT Operator](/docs/getting-started/adot-eks-add-on#the-adot-operator-and-adot-collector), in your Amazon EKS cluster for your metrics and/or trace collection pipeline. Amazon EKS add-ons support reduces the amount of configuration, setup, and deployment that would be required otherwise. For more information, see [Amazon EKS add-ons](https://docs.aws.amazon.com/eks/latest/userguide/eks-add-ons.html).
 
 Welcome to the getting started guide for the AWS Distro for OpenTelemetry (ADOT) Elastic Kubernetes Service (EKS) Add-On. [ADOT](https://aws-otel.github.io/) is generally available (GA) for tracing and can also be used for metrics. EKS add-ons support for ADOT enables a simplified experience through EKS APIs to install the ADOT Operator in your EKS cluster for your metrics and/or trace collection pipeline. EKS add-ons support reduces the amount of configuration, setup, and deployment that would be required otherwise. For more information on EKS add-ons, see [Amazon EKS add-ons](https://docs.aws.amazon.com/eks/latest/userguide/eks-add-ons.html).
 
@@ -27,7 +43,7 @@ This diagram shows an end-to-end pipeline utilizing the ADOT EKS add-on. It brea
 * Receiving OTLP metrics, and sending to Amazon Managed Service for Prometheus (AMP) and Amazon CloudWatch
 * Receiving distributed application traces, and sending them to AWS X-Ray
 
-![EndToEnd](./../../assets/img/docs/gettingStarted/operator/img2.png)
+<img src={operatorImg2} alt="Diagram" style="margin: 30px 0;" />
 <p style="text-align: center;"><i>Diagram: EKS ADOT Operator end to end pipeline</i></p>
 
 
@@ -42,7 +58,7 @@ When you leverage EKS add-ons, EKS will install the ADOT Operator. The ADOT Oper
 
 The diagram below shows how the Collector CR request flows from the customer to the ADOT Operator to deploy the ADOT Collector.
 
-![OperatorWorkflow](./../../assets/img/docs/gettingStarted/operator/img1.png)
+<img src={operatorImg1} alt="Diagram" style="margin: 30px 0;" />
 
 You can leverage EKS add-ons to maintain the ADOT Operator. The ADOT Collector is released and supported through regular ADOT releases on [Amazon Elastic Container Registry (Amazon ECR)](https://aws.amazon.com/ecr/) public gallery. If you want to update your ADOT Collector version to the latest release, apply a new configuration via CRD with an updated image. You can ask questions and report bugs on [GitHub](https://github.com/aws-observability/aws-otel-community/issues).
 
