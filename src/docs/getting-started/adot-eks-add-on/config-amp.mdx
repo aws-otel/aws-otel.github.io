@@ -29,7 +29,7 @@ spec:
   serviceAccount: adot-collector
   podAnnotations:
     prometheus.io/scrape: 'true'
-    prometheus.io/path: '/data/metrics'
+    prometheus.io/port: '8888'
   config: |
     receivers:
       prometheus:
