@@ -22,6 +22,9 @@ metadata:
 spec:
   mode: deployment
   serviceAccount: adot-collector
+  podAnnotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: '8888'
   env:
     - name: CLUSTER_NAME
       value: <YOUR-EKS-CLUSTER-NAME>
