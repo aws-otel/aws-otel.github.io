@@ -26,15 +26,14 @@ import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.js
 | otlpreceiver                    | resourceprocessor             | `awsemfexporter`                   | pprofextension         |
 | `awsecscontainermetricsreceiver`| batchprocessor                | `awsprometheusremotewriteexporter` | zpagesextension        |
 | `awsxrayreceiver`               | memorylimiter                 | loggingexporter                    | `ecsobserver`          |
-| `statsdreceiver`                | tailsamplingprocessor         | otlpexporter                       |                        |
-| zipkinreceiver                  | probabilisticsamplerprocessor | fileexporter                       |                        |
+| statsdreceiver                  | `metricsgenerationprocessor`  | otlpexporter                       | `awsproxy`             |
+| zipkinreceiver                  | probabilisticsamplerprocessor | fileexporter                       | ballastextention       |
 | jaegerreceiver                  | spanprocessor                 | otlphttpexporter                   |                        |
 | `awscontainerinsightreceiver`   | filterprocessor               | prometheusexporter                 |                        |
 |                                 | metricstransformprocessor     | datadogexporter                    |                        |
 |                                 | resourcedetectionprocessor    | dynatraceexporter                  |                        |
-|                                 |                               | newrelicexporter                   |                        |
-|                                 |                               | sapmexporter                       |                        |
-|                                 |                               | signalfxexporter                   |                        |
+|                                 | cumulativetodeltaprocessor    | sapmexporter                       |                        |
+|                                 | deltatorateprocessor          | signalfxexporter                   |                        |
 |                                 |                               | logzioexporter                     |                        |
 
 Note: Components in italics are AWS developed
