@@ -1,3 +1,15 @@
 # https://help.github.com/articles/about-codeowners/
 
-* @alolita @anuraaga @mxiamxia
+* @aws-otel/aws-otel-maintainers
+
+src/docs/getting-started/collector                         @aws-otel/aws-otel-maintainers
+src/docs/getting-started/container-insights                @vijayansarathy
+src/docs/getting-started/dotnet-sdk                        @willarmiros @NathanielRN
+src/docs/getting-started/ecs-configurations                @vasireddy99 @anuraaga
+src/docs/getting-started/go-sdk                            @Aneurysm9 @bryan-aguilar
+src/docs/getting-started/java-sdk                          @anuraaga
+src/docs/getting-started/js-sdk                            @willarmiros
+src/docs/getting-started/lambda                            @NathanielRN @vasireddy99 @willarmiros @wangzlei
+src/docs/getting-started/prometheus-remote-write-exporter  @Aneurysm9 @erichsueh3
+src/docs/getting-started/python-sdk                        @NathanielRN
+src/docs/getting-started/ruby-sdk                          @anuraaga @NathanielRN
