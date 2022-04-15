@@ -7,7 +7,16 @@ path: '/docs/getting-started/adot-eks-add-on/config-cloudwatch'
 
 ## Collector Configuration
 
-The Collector configuration below is set up to receive Prometheus metrics and export to CloudWatch. Note that the Prometheus receiver configuration is identical to that of the configuration for the Amazon Managed Prometheus Collector configuration. The AWS CloudWatch EMF Exporter is used to convert the metrics data into performance log events with [Embedded Metric Format (EMF)](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Embedded_Metric_Format_Specification.html) and then sends it directly to a CloudWatch log group using the [PutLogEvents](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutLogEvents.html) API. From this data, a custom metric, `<YOUR-APPLICATION-METRIC>`, is made available under the CloudWatch Metrics [namespace](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html#Namespace) *ContainerInsights/Prometheus* with the [dimensions](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html#Dimension) *EKS_Cluster*, *EKS_Namespace*, and *EKS_PodName* per the exporter configuration settings. Note that the file below is also hosted [here](PLACEHOLDER).
+The Collector configuration below is set up to receive Prometheus metrics and export to CloudWatch. Note that the Prometheus receiver configuration is identical to that of the configuration for the Amazon Managed Prometheus Collector configuration. The AWS CloudWatch EMF Exporter is used to convert the metrics data into performance log events with [Embedded Metric Format (EMF)](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Embedded_Metric_Format_Specification.html) and then sends it directly to a CloudWatch log group using the [PutLogEvents](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutLogEvents.html) API. From this data, a custom metric, `<YOUR-APPLICATION-METRIC>`, is made available under the CloudWatch Metrics [namespace](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html#Namespace) *ContainerInsights/Prometheus* with the [dimensions](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html#Dimension) *EKS_Cluster*, *EKS_Namespace*, and *EKS_PodName* per the exporter configuration settings. Note that the file below is also hosted [here](PLACEHOLDER). Save this into a file called `collector-config-cloudwatch.yaml` and execute the command
+```console
+kubectl apply -f collector-config-cloudwatch.yaml
+```
+to deploy your Collector. Make sure to replace `<YOUR-EKS-CLUSTER-NAME>` in the `spec::env` section , both `<YOUR-APPLICATION-METRIC>` fields in the `filter/include` processor and `awsemf` exporter configs, and `<YOUR_AWS_REGION>` in the `awsemf` exporter config, as per your own target environment.
+
+<details>
+  <summary>
+    Click to View: Collector Configuration for AWS CloudWatch
+  </summary>
 
 ```yaml
 #
@@ -410,11 +419,7 @@ subjects:
     namespace: default
 ```
 
-Save this into a file called `collector-config-cloudwatch.yaml` and execute the command
-```console
-kubectl apply -f collector-config-cloudwatch.yaml
-```
-to deploy your Collector. Make sure to replace `<YOUR-EKS-CLUSTER-NAME>` in the `spec::env` section , both `<YOUR-APPLICATION-METRIC>` fields in the `filter/include` processor and `awsemf` exporter configs, and `<YOUR_AWS_REGION>` in the awsemf exporter config, as per your own target environment.
+</details>
 
 ## Verify if the Metrics Data is being sent to CloudWatch
 

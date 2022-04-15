@@ -12,7 +12,16 @@ path: '/docs/getting-started/adot-eks-add-on/config-amp'
 
 ## Collector Configuration
 
-The Collector configuration below is set up to receive Prometheus metrics and export to Amazon Managed Prometheus. Note that the Prometheus receiver is meant to be a drop-in replacement for a Prometheus server and is capable of scraping metrics from microservices instrumented with the [Prometheus client library](https://prometheus.io/docs/instrumenting/clientlibs/). It also supports the full set of [Prometheus configuration](https://github.com/prometheus/prometheus/blob/v2.28.1/docs/configuration/configuration.md#scrape_config). The AWS Prometheus Remote Write Exporter employs the [remote write](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write) feature and sends metrics data to an existing Amazon Managed Prometheus workspace for long term storage. Note that the file below is also hosted [here](PLACEHOLDER).
+The Collector configuration below is set up to receive Prometheus metrics and export to Amazon Managed Prometheus. Note that the Prometheus receiver is meant to be a drop-in replacement for a Prometheus server and is capable of scraping metrics from microservices instrumented with the [Prometheus client library](https://prometheus.io/docs/instrumenting/clientlibs/). It also supports the full set of [Prometheus configuration](https://github.com/prometheus/prometheus/blob/v2.28.1/docs/configuration/configuration.md#scrape_config). The AWS Prometheus Remote Write Exporter employs the [remote write](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write) feature and sends metrics data to an existing Amazon Managed Prometheus workspace for long term storage. Note that the file below is also hosted [here](PLACEHOLDER). Save this into a file called `collector-config-amp.yaml` and execute the command 
+```console
+kubectl apply -f collector-config-amp.yaml
+```
+to deploy your Collector. Make sure to replace `<YOUR_REMOTE_WRITE_ENDPOINT>` and `<YOUR_AWS_REGION>` in the `awsprometheusremoterwite` exporter config, as per your own target environment.
+
+<details>
+  <summary>
+    Click to View: Collector Configuration for Amazon Managed Prometheus
+  </summary>
 
 ```yaml
 #
@@ -375,11 +384,7 @@ subjects:
     namespace: default
 ```
 
-Save this into a file called `collector-config-amp.yaml` and execute the command 
-```console
-kubectl apply -f collector-config-amp.yaml
-```
-to deploy your Collector. Make sure to replace `<YOUR_REMOTE_WRITE_ENDPOINT>` and `<YOUR_AWS_REGION>` in the `awsprometheusremoterwite` exporter config, as per your own target environment.
+</details>
 
 ## Verify if the Metrics Data is being sent to Amazon Managed Prometheus using the awscurl tool
 

@@ -7,7 +7,16 @@ path: '/docs/getting-started/adot-eks-add-on/config-xray'
 
 ## Collector Configuration
 
-The Collector configuration below is set up to receive OTLP traces and export to X-Ray.  The OTLP Receiver in the traces pipeline accepts data via gRPC or HTTP using [OTLP format](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/protocol/otlp.md). It is configured to receive via gRPC on the `host:port 0.0.0.0:4317` and via HTTP on `0.0.0.0:4318`. Per this configuration, workloads that want to send trace data to this receiver should be configured to send to the endpoint `my-collector-collector:4317` for gRPC and `my-collector-collector:4318` for HTTP.  The X-Ray exporter sends these segments directly to X-Ray using the [PutTraceSegments](https://docs.aws.amazon.com/xray/latest/api/API_PutTraceSegments.html) API. Note that segments or spans ingested by the OTLP receiver must be in [X-Ray Segment format](https://docs.aws.amazon.com/xray/latest/devguide/xray-api-segmentdocuments.html). Note that the file below is also hosted [here](PLACEHOLDER).
+The Collector configuration below is set up to receive OTLP traces and export to X-Ray.  The OTLP Receiver in the traces pipeline accepts data via gRPC or HTTP using [OTLP format](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/protocol/otlp.md). It is configured to receive via gRPC on the `host:port 0.0.0.0:4317` and via HTTP on `0.0.0.0:4318`. Per this configuration, workloads that want to send trace data to this receiver should be configured to send to the endpoint `my-collector-collector:4317` for gRPC and `my-collector-collector:4318` for HTTP.  The X-Ray exporter sends these segments directly to X-Ray using the [PutTraceSegments](https://docs.aws.amazon.com/xray/latest/api/API_PutTraceSegments.html) API. Note that segments or spans ingested by the OTLP receiver must be in [X-Ray Segment format](https://docs.aws.amazon.com/xray/latest/devguide/xray-api-segmentdocuments.html). Note that the file below is also hosted [here](PLACEHOLDER). Save this into a file called `collector-config-xray.yaml` and execute the command
+```console
+kubectl apply -f collector-config-xray.yaml
+```
+to deploy your Collector.  Make sure to replace `<YOUR_AWS_REGION>` in the `awsxray` exporter config, as per your own target environment.
+
+<details>
+  <summary>
+    Click to View: Collector Configuration for AWS X-Ray
+  </summary>
 
 ```yaml
 apiVersion: opentelemetry.io/v1alpha1
@@ -39,11 +48,7 @@ spec:
           exporters: [awsxray]
 ```
 
-Save this into a file called `collector-config-xray.yaml` and execute the command
-```console
-kubectl apply -f collector-config-xray.yaml
-```
-to deploy your Collector.  Make sure to replace `<YOUR_AWS_REGION>` in the `awsxray` exporter config, as per your own target environment.
+</details>
 
 ## Verify that Trace Data is being sent to X-Ray
 
