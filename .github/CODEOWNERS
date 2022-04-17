@@ -1,15 +1,15 @@
 # https://help.github.com/articles/about-codeowners/
 
-* @aws-otel/aws-otel-maintainers
+* @aws-otel/webteam
 
-src/docs/getting-started/collector                         @aws-otel/aws-otel-maintainers
-src/docs/getting-started/container-insights                @aws-otel/aws-otel-maintainers @vijayansarathy
-src/docs/getting-started/dotnet-sdk                        @aws-otel/aws-otel-maintainers @willarmiros @NathanielRN
-src/docs/getting-started/ecs-configurations                @aws-otel/aws-otel-maintainers @vasireddy99 @anuraaga
-src/docs/getting-started/go-sdk                            @aws-otel/aws-otel-maintainers @Aneurysm9 @bryan-aguilar
-src/docs/getting-started/java-sdk                          @aws-otel/aws-otel-maintainers @anuraaga
-src/docs/getting-started/js-sdk                            @aws-otel/aws-otel-maintainers @willarmiros
-src/docs/getting-started/lambda                            @aws-otel/aws-otel-maintainers @NathanielRN @vasireddy99 @willarmiros @wangzlei
-src/docs/getting-started/prometheus-remote-write-exporter  @aws-otel/aws-otel-maintainers @Aneurysm9 @erichsueh3
-src/docs/getting-started/python-sdk                        @aws-otel/aws-otel-maintainers @NathanielRN
-src/docs/getting-started/ruby-sdk                          @aws-otel/aws-otel-maintainers @anuraaga @NathanielRN
+src/docs/getting-started/collector                         @aws-otel/webteam
+src/docs/getting-started/container-insights                @aws-otel/webteam @vijayansarathy
+src/docs/getting-started/dotnet-sdk                        @aws-otel/webteam @willarmiros @NathanielRN
+src/docs/getting-started/ecs-configurations                @aws-otel/webteam @vasireddy99 @anuraaga
+src/docs/getting-started/go-sdk                            @aws-otel/webteam @Aneurysm9 @bryan-aguilar
+src/docs/getting-started/java-sdk                          @aws-otel/webteam @anuraaga
+src/docs/getting-started/js-sdk                            @aws-otel/webteam @willarmiros
+src/docs/getting-started/lambda                            @aws-otel/webteam @NathanielRN @vasireddy99 @willarmiros @wangzlei
+src/docs/getting-started/prometheus-remote-write-exporter  @aws-otel/webteam @Aneurysm9 @erichsueh3
+src/docs/getting-started/python-sdk                        @aws-otel/webteam @NathanielRN
+src/docs/getting-started/ruby-sdk                          @aws-otel/webteam @anuraaga @NathanielRN
