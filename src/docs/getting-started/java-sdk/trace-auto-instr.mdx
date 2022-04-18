@@ -60,7 +60,9 @@ For example, to set the random sampling rate for creating traces, you can set th
 
 The ADOT Java Auto-Instrumentation Agent can be configured to use [X-Ray remote sampling](https://docs.aws.amazon.com/xray/latest/devguide/xray-console-sampling.html)
 by setting the environment variable `OTEL_TRACES_SAMPLER=xray`. You will also need to [configure the OpenTelemetry collector](/docs/getting-started/remote-sampling)
-to allow the application to fetch sampling configuration. By default the sampler sends requests to `http://localhost:2000`. By setting `OTEL_TRACES_SAMPLER_ARG` environment variable you can change the endpoint the sampler talks with when getting sampling configuration from AWS X-Ray Console. For example setting `OTEL_TRACES_SAMPLER_ARG=endpoint=localhost:4000` would configure the sampler to communicate with `localhost:4000`.
+to allow the application to fetch sampling configuration. By default the sampler sends requests to `http://localhost:2000`. By setting `OTEL_TRACES_SAMPLER_ARG` 
+environment variable you can change the endpoint the sampler talks with when getting sampling configuration from AWS X-Ray Console. For example setting 
+`OTEL_TRACES_SAMPLER_ARG=endpoint=http://localhost:4000` would configure the sampler to communicate with `http://localhost:4000`.
 ### Running the agent in Docker
 
 If your application is packaged in Docker, the easiest way to run with the agent is to use the

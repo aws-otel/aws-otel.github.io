@@ -26,15 +26,14 @@ import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.js
 | otlpreceiver                    | resourceprocessor             | `awsemfexporter`                   | pprofextension         |
 | `awsecscontainermetricsreceiver`| batchprocessor                | `awsprometheusremotewriteexporter` | zpagesextension        |
 | `awsxrayreceiver`               | memorylimiter                 | loggingexporter                    | `ecsobserver`          |
-| `statsdreceiver`                | tailsamplingprocessor         | otlpexporter                       | `sigv4authextension`   |
-| zipkinreceiver                  | probabilisticsamplerprocessor | fileexporter                       |                        |
-| jaegerreceiver                  | spanprocessor                 | otlphttpexporter                   |                        |
+| statsdreceiver                  | `metricsgenerationprocessor`  | otlpexporter                       | `awsproxy`             |
+| zipkinreceiver                  | probabilisticsamplerprocessor | fileexporter                       | ballastextention       |
+| jaegerreceiver                  | spanprocessor                 | otlphttpexporter                   | `sigv4authextension`   |
 | `awscontainerinsightreceiver`   | filterprocessor               | prometheusexporter                 |                        |
 |                                 | metricstransformprocessor     | datadogexporter                    |                        |
 |                                 | resourcedetectionprocessor    | dynatraceexporter                  |                        |
-|                                 |                               | newrelicexporter                   |                        |
-|                                 |                               | sapmexporter                       |                        |
-|                                 |                               | signalfxexporter                   |                        |
+|                                 | cumulativetodeltaprocessor    | sapmexporter                       |                        |
+|                                 | deltatorateprocessor          | signalfxexporter                   |                        |
 |                                 |                               | logzioexporter                     |                        |
 |                                 |                               | prometheusremotewriteexporter      |                        |
 
