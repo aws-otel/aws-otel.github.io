@@ -72,9 +72,6 @@ function HeaderLinks({ ...props }) {
             <Link to="/code-of-conduct" className={classes.dropdownLink}>
               Code of Conduct
             </Link>,
-            <Link to="https://gitter.im/aws-otel-distro/community" className={classes.dropdownLink} target="_blank" rel="noopener noreferrer">
-              Gitter
-            </Link>,
             <Link to="/blog" className={classes.dropdownLink}>
               Blog Posts
             </Link>,
