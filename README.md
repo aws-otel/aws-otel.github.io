@@ -33,4 +33,3 @@ This code is licensed under the Apache 2.0 License.
 * [Reporting a Bug](https://github.com/aws-observability/aws-otel-community/issues)
 * [Creating a new Pull Request](https://github.com/aws-otel/aws-otel.github.io/compare)
 * [AWS Distro for OpenTelemetry Project Repos](https://github.com/aws-observability)
-* [Join the Gitter Channel](https://gitter.im/aws-otel-distro/community)
