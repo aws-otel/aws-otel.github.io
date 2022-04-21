@@ -12,7 +12,7 @@ The main use case we will focus on here is large scale deployments in your EKS c
 
 ## Daemonset Collector Configuration
 
-Below is the configuration for a Collector custom resource deployed as a Daemonset. Notice the `spec::mode` value is now `daemonset`. Additionally, in the prometheus receiver `config::scrape_configs::relabel_configs`, note `source_labels: [__meta_kubernetes_(endpoint|node|pod)_node_name]`. Since the Collector is deployed as a Daemonset, there will be a Collector for each node, and this `keep` action means we only keep targets for which our `regex` matches our concatenated `source_labels`. The result of this is that each Collector will only scrape from the node it exists in. Note that the file below is also hosted [here](https://github.com/aws-observability/aws-otel-community/blob/master/sample-configs/collector-config-advanced.yaml).
+Below is the configuration for a Collector custom resource deployed as a Daemonset. Notice the `spec::mode` value is now `daemonset`. Additionally, in the prometheus receiver `config::scrape_configs::relabel_configs`, note `source_labels: [__meta_kubernetes_(endpoint|node|pod)_node_name]`. Since the Collector is deployed as a Daemonset, there will be a Collector for each node, and this `keep` action means we only keep targets for which our `regex` matches our concatenated `source_labels`. The result of this is that each Collector will only scrape from the node it exists in. Note that the file below is also hosted [here](https://github.com/aws-observability/aws-otel-community/blob/master/sample-configs/operator/collector-config-advanced.yaml).
 
 <details>
   <summary>
