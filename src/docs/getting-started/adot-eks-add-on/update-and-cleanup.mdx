@@ -1,0 +1,56 @@
+---
+title: 'Update and Cleanup for ADOT using EKS Add-Ons'
+description:
+    This page is the final page, and discusses updating and removing ADOT using EKS add-ons, as well as othe resources introduced in the guide.
+path: '/docs/getting-started/adot-eks-add-on/update-and-cleanup'
+---
+
+## Updating ADOT using EKS add-ons and Updating the Collector Custom Resource
+
+The ADOT Operator and Collector Custom Resource are periodically updated with new versions. Check for an update of the ADOT Operator version EKS add-ons uses by executing the command
+```console
+aws eks describe-addon-versions —addon-name adot
+```
+
+Refer [here](https://docs.aws.amazon.com/eks/latest/userguide/managing-kube-proxy.html) for more information. If a new version is found, update it in your cluster with the command 
+```console
+aws eks update-addon --addon-name adot --addon-version new-addon-version --cluster-name <your_cluster_name>
+```
+
+After updating the ADOT Operator using EKS add-ons, the Collector CR will also have been updated, as the default ADOT Collector image the ADOT Operator uses will have been updated as well. Reapply the Collector configurations with any changes from the last Collector Custom Resource Definition, if necessary.
+
+## Cleanup of ADOT using EKS Add-ons and Cleanup of Other Components
+
+### Delete the Collector resource
+
+You can delete individual services by specifying their YAML:
+```console
+kubectl delete -f collector-config-(amp|cloudwatch|xray|advanced).yaml
+```
+
+### Uninstall ADOT using EKS Add-Ons
+
+```console
+aws eks delete-addon --addon-name adot --cluster-name your-cluster-name
+```
+
+After uninstalling ADOT, before reinstalling you must reinstall permissions first, see [this page](/docs/getting-started/adot-eks-add-on/requirements#adot-requirements).
+
+### Uninstall cert-manager
+
+Uninstall the cert-manager by following the instructions [here](https://cert-manager.io/docs/installation/kubectl/#uninstalling).
+
+## Questions or bugs?
+
+Technical documentation is available on the AWS Distro for OpenTelemetry [developer site](https://aws-otel.github.io/), and you can [download the distribution from GitHub](https://aws-otel.github.io/download). You can also download the latest [ADOT Collector image](https://gallery.ecr.aws/aws-observability/aws-otel-collector) from the [Amazon Elastic Container Registry (Amazon ECR)](https://aws.amazon.com/ecr/) Public Gallery.
+
+To learn more about how you can use ADOT to collect data for your observability solution, check out the hands-on [AWS Observability workshop](https://catalog.us-east-1.prod.workshops.aws/v2/workshops/31676d37-bbe9-4992-9cd1-ceae13c5116c/en-US/adot). If you have questions about the distribution, features, or components, file an [issue](https://github.com/aws-observability/aws-otel-community/issues).
+
+
+## Troubleshooting Guide
+
+The troubleshooting guide can be found [here](https://docs.aws.amazon.com/eks/latest/userguide/troubleshooting-adot.html).
+
+## [Previous Topic: Collector Configuration Introduction](/docs/getting-started/adot-eks-add-on/config-intro)
+
+## [Next Topic: Return to the Beginning of the Guide](/docs/getting-started/adot-eks-add-on)
