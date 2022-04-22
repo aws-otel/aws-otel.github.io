@@ -27,7 +27,7 @@ to deploy your Collector. Make sure to replace `<YOUR-EKS-CLUSTER-NAME>` in the 
 apiVersion: opentelemetry.io/v1alpha1
 kind: OpenTelemetryCollector
 metadata:
-  name: my-collector
+  name: my-collector-cloudwatch
 spec:
   mode: deployment
   serviceAccount: adot-collector
@@ -321,6 +321,9 @@ spec:
     processors:
       batch/metrics:
         timeout: 60s       
+      #
+      # Processor to transform the names of existing labels and/or add new labels to the metrics identified
+      # 
       metricstransform/labelling:
         transforms:
           - include: .*
@@ -336,6 +339,11 @@ spec:
               - action: update_label
                 label: kubernetes_namespace
                 new_label: EKS_Namespace
+      #
+      # Filter processor to include only the metrics that we are interested in
+      # Add each metric under the metric_names field. 
+      # Regular expressions may be used to identify the metrics
+      #   
       filter/include:
         metrics:
           include:

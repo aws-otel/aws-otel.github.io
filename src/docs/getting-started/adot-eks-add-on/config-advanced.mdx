@@ -23,7 +23,7 @@ Below is the configuration for a Collector custom resource deployed as a Daemons
 apiVersion: opentelemetry.io/v1alpha1
 kind: OpenTelemetryCollector
 metadata:
-  name: my-collector
+  name: my-collector-advanced
 spec:
   mode: daemonset
   serviceAccount: adot-collector
@@ -303,6 +303,8 @@ spec:
               source_labels: [__meta_kubernetes_pod_node_name]
             
     processors:
+      batch/metrics:
+        timeout: 60s   
 
     exporters:
       awsprometheusremotewrite:
@@ -315,7 +317,7 @@ spec:
       pipelines:
         metrics:
           receivers: [prometheus]
-          processors: []
+          processors: [batch/metrics]
           exporters: [awsprometheusremotewrite]
 ```
 
