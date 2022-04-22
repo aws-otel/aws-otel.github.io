@@ -16,7 +16,7 @@ The Collector configuration below is set up to receive Prometheus metrics and ex
 ```console
 kubectl apply -f collector-config-amp.yaml
 ```
-to deploy your Collector. Make sure to replace `<YOUR_REMOTE_WRITE_ENDPOINT>` and `<YOUR_AWS_REGION>` in the `awsprometheusremoterwite` exporter config, as per your own target environment.
+to deploy your Collector. Make sure to replace `<YOUR_REMOTE_WRITE_ENDPOINT>` and `<YOUR_AWS_REGION>` in the `awsprometheusremoterwite` exporter config, as per your own target environment. Note that a `ClusterRole` and `ClusterRoleBinding` will also be created, which provide necessary permissions for the `prometheus` receiver during service discovery.
 
 <details>
   <summary>

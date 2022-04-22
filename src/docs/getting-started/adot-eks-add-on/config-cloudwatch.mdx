@@ -11,7 +11,7 @@ The Collector configuration below is set up to receive Prometheus metrics and ex
 ```console
 kubectl apply -f collector-config-cloudwatch.yaml
 ```
-to deploy your Collector. Make sure to replace `<YOUR-EKS-CLUSTER-NAME>` in the `spec::env` section , both `<YOUR-APPLICATION-METRIC>` fields in the `filter/include` processor and `awsemf` exporter configs, and `<YOUR_AWS_REGION>` in the `awsemf` exporter config, as per your own target environment.
+to deploy your Collector. Make sure to replace `<YOUR-EKS-CLUSTER-NAME>` in the `spec::env` section , both `<YOUR-APPLICATION-METRIC>` fields in the `filter/include` processor and `awsemf` exporter configs, and `<YOUR_AWS_REGION>` in the `awsemf` exporter config, as per your own target environment. Note that a `ClusterRole` and `ClusterRoleBinding` will also be created, which provide necessary permissions for the `prometheus` receiver during service discovery.
 
 <details>
   <summary>
