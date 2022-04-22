@@ -339,17 +339,6 @@ spec:
               - action: update_label
                 label: kubernetes_namespace
                 new_label: EKS_Namespace
-      #
-      # Filter processor to include only the metrics that we are interested in
-      # Add each metric under the metric_names field. 
-      # Regular expressions may be used to identify the metrics
-      #   
-      filter/include:
-        metrics:
-          include:
-            match_type: regexp
-            metric_names:
-              - ^<YOUR-APPLICATION-METRIC>$
 
     exporters:
       #
@@ -371,8 +360,6 @@ spec:
         parse_json_encoded_attr_values: [Sources, kubernetes]
         metric_declarations:
           - dimensions: [[EKS_Cluster, EKS_Namespace, EKS_PodName]]
-            metric_name_selectors:
-              - <YOUR-APPLICATION-METRIC>
     service:
       pipelines:
         metrics:
