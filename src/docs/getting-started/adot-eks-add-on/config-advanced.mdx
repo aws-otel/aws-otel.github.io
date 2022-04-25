@@ -12,7 +12,7 @@ The main use case we will focus on here is large scale deployments in your EKS c
 
 ## Daemonset Collector Configuration
 
-Below is the configuration for a Collector custom resource deployed as a Daemonset. Notice the `spec::mode` value is now `daemonset`. Additionally, in the prometheus receiver `config::scrape_configs::relabel_configs`, note `source_labels: [__meta_kubernetes_(endpoint|node|pod)_node_name]`. Since the Collector is deployed as a Daemonset, there will be a Collector for each node, and this `keep` action means we only keep targets for which our `regex` matches our concatenated `source_labels`. The result of this is that each Collector will only scrape from the node it exists in. Note that the file below is also hosted [here](https://github.com/aws-observability/aws-otel-community/blob/master/sample-configs/operator/collector-config-advanced.yaml).
+Below is the configuration for a Collector custom resource deployed as a Daemonset. Notice the `spec::mode` value is now `daemonset`. Additionally, in the prometheus receiver `config::scrape_configs::relabel_configs`, note `source_labels: [__meta_kubernetes_(endpoint|node|pod)_node_name]`. Since the Collector is deployed as a Daemonset, there will be a Collector for each node, and this `keep` action means we only keep targets for which our `regex` matches our concatenated `source_labels`. The result of this is that each Collector will only scrape from the node it exists in. Note that the file below is also hosted [here](https://github.com/aws-observability/aws-otel-community/blob/master/sample-configs/operator/collector-config-advanced.yaml). Also note that a `ClusterRole` and `ClusterRoleBinding` will be created, which provide necessary permissions for the `prometheus` receiver during service discovery.
 
 <details>
   <summary>
@@ -23,7 +23,7 @@ Below is the configuration for a Collector custom resource deployed as a Daemons
 apiVersion: opentelemetry.io/v1alpha1
 kind: OpenTelemetryCollector
 metadata:
-  name: my-collector
+  name: my-collector-advanced
 spec:
   mode: daemonset
   serviceAccount: adot-collector
@@ -303,6 +303,8 @@ spec:
               source_labels: [__meta_kubernetes_pod_node_name]
             
     processors:
+      batch/metrics:
+        timeout: 60s   
 
     exporters:
       awsprometheusremotewrite:
@@ -315,7 +317,7 @@ spec:
       pipelines:
         metrics:
           receivers: [prometheus]
-          processors: []
+          processors: [batch/metrics]
           exporters: [awsprometheusremotewrite]
 ```
 

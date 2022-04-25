@@ -7,11 +7,11 @@ path: '/docs/getting-started/adot-eks-add-on/config-cloudwatch'
 
 ## Collector Configuration
 
-The Collector configuration below is set up to receive Prometheus metrics and export to CloudWatch. Note that the Prometheus receiver configuration is identical to that of the configuration for the Amazon Managed Prometheus Collector configuration. The AWS CloudWatch EMF Exporter is used to convert the metrics data into performance log events with [Embedded Metric Format (EMF)](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Embedded_Metric_Format_Specification.html) and then sends it directly to a CloudWatch log group using the [PutLogEvents](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutLogEvents.html) API. From this data, a custom metric, `<YOUR-APPLICATION-METRIC>`, is made available under the CloudWatch Metrics [namespace](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html#Namespace) *ContainerInsights/Prometheus* with the [dimensions](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html#Dimension) *EKS_Cluster*, *EKS_Namespace*, and *EKS_PodName* per the exporter configuration settings. Note that the file below is also hosted [here](https://github.com/aws-observability/aws-otel-community/blob/master/sample-configs/operator/collector-config-cloudwatch.yaml). Save this into a file called `collector-config-cloudwatch.yaml` and execute the command
+The Collector configuration below is set up to receive Prometheus metrics and export to CloudWatch. Note that the Prometheus receiver configuration is identical to that of the configuration for the Amazon Managed Prometheus Collector configuration. The AWS CloudWatch EMF Exporter is used to convert the metrics data into performance log events with [Embedded Metric Format (EMF)](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Embedded_Metric_Format_Specification.html) and then sends it directly to a CloudWatch log group using the [PutLogEvents](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutLogEvents.html) API. From this data, your metrics will be made available under the CloudWatch Metrics [namespace](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html#Namespace) *ContainerInsights/Prometheus* with the [dimensions](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html#Dimension) *EKS_Cluster*, *EKS_Namespace*, and *EKS_PodName* per the exporter configuration settings. Note that the file below is also hosted [here](https://github.com/aws-observability/aws-otel-community/blob/master/sample-configs/operator/collector-config-cloudwatch.yaml). Save this into a file called `collector-config-cloudwatch.yaml` and execute the command
 ```console
 kubectl apply -f collector-config-cloudwatch.yaml
 ```
-to deploy your Collector. Make sure to replace `<YOUR-EKS-CLUSTER-NAME>` in the `spec::env` section , both `<YOUR-APPLICATION-METRIC>` fields in the `filter/include` processor and `awsemf` exporter configs, and `<YOUR_AWS_REGION>` in the `awsemf` exporter config, as per your own target environment.
+to deploy your Collector. Make sure to replace `<YOUR-EKS-CLUSTER-NAME>` in the `spec::env` section and `<YOUR_AWS_REGION>` in the `awsemf` exporter config, as per your own target environment. Note that a `ClusterRole` and `ClusterRoleBinding` will also be created, which provide necessary permissions for the `prometheus` receiver during service discovery.
 
 <details>
   <summary>
@@ -27,7 +27,7 @@ to deploy your Collector. Make sure to replace `<YOUR-EKS-CLUSTER-NAME>` in the 
 apiVersion: opentelemetry.io/v1alpha1
 kind: OpenTelemetryCollector
 metadata:
-  name: my-collector
+  name: my-collector-cloudwatch
 spec:
   mode: deployment
   serviceAccount: adot-collector
@@ -321,6 +321,9 @@ spec:
     processors:
       batch/metrics:
         timeout: 60s       
+      #
+      # Processor to transform the names of existing labels and/or add new labels to the metrics identified
+      # 
       metricstransform/labelling:
         transforms:
           - include: .*
@@ -336,12 +339,6 @@ spec:
               - action: update_label
                 label: kubernetes_namespace
                 new_label: EKS_Namespace
-      filter/include:
-        metrics:
-          include:
-            match_type: regexp
-            metric_names:
-              - ^<YOUR-APPLICATION-METRIC>$
 
     exporters:
       #
@@ -363,13 +360,11 @@ spec:
         parse_json_encoded_attr_values: [Sources, kubernetes]
         metric_declarations:
           - dimensions: [[EKS_Cluster, EKS_Namespace, EKS_PodName]]
-            metric_name_selectors:
-              - <YOUR-APPLICATION-METRIC>
     service:
       pipelines:
         metrics:
           receivers: [prometheus]
-          processors: [filter/include,batch/metrics,metricstransform/labelling]
+          processors: [batch/metrics,metricstransform/labelling]
           exporters: [awsemf]         
 
 
@@ -427,7 +422,6 @@ subjects:
 * Select “Metrics → All metrics” in the menu on the left
 * Click the “ContainerInsights/Prometheus” box under “custom namespaces”
 * Select the “EKS_Cluster, EKS_Namespace, EKS_PodName“ to view your metrics data
-  * For example, if you replaced `<YOUR-APPLICATION-METRIC>` with `scrape_duration_seconds`, you would see this here
 
 ## [Previous Topic: Collector Configuration Introduction](/docs/getting-started/adot-eks-add-on/config-intro)
 
