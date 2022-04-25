@@ -6,6 +6,13 @@ description:
 path: /blog
 
 blogs:
+  - title: "Metrics and traces collection using Amazon EKS add-ons for AWS Distro for OpenTelemetry"
+    author: "Viji Sarathy, Michael Hauss, and Eric Hsueh"
+    date: "22-Apr-2022"
+    body:
+      "This blog post details how to leverage Amazon EKS add-ons to install and manage ADOT within your Amazon EKS cluster."
+    link: "https://aws.amazon.com/blogs/containers/metrics-and-traces-collection-using-amazon-eks-add-ons-for-aws-distro-for-opentelemetry/"
+
   - title: "Configuring Amazon ECS console to collect metrics and traces using AWS Distro for OpenTelemetry"
     author: "Pavan Sai Vasireddy and Richard To"
     date: "12-Mar-2022"
