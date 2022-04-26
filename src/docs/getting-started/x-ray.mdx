@@ -83,7 +83,7 @@ exporters:
 
 #### OTel to X-Ray data model translation behavior of AWS X-Ray Exporter
 
-##### OTel span attributes translation to X-Ray segment/subsegment attributes
+##### OTel span attributes translation
 
 | OTel data model field/Attribute keys                                          | X-Ray data model field | Behavior                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 |-------------------------------------------------------------------------------|------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -103,7 +103,7 @@ exporters:
 | peer.service, aws.service, db.service, service.name, span.kind, and span name | name                   | 1. Name field is set to peer.service if not empty.  2. If peer.service is empty and aws.service attribute key is not empty, name is set to aws.service.  3. If aws.service is empty and db.service attribute key is not empty, name is set to db.service.  4. If none of these attribute keys has a value, and span.kind = "Server", then name is set to value of service.name attribute key.  5. If none of the prior conditions are met, name is set to the name of the span.                                                                                                                            |
 | pdata.SpanKindServer                                                          | type                   | If span.kind = "Server" then the exporter creates an X-Ray segment. Otherwise a subsegment is created.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 
-##### OTel span HTTP Attributes translation to X-Ray segment/subsegment HTTP attributes
+##### OTel span HTTP Attributes translation
 
 | OTel Attributes keys                                                                                                                                | X-Ray data model field | Behavior                                                                                                                                                                                     |
 |-----------------------------------------------------------------------------------------------------------------------------------------------------|------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -115,7 +115,7 @@ exporters:
 | http.url, http.scheme, http.host, http.target, http.server_name, net.host.port, host.name, net.host.name, net.peer.name, net.peer.port, net.peer.ip | http.url               | if span.kind = "Server" then construct server URL. Otherwise contruct a client URL.                                                                                                          |
 | message.type                                                                                                                                        | http.content_length    | If message.type attribute key exists and value = "RECEIVED" then http.content_length is set to messaging.message_payload_size_bytes if it is set; otherwise http.content_length is set to 0. |
 
-##### OTel span SQL Attributes translation to X-Ray segment/subsegment SQL attributes
+##### OTel span SQL Attributes translation
 
 | OTel Attributes env var value | X-Ray data model field | Behavior                                                                                                                                                   |
 |-------------------------------|------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -124,7 +124,7 @@ exporters:
 | db.user                       | sql.user               |                                                                                                                                                            |
 | db.statement                  | sql.sanatized_query    |                                                                                                                                                            |
 
-##### OTel span AWS Attributes translation to X-Ray segment/subsegment AWS attributes
+##### OTel span AWS Attributes translation
 
 | OTel Attributes env var value | X-Ray data model field | Behavior                                                                                                                                 |
 |-------------------------------|------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
@@ -135,7 +135,7 @@ exporters:
 | aws.queue.url                 | aws.queue_url          |                                                                                                                                          |
 | aws.table.name                | aws.table_name         |                                                                                                                                          |
 
-##### OTel span metadata translation to X-Ray segment/subsegment metadata
+##### OTel span metadata translation
 
 | OTel Attributes env var value | X-Ray data model field    | Behavior |
 |-------------------------------|---------------------------|----------|
@@ -143,7 +143,7 @@ exporters:
 | telemetry.sdk.version         | xray.sdk_version          |          |
 | telemetry.auto.version        | xray.auto_instrumentation |          |
 
-##### OTel span EC2 metadata translation to X-Ray segment/subsegment EC2 metadata
+##### OTel span EC2 metadata translation
 
 | OTel Attributes env var value | X-Ray data model field | Behavior |
 |-------------------------------|------------------------|----------|
@@ -152,7 +152,7 @@ exporters:
 | host.type                     | ec2.instance_size      |          |
 | host.image.id                 | ec2.ami_id             |          |
 
-##### OTel span ECS metadata translation to X-Ray segment/subsegment ECS metadata
+##### OTel span ECS metadata translation
 
 | OTel Attributes env var value | X-Ray data model field | Behavior |
 |-------------------------------|------------------------|----------|
@@ -165,7 +165,7 @@ exporters:
 | aws.ecs.task.family           | ecs.task_family        |          |
 | aws.ecs.launchtype            | ecs.launch_type        |          |
 
-##### OTel span EKS metadata translation to X-Ray segment/subsegment EKS metadata
+##### OTel span EKS metadata translation
 
 | OTel Attributes env var | X-Ray data model field | Behavior |
 |-------------------------|------------------------|----------|
@@ -173,7 +173,7 @@ exporters:
 | k8s.pod.name            | eks.pod                |          |
 | k8s.pod.uid             | eks.container_id       |          |
 
-##### OTel span EB metadata translation to X-Ray segment/subsegment EB metadata
+##### OTel span EB metadata translation
 
 | OTel Attributes env var | X-Ray data model field             | Behavior                                                                                                                                                                                                                                             |                                                                                                                                                                                                        |
 |-------------------------|------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -181,7 +181,7 @@ exporters:
 | service.instance.id     | elastic_beanstalk.deployment_id    | If AttributeCloudPlatformAWSElasticBeanstalk attribute key = "aws_elastic_beanstalk" and service.instance.id attribute key exists and is not empty, then elastic_beanstalk_deployment_id field is set to value of service.instance.id attribute key. |
 | service.version         | elastic_beanstalk.version_label    |                                                                                                                                                                                                                                                      |                                                                                                                                                                                                                                    |
 
-##### OTel span CW Logs metadata translation to X-Ray segment/subsegment CW Logs metadata
+##### OTel span CW Logs metadata translation
 
 | OTel Attributes env var | X-Ray data model field    | Behavior                                                                                                                                                                                                                                                                                                                |
 |-------------------------|---------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
