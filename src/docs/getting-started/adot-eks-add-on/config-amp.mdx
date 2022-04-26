@@ -1,0 +1,423 @@
+---
+title: 'Collector Configuration for Amazon Managed Prometheus'
+description:
+    This page introduces Collector configuration for AMP for the ADOT Collector.
+path: '/docs/getting-started/adot-eks-add-on/config-amp'
+---
+
+## Create your Amazon Managed Prometheus Workspace
+
+* Open your Amazon Managed Prometheus console at https://console.aws.amazon.com/prometheus/home
+* Type the name for your workspace and click create button
+
+## Collector Configuration
+
+The Collector configuration below is set up to receive Prometheus metrics and export to Amazon Managed Prometheus. Note that the Prometheus receiver is meant to be a drop-in replacement for a Prometheus server and is capable of scraping metrics from microservices instrumented with the [Prometheus client library](https://prometheus.io/docs/instrumenting/clientlibs/). It also supports the full set of [Prometheus configuration](https://github.com/prometheus/prometheus/blob/v2.28.1/docs/configuration/configuration.md#scrape_config). The AWS Prometheus Remote Write Exporter employs the [remote write](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write) feature and sends metrics data to an existing Amazon Managed Prometheus workspace for long term storage. Note that the file below is also hosted [here](https://github.com/aws-observability/aws-otel-community/blob/master/sample-configs/operator/collector-config-amp.yaml). Save this into a file called `collector-config-amp.yaml` and execute the command 
+```console
+kubectl apply -f collector-config-amp.yaml
+```
+to deploy your Collector. Make sure to replace `<YOUR_REMOTE_WRITE_ENDPOINT>` and `<YOUR_AWS_REGION>` in the `awsprometheusremoterwite` exporter config, as per your own target environment. Note that a `ClusterRole` and `ClusterRoleBinding` will also be created, which provide necessary permissions for the `prometheus` receiver during service discovery.
+
+<details>
+  <summary>
+    Click to View: Collector Configuration for Amazon Managed Prometheus
+  </summary>
+
+```yaml
+#
+# OpenTelemetry Collector configuration
+# Metrics pipeline with Prometheus Receiver and AWS Remote Write Exporter sending metrics to Amazon Managed Prometheus
+#
+---
+apiVersion: opentelemetry.io/v1alpha1
+kind: OpenTelemetryCollector
+metadata:
+  name: my-collector-amp
+spec:
+  mode: deployment
+  serviceAccount: adot-collector
+  podAnnotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: '8888'
+  config: |
+    receivers:
+      #
+      # Scrape configuration for the Prometheus Receiver
+      # This is the same configuration used when Prometheus is installed using the community Helm chart
+      #     
+      prometheus:
+        config:
+          global:
+            scrape_interval: 15s
+            scrape_timeout: 10s
+
+          scrape_configs:
+          - job_name: kubernetes-apiservers
+            bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+            kubernetes_sd_configs:
+            - role: endpoints
+            relabel_configs:
+            - action: keep
+              regex: default;kubernetes;https
+              source_labels:
+              - __meta_kubernetes_namespace
+              - __meta_kubernetes_service_name
+              - __meta_kubernetes_endpoint_port_name
+            scheme: https
+            tls_config:
+              ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+              insecure_skip_verify: true
+
+          - job_name: kubernetes-nodes
+            bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+            kubernetes_sd_configs:
+            - role: node
+            relabel_configs:
+            - action: labelmap
+              regex: __meta_kubernetes_node_label_(.+)
+            - replacement: kubernetes.default.svc:443
+              target_label: __address__
+            - regex: (.+)
+              replacement: /api/v1/nodes/$$1/proxy/metrics
+              source_labels:
+              - __meta_kubernetes_node_name
+              target_label: __metrics_path__
+            scheme: https
+            tls_config:
+              ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+              insecure_skip_verify: true
+
+          - job_name: kubernetes-nodes-cadvisor
+            bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+            kubernetes_sd_configs:
+            - role: node
+            relabel_configs:
+            - action: labelmap
+              regex: __meta_kubernetes_node_label_(.+)
+            - replacement: kubernetes.default.svc:443
+              target_label: __address__
+            - regex: (.+)
+              replacement: /api/v1/nodes/$$1/proxy/metrics/cadvisor
+              source_labels:
+              - __meta_kubernetes_node_name
+              target_label: __metrics_path__
+            scheme: https
+            tls_config:
+              ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+              insecure_skip_verify: true
+
+          - job_name: kubernetes-service-endpoints
+            kubernetes_sd_configs:
+            - role: endpoints
+            relabel_configs:
+            - action: keep
+              regex: true
+              source_labels:
+              - __meta_kubernetes_service_annotation_prometheus_io_scrape
+            - action: replace
+              regex: (https?)
+              source_labels:
+              - __meta_kubernetes_service_annotation_prometheus_io_scheme
+              target_label: __scheme__
+            - action: replace
+              regex: (.+)
+              source_labels:
+              - __meta_kubernetes_service_annotation_prometheus_io_path
+              target_label: __metrics_path__
+            - action: replace
+              regex: ([^:]+)(?::\d+)?;(\d+)
+              replacement: $$1:$$2
+              source_labels:
+              - __address__
+              - __meta_kubernetes_service_annotation_prometheus_io_port
+              target_label: __address__
+            - action: labelmap
+              regex: __meta_kubernetes_service_annotation_prometheus_io_param_(.+)
+              replacement: __param_$$1
+            - action: labelmap
+              regex: __meta_kubernetes_service_label_(.+)
+            - action: replace
+              source_labels:
+              - __meta_kubernetes_namespace
+              target_label: kubernetes_namespace
+            - action: replace
+              source_labels:
+              - __meta_kubernetes_service_name
+              target_label: kubernetes_name
+            - action: replace
+              source_labels:
+              - __meta_kubernetes_pod_node_name
+              target_label: kubernetes_node
+
+          - job_name: kubernetes-service-endpoints-slow
+            kubernetes_sd_configs:
+            - role: endpoints
+            relabel_configs:
+            - action: keep
+              regex: true
+              source_labels:
+              - __meta_kubernetes_service_annotation_prometheus_io_scrape_slow
+            - action: replace
+              regex: (https?)
+              source_labels:
+              - __meta_kubernetes_service_annotation_prometheus_io_scheme
+              target_label: __scheme__
+            - action: replace
+              regex: (.+)
+              source_labels:
+              - __meta_kubernetes_service_annotation_prometheus_io_path
+              target_label: __metrics_path__
+            - action: replace
+              regex: ([^:]+)(?::\d+)?;(\d+)
+              replacement: $$1:$$2
+              source_labels:
+              - __address__
+              - __meta_kubernetes_service_annotation_prometheus_io_port
+              target_label: __address__
+            - action: labelmap
+              regex: __meta_kubernetes_service_annotation_prometheus_io_param_(.+)
+              replacement: __param_$$1
+            - action: labelmap
+              regex: __meta_kubernetes_service_label_(.+)
+            - action: replace
+              source_labels:
+              - __meta_kubernetes_namespace
+              target_label: kubernetes_namespace
+            - action: replace
+              source_labels:
+              - __meta_kubernetes_service_name
+              target_label: kubernetes_name
+            - action: replace
+              source_labels:
+              - __meta_kubernetes_pod_node_name
+              target_label: kubernetes_node
+            scrape_interval: 5m
+            scrape_timeout: 30s
+            
+          - job_name: prometheus-pushgateway
+            kubernetes_sd_configs:
+            - role: service
+            relabel_configs:
+            - action: keep
+              regex: pushgateway
+              source_labels:
+              - __meta_kubernetes_service_annotation_prometheus_io_probe
+
+          - job_name: kubernetes-services
+            kubernetes_sd_configs:
+            - role: service
+            metrics_path: /probe
+            params:
+              module:
+              - http_2xx
+            relabel_configs:
+            - action: keep
+              regex: true
+              source_labels:
+              - __meta_kubernetes_service_annotation_prometheus_io_probe
+            - source_labels:
+              - __address__
+              target_label: __param_target
+            - replacement: blackbox
+              target_label: __address__
+            - source_labels:
+              - __param_target
+              target_label: instance
+            - action: labelmap
+              regex: __meta_kubernetes_service_label_(.+)
+            - source_labels:
+              - __meta_kubernetes_namespace
+              target_label: kubernetes_namespace
+            - source_labels:
+              - __meta_kubernetes_service_name
+              target_label: kubernetes_name
+
+          - job_name: kubernetes-pods
+            kubernetes_sd_configs:
+            - role: pod
+            relabel_configs:
+            - action: keep
+              regex: true
+              source_labels:
+              - __meta_kubernetes_pod_annotation_prometheus_io_scrape
+            - action: replace
+              regex: (https?)
+              source_labels:
+              - __meta_kubernetes_pod_annotation_prometheus_io_scheme
+              target_label: __scheme__
+            - action: replace
+              regex: (.+)
+              source_labels:
+              - __meta_kubernetes_pod_annotation_prometheus_io_path
+              target_label: __metrics_path__
+            - action: replace
+              regex: ([^:]+)(?::\d+)?;(\d+)
+              replacement: $$1:$$2
+              source_labels:
+              - __address__
+              - __meta_kubernetes_pod_annotation_prometheus_io_port
+              target_label: __address__
+            - action: labelmap
+              regex: __meta_kubernetes_pod_annotation_prometheus_io_param_(.+)
+              replacement: __param_$$1
+            - action: labelmap
+              regex: __meta_kubernetes_pod_label_(.+)
+            - action: replace
+              source_labels:
+              - __meta_kubernetes_namespace
+              target_label: kubernetes_namespace
+            - action: replace
+              source_labels:
+              - __meta_kubernetes_pod_name
+              target_label: kubernetes_pod_name
+            - action: drop
+              regex: Pending|Succeeded|Failed|Completed
+              source_labels:
+              - __meta_kubernetes_pod_phase
+
+          - job_name: kubernetes-pods-slow
+            scrape_interval: 5m
+            scrape_timeout: 30s          
+            kubernetes_sd_configs:
+            - role: pod
+            relabel_configs:
+            - action: keep
+              regex: true
+              source_labels:
+              - __meta_kubernetes_pod_annotation_prometheus_io_scrape_slow
+            - action: replace
+              regex: (https?)
+              source_labels:
+              - __meta_kubernetes_pod_annotation_prometheus_io_scheme
+              target_label: __scheme__
+            - action: replace
+              regex: (.+)
+              source_labels:
+              - __meta_kubernetes_pod_annotation_prometheus_io_path
+              target_label: __metrics_path__
+            - action: replace
+              regex: ([^:]+)(?::\d+)?;(\d+)
+              replacement: $$1:$$2
+              source_labels:
+              - __address__
+              - __meta_kubernetes_pod_annotation_prometheus_io_port
+              target_label: __address__
+            - action: labelmap
+              regex: __meta_kubernetes_pod_annotation_prometheus_io_param_(.+)
+              replacement: __param_$1
+            - action: labelmap
+              regex: __meta_kubernetes_pod_label_(.+)
+            - action: replace
+              source_labels:
+              - __meta_kubernetes_namespace
+              target_label: namespace
+            - action: replace
+              source_labels:
+              - __meta_kubernetes_pod_name
+              target_label: pod
+            - action: drop
+              regex: Pending|Succeeded|Failed|Completed
+              source_labels:
+              - __meta_kubernetes_pod_phase
+                                
+    processors:
+      batch/metrics:
+        timeout: 60s         
+
+    exporters:
+      awsprometheusremotewrite:
+        endpoint: <YOUR_REMOTE_WRITE_ENDPOINT>
+        aws_auth:
+          region: <YOUR_AWS_REGION>
+          service: "aps"
+
+    service:
+      pipelines:   
+        metrics:
+          receivers: [prometheus]
+          processors: [batch/metrics]
+          exporters: [awsprometheusremotewrite]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: otel-prometheus-role
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - nodes
+      - nodes/proxy
+      - services
+      - endpoints
+      - pods
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - extensions
+    resources:
+      - ingresses
+    verbs:
+      - get
+      - list
+      - watch
+  - nonResourceURLs:
+      - /metrics
+    verbs:
+      - get
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: otel-prometheus-role-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: otel-prometheus-role
+subjects:
+  - kind: ServiceAccount
+    name: adot-collector
+    namespace: default
+```
+
+</details>
+
+## Verify if the Metrics Data is being sent to Amazon Managed Prometheus using the awscurl tool
+
+You can use `awscurl` to check if Amazon Managed Prometheus received the metrics data. The `awscurl` tool is a curl like tool with AWS Signature Version 4 request signing. It performs requests to AWS services with requests signing using curl interface, and it supports IAM profile credentials. To learn more about awscurl, please refer to its [Github repository](https://github.com/okigan/awscurl).
+
+To install `awscurl`, follow the documentation [here](https://github.com/okigan/awscurl/blob/master/README.md#installation).
+
+Run the following command to check if Amazon Managed Prometheus received the Prometheus metrics data `scrape_duration_seconds`.
+```console
+$ awscurl --service="aps" --region="<YOUR_AWS_REGION>" \
+"https://aps-workspaces.<YOUR_AWS_REGION>.amazonaws.com/workspaces/<YOUR_AMP_WORKSPACE_ID>/api/v1/query?query=scrape_duration_seconds"
+```
+
+
+Your output should look something like this:
+```console
+{"status":"success","data":{"resultType":"vector","result":[{"metric":{"EKS_Container":"cert-manager","EKS_Namespace":"cert-manager","EKS_PodName":"cert-manager-858bf78c95-qvq2j","__name__":"scrape_duration_seconds","app":"cert-manager","app_kubernetes_io_component":"controller","app_kubernetes_io_instance":"cert-manager","app_kubernetes_io_name":"cert-manager","instance":"192.168.41.17:9402","job":"storefront","pod_template_hash":"858bf78c95"},"value":[1636159948.136,"0.001410662"]}]}}
+```
+
+Make sure to replace the `<YOUR_AWS_REGION>` and `YOUR_AMP_WORKSPACE_ID` fields for both queries.
+
+## Verify if the Metrics Data is being sent to Amazon Managed Prometheus using Amazon Managed Grafana
+
+Another way to verify if your metrics data is being sent to Amazon Managed Prometheus is by visualizing it in Amazon Managed Grafana. Refer to the [Getting started with Amazon Managed Grafana guide](https://docs.aws.amazon.com/grafana/latest/userguide/getting-started-with-AMG.html) for more information.
+
+## [Previous Topic: Collector Configuration Introduction](/docs/getting-started/adot-eks-add-on/config-intro)
+
+## Related Topics:
+
+### [Collector Configuration for AWS CloudWatch](/docs/getting-started/adot-eks-add-on/config-cloudwatch)
+
+### [Collector Configuration for AWS X-Ray](/docs/getting-started/adot-eks-add-on/config-xray)
+
+### [Advanced Collector Configuration for Amazon Managed Prometheus](/docs/getting-started/adot-eks-add-on/config-advanced)
+
+## [Next Topic: Updating and Cleanup](/docs/getting-started/adot-eks-add-on/update-and-cleanup)

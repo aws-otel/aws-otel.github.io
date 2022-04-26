@@ -1,28 +1,28 @@
 ---
 title: 'Getting Started with the AWS Distro for OpenTelemetry Operator'
 description:
-    This page is about getting started with the ADOT Operator.
+    This page is about getting started with the OpenTelemetry Operator.
 path: '/docs/getting-started/operator'
 ---
 
 import operatorImg1 from "assets/img/docs/gettingStarted/operator/img1.png"
 import operatorImg2 from "assets/img/docs/gettingStarted/operator/img2.png"
 
-Welcome to the AWS Distro for OpenTelemetry Operator (ADOT Operator) getting started guide. This guide covers the ADOT Operator,
-how to install it in your Amazon Elastic Kubernetes Service (Amazon EKS) cluster using a Helm chart and how to configure the ADOT
-Collector as Kubernetes Custom Resource (CR), which will be managed by the ADOT Operator. Before reading this guide, we recommend
+Welcome to the AWS Distro for OpenTelemetry (ADOT) getting started guide for the OpenTelemetry Operator. This guide covers the OpenTelemetry Operator,
+how to install it in your Amazon Elastic Kubernetes Service (Amazon EKS) cluster using a Helm chart and how to configure the
+Collector as Kubernetes Custom Resource (CR), which will be managed by the OpenTelemetry Operator. Before reading this guide, we recommend
 you to have an understanding of the basics of [Helm](http://helm.sh/), the package manager for Kubernetes.
 
 <SectionSeparator />
 
 ## Introduction
 
-The ADOT Operator is an implementation of a Kubernetes Operator. A Kubernetes Operator is a method of packaging, deploying and
+The OpenTelemetry Operator is an implementation of a Kubernetes Operator. A Kubernetes Operator is a method of packaging, deploying and
 managing a Kubernetes-native application, which is both deployed on Kubernetes and managed using the Kubernetes APIs and kubectl
 tooling. The Kubernetes Operator is a custom controller, which introduces new object types through Custom Resource Definition (CRD),
-an extension mechanism in Kubernetes. In our case, the CRD that is managed by the ADOT Operator is the Collector.
+an extension mechanism in Kubernetes. In our case, the CRD that is managed by the OpenTelemetry Operator is the Collector.
 
-The ADOT Operator will watch for the Collector and is notified about its presence or modification. When the ADOT Operator receives
+The OpenTelemetry Operator will watch for the Collector and is notified about its presence or modification. When the OpenTelemetry Operator receives
 this notification, it will start running in the following orders. First, it will ensure that all the required connections between
 these requests and Kubernetes API server are actually available. Second, it will configure the Collector in the way the user expressed
 in the configuration file. The diagram below shows how the Collector CR request works in a Kubernetes cluster.
@@ -31,7 +31,7 @@ in the configuration file. The diagram below shows how the Collector CR request 
 
 <SectionSeparator />
 
-## Install ADOT Operator to Your EKS Cluster
+## Install the OpenTelemetry Operator to Your EKS Cluster
 ### Prerequisites
 - Make sure your Kubernetes version is 1.19 or higher 
   - Run `$ kubectl version | grep "Server Version"` to check
@@ -40,7 +40,7 @@ in the configuration file. The diagram below shows how the Collector CR request 
 - Make sure the following TLS certificate requirement is satisfied  
 
 **TLS Certificate Requirement**  
-As mentioned above, the ADOT Operator uses admission webhooks to mutate and validate the Collector CR requests. In Kubernetes,
+As mentioned above, the OpenTelemetry Operator uses admission webhooks to mutate and validate the Collector CR requests. In Kubernetes,
 in order for the API server to communicate with the webhook component, the webhook requires a TLS certificate that the API server
 is configured to trust. There are three ways for you to generate the required TLS certificate.
 
@@ -62,7 +62,7 @@ is configured to trust. There are three ways for you to generate the required TL
         -n opentelemetry-operator-system
     ```
 
-### Step 1: Install the ADOT Operator
+### Step 1: Install the OpenTelemetry Operator
 First, add Helm repository:
 ```console
 $ helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
@@ -85,7 +85,7 @@ $ helm install \
     --set createNamespace=false
 ```
 
-Check your ADOT Operator application by running:
+Check your OpenTelemetry Operator application by running:
 
 ```console
 $ helm ls -A
@@ -93,10 +93,10 @@ $ kubectl get all -n opentelemetry-operator-system
 ```
 
 ### Step 2: Install ADOT Collector as Kubernetes Custom Resource to Your EKS Cluster
-Once the ADOT Operator deployment is ready, you can deploy the ADOT Collector in your EKS cluster. Managed by the Operator, the Collector
+Once the OpenTelemetry Operator deployment is ready, you can deploy the ADOT Collector in your EKS cluster. Managed by the Operator, the Collector
 can be deployed as one of four modes: Deployment, DaemonSet, StatefulSet and Sidecar. The default mode is Deployment. We will introduce the
 benefits and use cases of each mode and give an example configuration of the Collector in the last section. The diagram below shows the
-end-to-end workflow of ADOT Operator.
+end-to-end workflow of the OpenTelemetry Operator.
 
 <img src={operatorImg2} alt="Diagram" style="margin: 30px 0;" />
 
@@ -232,16 +232,16 @@ $ kubectl get pod -w -n cert-manager
 
 Make sure the pods are all running.
 
-### Install ADOT Operator
+### Install the OpenTelemetry Operator
 
-Run the following commands to install the ADOT Operator:
+Run the following commands to install the OpenTelemetry Operator:
 ```console
 $ helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
 $ helm repo update
 $ helm install my-operator open-telemetry/opentelemetry-operator
 ```
 
-Check if your ADOT Operator is ready:
+Check if your OpenTelemetry Operator is ready:
 ```console
 $ kubectl get pod -w -n opentelemetry-operator-system
 ```

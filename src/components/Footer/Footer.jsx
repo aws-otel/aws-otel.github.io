@@ -24,7 +24,6 @@ function Footer({ ...props }) {
           <div className={classes.verticalSpacing}> <Link to="/contributing" className={classes.link}> Contributing </Link></div>
           <div className={classes.verticalSpacing}> <Link to="/contributors" className={classes.link}> Contributors </Link></div>
           <div className={classes.verticalSpacing}> <Link to="/code-of-conduct" className={classes.link}> Code of Conduct </Link></div>
-          <div className={classes.verticalSpacing}> <Link to="https://gitter.im/aws-otel-distro/community" className={classes.link} target="_blank" rel="noopener noreferrer"> Gitter </Link></div>
           <div className={classes.verticalSpacing}> <Link to="/blog" className={classes.link}> Blog Posts </Link></div>
           <div className={classes.verticalSpacing}> <Link to="https://aws.amazon.com/otel/faqs/" className={classes.link} target="_blank" rel="noopener noreferrer"> FAQ </Link></div>
           <div className={classes.verticalSpacing}> <Link to="/resources" className={classes.link} target="_blank" rel="noopener noreferrer"> Resources </Link></div>
@@ -39,7 +38,6 @@ function Footer({ ...props }) {
           <h3>Stay Connected</h3>
           <div className={classes.verticalSpacing}> <Link to="https://twitter.com/awsopen" className={classes.link} target="_blank" rel="noopener noreferrer"> Twitter </Link></div>
           <div className={classes.verticalSpacing}> <Link to="https://github.com/aws-observability/aws-otel-community" className={classes.link} target="_blank" rel="noopener noreferrer"> GitHub Community </Link></div>
-          <div className={classes.verticalSpacing}> <Link to="https://gitter.im/aws-otel-distro/community" className={classes.link} target="_blank" rel="noopener noreferrer"> Gitter </Link></div>
           {/*<div> <Link to="https://groups.io/g/aws-otel-distro-announce" className={classes.link} target="_blank"> Groups.io </Link></div>*/}
         </div>
         <div className={classes.col}>

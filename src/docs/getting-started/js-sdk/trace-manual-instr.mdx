@@ -63,8 +63,10 @@ npm install --save \
 In order to send trace data to AWS X-Ray via the ADOT Collector, you must configure the X-Ray ID generator, X-Ray propagator, and collector gRPC exporter on the global tracer provider.
 
 ```javascript lineNumbers=true 
-const { BatchSpanProcessor } = require("@opentelemetry/tracing");
-const { NodeTracerProvider } = require("@opentelemetry/node");
+const { BatchSpanProcessor } = require("@opentelemetry/sdk-trace-base");
+const { NodeTracerProvider } = require("@opentelemetry/sdk-trace-node");
+const { Resource } = require('@opentelemetry/resources');
+const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventions');
 const { OTLPTraceExporter } = require("@opentelemetry/exporter-trace-otlp-grpc");
 const { AWSXRayPropagator } = require("@opentelemetry/propagator-aws-xray");
 const { AWSXRayIdGenerator } = require("@opentelemetry/id-generator-aws-xray");
@@ -77,17 +79,18 @@ module.exports = (serviceName) => {
     // any instrumentations can be declared here
     instrumentations: [],
     // any resources can be declared here
-    resources: {},
+    resource: Resource.default().merge(new Resource({
+        [SemanticResourceAttributes.SERVICE_NAME]: serviceName
+    }))
   };
 
   const tracerProvider = new NodeTracerProvider(tracerConfig);
 
   // add OTLP exporter
   const otlpExporter = new OTLPTraceExporter({
-    serviceName: serviceName,
     // port configured in the Collector config, defaults to 4317
     url: "localhost:4317"
-    // credentials only required if tls setup on Collector instance
+    // credentials only required if mTLS is configured on Collector instance
     credentials: grpc.credentials.createSsl(
       fs.readFileSync("./ca.crt"),
       fs.readFileSync("./client.key"),
