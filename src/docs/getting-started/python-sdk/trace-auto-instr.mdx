@@ -55,7 +55,7 @@ For example, if you have `boto3` installed, this command will automatically inst
 
 Auto-instrumentation uses the `opentelemetry-instrument` executable functions as a wrapper to automatically initialize the `Instrumentors` installed by the `opentelemetry-bootstrap` command and start the provided application.
 
-The AWS X-Ray Id Generator can be configured using an environment variable as `OTEL_PYTHON_ID_GENERATOR=aws_xray`, and the AWS X-Ray Propagator can be configured using `OTEL_PROPAGATORS=xray`.
+The AWS X-Ray Id Generator can be configured using an environment variable as `OTEL_PYTHON_ID_GENERATOR=xray`, and the AWS X-Ray Propagator can be configured using `OTEL_PROPAGATORS=xray`.
 
 Currently, it is not possible to configure the Resource Detectors using auto-instrumentation.
 
@@ -77,7 +77,7 @@ Environment variables are the primary way in which the OpenTelemetry SDK for Pyt
 * `OTEL_EXPORTER_OTLP_ENDPOINT`
 * `OTEL_EXPORTER_OTLP_CERTIFICATE`
 
-The `IdGenerator` can be configured to use the AWS X-Ray Id Generator with an environment variable as `OTEL_PYTHON_ID_GENERATOR=aws_xray` to ensure spans use an Id format compatible with the AWS X-Ray backend.
+The `IdGenerator` can be configured to use the AWS X-Ray Id Generator with an environment variable as `OTEL_PYTHON_ID_GENERATOR=xray` to ensure spans use an Id format compatible with the AWS X-Ray backend.
 
 The global propagator can be configured to use the AWS X-Ray Propagator with an environment variable as `OTEL_PROPAGATORS=xray` to allow the span context to propagate downstream when the application makes calls to external services.
 
