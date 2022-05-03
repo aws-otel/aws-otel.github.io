@@ -13,6 +13,15 @@ blogs:
       "This blog post details how to leverage Amazon EKS add-ons to install and manage ADOT within your Amazon EKS cluster."
     link: "https://aws.amazon.com/blogs/containers/metrics-and-traces-collection-using-amazon-eks-add-ons-for-aws-distro-for-opentelemetry/"
 
+  - title: "Adding ARM64 support to AWS Distro for OpenTelemetry (ADOT) Docker containers"
+    author: "Seth Levine and ADOT team"
+    date: "12-April-2022"
+    body:
+      "AWS Distro for OpenTelemetry (ADOT) arm64 images is now available.
+      You can download the latest AWS Distro for OpenTelemetry Collector image
+      from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery."
+    link: "/docs/arm64Images"
+
   - title: "Configuring Amazon ECS console to collect metrics and traces using AWS Distro for OpenTelemetry"
     author: "Pavan Sai Vasireddy and Richard To"
     date: "12-Mar-2022"
