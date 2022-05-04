@@ -300,10 +300,10 @@ Honeycomb without the need for additional plugins or non-OTLP exporters.
 
 ### Requirements
 
-Before you can use the AWS Distro for OpenTelemetry with the Honeycomb end-point, you need:
+Before you can use the AWS Distro for OpenTelemetry with the Honeycomb endpoint, you need:
 
 * You will need a Honeycomb account, if you don’t currently have one you can sign up [here](https://ui.honeycomb.io/signup).
-* In your Honeycomb account, choose a name for your dataset and use your API key.
+* An API key for the Honeycomb Environment you're sending data to
 
 <SubSectionSeparator />
 
@@ -312,11 +312,14 @@ Before you can use the AWS Distro for OpenTelemetry with the Honeycomb end-point
 The configuration will take place in the OTLP exporter in the Collector config YAML file.
 
 * Set the OTLP endpoint to [api.honeycomb.io:443](http://api.honeycomb.io:443/)
-* Add your Honeycomb access token as an OTLP header (you can find your API token [here](https://ui.honeycomb.io/account))
+* Add your Honeycomb API key as an OTLP header (you can find your API key under Environment settings)
+* The name of a dataset for metrics, if you're sending them
 
 <SubSectionSeparator />
 
 ### Example
+
+To send trace data, all you need is the API key for your Environment:
 
 ```yaml lineNumbers=true highlight={7,9}
 # Honeycomb Collector configuration
@@ -324,11 +327,25 @@ exporters:
   otlp:
     endpoint: api.honeycomb.io:443
     headers:
-      # You can find your Honeycomb authentication token at https://ui.honeycomb.io/account
+      # You can find your Honeycomb API key under Environment settings
       "x-honeycomb-team":"<YOUR_API_KEY>"
-      # You can use any string for your dataset name, it will be created if it doesn't exist.
-      "x-honeycomb-dataset": "<YOUR_DATASET_NAME>"
 ```
+
+
+To send metrics data, you also need to specify the dataset for metrics data:
+
+```yaml lineNumbers=true highlight={7,9}
+# Honeycomb Collector configuration
+exporters:
+  otlp:
+    endpoint: api.honeycomb.io:443
+    headers:
+      # You can find your Honeycomb API key under Environment settings
+      "x-honeycomb-team":"<YOUR_API_KEY>"
+      "x-honeycomb-dataset": "<YOUR_METRICS_DATASET>"
+```
+
+See [Honeycomb's OpenTelemetry Collector](https://docs.honeycomb.io/getting-data-in/otel-collector/) docs to learn about additional configuration options.
 
 <SubSectionSeparator />
 
