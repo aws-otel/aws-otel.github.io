@@ -11,8 +11,8 @@ path: '/docs/getting-started/lambda'
 
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
 
-The AWS Distro for OpenTelemetry now supports AWS managed Lambda layers.
-     AWS managed Lambda layers for ADOT provides a plug-and-play user experience by automatically
+The AWS Distro for OpenTelemetry now supports AWS Distro for OpenTelemetry Lambda layer.
+    ADOT Lambda layers provides a plug-and-play user experience by automatically
     instrumenting a Lambda function, by packaging OpenTelemetry together with an out-of-the-box configuration
     for AWS Lambda and AWS X-Ray in an easy to setup layer. Users can enable and disable OpenTelemetry
     for their Lambda function without changing code.
@@ -78,7 +78,7 @@ You can set this via the Lambda console, or via the AWS CLI.
 aws lambda update-function-configuration --function-name Function --environment Variables={OPENTELEMETRY_COLLECTOR_CONFIG_FILE=/opt/collector.yaml}
 ```
 
-You can configure environment variables via CloudFormation template as well:
+You can configure environment variables via **CloudFormation** template as well:
 ```yaml
 Function:
   Type: AWS::Serverless::Function
@@ -89,5 +89,6 @@ Function:
         OPENTELEMETRY_COLLECTOR_CONFIG_FILE: /var/task/collector.yaml
 ```
 
-For more information about ADOT Collector configuration,
-such as adding ca/cert/key files, see the Github [README.md](https://github.com/aws-observability/aws-otel-lambda/blob/main/README.md).
+For more information about ADOT Collector configuration, such as adding ca/cert/key files, see the Github [README.md](https://github.com/aws-observability/aws-otel-lambda/blob/main/README.md).
+
+Here is a [blogpost](https://aws.amazon.com/blogs/opensource/auto-instrumenting-a-python-application-with-an-aws-distro-for-opentelemetry-lambda-layer/) which provides more context about the setup with an example for adding the AWS Distro for OpenTelemetry Lambda layer to the Lambda function.
