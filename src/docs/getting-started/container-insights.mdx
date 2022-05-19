@@ -21,7 +21,7 @@ CloudWatch Container Insights uses the [CloudWatch agent](https://github.com/aws
 both [infrastructure metrics](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights.html)
 and [Prometheus metrics](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights-Prometheus.html).
 To migrate existing customers to use AWS Distro for OpenTelemetry,
-we have enhanced the [ADOT Collector](https://github.com/aws-observability/aws-otel-collector) to support the same CloudWatch Container Insights experience.
+we have enhanced the [ADOT Collector](https://github.com/aws-observability/aws-otel-collector) to support the same CloudWatch Container Insights experience. Also note that ADOT is generally available (GA) for metrics.
 
 ## Collecting infrastructure metrics
 
@@ -75,4 +75,3 @@ all clusters are saved in one metric namespace, with different dimension values 
 |-----------------------|-----------------------------------------------|------------------------------------|
 | <Link to="/docs/getting-started/container-insights/eks-prometheus">EKS</Link> | `/aws/containerinsights/eks-1/prometheus`     | `ContainerInsights/Prometheus`     |
 | <Link to="/docs/getting-started/container-insights/ecs-prometheus">ECS</Link> | `/aws/ecs/containerinsights/ecs-1/prometheus` | `ECS/ContainerInsights/Prometheus` |
-
