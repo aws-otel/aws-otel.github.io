@@ -4,6 +4,13 @@ description:
 path: /announcements
 
 announcements:
+  - title: "Metric support now available in AWS Distro for OpenTelemetry"
+    date: "19-May-2022"
+    blurb:
+      "Today, we are announcing the general availability of AWS Distro for OpenTelemetry (ADOT) for metrics, a secure,
+       production-ready, AWS-supported distribution of the OpenTelemetry project."
+    link: "https://aws.amazon.com/about-aws/whats-new/2022/05/aws-distro-opentelemetry-metric-support/"
+    
   - title: "Announcing Amazon CloudWatch Container Insights for AWS Fargate workloads on Amazon EKS via AWS Distro for OpenTelemetry"
     date: "17-Feb-2022"
     blurb:
