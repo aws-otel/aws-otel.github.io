@@ -6,6 +6,14 @@ description:
 path: /blog
 
 blogs:
+  - title: "AWS Distro for OpenTelemetry 0.18.0 is now available"
+    author: "Bryan Aguilar"
+    date: "20-May-2022"
+    body:
+      "AWS Distro for OpenTelemetry v0.18.0 is now available. You can download the latest AWS Distro for OpenTelemetry Collector image
+      from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-collector-v0.18.0"
+    
   - title: "Metrics and traces collection using Amazon EKS add-ons for AWS Distro for OpenTelemetry"
     author: "Viji Sarathy, Michael Hauss, and Eric Hsueh"
     date: "22-Apr-2022"
