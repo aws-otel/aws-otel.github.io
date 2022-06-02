@@ -1,0 +1,88 @@
+---
+title: 'Adding the Sigv4 Extension to the AWS Distro for OpenTelemetry Collector'
+description:
+    This blog post introduces the Sigv4 authentication extension, why it was added, how to use it, and how it affects Collector configuration. 
+
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+
+import erichsueh from "assets/img/blogs/erichsueh.jpeg"
+
+## Introduction
+
+AWS Distro for OpenTelemetry (ADOT) has added a new component, the [Sigv4 authentication extension](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/sigv4authextension), to the ADOT Collector in the most recent [v0.18.0 update](https://github.com/aws-observability/aws-otel-collector/releases/tag/v0.18.0). This post introduces the extension, why it was added, how to use it, and how this affects Collector configuration.
+
+## Background
+
+The Sigv4 authentication extension provides Sigv4 authentication for making requests to AWS services. It adds authentication information to AWS API requests sent by HTTP. This authentication information is added by signing these requests using your AWS credentials. For more information on the Sigv4 process, see the [Signature Version 4 signing process](https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html) documentation. For more information on AWS credentials, see the [Understanding and getting your AWS credentials](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html) documentation.
+
+Alongside the Sigv4 authentication extension, the [Prometheus Remote Write (PRW) exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/prometheusremotewriteexporter) has also been added to the ADOT Collector. The Sigv4 authentication extension is used in the ADOT Collector as a way for exporters, such as the PRW exporter, to sign HTTP requests with Sigv4. This allows the PRW exporter the ability to export to Amazon Managed Prometheus (AMP). As a result, the [AWS PRW exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/awsprometheusremotewriteexporter) component within the ADOT Collector will be deprecated, and eventually removed. The following section outlines the migration steps needed to switch from the AWS PRW exporter to the PRW exporter with the Sigv4 authentication extension.
+
+## Migration Steps With Example
+
+To migrate a Collector configuration that uses the AWS PRW exporter over to use the Sigv4 authentication extension and PRW exporter, there are three steps that need to be completed. First, we must add the extension to the configuration. Next, we rename the previously used `awsprometheusremotewrite` exporter to be the `prometheusremotewrite` exporter. We must also remove the `aws_auth` field, and add in the `auth` field, with a subfield `authenticator` that has a value `sigv4auth`. Lastly, under `service`, we must again rename the exporter used from `awsprometheusremotewrite` to be `prometheusremotewrite`. We also need to add in the `extensions` field with a value `sigv4auth`.
+
+Provided below are two configurations. The first configuration uses the AWS PRW exporter, while the second uses the PRW exporter with the Sigv4 authentication extension. 
+
+<SectionSeparator />
+
+AWS PRW exporter:
+
+```yaml
+receivers:
+  prometheus:
+    config:
+      ...
+ 
+exporters:
+  awsprometheusremotewrite:
+    endpoint: "https://aps-workspaces.us-west-2.amazonaws.com/workspaces/ws-XXX/api/v1/remote_write"
+    aws_auth:
+      region: "us-west-2"
+      
+service:
+  pipelines:
+    metrics:
+      receivers: [prometheus]
+      exporters: [awsprometheusremotewrite]
+```
+
+<SectionSeparator />
+
+PRW exporter with the Sigv4 authentication extension:
+
+```yaml
+extensions:
+  sigv4auth:
+    region: "us-west-2"
+
+receivers:
+  prometheus:
+    config:
+      ...
+ 
+exporters:
+  prometheusremotewrite:
+    endpoint: "https://aps-workspaces.us-west-2.amazonaws.com/workspaces/ws-XXX/api/v1/remote_write"
+    auth:
+      authenticator: sigv4auth
+
+service:
+  extensions: [sigv4auth]
+  pipelines:
+    metrics:
+      receivers: [prometheus]
+      exporters: [prometheusremotewrite]
+```
+
+## Conclusion
+
+In this post, we’ve introduced the Sigv4 authentication extension that was introduced in v0.18.0 of the ADOT Collector, why it was added, how to use it, and how to migrate previous Collector configurations that use the AWS PRW exporter to use the PRW exporter and the extension instead. 
+
+
+## About the Author
+
+<img src={erichsueh} alt="Diagram" style="width: 200px;" />
+
+Eric Hsueh is a Software Development Engineer at Amazon Web Services. His educational background is in Computer Science, with a bachelor’s degree from the University of California, Irvine. He is interested in Observability and Container Services. Outside of work he has interests in basketball, mixed martial arts, and fashion.
