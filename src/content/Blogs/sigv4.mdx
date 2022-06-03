@@ -1,5 +1,5 @@
 ---
-title: 'Adding the Sigv4 Extension to the AWS Distro for OpenTelemetry Collector'
+title: 'Adding the Sigv4 Extension to the AWS Distro for OpenTelemetry Collector, and how to Migrate Old Collector Configurations to use it'
 description:
     This blog post introduces the Sigv4 authentication extension, why it was added, how to use it, and how it affects Collector configuration. 
 
@@ -11,7 +11,7 @@ import erichsueh from "assets/img/blogs/erichsueh.jpeg"
 
 ## Introduction
 
-AWS Distro for OpenTelemetry (ADOT) has added a new component, the [Sigv4 authentication extension](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/sigv4authextension), to the ADOT Collector in the most recent [v0.18.0 update](https://github.com/aws-observability/aws-otel-collector/releases/tag/v0.18.0). This post introduces the extension, why it was added, how to use it, and how this affects Collector configuration.
+AWS Distro for OpenTelemetry (ADOT) has added a new component, the [Sigv4 authentication extension](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/sigv4authextension), to the ADOT Collector in the most recent [v0.18.0 update](https://github.com/aws-observability/aws-otel-collector/releases/tag/v0.18.0). This post introduces the extension, what it is used for, how to use it, and how this affects Collector configuration.
 
 ## Background
 

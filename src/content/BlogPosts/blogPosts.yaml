@@ -6,7 +6,7 @@ description:
 path: /blog
 
 blogs:
-  - title: "Adding the Sigv4 Extension to the AWS Distro for OpenTelemetry Collector"
+  - title: "Adding the Sigv4 Extension to the AWS Distro for OpenTelemetry Collector, and how to Migrate Old Collector Configurations to use it"
     author: "Eric Hsueh"
     date: "2-June-2022"
     body:
