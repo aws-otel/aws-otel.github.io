@@ -8,12 +8,20 @@ path: /blog
 blogs:
   - title: "Adding the Sigv4 Extension to the AWS Distro for OpenTelemetry Collector, and how to Migrate Old Collector Configurations to use it"
     author: "Eric Hsueh"
-    date: "2-June-2022"
+    date: "06-June-2022"
     body:
       "This blog post introduces the Sigv4 authentication extension, why it was added, how to use it, and how it affects Collector configuration."
     link: "/docs/sigv4"
 
-  - title: "AWS Distro for OpenTelemetry Lambda Layers are now available with ADOT Collector v1.18.0"
+  - title: "AWS Distro for OpenTelemetry v0.17.1 is now available"
+    author: "Kausik Amancherla"
+    date: "03-June-2022"
+    body:
+      "AWS Distro for OpenTelemetry v0.17.1 is now available. You can download the latest AWS Distro for OpenTelemetry Collector image
+      from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-collector-v0.17.1"
+
+  - title: "AWS Distro for OpenTelemetry Lambda Layers are now available with ADOT Collector v0.18.0"
     author: "Pavan Sai Vasireddy"
     date: "24-May-2022"
     body:
