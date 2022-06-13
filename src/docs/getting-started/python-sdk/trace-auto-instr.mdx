@@ -110,3 +110,11 @@ Because there can only be one global `TracerProvider`, manual instrumentation sh
 ## Sample Application
 
 See a [sample Flask App using OpenTelemetry Python SDK Automatic Instrumentation](https://github.com/aws-observability/aws-otel-python/tree/main/integration-test-apps/auto-instrumentation/flask).
+
+**NOTE:** Python Web Frameworks like Flask and Django normally include a "reloader" when running in `debug` mode so that you can apply changes during development. This reloader will break auto-instrumentation because the app is restarted without giving OpenTelemetry a chance to wrap the instrumented libraries. When using `debug` mode, set the `use_reloader=False` as is done in the referenced sample app:
+
+```python
+# See more: https://github.com/open-telemetry/opentelemetry-python-contrib/issues/546
+if __name__ == "__main__":
+    app.run(port=8082, debug=True, use_reloader=False)
+```
