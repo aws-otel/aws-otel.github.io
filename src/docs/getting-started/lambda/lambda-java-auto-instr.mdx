@@ -115,7 +115,7 @@ To disable OpenTelemetry for your Lambda function, remove the Lambda layer, remo
 The ADOT Java Auto-instrumentation Agent layer combines both OpenTelemetry Auto Agent and the ADOT Collector.
 The configuration of the ADOT Collector follows the OpenTelemetry standard.
 
-By default, the ADOT Lambda layer uses the [config.yaml](https://github.com/aws-observability/aws-otel-lambda/blob/main/adot/collector/config.yaml), which exports telemetry data to AWS X-Ray. To customize the Collector config, see the [main Lambda section for custom configuration instructions](/docs/getting-started/lambda).
+By default, the ADOT Lambda layer uses the [config.yaml](https://github.com/aws-observability/aws-otel-lambda/blob/main/adot/collector/config.yaml), which exports telemetry data to AWS X-Ray. To customize the Collector config, see the [main Lambda section for custom configuration instructions](/docs/getting-started/lambda#custom-configuration-for-the-adot-collector-on-lambda).
 
 ## Exporting Metrics to AMP
 
@@ -148,7 +148,7 @@ service:
       receivers: [otlp]
       exporters: [logging, awsprometheusremotewrite]
 ```
-2. Upload this collector config as the OPENTELEMETRY_CONFIG_FILE environment variable to configure the Lambda Layer to export metrics to your workspace, following these [instructions](https://aws-otel.github.io/docs/getting-started/lambda#custom-configuration-for-the-adot-collector-on-lambda).
+2. Upload this collector config as the OPENTELEMETRY_CONFIG_FILE environment variable to configure the Lambda Layer to export metrics to your workspace, following these [instructions](/docs/getting-started/lambda#custom-configuration-for-the-adot-collector-on-lambda).
 
 Note: If enabling metrics, make sure your Lambda role has the required AWS Prometheus permissions. For more on permissions and policies required on AMP for AWS Lambda, see the [AWS Managed Service for Prometheus documentation](https://docs.aws.amazon.com/prometheus/latest/userguide/AMP-and-IAM.html#AMP-IAM-policies-built-in).
 
