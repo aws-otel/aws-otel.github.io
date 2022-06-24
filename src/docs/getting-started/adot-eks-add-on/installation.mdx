@@ -23,24 +23,7 @@ kubectl apply -f https://amazon-eks.s3.amazonaws.com/docs/addons-otel-permission
 aws eks create-addon --addon-name adot --cluster-name <your_cluster_name>
 ```
 
-Example Output (Note the  `"status:"` field is `"CREATING"`):
-```console
-{
-    "addon": {
-        "addonName": "adot",
-        "clusterName": "your_cluster_name",
-        "status": "CREATING",
-        "addonVersion": "v0.45.0-eksbuild.1",
-        "health": {
-            "issues": []
-        },
-        "addonArn": "arn:aws:eks:us-west-2:195181405982:addon/adot/adot/c0bfbc67-ae88-d472-53e4-e88c79f7be7c",
-        "createdAt": "2022-03-11T03:48:50.212000-08:00",
-        "modifiedAt": "2022-03-11T03:48:50.234000-08:00",
-        "tags": {}
-    }   
-}
-```
+The `status` field value will be `CREATING` until complete.
 
 `your_cluster_name` is the name of your cluster, you can find it by executing the command below, and a list of cluster names will appear:
 ```console
@@ -52,24 +35,7 @@ aws eks list-clusters --region <your_region>
 aws eks describe-addon --addon-name adot --cluster-name <your_cluster_name>
 ```
 
-Example Output (Note the `"status:"` field is now `"ACTIVE"` instead of `"CREATING"`):
-```console
-{
-    "addon": {
-        "addonName": "adot",
-        "clusterName": "your_cluster_name",
-        "status": "ACTIVE",
-        "addonVersion": "v0.45.0-eksbuild.1",
-        "health": {
-            "issues": []
-        },
-        "addonArn": "arn:aws:eks:us-west-2:195181405982:addon/adot/adot/9ebe61e2-824d-14c2-408e-c491a7cc5fb8",
-        "createdAt": "2021-10-27T15:00:41.536000-07:00",
-        "modifiedAt": "2021-10-27T15:01:24.104000-07:00",
-        "tags": {}
-    }
-}
-```
+You'll see `"status": "ACTIVE"` when creation is complete.
 
 ### Deploy the ADOT Operator to your Amazon EKS cluster through the EKS console
 
