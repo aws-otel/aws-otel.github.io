@@ -43,7 +43,7 @@
     "node-fetch": "^2.6.7",
     "node-sass": "^7.0.0",
     "nouislider": "^13.1.1",
-    "npm": "^8.0.0",
+    "npm": "^8.11.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-datetime": "^2.16.3",
