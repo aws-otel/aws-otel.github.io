@@ -42,6 +42,6 @@ sudo dpkg -i -E ./aws-otel-collector.deb
     ```
 5. Test the data with the running AWSOTelCollector on EC2. you can run the following command on EC2 host. (Docker app has to be pre-installed)
 ```
-docker run --rm -it -e "otlp_endpoint=172.17.0.1:55680" -e "otlp_instance_id=test_insance" mxiamxia/aws-otel-metric-generator:latest
+docker run --rm -it -e "otlp_endpoint=172.17.0.1:4317" -e "otlp_instance_id=test_insance" mxiamxia/aws-otel-metric-generator:latest
 ```
 
