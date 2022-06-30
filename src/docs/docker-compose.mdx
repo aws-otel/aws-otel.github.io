@@ -17,14 +17,14 @@ services:
     ports:
       - "1777:1777"   # pprof extension
       - "55679:55679" # zpages extension
-      - "55680:55680" # OTLP receiver
+      - "4317:4317" # OTLP receiver
       - "13133"       # health_check
 
   # Metric and Trace Sample Data Generator
   ot-metric-emitter:
     image: josephwy/integ-test-emitter:0.9.1
     environment:
-      - OTEL_EXPORTER_OTLP_ENDPOINT=aws-ot-collector:55680
+      - OTEL_EXPORTER_OTLP_ENDPOINT=aws-ot-collector:4317
       - OTEL_RESOURCE_ATTRIBUTES=service.namespace=AOCDockerDemo,service.name=AOCDockerDemoService
       - S3_REGION=us-west-2
     depends_on:

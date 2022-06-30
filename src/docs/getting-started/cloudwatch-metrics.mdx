@@ -48,9 +48,9 @@ receivers:
   otlp:
     protocols:
       grpc:
-        endpoint: localhost:55680
+        endpoint: localhost:4317
       http:
-        endpoint: localhost:55681
+        endpoint: localhost:4318
 processors:
   batch:
     timeout: 60s

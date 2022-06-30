@@ -116,9 +116,9 @@ receivers:
   otlp:
     protocols:
       grpc:
-        endpoint: localhost:55680
+        endpoint: localhost:4317
       http:
-        endpoint: localhost:55681
+        endpoint: localhost:4318
 exporters:
   otlphttp:
     endpoint: "https://pdx-sls-agent-api.saas.appdynamics.com"
@@ -265,7 +265,7 @@ tempo:
     # Configure opencensus support. Spans can be sent over port 55678
     # by default.
     opencensus:
-    # Configure otlp support. Spans can be sent to port 55680 by
+    # Configure otlp support. Spans can be sent to port 4317 by
     # default.
     otlp:
       protocols:
