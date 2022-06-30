@@ -11,10 +11,7 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-name: Dependabot
-
 version: 2
-
 updates:
   - package-ecosystem: "npm"
     directory: '/'
