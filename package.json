@@ -22,7 +22,7 @@
     "@rocketseat/gatsby-theme-docs": "^2.2.3",
     "assets": "^3.0.1",
     "classnames": "^2.2.6",
-    "core-js": "^3.3.0",
+    "core-js": "^3.23.3",
     "gatsby": "^3.0.0",
     "gatsby-plugin-canonical-urls": "^3.0.0",
     "gatsby-plugin-google-analytics": "^3.0.0",
