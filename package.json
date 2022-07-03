@@ -36,7 +36,7 @@
     "gatsby-plugin-sass": "4.0.0",
     "gatsby-plugin-sitemap": "^3.0.0",
     "gatsby-source-filesystem": "^3.0.0",
-    "gatsby-transformer-remark": "^3.0.0",
+    "gatsby-transformer-remark": "^4.11.0",
     "gatsby-transformer-yaml": "^3.0.0",
     "history": "^4.7.2",
     "install": "^0.13.0",
