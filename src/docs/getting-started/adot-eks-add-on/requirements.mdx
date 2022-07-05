@@ -29,11 +29,11 @@ aws eks update-kubeconfig --name cluster_name --region YOUR_AWS_REGION
 kubectl apply -f https://amazon-eks.s3.amazonaws.com/docs/addons-otel-permissions.yaml
 ```
 
-* Meet the [TLS certificate](https://cert-manager.io/docs/)requirement as described in the following section.  *The ADOT Operator is compatible with `cert-manager` versions of less than 1.6.0*. Do not use version 1.6.0.
+* Meet the [TLS certificate](https://cert-manager.io/docs/) requirement as described in the following section. We recommend using the latest `cert-manager` version.
 
 
 ### TLS Certificate Requirement
-The ADOT Operator uses admission [webhooks](https://kubernetes.io/docs/reference/access-authn-authz/webhook/) to mutate and validate the Collector Custom Resource (CR) requests. In Kubernetes, the webhook requires a TLS certificate that the API server is configured to trust. There are multiple ways for you to generate the required TLS certificate, but the default method is to install the [cert-manager](https://cert-manager.io/docs/) manually with a version of *less than 1.6.0* (1.6.0 NOT supported).The cert-manager will generate a self-signed certificate. See [cert-manager installation](https://cert-manager.io/docs/installation/) for more details.
+The ADOT Operator uses admission [webhooks](https://kubernetes.io/docs/reference/access-authn-authz/webhook/) to mutate and validate the Collector Custom Resource (CR) requests. In Kubernetes, the webhook requires a TLS certificate that the API server is configured to trust. There are multiple ways for you to generate the required TLS certificate, but the default method is to install the latest version of the  [cert-manager](https://cert-manager.io/docs/) manually.The cert-manager will generate a self-signed certificate. See [cert-manager installation](https://cert-manager.io/docs/installation/) for more details.
 
 To learn more about certificate management, please read the **TLS certificate-related issues** section of [this](https://aws.amazon.com/blogs/opensource/building-a-helm-chart-for-deploying-the-opentelemetry-operator/) blog post. This post provides more information regarding not just the cert-manager, but the ADOT Operator as well.
 
@@ -41,7 +41,7 @@ To learn more about certificate management, please read the **TLS certificate-re
 
 1. Install cert-manager with the command:
 ```console
-kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.5.0/cert-manager.yaml
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.8.2/cert-manager.yaml
 ```
 
 2. Check that cert-manager is ready with the following command:
