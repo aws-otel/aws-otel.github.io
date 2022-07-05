@@ -33,7 +33,7 @@ kubectl apply -f https://amazon-eks.s3.amazonaws.com/docs/addons-otel-permission
 
 
 ### TLS Certificate Requirement
-The ADOT Operator uses admission [webhooks](https://kubernetes.io/docs/reference/access-authn-authz/webhook/) to mutate and validate the Collector Custom Resource (CR) requests. In Kubernetes, the webhook requires a TLS certificate that the API server is configured to trust. There are multiple ways for you to generate the required TLS certificate, but the default method is to install the latest version of the  [cert-manager](https://cert-manager.io/docs/) manually.The cert-manager will generate a self-signed certificate. See [cert-manager installation](https://cert-manager.io/docs/installation/) for more details.
+The ADOT Operator uses admission [webhooks](https://kubernetes.io/docs/reference/access-authn-authz/webhook/) to mutate and validate the Collector Custom Resource (CR) requests. In Kubernetes, the webhook requires a TLS certificate that the API server is configured to trust. There are multiple ways for you to generate the required TLS certificate, but the default method is to install the latest version of the [cert-manager](https://cert-manager.io/docs/) manually.The cert-manager will generate a self-signed certificate. See [cert-manager installation](https://cert-manager.io/docs/installation/) for more details.
 
 To learn more about certificate management, please read the **TLS certificate-related issues** section of [this](https://aws.amazon.com/blogs/opensource/building-a-helm-chart-for-deploying-the-opentelemetry-operator/) blog post. This post provides more information regarding not just the cert-manager, but the ADOT Operator as well.
 
