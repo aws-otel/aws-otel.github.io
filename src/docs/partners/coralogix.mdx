@@ -1,0 +1,146 @@
+---
+title: 'Coralogix Exporter'
+description: Configure the AWS Distro for OpenTelemetry Collector to send metrics, traces and logs to Coralogix
+path: '/docs/partners/coralogix'
+---
+
+## Overview
+
+Coralogix provides monitoring and insights into infrastructure and application performance across your entire stack. The AWS Distro for Open Telemetry includes the [Coralogix exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/master/exporter/coralogixexporter), which takes OpenTelemetry data (metrics, traces and logs) collected by the ADOT Collector and forwards it on to Coralogix. From there, you can use Coralogix tools and dashboards to analyze and solve performance problems in your distributed apps.
+
+## Prerequisites
+
+1. [Download the ADOT Collector](https://github.com/aws-observability/aws-otel-collector/releases).
+2. [Deploy the ADOT Collector](https://aws-otel.github.io/docs/getting-started/collector).
+3. [Get a copy of your Coralogix Private key and endpoints](https://coralogix.com/docs/guide-first-steps-coralogix/). If you don't have a Coralogix account, sign up for a [Coralogix Free Account](https://signup.coralogix.com/).
+
+## Configuring the exporter
+
+Configure the ADOT collector to send metrics, traces and logs to Coralogix by adding a `coralogix` exporter to your [OpenTelemetry configuration YAML file](https://opentelemetry.io/docs/collector/configuration/) along with your Coralogix Private key and your endpoint:
+
+```yaml lineNumbers=true
+exporters:
+  coralogix:
+    # The Coralogix traces ingress endpoint
+    traces:
+      endpoint: "<coralogix-traces-endpoint>"
+    metrics:
+      endpoint: "<coralogix-metrics-endpoint>"
+    logs:
+      endpoint: "<coralogix-logs-endpoint>"
+
+    # Your Coralogix private key is sensitive
+    private_key: "xxx"
+
+    # Data emitted by this OpenTelemetry exporter should be tagged
+    # in Coralogix with the following application and subsystem names
+    application_name: "MyBusinessEnvironment"
+    subsystem_name: "MyBusinessSystem"
+
+```
+
+## Configuring the pipeline
+
+Finally, add a `coralogix` exporter pipeline to your `otel-collector-configuration.yml` file. This shows a `traces` pipeline:
+
+```yaml lineNumbers=true
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [coralogix]
+```
+
+## Example configurations
+
+Here is an example configuration for collecting trace data using the `otlp` receiver, a batch processor, the `coralogix` exporter with resource attributes and tags, and a trace pipeline configured with an `otlp` receiver, `batch` processor, and `coralogix` exporter:
+
+```yaml lineNumbers=true
+receivers:
+  otlp:
+
+processors:
+  batch: {}
+
+exporters:
+  coralogix:
+    # The Coralogix traces ingress endpoint
+    endpoint: "<coralogix-traces-endpoint>"
+    # Your Coralogix private key is sensitive
+    private_key: "xxx"
+
+    # Data emitted by this OpenTelemetry exporter should be tagged
+    # in Coralogix with the following application and subsystem names
+    application_name: "MyBusinessEnvironment"
+    subsystem_name: "MyBusinessSystem"
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [coralogix]
+```
+
+Here is an example configuration for collecting metrics data:
+
+```yaml lineNumbers=true
+receivers:
+  otlp:
+
+exporters:
+  coralogix:
+    # The Coralogix metrics endpoint
+    metrics:
+      endpoint: "<coralogix-metric-endpoint>"
+    # Your Coralogix private key is sensitive
+    private_key: "xxx"
+
+    # Data emitted by this OpenTelemetry exporter should be tagged
+    # in Coralogix with the following application and subsystem names
+    application_name: "MyBusinessEnvironment"
+    subsystem_name: "MyBusinessSystem"
+
+
+  pipelines:
+    metrics:
+      receivers: [otlp]
+      exporters: [coralogix]
+```
+
+Here is an example configuration for collecting logs data:
+
+```yaml lineNumbers=true
+receivers:
+  otlp:
+
+exporters:
+  coralogix:
+    # The Coralogix logs endpoint
+    logs:
+      endpoint: "<coralogix-logs-endpoint>"
+    # Your Coralogix private key is sensitive
+    private_key: "xxx"
+
+    # Data emitted by this OpenTelemetry exporter should be tagged
+    # in Coralogix with the following application and subsystem names
+    application_name: "MyBusinessEnvironment"
+    subsystem_name: "MyBusinessSystem"
+
+
+  pipelines:
+    logs:
+      receivers: [otlp]
+      exporters: [coralogix]
+```
+
+Supply the relative path to this configuration file when you start the collector by passing it in using the `--config=<path/to/configuration_file>` command line argument. For examples of supplying a configuration file, see the [AWS OpenTelemetry Collector documentation](https://aws-otel.github.io/docs/getting-started/collector) for your target platform.
+
+## Resources
+
+For additional information about the Coralogix exporter and environment specific onboarding instructions, visit the [Coralogix Getting Started](https://coralogix.com/docs/guide-first-steps-coralogix/) documentation or the [`open-telemetry` Github repository](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/coralogixexporter).
+
+## Support
+
+Need help with the Coralogx exporter? Book [Coralogix implementation session](https://calendly.com/info-coralogix/implementation).
