@@ -6,7 +6,37 @@ on:
       - main
 
 jobs:
+  smoke-test-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: enriikke/gatsby-gh-pages-action@v2
+        env:
+          GH_API_KEY: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          access-token: ${{ secrets.demo }}
+          deploy-branch: smoke-test
+  smoke-test-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Smoke Test Branch
+        uses: actions/checkout@v3
+        with:
+          path: smoke-test
+          ref: smoke-test
+      - name: Checkout Published Branch
+        uses: actions/checkout@v3
+        with:
+          path: published
+          ref: gh-pages
+      - name: Compare Branches
+        # find a valid metric to compare between catastrophic and small changes
+        run: |
+          diff -arq smoke-test published
+          
+
   build:
+    needs: smoke-test-verify
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
