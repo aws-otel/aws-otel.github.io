@@ -27,7 +27,7 @@ infoSection:
   middleHeading: Use Cases
   useCases:
     AWS Distro for OpenTelemetry automates the deep collection and direct exposure of correlated application and infrastructure
-    data needed for AWS monitoring and visualization services. Uses cases include sending metrics and traces to AWS and
+    data needed for AWS monitoring and visualization services. Use cases include sending metrics and traces to AWS and
     third-party Partner monitoring services, automate collection of traces, collect metadata on application resources as well as
     collect, analyze, and alarm on application metrics in CloudWatch.
 
