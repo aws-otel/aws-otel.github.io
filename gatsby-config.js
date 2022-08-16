@@ -33,6 +33,22 @@ module.exports = {
         useMockData: process.env.NO_GH_API_KEY,
       },
     },
+    {
+      resolve: require.resolve(`./src/plugins/websiteAnalyticsPlugin`),
+      options: {
+        // https://github.com/aws-observability/aws-rum-web/blob/main/docs/configuration.md
+        applicationId: "9948254b-cc33-4c70-869d-2fd6615a914c",
+        applicationVersion: "1.0.0",
+        applicationRegion: "us-west-2",
+        endpoint: "https://dataplane.rum.us-west-2.amazonaws.com",
+        sessionSampleRate: 1,
+        guestRoleArn: "arn:aws:iam::611364707713:role/SiteAnalyticsStack-AdotWebSiteAnalyticsAdotWebSite-1R6C5CIIDEABQ",
+        identityPoolId: "us-west-2:426eefd0-dee5-4e37-b281-618a29de085e",
+        telemetries: ["errors", "performance", "http"],
+        allowCookies: false,
+        enableXRay: false
+      },
+    },
     `gatsby-transformer-yaml`,
     {
       resolve: `gatsby-source-filesystem`,
