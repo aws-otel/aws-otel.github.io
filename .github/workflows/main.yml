@@ -29,7 +29,7 @@ jobs:
         with:
           path: smoke-test
           ref: smoke-test
-      - name: Calculate total lines in smoke-test branche
+      - name: Calculate total lines in smoke-test branch
         run: |
           export ST_LC=$(find ./smoke-test -type f -print0 | wc -l --files0=- | tail -n 1 | cut -d ' ' -f 1)
           echo $ST_LC
@@ -39,7 +39,7 @@ jobs:
         with:
           path: published
           ref: gh-pages
-      - name: Calculate total lines in published branche
+      - name: Calculate total lines in published branch
         run: |
           export PUB_LC=$(find ./published -type f -print0 | wc -l --files0=- | tail -n 1 | cut -d ' ' -f 1)
           echo $PUB_LC
