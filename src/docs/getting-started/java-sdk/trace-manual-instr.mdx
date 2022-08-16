@@ -35,7 +35,7 @@ Several components provide the functionality for using OpenTelemetry SDK with X-
 to align dependency versions for non-contrib components.
 
 ##### For Gradle:
-```java lineNumbers=true
+```kotlin lineNumbers=true
 dependencies {
     api(platform("io.opentelemetry:opentelemetry-bom:1.6.0"))
 
@@ -108,7 +108,7 @@ OpenTelemetrySdk.builder()
             ContextPropagators.create(
                 TextMapPropagator.composite(
                     W3CTraceContextPropagator.getInstance(), AwsXrayPropagator.getInstance())))
-        
+
         // This provides basic configuration of a TracerProvider which generates X-Ray compliant IDs
         .setTracerProvider(
             SdkTracerProvider.builder()
@@ -125,7 +125,7 @@ AWS resource detectors for enriching traces with AWS infrastructure information 
 artifact.
 
 ##### For Gradle:
-```java lineNumbers=true
+```kotlin lineNumbers=true
 dependencies {
     implementation("io.opentelemetry:opentelemetry-sdk-extension-aws")
 }
@@ -179,7 +179,7 @@ the `io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom-alpha` B
 library instrumentation. When using this, do not include `opentelemetry-bom`.
 
 ##### For Gradle:
-```java lineNumbers=true
+```kotlin lineNumbers=true
 dependencies {
     api(platform("io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom-alpha:1.6.0-alpha"))
 

@@ -45,6 +45,7 @@
     "node-fetch": "^3.2.6",
     "nouislider": "^13.1.1",
     "npm": "^8.13.2",
+    "prismjs": "^1.28.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-datetime": "^2.16.3",
