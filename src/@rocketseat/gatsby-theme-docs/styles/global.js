@@ -2,6 +2,18 @@ import React from 'react';
 import { Global, css } from '@emotion/react';
 import { useTheme } from '@emotion/react';
 
+// Add syntax highlight for languages not enabled by default
+// https://github.com/FormidableLabs/prism-react-renderer#faq
+import Prism from "prism-react-renderer/prism";
+
+(typeof global !== "undefined" ? global : window).Prism = Prism;
+
+require("prismjs/components/prism-kotlin");
+require("prismjs/components/prism-java");
+require("prismjs/components/prism-ruby");
+require("prismjs/components/prism-csharp")
+
+
 export default function GlobalStyle() {
   const theme = useTheme();
 
@@ -271,6 +283,22 @@ export default function GlobalStyle() {
 
         pre[class~='language-bash']::before {
           content: 'bash';
+        }
+
+        pre[class~='language-java']::before {
+          content: 'Java';
+        }
+
+        pre[class~='language-csharp']::before {
+          content: 'C#';
+        }
+
+        pre[class~='language-ruby']::before {
+          content: 'Ruby';
+        }
+
+        pre[class~='language-kotlin']::before {
+          content: 'Kotlin';
         }
 
         pre[class~='language-yaml']::before,
