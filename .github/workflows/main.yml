@@ -7,9 +7,10 @@ on:
   push:
     branches:
       - main
+    
 
 jobs:
-  smoke-test-publish:
+  publish-smoke-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -19,8 +20,9 @@ jobs:
         with:
           access-token: ${{ secrets.demo }}
           deploy-branch: smoke-test
-  smoke-test-verify:
+  verify-smoke-test:
     runs-on: ubuntu-latest
+    needs: [smoke-test-publish]
     steps:
       - name: Checkout Smoke Test Branch
         uses: actions/checkout@v3
@@ -29,7 +31,8 @@ jobs:
           ref: smoke-test
       - name: Calculate total lines in smoke-test branche
         run: |
-          export $ST_LC=$(find ./smoke-test -type f -print0 | wc -l --files0=- | tail -n 1 | cut -d ' ' -f 1)
+          export ST_LC=$(find ./smoke-test -type f -print0 | wc -l --files0=- | tail -n 1 | cut -d ' ' -f 1)
+          echo $ST_LC
           echo "SMOKE_TEST_LINE_COUNT=$ST_LC" >> $GITHUB_ENV
       - name: Checkout Published Branch
         uses: actions/checkout@v3
@@ -38,26 +41,32 @@ jobs:
           ref: gh-pages
       - name: Calculate total lines in published branche
         run: |
-          export $PUB_LC=$(find ./smoke-test -type f -print0 | wc -l --files0=- | tail -n 1 | cut -d ' ' -f 1)
+          export PUB_LC=$(find ./published -type f -print0 | wc -l --files0=- | tail -n 1 | cut -d ' ' -f 1)
+          echo $PUB_LC
           echo "PUBLISHED_LINE_COUNT=$PUB_LC" >> $GITHUB_ENV
       - name: Generate percentile diff
         run: |
           export PERCENTILE_DIFF=$(bc<<<"scale=2;${{ env.SMOKE_TEST_LINE_COUNT}} / ${{ env.PUBLISHED_LINE_COUNT }}")
+          echo $PERCENTILE_DIFF
           if [ 1 -eq $(bc<<<"$PERCENTILE_DIFF < ${{ env.DELTA_THRESHOLD }}") ]; then
             exit 1
           else
             exit 0
           fi
 
-  build:
+  publish-live:
     needs: smoke-test-verify
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - uses: enriikke/gatsby-gh-pages-action@v2
-        env:
-          GH_API_KEY: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v3
         with:
-          access-token: ${{ secrets.demo }}
-          deploy-branch: gh-pages
-#          gatsby-args: --prefix-paths
+          ref: gh-pages
+      - name: merge commit push
+        env:
+          GITHUB_TOKEN: ${{ secrets.demo }}
+        run: |
+          git config --global user.name 'Gatsby Publish Workflow'
+          git config --global user.email 'gatsby-publish-workflow@users.noreply.github.com'
+          git fetch --all
+          git reset --hard origin/smoke-test
+          git push -f origin gh-pages
