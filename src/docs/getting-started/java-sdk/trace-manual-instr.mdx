@@ -397,35 +397,45 @@ class RequestHandler {
 
 ### Creating Metrics
 
-Up to v1.16.0 of OpenTelemetry for Java, there are few libraries and frameworks that make use of the Metrics API. Similarly to
-Traces, you can create custom metrics in your application using the OpentTelemetry API and SDK.
+Up to v1.16.0 of OpenTelemetry for Java, there are few libraries and frameworks that make use of the Metrics API.
+Similarly to Traces, you can create custom metrics in your application using the OpentTelemetry API and SDK.
 
-In the following examples we detail how to report two types of metrics: Counters and GetSamplingRules
+In the following example application we demonstrate how to use the three types of metric instruments that
+are available to record metrics: Counters, Gauges and Histograms.
 
-Counter:
+The theoretic application being depicted is a worker that process messages from 2 different queues.
+
+[Counters](https://opentelemetry.io/docs/reference/specification/metrics/api/#counter):
 ```java
 Meter meter = opentelemetry.getMeter("consumer-application");
 
 LongCounter counter = meter.counterBuilder("messages_consumed")
         .setDescription("Number of messages consumed")
-        .setUnit("1")
+        .setUnit("n")
         .build();
 
 Attributes attributes1 = Attributes.of(AttributeKey.stringKey("processing_place"), "Place1");
 Attributes attributes2 = Attributes.of(AttributeKey.stringKey("processing_place"), "Place2");
 
-// Counters are synchronous
-counter.record(getProcessedMessages(), attributes1);
+// Counters can be synchronous
+counter.record(getProcessedMessagesQueue1(), attributes1);
 
 // Different attributes can be associated with the value
-counter.record(getProcessedMessages(), attributes2);
+counter.record(getProcessedMessagesQueue2(), attributes2);
+
+// Counters also have the asynchronous form
+LongCounter messagesDroppedCounter = meter.counterBuilder("messages_dropped")
+        .setDescription("Number of messages dropped")
+        .buildWithCallback( (consumer) -> consumer.record(getTotalMessagesDropped()));
+
 ```
 
-Gauges:
+[Gauges](https://opentelemetry.io/docs/reference/specification/metrics/api/#asynchronous-gauge):
 ```java
 Meter meter = opentelemetry.getMeter("consumer-application");
 
 Attributes attributes1 = Attributes.of(AttributeKey.stringKey("queue_name"), "Queue1");
+Attributes attributes2 = Attributes.of(AttributeKey.stringKey("queue_name"), "Queue2");
 
 Gauge gauge = meter
     .gaugeBuilder("consumer_queue_size")
@@ -435,8 +445,26 @@ Gauge gauge = meter
     // Gauges are asynchronous
     .buildWithCallback(
         measurement -> {
-          measurement.record(getQueueSize(), attributes1);
+          measurement.record(getQueueSize1(), attributes1);
+          measurement.record(getQueueSize2(), attributes2);
         });
+```
+
+[Histograms](https://opentelemetry.io/docs/reference/specification/metrics/api/#histogram):
+```java
+Meter meter = opentelemetry.getMeter("consumer-application");
+
+// Histograms metric data points convey a population of recorded measurements in a compressed format.
+// A histogram bundles a set of events into divided populations with an overall event count and aggregate sum for all events.
+// Histograms are useful to record measurements such as latency. With histograms we can extract the min, max and percentiles.
+LongHistogram histogram = meter.histogramBuilder("processing_time")
+      .setUnit("ms")
+      .setDescription("Amount of time it takes to process a message")
+      .ofLongs()
+      .build();
+
+histogram.record(messageProcessingTime)
+
 ```
 
 There are more examples in the [OpenTelemetry Java Manual](https://opentelemetry.io/docs/instrumentation/java/manual/#metrics).
