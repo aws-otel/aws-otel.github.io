@@ -64,10 +64,10 @@ import json
 from opentelemetry import trace
 from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
 from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import BatchExportSpanProcessor
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
 
 # Import the AWS X-Ray for OTel Python IDs Generator into the application.
-from opentelemetry.sdk.extension.aws.trace import AwsXRayIdsGenerator
+from opentelemetry.sdk.extension.aws.trace import AwsXRayIdGenerator
 ```
 
 Next, configure the Global Tracer Provider to export to the ADOT Collector. The configuration of your SDK exporter depends on how you wish to connect with your configured ADOT Collector.
@@ -78,9 +78,9 @@ Connecting to an ADOT Collector running as a sidecar, we can set up the TracerPr
 # Sends generated traces in the OTLP format to an ADOT Collector running on port 4317
 otlp_exporter = OTLPSpanExporter(endpoint="http://localhost:4317")
 # Processes traces in batches as opposed to immediately one after the other
-span_processor = BatchExportSpanProcessor(otlp_exporter)
+span_processor = BatchSpanProcessor(otlp_exporter)
 # Configures the Global Tracer Provider
-trace.set_tracer_provider(TracerProvider(active_span_processor=span_processor, ids_generator=AwsXRayIdsGenerator()))
+trace.set_tracer_provider(TracerProvider(active_span_processor=span_processor, ids_generator=AwsXRayIdGenerator()))
 ```
 
 The `endpoint=` argument allows you to set the address that the exporter will use to connect to the collector. If unset, the SDK will try to connect to `http://localhost:4317` by default. Note that because the scheme is `http` by default, you have to explicitly set it to be `https` if necessary.
