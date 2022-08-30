@@ -121,9 +121,13 @@ By default, the ADOT Lambda layer uses the [config.yaml](https://github.com/aws-
 
 The layer is not configured by default to export Prometheus metrics to Amazon Managed Service for Prometheus (AMP) (https://docs.aws.amazon.com/prometheus/latest/userguide/what-is-Amazon-Managed-Service-Prometheus.html). To enable it: 
 
-1. Upload a custom collector configuration file `collector.yaml` with your Lambda application, like the example shown below, with the awsprometheusremoteexporter enabled. Set up the `endpoint` and `region` of your own AMP workspace. Note that since AMP is in preview, only these [AMP supported regions](https://docs.aws.amazon.com/prometheus/latest/userguide/AMP_quotas.html) can be used. 
+1. Upload a custom collector configuration file `collector.yaml` with your Lambda application, like the example shown below, with the `prometheusremoteexporter` and the `sigv4authextension` enabled. Set up the `endpoint` of your own AMP workspace, and `region` of the `sigv4authextension`. 
 ```
 # collector.yaml
+extensions:
+  sigv4auth:
+    service: "aps" 
+    region: <workspace_region>
 
 receivers:
   otlp:
@@ -133,20 +137,20 @@ receivers:
 exporters:
   logging:
   awsxray:
-  awsprometheusremotewrite:
+  prometheusremotewrite:
     endpoint: <workspace_remote_write_url>
-    aws_auth: 
-        service: "aps" 
-        region: <workspace_region>
+    auth: 
+      authenticator: sigv4auth
 
 service:
+  extensions: [sigv4auth]
   pipelines:
     traces:
       receivers: [otlp]
       exporters: [awsxray]
     metrics:
       receivers: [otlp]
-      exporters: [logging, awsprometheusremotewrite]
+      exporters: [logging, prometheusremotewrite]
 ```
 2. Upload this collector config as the OPENTELEMETRY_CONFIG_FILE environment variable to configure the Lambda Layer to export metrics to your workspace, following these [instructions](/docs/getting-started/lambda#custom-configuration-for-the-adot-collector-on-lambda).
 
