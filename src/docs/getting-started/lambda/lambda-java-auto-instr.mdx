@@ -121,7 +121,7 @@ By default, the ADOT Lambda layer uses the [config.yaml](https://github.com/aws-
 
 The layer is not configured by default to export Prometheus metrics to Amazon Managed Service for Prometheus (AMP) (https://docs.aws.amazon.com/prometheus/latest/userguide/what-is-Amazon-Managed-Service-Prometheus.html). To enable it: 
 
-1. Upload a custom collector configuration file `collector.yaml` with your Lambda application, like the example shown below, with the `prometheusremoteexporter` and the `sigv4authextension` enabled. Set up the `endpoint` of your own AMP workspace, and `region` of the `sigv4authextension`. 
+1. Upload a custom collector configuration file `collector.yaml` with your Lambda application, like the example shown below, with the `prometheusremotewriteexporter` and the `sigv4authextension` enabled. Set up the `endpoint` of your own AMP workspace, and `region` of the `sigv4authextension`. 
 ```
 # collector.yaml
 extensions:
