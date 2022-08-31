@@ -262,6 +262,11 @@ spec:
   image: public.ecr.aws/aws-observability/aws-otel-collector:latest
   mode: deployment
   config: |
+    extensions:
+      sigv4auth:
+        service: "aps"
+        region: <YOUR-AMP-REGION>
+
     receivers:
       prometheus:
         config:
@@ -288,11 +293,10 @@ spec:
         send_batch_size: 10000
 
     exporters:
-      awsprometheusremotewrite:
+      prometheusremotewrite:
         endpoint: <YOUR-AMP-REMOTE-WRITE-ENDPOINT>
-        aws_auth:
-          service: "aps"
-          region: <YOUR-AMP-REGION>
+        auth:
+          authenticator: sigv4auth
       awsemf:
         region: <YOUR-CLOUDWATCH-REGION>
         log_group_name: "/metrics/my-adot-collector"
@@ -301,11 +305,12 @@ spec:
         loglevel: debug
 
     service:
+      extensions: [sigv4auth]
       pipelines:
         metrics:
           receivers: [prometheus]
           processors: []
-          exporters: [awsprometheusremotewrite,awsemf,logging]
+          exporters: [prometheusremotewrite,awsemf,logging]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
