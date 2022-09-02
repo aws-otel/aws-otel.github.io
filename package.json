@@ -61,6 +61,9 @@
     "typeface-roboto": "0.0.54",
     "typeface-roboto-slab": "0.0.72"
   },
+  "overrides": {
+    "multer": "1.4.4-lts.1"
+  },
   "devDependencies": {
     "prettier": "^1.16.4"
   },
