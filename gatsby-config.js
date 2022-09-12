@@ -30,6 +30,7 @@ module.exports = {
           "aws-observability/aws-otel-test-framework"
         ],
         token: process.env.GH_API_KEY,
+        useMockData: process.env.NO_GH_API_KEY,
       },
     },
     {
