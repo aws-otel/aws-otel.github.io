@@ -29,9 +29,9 @@ scraping. There are many possible configurations to discover monitored targets i
  and static hosts (static_config). Note that the Prometheus Receiver will scrape metrics in the Prometheus exposition format. Any applications 
  or endpoints that you want to scrape should be configured with the Prometheus client library.
 
-The AWS Prometheus Remote Write Exporter will use the remote_write endpoint to send the scraped metrics to an AMP instance. The HTTPs requests 
+The Prometheus Remote Write Exporter will use the remote_write endpoint to send the scraped metrics to an AMP instance. The HTTPs requests 
 used to export data will be signed with [AWS SigV4](https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html), AWS’ 
-authentication protocol for secure authentication.
+authentication protocol for secure authentication. This is done using the `sigv4auth` extension.
 
 <SectionSeparator />
 
@@ -142,17 +142,21 @@ To pull the Kubernetes configuration for ADOT Collector:
 $ curl https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/examples/eks/prometheus-pipeline/eks-prometheus-daemonset.yaml -o eks-prometheus-daemonset.yaml
 ```
 
-You will have to change the `<YOUR_ENDPOINT>` and `<YOUR_REGION>` to correspond with your own AMP workspace. The changes should be with respect to the AWS Prometheus Remote Write Exporter’s configuration. 
+You will have to change the `<YOUR_ENDPOINT>` and `<YOUR_REGION>` to correspond with your own AMP workspace. The changes should be with respect to the Prometheus Remote Write Exporter’s configuration and the `sigv4auth` extension's configuration. 
 
 For Example:
 
 ```yaml lineNumbers=true 
+extensions:
+  sigv4auth:
+    service: "aps"
+    region: "us-west-2"
+
 exporters:
-  awsprometheusremotewrite:
+  prometheusremotewrite:
     endpoint: "https://aps-workspaces.us-west-2.amazonaws.com/workspaces/ws-d26e36bf-361j-480c-94f0-54bd7370f997/api/v1/remote_write"
-    aws_auth:
-      service: "aps"
-      region: "us-west-2"
+    auth:
+      authenticator: sigv4auth
 ```
 
 
