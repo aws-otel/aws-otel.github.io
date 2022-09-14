@@ -1,0 +1,47 @@
+---
+title: 'Sending data from the AWS Distro for OpenTelemetry Collector to Lumigo'
+description: How to configure the AWS Distro for OpenTelemetry Collector to send traces to Lumigo
+path: '/docs/partners/lumigo'
+---
+
+## Overview
+
+[Lumigo](https://lumigo.io) provides an [ingestion endpoint for OTLP tracing data](https://docs.lumigo.io/docs/lumigo-opentelemetry-endpoint) sent over HTTP with protobuf or JSON encoding.
+
+## Prerequisites
+
+1. [Download the ADOT Collector](https://github.com/aws-observability/aws-otel-collector/releases).
+2. [Deploy the ADOT Collector](https://aws-otel.github.io/docs/getting-started/collector).
+3. Get your Lumigo token ready. And if you do not already have a Lumigo account, sign up for [Lumigo's free tier](https://lumigo.io/pricing/).
+
+## Configuring the ADOT collector
+
+Since Lumigo's tracing is built natively on top of the [OpenTelemetry Protocol](https://opentelemetry.io/docs/reference/specification/protocol/), Lumigo has no dedicated exporter.
+Rather, it uses the upstream `otlphttp` exporter, using the `Authorization` HTTP header with the `LumigoToken` authentication scheme to provide the Lumigo token for authentication.
+
+A minimal configuration to send trace data from the ADOT collector to Lumigo is as follows:
+
+```yaml lineNumbers=true
+exporters:
+  otlphttp/lumigo:
+    endpoint: https://ga-otlp.lumigo-tracer-edge.golumigo.com/v1/traces
+    headers:
+      Authorization: LumigoToken <token>
+
+service:
+  pipelines:
+    traces:
+      exporters: [otlphttp/lumigo]
+```
+
+In the snippet above, `<token>` must be replaced by your Lumigo token.
+
+## Resources
+
+The list of OpenTelemetry semantic conventions supported by Lumigo is available on [Lumigo's Supported Semantic Conventions documentation](https://docs.lumigo.io/docs/supported-semantic-conventions).
+
+For additional resources about Lumigo's support for OpenTelemetry, refer to [Lumigo's OpenTelemetry documentation](https://docs.lumigo.io/docs/opentelemetry).
+
+## Support
+
+Any questions about using Lumigo with OpenTelemetry? Contact [Lumigo's support](https://lumigo.io/contact/).

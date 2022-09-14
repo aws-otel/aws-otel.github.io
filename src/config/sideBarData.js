@@ -127,6 +127,7 @@ export const sideBarData = [
         {label: "Honeycomb", link: "/docs/components/otlp-exporter#honeycomb"},
         {label: "Lightstep", link: "/docs/components/otlp-exporter#lightstep"},
         {label: "Logz.io", link: "/docs/partners/logzio"},
+        {label: "Lumigo", link: "/docs/partners/lumigo"},
         {label: "New Relic", link: "/docs/components/otlp-exporter#new-relic"},
         {label: "Splunk", link: "/docs/partners/splunk"},
         {label: "Sumo Logic", link: "/docs/components/otlp-exporter#sumo-logic"},
