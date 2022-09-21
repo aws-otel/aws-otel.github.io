@@ -11,7 +11,7 @@
     "@emotion/styled": "^11.9.3",
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
     "@fortawesome/free-brands-svg-icons": "^5.7.2",
-    "@fortawesome/free-solid-svg-icons": "^5.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.2.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@gatsby-contrib/gatsby-plugin-elasticlunr-search": "^3.0.2",
     "@material-ui/core": "^3.9.2",
@@ -52,14 +52,17 @@
     "react-dom": "^16.13.1",
     "react-helmet": "^5.2.0",
     "react-icon": "^1.0.0",
-    "react-icons": "^3.5.0",
+    "react-icons": "^4.4.0",
     "react-id-generator": "^3.0.1",
     "react-router-dom": "^6.3.0",
     "react-slick": "^0.29.0",
     "react-swipeable-views": "^0.13.1",
     "sass": "^1.5.4",
-    "typeface-roboto": "0.0.54",
+    "typeface-roboto": "1.1.13",
     "typeface-roboto-slab": "0.0.72"
+  },
+  "overrides": {
+    "multer": "1.4.4-lts.1"
   },
   "devDependencies": {
     "prettier": "^1.16.4"

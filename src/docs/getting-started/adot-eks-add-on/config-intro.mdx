@@ -17,14 +17,15 @@ In these instructions, we will deploy a Collector in Deployment mode to perform 
 
 Traces are received in OpenTelemetry Protocol (OTLP) format. Metrics are received in Prometheus format.
 Other deployment modes of the Collector, such as the Daemonset or Statefulset mode are called for in more advance use cases. We explore one of these advanced use cases [here](/docs/getting-started/adot-eks-add-on/config-advanced).
-For more information about Collector configuration, as well as OTLP and Prometheus receiver configurations and Amazon Managed Prometheus, CloudWatch, and X-Ray exporter configurations, refer to the documentation below:
+For more information about Collector configuration, as well as OTLP and Prometheus receiver configurations, Amazon Managed Prometheus, CloudWatch, and X-Ray exporter configurations, and Sigv4 authentication extension configurations, refer to the documentation below:
 
 * [Collector CRD configuration](https://github.com/open-telemetry/opentelemetry-operator/blob/main/docs/api.md)
 * [OTLP Receiver configuration](https://github.com/open-telemetry/opentelemetry-collector/tree/main/receiver/otlpreceiver)
 * [Prometheus Receiver configuration](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/prometheusreceiver)
-* [AWS Prometheus Remote Write Exporter configuration](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/awsprometheusremotewriteexporter#readme)
+* [Prometheus Remote Write Exporter configuration](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/prometheusremotewriteexporter#readme)
 * [AWS CloudWatch EMF Exporter configuration](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/awsemfexporter#readme)
 * [AWS X-Ray Exporter configuration](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/awsxrayexporter#readme)
+* [Sigv4 Authenticator Extension configuration](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/sigv4authextension#readme)
 
 Below, we have our three Collector configurations, one for Amazon Managed Prometheus, CloudWatch, and X-Ray each. Note that it is possible to combine Collector configurations together, i.e. you can have a Collector set up with more than one receiver, processor, or exporter, and multiple pipelines will be built based on that.
 

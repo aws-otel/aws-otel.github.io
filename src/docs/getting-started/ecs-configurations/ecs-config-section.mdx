@@ -51,6 +51,7 @@ Below is an example of a configuration which utilizes ECS and AMP to output metr
 ```yaml lineNumbers=true 
 extensions:
   health_check:
+  sigv4auth:
 
 receivers:
   otlp:
@@ -86,8 +87,10 @@ processors:
           - container.duration
 
 exporters:
-  awsprometheusremotewrite:
+  prometheusremotewrite:
     endpoint: $AWS_PROMETHEUS_ENDPOINT
+    auth:
+      authenticator: sigv4auth
     resource_to_telemetry_conversion:
       enabled: true
 
@@ -96,13 +99,13 @@ service:
     metrics/application:
       receivers: [otlp]
       processors: [resourcedetection, batch/metrics]
-      exporters: [awsprometheusremotewrite]
+      exporters: [prometheusremotewrite]
     metrics:
       receivers: [awsecscontainermetrics]
       processors: [filter]
-      exporters: [awsprometheusremotewrite]
+      exporters: [prometheusremotewrite]
 
-  extensions: [health_check]
+  extensions: [health_check, sigv4auth]
 ```
 
 ## Amazon CloudWatch Configuration for Application metrics
@@ -379,6 +382,7 @@ By utilizing this configuration you will be able to see datapoints from both met
 ```yaml lineNumbers=true 
 extensions:
   health_check:
+  sigv4auth:
 
 receivers:
   otlp:
@@ -418,8 +422,10 @@ processors:
 
 exporters:
   awsxray:
-  awsprometheusremotewrite:
+  prometheusremotewrite:
     endpoint: $AWS_PROMETHEUS_ENDPOINT
+    auth:
+      authenticator: sigv4auth
     resource_to_telemetry_conversion:
       enabled: true
 
@@ -432,11 +438,11 @@ service:
     metrics/application:
       receivers: [otlp]
       processors: [resourcedetection, batch/metrics]
-      exporters: [awsprometheusremotewrite]
+      exporters: [prometheusremotewrite]
     metrics:
       receivers: [awsecscontainermetrics]
       processors: [filter]
-      exporters: [awsprometheusremotewrite]
+      exporters: [prometheusremotewrite]
 
-  extensions: [health_check]
+  extensions: [health_check, sigv4auth]
 ```
