@@ -240,7 +240,7 @@ exporters:
   awsxray:
 
 processors:
-  memorylimiter:
+  memory_limiter:
     limit_mib: 100
     check_interval: 5s
 
@@ -248,7 +248,7 @@ service:
   pipelines:
     traces:
       processors:
-        - memorylimiter
+        - memory_limiter
       receivers:
         - otlp
       exporters:
