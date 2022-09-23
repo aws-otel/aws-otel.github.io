@@ -350,7 +350,7 @@ service:
   extensions: []
   pipelines:
     metrics:
-      receivers: [hostmetrics]
+      receivers: [otlp]
       processors: []
       exporters: [otlp/metrics]
 ```
