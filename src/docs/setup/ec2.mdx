@@ -128,6 +128,9 @@ To install AWSDistroOTel-Collector package on EC2 instances of Auto Scaling grou
 <img src={imgSSM8} alt="Diagram" style="margin: 30px 0;" />
 
 **Notes**
+
+The SSM distributor creates an environment file at ```/opt/aws/aws-otel-collector/etc/.env``` . Any environment variable that will be used in the [open telemetry configuration](https://opentelemetry.io/docs/collector/configuration/#configuration-environment-variables) needs to be added to this file.
+
 After you finished the tutorial, remember to shut down the new EC2 instance we created in the tutorial in order to avoid additional charges.
 
 

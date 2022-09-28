@@ -1,0 +1,238 @@
+---
+title: 'Tracing with the AWS Distro for OpenTelemetry PHP SDK and X-Ray'
+description: Learn how to get started with PHP SDK for adding tracing to applications and libraries.
+path: '/docs/getting-started/php-sdk/trace-manual-instr'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import SubSectionSeparator from "components/MdxSubSectionSeparator/subsectionSeparator.jsx"
+
+<SectionSeparator />
+
+
+## Introduction
+
+This guide covers the components of the AWS Distro for OpenTelemetry (ADOT) PHP, and describes how to configure the relevant ADOT components to send trace data to the AWS X-Ray backend. 
+
+For more information on OpenTelemetry PHP, see the [OpenTelemetry Developer Guide for PHP](https://opentelemetry.io/docs/instrumentation/php/)
+
+<SectionSeparator />
+
+## Requirements
+
+[PHP 7.4 or later](https://www.php.net/downloads.php) is required to run an application using OpenTelemetry
+
+Note: You’ll also need to have the [ADOT Collector](https://aws-otel.github.io/docs/getting-started/collector) running to export traces to X-Ray.
+
+<SectionSeparator />
+
+## Installation
+
+In order to send traces from your application, the following OpenTelemetry PHP packages must be installed in your application’s root directory
+
+
+* [X-Ray ID Generator](https://github.com/open-telemetry/opentelemetry-php-contrib/tree/main/src/Aws/Xray)
+* [X-Ray propagator](https://github.com/open-telemetry/opentelemetry-php-contrib/tree/main/src/Aws/Xray)
+
+```bash
+ composer require open-telemetry/contrib-aws
+```
+
+* [OpenTelemetry API for tracing](https://packagist.org/packages/open-telemetry/api)
+
+```bash
+composer require open-telemetry/api
+```
+
+* [OpenTelemetry SDK for tracing](https://packagist.org/packages/open-telemetry/sdk)
+
+```bash
+composer require open-telemetry/sdk
+```
+
+
+* [OTLP GRPC exporter](https://packagist.org/packages/open-telemetry/exporter-otlp-grpc)
+
+In order to use this package, you must also install the GRPC package using PECL. See the instructions on the [OpenTelemetry PHP repository](https://github.com/open-telemetry/opentelemetry-php#optional-dependencies) for more information.
+
+```bash
+composer require open-telemetry/exporter-otlp-grpc
+```
+
+<SectionSeparator />
+
+
+## Setting up the Global Tracer
+
+### Sending Traces to AWS X-Ray
+
+In order to send trace data to AWS X-Ray,  instantiate a new tracer provider and provide it with the X-Ray ID generator, X-Ray propagator, and OTLP exporter pointing to the collector's address.
+
+```
+// Initialize Span Processor, X-Ray ID generator, Tracer Provider, and Propagator
+
+$spanProcessor = new SimpleSpanProcessor(new OTLPExporter());
+$idGenerator = new IdGenerator();
+$tracerProvider = new TracerProvider($spanProcessor, null, null, null, $idGenerator);
+$propagator = new Propagator();
+$tracer = $tracerProvider->getTracer('io.opentelemetry.contrib.php');
+```
+
+<SubSectionSeparator />
+
+### Using the AWS resource detectors
+
+The AWS resource detectors are included with the X-Ray ID generator and X-Ray propagator in the `open-telemetry/contrib-aws` package. 
+
+The ADOT PHP SDK supports automatically recording metadata in EC2, Elastic Beanstalk, ECS, and EKS environments.
+
+
+```
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\HttpFactory;
+use OpenTelemetry\Aws\Ec2\Detector;      
+        
+$client = new Client();
+$requestFactory = new HttpFactory();
+
+$detector = new Detector($client, $requestFactory);
+
+$tracerProvider = new TracerProvider($spanProcessor, null, $detector->getResource(), null, $idGenerator);
+
+```
+
+
+To see what attributes are captured and how to add other resource detectors, see the [OpenTelemetry documentation](https://github.com/open-telemetry/opentelemetry-php-contrib/tree/main/src/Aws).
+
+<SubSectionSeparator />
+
+### Debug Logging
+
+To enable debug logging for the OpenTelemetry SDK, create a logger as follows:
+
+```
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
+use OpenTelemetry\SDK\Common\Log\LoggerHolder;
+use Psr\Log\LogLevel;
+
+LoggerHolder::set(
+    new Logger('otel-php', [new StreamHandler(STDOUT, LogLevel::DEBUG)])
+);
+```
+
+<SubSectionSeparator />
+
+## Instrumenting an Application
+
+**Warning: Some instrumentations are not yet stable and the attributes they collect are subject to change until the instrumentation reaches 1.0 stability. It is recommended that you pin a specific version of an instrumentation**
+
+When you instrument a library, every time the library is used, the request is automatically wrapped with a populated span.
+
+
+
+### Instrumenting the AWS SDK
+
+Run the following command to import the AWS SDK Instrumentation:
+
+
+```
+composer require open-telemetry/opentelemetry-php-contrib:0.0.15
+```
+
+
+Import the `AwsSdkInstrumentation`  class in your PHP source code to activate the SDK instrumentation:
+
+
+```
+use OpenTelemetry\Instrumentation\AwsSdk\AwsSdkInstrumentation;
+```
+
+
+Tracing support for downstream AWS SDK calls to Amazon DynamoDB, S3, and others is provided by the [OpenTelemetry PHP AWS SDK Instrumentation](https://github.com/open-telemetry/opentelemetry-php-contrib/tree/main/src/Instrumentation/AwsSdk).  The example below demonstrates setting up the AWS SDK instrumentation and tracing a call to S3. 
+
+
+```
+use OpenTelemetry\Instrumentation\AwsSdk\AwsSdkInstrumentation;
+
+// Initialize Span Processor, X-Ray ID generator, Tracer Provider, and Propagator
+$spanProcessor = new SimpleSpanProcessor(new OTLPExporter());
+$xrayIdGenerator = new IdGenerator();
+$tracerProvider = new TracerProvider($spanProcessor, null, null, null, $xrayIdGenerator);
+$xrayPropagator = new Propagator();
+
+// Create new instance of AWS SDK Instrumentation class
+$awssdkinstrumentation = new  AwsSdkInstrumentation();
+
+// Configure AWS SDK Instrumentation with Propagator and set Tracer Provider (created above)
+$awssdkinstrumentation->setPropagator($xrayPropagator);
+$awssdkinstrumentation->setTracerProvider($tracerProvider);
+
+// Create and activate root span
+$root = $awssdkinstrumentation->getTracer()->spanBuilder('AwsSDKInstrumentation')->setSpanKind(SpanKind::KIND_SERVER)->startSpan();
+$rootScope = $root->activate();
+
+// Initialize all AWS Client instances
+$s3Client = new S3Client([
+    'region' => 'us-west-2',
+]);
+
+// Pass client instances to AWS SDK
+$awssdkinstrumentation->instrumentClients([$s3Client]);
+
+// Activate Instrumentation -- all AWS Client calls will be automatically instrumented
+$awssdkinstrumentation->activate();
+
+// Make S3 client call
+$result = $s3Client->listBuckets();
+
+// End the root span after all the calls to the AWS SDK have been made
+$root->end();
+$rootScope->detach();
+```
+
+<SectionSeparator />
+
+## Custom Instrumentation
+
+### Creating Custom Spans
+
+Use custom spans to monitor the performance of internal activities that are not captured by instrumentation libraries. Note that only spans of kind `Server` are converted into X-Ray segments. All other spans are converted into X-Ray subsegments. For more on segments and subsegments, see the [AWS X-Ray developer guide](https://docs.aws.amazon.com/xray/latest/devguide/xray-concepts.html#xray-concepts-segments).
+
+
+```
+// this span will be translated to a segment in X-Ray backend
+$span = $awssdkinstrumentation->getTracer()->spanBuilder('segment')->setSpanKind(SpanKind::KIND_SERVER)->startSpan();
+
+// this span will be translated to a subsegment in X-Ray backend
+$span2 = $awssdkinstrumentation->getTracer()->spanBuilder('subsegment')->setSpanKind(SpanKind::KIND_CLIENT)->startSpan();
+```
+
+
+
+### Adding custom attributes
+
+You can also add custom key-value pairs as attributes to your spans. Attributes are converted to metadata by default. If you [configure your collector](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/7bf2266a025425993a233f66c77a0810ab11a78b/exporter/awsxrayexporter#exporter-configuration), you can convert some or all of the attributes to annotations. To read more about X-Ray annotations and metadata see the [AWS X-Ray Developer Guide](https://docs.aws.amazon.com/xray/latest/devguide/xray-concepts.html#xray-concepts-annotations).
+
+
+```
+$span = $tracer
+        ->spanBuilder('span')
+        ->startSpan();
+        
+$spanScope = $root->activate();
+        
+$span->setAttributes(["a" => "1"]);
+        
+$span->end();
+$spanScope->detach();
+```
+
+<SectionSeparator />
+
+
+## Sample Application
+
+See the [AWS Distro for OpenTelemetry Sample Code with PHP SDK](https://github.com/aws-observability/aws-otel-php) for instructions on setting up and using the sample application. 
+
+
