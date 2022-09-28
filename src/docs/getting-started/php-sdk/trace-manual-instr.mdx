@@ -14,7 +14,7 @@ import SubSectionSeparator from "components/MdxSubSectionSeparator/subsectionSep
 
 This guide covers the components of the AWS Distro for OpenTelemetry (ADOT) PHP, and describes how to configure the relevant ADOT components to send trace data to the AWS X-Ray backend. 
 
-Link to [OpenTelemetry Developer Guide - PHP](https://opentelemetry.io/docs/instrumentation/php/)
+For more information on OpenTelemetry PHP, see the [OpenTelemetry Developer Guide for PHP](https://opentelemetry.io/docs/instrumentation/php/)
 
 <SectionSeparator />
 
@@ -68,7 +68,7 @@ composer require open-telemetry/exporter-otlp-grpc
 
 In order to send trace data to AWS X-Ray,  instantiate a new tracer provider and provide it with the X-Ray ID generator, X-Ray propagator, and OTLP exporter pointing to the collector's address.
 
-```å
+```
 // Initialize Span Processor, X-Ray ID generator, Tracer Provider, and Propagator
 
 $spanProcessor = new SimpleSpanProcessor(new OTLPExporter());
@@ -87,12 +87,12 @@ The[AWS resource detectors](https://aws.amazon.com/blogs/opensource/adding-aws-x
 The ADOT PHP SDK supports automatically recording metadata in EC2, Elastic Beanstalk, ECS, and EKS environments.
 
 
-```å
+```
 use GuzzleHttp\Client;
 use GuzzleHttp \Psr7\HttpFactory;
 use OpenTelemetry\Aws\Ec2\Detector;      
         
-$client = new Client(['base_uri' **=>** '/ec2/endpoint']);
+$client = new Client(['base_uri' => '/ec2/endpoint']);
 $requestFactory = new HttpFactory();
 
 $detector = new Detector($client, $requestFactory);
@@ -112,7 +112,7 @@ To enable debug logging for the OpenTelemetry SDK, set the DEFAULT_LOG_LEVEL env
 ```
 use Psr\Log\LogLevel;
  
-public const DEFAULT_LOG_LEVEL =LogLevel::DEBUG;
+public const DEFAULT_LOG_LEVEL = LogLevel::DEBUG;
 ```
 
 <SubSectionSeparator />
@@ -195,7 +195,7 @@ Use custom spans to monitor the performance of internal activities that are not 
 
 
 ```
-// this span will be translated to a segment in X-Ray backend`
+// this span will be translated to a segment in X-Ray backend
 $span = $awssdkinstrumentation->getTracer()->spanBuilder('segment')->setSpanKind(SpanKind::KIND_SERVER)->startSpan();
 
 // this span will be translated to a subsegment in X-Ray backend
