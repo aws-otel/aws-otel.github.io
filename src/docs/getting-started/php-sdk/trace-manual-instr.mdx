@@ -82,22 +82,23 @@ $tracer = $tracerProvider->getTracer('io.opentelemetry.contrib.php');
 
 ### Using the AWS resource detectors
 
-The[AWS resource detectors](https://aws.amazon.com/blogs/opensource/adding-aws-x-ray-support-to-the-opentelemetry-php-library/)are included with the X-Ray ID generator and X-Ray propagator in the `open-telemetry/contrib-aws` package. 
+The AWS resource detectors are included with the X-Ray ID generator and X-Ray propagator in the `open-telemetry/contrib-aws` package. 
 
 The ADOT PHP SDK supports automatically recording metadata in EC2, Elastic Beanstalk, ECS, and EKS environments.
 
 
 ```
 use GuzzleHttp\Client;
-use GuzzleHttp \Psr7\HttpFactory;
+use GuzzleHttp\Psr7\HttpFactory;
 use OpenTelemetry\Aws\Ec2\Detector;      
         
-$client = new Client(['base_uri' => '/ec2/endpoint']);
+$client = new Client();
 $requestFactory = new HttpFactory();
 
 $detector = new Detector($client, $requestFactory);
 
-print_r(`$detector->getResource()->getAttributes()`)
+$tracerProvider = new TracerProvider($spanProcessor, null, $detector->getResource(), null, $idGenerator);
+
 ```
 
 
@@ -107,12 +108,17 @@ To see what attributes are captured and how to add other resource detectors, see
 
 ### Debug Logging
 
-To enable debug logging for the OpenTelemetry SDK, set the DEFAULT_LOG_LEVEL environment variable as follows:
+To enable debug logging for the OpenTelemetry SDK, create a logger as follows:
 
 ```
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
+use OpenTelemetry\SDK\Common\Log\LoggerHolder;
 use Psr\Log\LogLevel;
- 
-public const DEFAULT_LOG_LEVEL = LogLevel::DEBUG;
+
+LoggerHolder::set(
+    new Logger('otel-php', [new StreamHandler(STDOUT, LogLevel::DEBUG)])
+);
 ```
 
 <SubSectionSeparator />
