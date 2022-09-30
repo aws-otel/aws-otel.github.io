@@ -61,6 +61,7 @@ export const sideBarData = [
         {label: "Python", link: "/docs/getting-started/python-sdk"},
         {label: "Ruby", link: "/docs/getting-started/ruby-sdk"},
         {label: ".NET", link: "/docs/getting-started/dotnet-sdk"},
+        {label: "PHP", link: "/docs/getting-started/php-sdk"},
         {label: "k8s Operator", link: "/docs/getting-started/operator"},
         {label: "ADOT with EKS add-ons", link: "/docs/getting-started/adot-eks-add-on"},
         {label: "Lambda", link: "/docs/getting-started/lambda"},
