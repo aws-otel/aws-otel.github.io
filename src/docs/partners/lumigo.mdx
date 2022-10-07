@@ -17,7 +17,7 @@ path: '/docs/partners/lumigo'
 ## Configuring the ADOT collector
 
 Since Lumigo's tracing is built natively on top of the [OpenTelemetry Protocol](https://opentelemetry.io/docs/reference/specification/protocol/), Lumigo has no dedicated exporter.
-Rather, it uses the upstream `otlphttp` exporter, using the `Authorization` HTTP header with the `LumigoToken` authentication scheme to provide the Lumigo token for authentication.
+Rather, it uses the [upstream `otlphttp` exporter](https://github.com/open-telemetry/opentelemetry-collector/blob/main/exporter/otlphttpexporter/README.md), using the `Authorization` HTTP header with the `LumigoToken` authentication scheme to provide the Lumigo token for authentication.
 
 A minimal configuration to send trace data from the ADOT collector to Lumigo is as follows:
 
