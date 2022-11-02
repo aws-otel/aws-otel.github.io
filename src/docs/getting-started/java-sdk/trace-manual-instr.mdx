@@ -37,7 +37,7 @@ to align dependency versions for non-contrib components.
 ##### For Gradle:
 ```kotlin lineNumbers=true
 dependencies {
-    api(platform("io.opentelemetry:opentelemetry-bom:1.19.1"))
+    api(platform("io.opentelemetry:opentelemetry-bom:1.19.0"))
 
     implementation("io.opentelemetry:opentelemetry-api")
     implementation("io.opentelemetry:opentelemetry-exporter-otlp")
@@ -57,7 +57,7 @@ dependencies {
     <dependency>
       <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-bom</artifactId>
-      <version>1.19.1</version>
+      <version>1.19.2</version>
       <type>pom</type>
       <scope>import</scope>
     <dependency>
@@ -211,7 +211,7 @@ library instrumentation. When using this, do not include `opentelemetry-bom`.
 ##### For Gradle:
 ```kotlin lineNumbers=true
 dependencies {
-    api(platform("io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom-alpha:1.19.1-alpha"))
+    api(platform("io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom-alpha:1.19.2-alpha"))
 
     implementation("io.opentelemetry:opentelemetry-api")
     implementation("io.opentelemetry:opentelemetry-exporter-otlp")
@@ -230,7 +230,7 @@ dependencies {
     <dependency>
       <groupId>io.opentelemetry.instrumentation</groupId>
       <artifactId>opentelemetry-instrumentation-bom-alpha</artifactId>
-      <version>1.19.1-alpha</version>
+      <version>1.19.2-alpha</version>
       <type>pom</type>
       <scope>import</scope>
     <dependency>
@@ -264,7 +264,7 @@ The `opentelemetry-instrumentation-aws-sdk-2.2` artifact provides instrumentatio
 ##### For Gradle:
 ```java lineNumbers=true
 dependencies {
-    api(platform("io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom-alpha:1.19.1-alpha"))\
+    api(platform("io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom-alpha:1.19.2-alpha"))\
 
     implementation("io.opentelemetry.instrumentation:opentelemetry-aws-sdk-2.2")
 
@@ -279,7 +279,7 @@ dependencies {
     <dependency>
       <groupId>io.opentelemetry.instrumentation</groupId>
       <artifactId>opentelemetry-instrumentation-bom-alpha</artifactId>
-      <version>1.19.1-alpha</version>
+      <version>1.19.2-alpha</version>
       <type>pom</type>
       <scope>import</scope>
     <dependency>
@@ -397,8 +397,8 @@ class RequestHandler {
 
 ### Creating Metrics
 
-Up to v1.19.1 of OpenTelemetry for Java, there are few libraries and frameworks that make use of the Metrics API.
-Similarly to Traces, you can create custom metrics in your application using the OpentTelemetry API and SDK.
+Up to v1.19.2 of OpenTelemetry for Java Instrumentation, there are few libraries and frameworks that make use of the Metrics API.
+Similarly to Traces, you can create custom metrics in your application using the OpenTelemetry API and SDK.
 
 In the following example application we demonstrate how to use the three types of metric instruments that
 are available to record metrics: Counters, Gauges and Histograms.
