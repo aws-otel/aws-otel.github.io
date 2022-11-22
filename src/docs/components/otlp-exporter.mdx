@@ -321,25 +321,38 @@ To send trace data, all you need is the API key for your Environment:
 ```yaml lineNumbers=true highlight={7,9}
 # Honeycomb Collector configuration
 exporters:
-  otlp:
+  otlp/traces:
     endpoint: api.honeycomb.io:443
     headers:
       # You can find your Honeycomb API key under Environment settings
       "x-honeycomb-team":"<YOUR_API_KEY>"
+service:
+  extensions: []
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: []
+      exporters: [otlp/traces]
 ```
-
 
 To send metrics data, you also need to specify the dataset for metrics data:
 
 ```yaml lineNumbers=true highlight={7,9}
 # Honeycomb Collector configuration
 exporters:
-  otlp:
+  otlp/metrics:
     endpoint: api.honeycomb.io:443
     headers:
       # You can find your Honeycomb API key under Environment settings
       "x-honeycomb-team":"<YOUR_API_KEY>"
       "x-honeycomb-dataset": "<YOUR_METRICS_DATASET>"
+service:
+  extensions: []
+  pipelines:
+    metrics:
+      receivers: [otlp]
+      processors: []
+      exporters: [otlp/metrics]
 ```
 
 See [Honeycomb's OpenTelemetry Collector](https://docs.honeycomb.io/getting-data-in/otel-collector/) docs to learn about additional configuration options.
