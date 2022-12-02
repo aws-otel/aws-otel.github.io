@@ -42,7 +42,7 @@ In order to trace your application, the following OpenTelemetry JavaScript packa
 ```bash
 npm install --save \
   @opentelemetry/api \
-  @opentelemetry/sdk-trace-node \
+  opentelemetry/sdk-node \
   @opentelemetry/exporter-trace-otlp-grpc
 ```
 
@@ -62,50 +62,51 @@ npm install --save \
 
 In order to send trace data to AWS X-Ray via the ADOT Collector, you must configure the X-Ray ID generator, X-Ray propagator, and collector gRPC exporter on the global tracer provider.
 
-```javascript lineNumbers=true 
-const { BatchSpanProcessor } = require("@opentelemetry/sdk-trace-base");
-const { NodeTracerProvider } = require("@opentelemetry/sdk-trace-node");
-const { Resource } = require('@opentelemetry/resources');
-const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventions');
-const { OTLPTraceExporter } = require("@opentelemetry/exporter-trace-otlp-grpc");
+```javascript lineNumbers=true
+const process = require('process');
+const opentelemetry = require("@opentelemetry/sdk-node");
+const { Resource } = require("@opentelemetry/resources");
+const { SemanticResourceAttributes } = require("@opentelemetry/semantic-conventions");
+const { BatchSpanProcessor} = require('@opentelemetry/sdk-trace-base');
+const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-grpc');
 const { AWSXRayPropagator } = require("@opentelemetry/propagator-aws-xray");
 const { AWSXRayIdGenerator } = require("@opentelemetry/id-generator-aws-xray");
-const { trace } = require("@opentelemetry/api");
+const { HttpInstrumentation } = require("@opentelemetry/instrumentation-http");
+const { AwsInstrumentation } = require("opentelemetry-instrumentation-aws-sdk");
 
-module.exports = (serviceName) => {
-  // create a provider using the AWS ID Generator
-  const tracerConfig = {
+const _resource = Resource.default().merge(new Resource({
+        [SemanticResourceAttributes.SERVICE_NAME]: "js-sample-app",
+    }));
+const _traceExporter = new OTLPTraceExporter();
+const _spanProcessor = new BatchSpanProcessor(_traceExporter);
+const _tracerConfig = {
     idGenerator: new AWSXRayIdGenerator(),
-    // any instrumentations can be declared here
-    instrumentations: [],
-    // any resources can be declared here
-    resource: Resource.default().merge(new Resource({
-        [SemanticResourceAttributes.SERVICE_NAME]: serviceName
-    }))
-  };
+}
 
-  const tracerProvider = new NodeTracerProvider(tracerConfig);
-
-  // add OTLP exporter
-  const otlpExporter = new OTLPTraceExporter({
-    // port configured in the Collector config, defaults to 4317
-    url: "localhost:4317"
-    // credentials only required if mTLS is configured on Collector instance
-    credentials: grpc.credentials.createSsl(
-      fs.readFileSync("./ca.crt"),
-      fs.readFileSync("./client.key"),
-      fs.readFileSync("./client.crt")
-    )
-  });
-  tracerProvider.addSpanProcessor(new BatchSpanProcessor(otlpExporter));
-
-  // Register the tracer provider with an X-Ray propagator
-  tracerProvider.register({
-    propagator: new AWSXRayPropagator()
-  });
-
-  // Return an tracer instance
-  return trace.getTracer("sample-instrumentation");
+async function nodeSDKBuilder() {
+    const sdk = new opentelemetry.NodeSDK({
+        textMapPropagator: new AWSXRayPropagator(),
+        instrumentations: [
+            new HttpInstrumentation(),
+            new AwsInstrumentation({
+                suppressInternalInstrumentation: true
+            }),
+        ],
+        resource: _resource,
+        spanProcessor: _spanProcessor,
+        traceExporter: _traceExporter,
+    });
+    sdk.configureTracerProvider(_tracerConfig, _spanProcessor);
+    
+    // this enables the API to record telemetry
+    await sdk.start(); 
+    // gracefully shut down the SDK on process exit
+    process.on('SIGTERM', () => {
+    sdk.shutdown()
+      .then(() => console.log('Tracing and Metrics terminated'))
+      .catch((error) => console.log('Error terminating tracing and metrics', error))
+      .finally(() => process.exit(0));
+    });
 }
 ```
 
@@ -131,6 +132,53 @@ const tracerProvider = new NodeTracerProvider({ resource });
 ```
 
 To see what attributes are captured and how to add other resource detectors, see the [OpenTelemetry documentation](https://github.com/open-telemetry/opentelemetry-js-contrib/tree/main/detectors/node/opentelemetry-resource-detector-aws#readme).
+
+### Adding support for Metrics
+
+The API and SDK for Metrics became stable for OpenTelemetry for JavaScript.
+The following piece of code initialize the OpenTelemetry SDK to use Metrics and Traces.
+
+```JavaScript
+const _resource = Resource.default().merge(new Resource({
+        [SemanticResourceAttributes.SERVICE_NAME]: "js-sample-app",
+    }));
+const _traceExporter = new OTLPTraceExporter();
+const _spanProcessor = new BatchSpanProcessor(_traceExporter);
+const _tracerConfig = {
+    idGenerator: new AWSXRayIdGenerator(),
+}
+const _metricReader = new PeriodicExportingMetricReader({
+    exporter: new OTLPMetricExporter(),
+    exportIntervalMillis: 1000
+});
+
+async function nodeSDKBuilder() {
+    const sdk = new opentelemetry.NodeSDK({
+        textMapPropagator: new AWSXRayPropagator(),
+        metricReader: _metricReader,
+        instrumentations: [
+            new HttpInstrumentation(),
+            new AwsInstrumentation({
+                suppressInternalInstrumentation: true
+            }),
+        ],
+        resource: _resource,
+        spanProcessor: _spanProcessor,
+        traceExporter: _traceExporter,
+    });
+    sdk.configureTracerProvider(_tracerConfig, _spanProcessor);
+    
+    // this enables the API to record telemetry
+    await sdk.start(); 
+    // gracefully shut down the SDK on process exit
+    process.on('SIGTERM', () => {
+    sdk.shutdown()
+      .then(() => console.log('Tracing and Metrics terminated'))
+      .catch((error) => console.log('Error terminating tracing and metrics', error))
+      .finally(() => process.exit(0));
+    });
+}
+```
 
 ### Debug Logging
 
@@ -166,15 +214,17 @@ Then register the AWS SDK instrumentation as follows:
 
 ```js lineNumbers=true
 const { AwsInstrumentation } = require('@opentelemetry/instrumentation-aws-sdk');
-const { registerInstrumentations } = require('@opentelemetry/instrumentation');
 
-registerInstrumentations({
-  instrumentations: [
-    new AwsInstrumentation({
-      // see the upstream documentation for available configuration
-    })
-  ]
-});
+const sdk = new opentelemetry.NodeSDK({
+        instrumentations: [
+            new AwsInstrumentation({
+                suppressInternalInstrumentation: true
+            }),
+        ],
+        resource: _resource,
+        spanProcessor: _spanProcessor,
+        traceExporter: _traceExporter,
+    });
 ```
 
 <SubSectionSeparator />
@@ -208,7 +258,78 @@ const span = tracer.startActiveSpan('sample');
 span.setAttribute('key', 'value');
 span.end();
 ```
+### Creating Metrics
+
+Similarly to Traces, you can create custom metrics in your application using the OpenTelemetry API and SDK.
+
+In the following example application we demonstrate how to use the three types of metric instruments that
+are available to record metrics: Counters, Gauges and Histograms.
+
+[Counters](https://opentelemetry.io/docs/reference/specification/metrics/api/#counter):
+```JavaScript
+const metricsApi = require('@opentelemetry/api-metrics');
+const common_attributes = { signal: 'metric',  language: 'javascript', metricType: 'random' };
+const TIME_ALIVE_METRIC = 'timeAlive';
+const HEAP_SIZE_METRIC = 'totalHeapSize';
+
+// acquire meter 
+const meter = metricsApi.metrics.getMeter('js-sample-app-meter');
+
+// synchronous counter metric
+const timeAliveMetric = meter.createCounter(TIME_ALIVE_METRIC, {
+    description: 'Total amount of time that the application has been alive',
+    unit: 's'
+});
+
+timeAliveMetric.add(cfg.RandomTimeAliveIncrementer, common_attributes);
+
+// asynchronous updown counter metric
+const totalHeapSizeMetric = meter.createObservableUpDownCounter(HEAP_SIZE_METRIC, {
+    description: 'The current total heap size',
+    unit:'1'
+});
+totalHeapSizeMetric.addCallback((measurement) => {measurement.observe(totalHeapSize, common_attributes)});
+```
+
+[Gauges](https://opentelemetry.io/docs/reference/specification/metrics/api/#asynchronous-gauge):
+```JavaScript
+const metricsApi = require('@opentelemetry/api-metrics');
+const common_attributes = { signal: 'metric',  language: 'javascript', metricType: 'random' };
+const CPU_USAGE_METRIC = 'cpuUsage';
+let cpuUsage = 0;
+
+// acquire meter 
+const meter = metricsApi.metrics.getMeter('js-sample-app-meter');
+
+// observable gauge metric
+const cpuUsageMetric = meter.createObservableGauge(CPU_USAGE_METRIC, {
+    description: 'Cpu usage percent',
+    unit: '1'
+});
+cpuUsageMetric.addCallback((measurement) => {measurement.observe(cpuUsage, common_attributes)});
+
+// updates observable gauge
+function updateCpuUsageMetric() {
+    cpuUsage = Math.random() * cfg.RandomCpuUsageUpperBound;
+}
+```
+
+[Histograms](https://opentelemetry.io/docs/reference/specification/metrics/api/#histogram):
+```JavaScript
+const metricsApi = require('@opentelemetry/api-metrics');
+const commmon_attributes = { signal: 'metric',  language: 'javascript', metricType: 'request' };
+const LATENCY_TIME = 'latencyTime';
+
+// acquire meter 
+const meter = metricsApi.metrics.getMeter('js-sample-app-meter');
+
+const latencyTimeMetric = meter.createHistogram(LATENCY_TIME, {
+    description: "Measures latency time.",
+    unit: 'ms'
+});
+latencyTimeMetric.record(returnTime, attributes);
+```
 
 ## Sample Application 
 
-See the [AWS Distro for OpenTelemetry Sample Code with JavaScript SDK](https://github.com/aws-observability/aws-otel-js/tree/main/sample-apps) for instructions on setting up and using the sample app.
+See the [AWS Distro for OpenTelemetry Sample Code with JavaScript SDK](https://github.com/aws-observability/aws-otel-community/tree/master/sample-apps/javascript-sample-app) for instructions on setting up and using the sample app.

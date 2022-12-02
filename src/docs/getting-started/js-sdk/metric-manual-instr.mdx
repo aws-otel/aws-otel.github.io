@@ -35,68 +35,129 @@ In order to trace your application, the following OpenTelemetry packages will be
 ```bash lineNumbers=true
 $ npm install \
   @opentelemetry/api \
-  @opentelemetry/core \
-  @opentelemetry/exporter-collector \
-  @opentelemetry/exporter-collector-grpc \
-  @opentelemetry/exporter-collector-proto \
-  @opentelemetry/metrics
+  @opentelemetry/sdk-node \
+  @opentelemetry/exporter-metrics-otlp-grpc \
+  @opentelemetry/sdk-metrics \
+  @opentelemetry/api-metrics
 ```
 
 ## Instrumenting Code
 Once OpenTelemetry Dependencies have been imported to application, we can start to instrument code for creating metrics.
 
-1. Initiate OpenTelemetry Metrics exporter to send metrics to ADOT Collector
+1. Initiate OpenTelemetry with components to export metrics to ADOT Collector
 ```javascript lineNumbers=true
-const metricExporter = new CollectorMetricExporter({
-  serviceName: 'aws-otel-js-sample',
-  logger: new ConsoleLogger(LogLevel.DEBUG),
-  // port configured in the Collector config, defaults to 4317
-  url: "localhost:4317"
-  // credentials only required if tls setup on Collector instance
-  credentials: grpc.credentials.createSsl(
-    fs.readFileSync('./ca.crt'),
-    fs.readFileSync('./client.key'),
-    fs.readFileSync('./client.crt')
-  )
-});
-```
+const process = require('process');
+const opentelemetry = require("@opentelemetry/sdk-node");
+const { Resource } = require("@opentelemetry/resources");
+const { SemanticResourceAttributes } = require("@opentelemetry/semantic-conventions");
+const { PeriodicExportingMetricReader } = require("@opentelemetry/sdk-metrics");
+const { OTLPMetricExporter } = require("@opentelemetry/exporter-metrics-otlp-grpc");
 
-2. Create a OpenTelemetry Metric Provider for initiating metrics
-```javascript lineNumbers=true
-const meter = new MeterProvider({
-  exporter: metricExporter,
-  interval: 1000,
-}).getMeter('aws-otel-js');
+const _resource = Resource.default().merge(new Resource({
+        [SemanticResourceAttributes.SERVICE_NAME]: "js-sample-app",
+    }));
+}
+const _metricReader = new PeriodicExportingMetricReader({
+    exporter: new OTLPMetricExporter(),
+    exportIntervalMillis: 1000
+});
+
+async function nodeSDKBuilder() {
+    const sdk = new opentelemetry.NodeSDK({
+        metricReader: _metricReader,
+        resource: _resource,
+    });
+    
+    // this enables the API to record telemetry
+    await sdk.start(); 
+    // gracefully shut down the SDK on process exit
+    process.on('SIGTERM', () => {
+    sdk.shutdown()
+      .then(() => console.log('Metrics terminated'))
+      .catch((error) => console.log('Error terminating metrics', error))
+      .finally(() => process.exit(0));
+    });
+}
 ```
 
 3. Define Metrics and metrics labels(dimensions) for the application
 ```javascript lineNumbers=true
-/** Counter Metrics */
-const payloadMetric = meter.createCounter('payload', {
-  description: 'Metric for counting request payload size',
+
+// acquire meter 
+const meter = metricsApi.metrics.getMeter('js-sample-app-meter');
+
+const TIME_ALIVE_METRIC = 'timeAlive';
+const CPU_USAGE_METRIC = 'cpuUsage';
+const THREADS_ACTIVE_METRIC = 'threadsActive';
+const HEAP_SIZE_METRIC = 'totalHeapSize';
+const common_attributes = { signal: 'metric',  language: 'javascript', metricType: 'random' };
+
+// counter metric
+const timeAliveMetric = meter.createCounter(TIME_ALIVE_METRIC, {
+    description: 'Total amount of time that the application has been alive',
+    unit: 's'
 });
 
-/** Up and Down Counter Metrics */
-const activeReqMetric = meter.createUpDownCounter('activeRequest', {
-  description: 'Metric for record active requests',
+// updown counter metric
+const threadsActiveMetric = meter.createUpDownCounter(THREADS_ACTIVE_METRIC, {
+    description: 'The total number of threads active',
+    unit:'1'
 });
 
-/** Value Recorder Metrics with Histogram */
-const requestLatency = meter.createValueRecorder('latency', {
-  description: 'Metric for record request latency',
+// observable gauge metric
+const cpuUsageMetric = meter.createObservableGauge(CPU_USAGE_METRIC, {
+    description: 'Cpu usage percent',
+    unit: '1'
 });
+cpuUsageMetric.addCallback((measurement) => {measurement.observe(cpuUsage, common_attributes)});
 
-/** Define Metrics Dimensions */
-const labels = { pid: process.pid, env: 'beta' };
+// observable updown counter metric
+const totalHeapSizeMetric = meter.createObservableUpDownCounter(HEAP_SIZE_METRIC, {
+    description: 'The current total heap size',
+    unit:'1'
+});
+totalHeapSizeMetric.addCallback((measurement) => {measurement.observe(totalHeapSize, common_attributes)});
+
+
+// updates observable gauge
+function updateCpuUsageMetric() {
+    cpuUsage = Math.random() * cfg.RandomCpuUsageUpperBound;
+}
+
+// updates updown counter
+function updateSizeMetric() {
+    totalHeapSize += Math.random() * cfg.RandomTotalHeapSizeUpperBound;
+}
+
+// updates counter
+function updateTimeAlive() {
+    timeAliveMetric.add(cfg.RandomTimeAliveIncrementer, common_attributes);
+}
+
+// updates updown counter metric
+function updateThreadsActive() {
+    let min = -1;
+    let activeThreads = Math.floor(Math.random() * (cfg.RandomThreadsActiveUpperBound - min + 1) + min);
+
+    if (threadCount < activeThreads) {
+        threadsActiveMetric.add(1, common_attributes);
+        threadCount++;
+    }
+    else {
+        threadsActiveMetric.add(-1, common_attributes);
+        threadCount--;
+    }
+}
 ```
 
 4. Send metrics
 ```javascript lineNumbers=true
-setInterval(() => {
-  payloadMetric.bind(labels).add(1);
-  activeReqMetric.bind(labels).add(Math.random() > 0.5 ? 1 : -1);
-  requestLatency.bind(labels).record(Math.random() * 1000)
-}, 1000);
+  setInterval(() => {
+      updateTimeAlive();
+      updateThreadsActive();
+      updateCpuUsageMetric();
+      updateSizeMetric();
+  }, cfg.TimeInterval * 1000);
 ```
 
 These steps provided the sample code for applications to create application metrics.
