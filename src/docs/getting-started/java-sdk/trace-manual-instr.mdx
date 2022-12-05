@@ -1,5 +1,5 @@
 ---
-title: 'Tracing with the AWS Distro for OpenTelemetry Java SDK and X-Ray'
+title: 'Manual Instrumentation for Traces and Metrics with the Java SDK'
 description:
     Learn how to get started with Java SDK for adding tracing to applications and libraries.
 path: '/docs/getting-started/java-sdk/trace-manual-instr'
@@ -35,9 +35,9 @@ Several components provide the functionality for using OpenTelemetry SDK with X-
 to align dependency versions for non-contrib components.
 
 ##### For Gradle:
-```java lineNumbers=true
+```kotlin lineNumbers=true
 dependencies {
-    api(platform("io.opentelemetry:opentelemetry-bom:1.6.0"))
+    api(platform("io.opentelemetry:opentelemetry-bom:1.20.1"))
 
     implementation("io.opentelemetry:opentelemetry-api")
     implementation("io.opentelemetry:opentelemetry-exporter-otlp")
@@ -46,7 +46,7 @@ dependencies {
 
     implementation("io.opentelemetry:opentelemetry-extension-aws")
     implementation("io.opentelemetry:opentelemetry-sdk-extension-aws")
-    implementation("io.opentelemetry.contrib:opentelemetry-aws-xray:1.6.0")
+    implementation("io.opentelemetry.contrib:opentelemetry-aws-xray:1.20.1")
 }
 ```
 
@@ -57,7 +57,7 @@ dependencies {
     <dependency>
       <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-bom</artifactId>
-      <version>1.6.0</version>
+      <version>1.20.1</version>
       <type>pom</type>
       <scope>import</scope>
     <dependency>
@@ -87,7 +87,7 @@ dependencies {
   <dependency>
     <groupId>io.opentelemetry.contrib</groupId>
     <artifactId>opentelemetry-aws-xray</artifactId>
-    <version>1.6.0</version>
+    <version>1.20.1</version>
   </dependency>
 </dependencies>
 ```
@@ -108,7 +108,7 @@ OpenTelemetrySdk.builder()
             ContextPropagators.create(
                 TextMapPropagator.composite(
                     W3CTraceContextPropagator.getInstance(), AwsXrayPropagator.getInstance())))
-        
+
         // This provides basic configuration of a TracerProvider which generates X-Ray compliant IDs
         .setTracerProvider(
             SdkTracerProvider.builder()
@@ -125,7 +125,7 @@ AWS resource detectors for enriching traces with AWS infrastructure information 
 artifact.
 
 ##### For Gradle:
-```java lineNumbers=true
+```kotlin lineNumbers=true
 dependencies {
     implementation("io.opentelemetry:opentelemetry-sdk-extension-aws")
 }
@@ -159,6 +159,36 @@ OpenTelemetrySdk.builder()
         .buildAndRegisterGlobal();
 ```
 
+### Adding support for Metrics
+
+The API and SDK for Metrics became stable in v1.15.0 of OpenTelemetry for Java.
+The following piece of code initialize the OpenTelemetry SDK to use Metrics and Traces.
+
+```java
+MetricReader metricReader = PeriodicMetricReader.builder(
+        OtlpGrpcMetricExporter.getDefault())
+        .build();
+OpenTelemetry opentelemetry = OpenTelemetrySdk.builder()
+        // Traces configuration
+        .setPropagators(
+            ContextPropagators.create(
+                TextMapPropagator.composite(
+                    W3CTraceContextPropagator.getInstance(), AwsXrayPropagator.getInstance())))
+
+        .setTracerProvider(
+            SdkTracerProvider.builder()
+                .addSpanProcessor(
+                    BatchSpanProcessor.builder(OtlpGrpcSpanExporter.getDefault()).build())
+                .setIdGenerator(AwsXrayIdGenerator.getInstance())
+                .build()
+        // Metrics Configuration
+        .setMeterProvider(
+                SdkMeterProvider.builder()
+                        .registerMetricReader(metricReader)
+                        .build())
+        .buildAndRegisterGlobal();
+```
+
 ### Debug Logging
 
 The SDK uses `java.util.logging` to log messages at `FINE` level - logging frameworks like Logback or Log4J map this to
@@ -179,9 +209,9 @@ the `io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom-alpha` B
 library instrumentation. When using this, do not include `opentelemetry-bom`.
 
 ##### For Gradle:
-```java lineNumbers=true
+```kotlin lineNumbers=true
 dependencies {
-    api(platform("io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom-alpha:1.6.0-alpha"))
+    api(platform("io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom-alpha:1.20.2-alpha"))
 
     implementation("io.opentelemetry:opentelemetry-api")
     implementation("io.opentelemetry:opentelemetry-exporter-otlp")
@@ -200,7 +230,7 @@ dependencies {
     <dependency>
       <groupId>io.opentelemetry.instrumentation</groupId>
       <artifactId>opentelemetry-instrumentation-bom-alpha</artifactId>
-      <version>1.6.0</version>
+      <version>1.20.2-alpha</version>
       <type>pom</type>
       <scope>import</scope>
     <dependency>
@@ -234,9 +264,9 @@ The `opentelemetry-instrumentation-aws-sdk-2.2` artifact provides instrumentatio
 ##### For Gradle:
 ```java lineNumbers=true
 dependencies {
-    api(platform("io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom-alpha:1.5.0-alpha"))\
+    api(platform("io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom-alpha:1.20.2-alpha"))\
 
-    implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-aws-sdk-2.2")
+    implementation("io.opentelemetry.instrumentation:opentelemetry-aws-sdk-2.2")
 
     ...
 }
@@ -249,7 +279,7 @@ dependencies {
     <dependency>
       <groupId>io.opentelemetry.instrumentation</groupId>
       <artifactId>opentelemetry-instrumentation-bom-alpha</artifactId>
-      <version>1.5.0</version>
+      <version>1.20.2-alpha</version>
       <type>pom</type>
       <scope>import</scope>
     <dependency>
@@ -275,6 +305,36 @@ DynamoDbClient.builder()
 ```
 
 This will enable tracing for all DynamoDB calls using this client.
+
+### Using X-Ray Remote Sampling
+
+The `opentelemetry-aws-xray` artifact provides a `Sampler` implementation for use with [X-Ray remote sampling](https://docs.aws.amazon.com/xray/latest/devguide/xray-console-sampling.html).
+
+When initializing the OpenTelemetry SDK, register the `AwsXrayRemoteSampler`. Moreover, You can configure the following attributes.
+
+| **Attribute**     | **Type** | **Description**                                                      | **Default**             |
+|-------------------|----------|----------------------------------------------------------------------|-------------------------|
+| `pollingInterval` | Duration | Duration between polling the GetSamplingRules API                    | 5 minutes               |
+| `endpoint`        | string   | Endpoint used to communicate with the `awsproxy` collector extension | `http://localhost:2000` |
+
+```java lineNumbers=true
+Resource resource = Resource.builder()
+  ...
+  .build();
+
+OpenTelemetrySdk.builder()
+  .setTracerProvider(SdkTracerProvider.builder()
+    .setResource(resource)
+    .setSampler(AwsXrayRemoteSampler.newBuilder(resource).setEndpoint("http://localhost:2000")
+                                                                      .setPollingInterval(Duration.ofSeconds(300))
+                                                                      .build())
+    ...
+    .build())
+  .build();
+```
+
+You will also need to [configure the OpenTelemetry collector](/docs/getting-started/remote-sampling)
+to allow the application to fetch sampling configuration.
 
 <SectionSeparator />
 
@@ -334,3 +394,76 @@ class RequestHandler {
   }
 }
 ```
+
+### Creating Metrics
+
+Similarly to Traces, you can create custom metrics in your application using the OpenTelemetry API and SDK.
+
+In the following example application we demonstrate how to use the three types of metric instruments that
+are available to record metrics: Counters, Gauges and Histograms.
+
+The theoretic application being depicted is a worker that process messages from 2 different queues.
+
+[Counters](https://opentelemetry.io/docs/reference/specification/metrics/api/#counter):
+```java
+Meter meter = opentelemetry.getMeter("consumer-application");
+
+LongCounter counter = meter.counterBuilder("messages_consumed")
+        .setDescription("Number of messages consumed")
+        .setUnit("n")
+        .build();
+
+Attributes attributes1 = Attributes.of(AttributeKey.stringKey("processing_place"), "Place1");
+Attributes attributes2 = Attributes.of(AttributeKey.stringKey("processing_place"), "Place2");
+
+// Counters can be synchronous
+counter.record(getProcessedMessagesQueue1(), attributes1);
+
+// Different attributes can be associated with the value
+counter.record(getProcessedMessagesQueue2(), attributes2);
+
+// Counters also have the asynchronous form
+LongCounter messagesDroppedCounter = meter.counterBuilder("messages_dropped")
+        .setDescription("Number of messages dropped")
+        .buildWithCallback( (consumer) -> consumer.record(getTotalMessagesDropped()));
+
+```
+
+[Gauges](https://opentelemetry.io/docs/reference/specification/metrics/api/#asynchronous-gauge):
+```java
+Meter meter = opentelemetry.getMeter("consumer-application");
+
+Attributes attributes1 = Attributes.of(AttributeKey.stringKey("queue_name"), "Queue1");
+Attributes attributes2 = Attributes.of(AttributeKey.stringKey("queue_name"), "Queue2");
+
+Gauge gauge = meter
+    .gaugeBuilder("consumer_queue_size")
+    .setDescription("The size of the queue that is being consumed")
+    .setUnit("1")
+    .ofLongs()
+    // Gauges are asynchronous
+    .buildWithCallback(
+        measurement -> {
+          measurement.record(getQueueSize1(), attributes1);
+          measurement.record(getQueueSize2(), attributes2);
+        });
+```
+
+[Histograms](https://opentelemetry.io/docs/reference/specification/metrics/api/#histogram):
+```java
+Meter meter = opentelemetry.getMeter("consumer-application");
+
+// Histograms metric data points convey a population of recorded measurements in a compressed format.
+// A histogram bundles a set of events into divided populations with an overall event count and aggregate sum for all events.
+// Histograms are useful to record measurements such as latency. With histograms we can extract the min, max and percentiles.
+LongHistogram histogram = meter.histogramBuilder("processing_time")
+      .setUnit("ms")
+      .setDescription("Amount of time it takes to process a message")
+      .ofLongs()
+      .build();
+
+histogram.record(messageProcessingTime)
+
+```
+
+There are more examples in the [OpenTelemetry Java Manual](https://opentelemetry.io/docs/instrumentation/java/manual/#metrics).

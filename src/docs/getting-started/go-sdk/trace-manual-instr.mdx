@@ -75,11 +75,11 @@ To initialize the OTLP exporter, add the following code to the file the `main.go
 // Create and start new OTLP trace exporter
 traceExporter, err := otlptracegrpc.New(ctx, otlptracegrpc.WithInsecure(), otlptracegrpc.WithEndpoint("0.0.0.0:4317"), otlptracegrpc.WithDialOption(grpc.WithBlock()))
 if err != nil {
-     log.Fatalf("%s: %v", "failed to create new OTLP trace exporter", err)
+	log.Fatalf("failed to create new OTLP trace exporter: %v", err)
 }
 ```
 
-This creates a new OTLP exporter with a few options - `WithInsecure()` disables client transport security for the exporter's gRPC connection, `WithEndpoint()` allows you to set the address that the exporter will connect to the Collector on. If the address is unset, it will instead try to use connect to `localhost:4317`. If the Collector you are connecting uses TLS, for example in a [sidecar deployment](/docs/getting-started/collector/sidecar-vs-service),
+This creates a new OTLP exporter with a few options - `WithInsecure()` disables client transport security for the exporter's gRPC connection, `WithEndpoint()` allows you to set the address that the exporter will connect to the Collector on. If the address is unset, it will instead try to use connect to `localhost:4317`. If the Collector you are connecting uses TLS, for example in a [service deployment](/docs/getting-started/collector/sidecar-vs-service),
 pass `otlptracegrpc.WithTLSCredentials()` instead of `otlptracegrpc.WithInsecure()`.
 
 #### Creating a Tracer Provider
@@ -92,7 +92,7 @@ idg := xray.NewIDGenerator()
 
 tp := trace.NewTracerProvider(
 	trace.WithSampler(trace.AlwaysSample()),
-	trace.WithBatcher(traceExporter)
+	trace.WithBatcher(traceExporter),
 	trace.WithIDGenerator(idg),
 )
 ```
@@ -106,15 +106,15 @@ identifying the current span and trace, and can contain arbitrary information as
 
 To set up global options, we will use the `otel` package and add the following lines to the `main.go` file.
 ```go lineNumbers=true
-    otel.SetTracerProvider(tp)
-    otel.SetTextMapPropagator(xray.Propagator{})
+otel.SetTracerProvider(tp)
+otel.SetTextMapPropagator(xray.Propagator{})
 ```
 
 <SubSectionSeparator />
 
 ### Using the AWS resource Detectors
 
-OpenTelemetry Go SDK has AWS EC2, ECS and EKS resource detector support. The resource detectors are responsible for detecting whether Go application instrumented with OpenTelemetry is running on the respective environment and populating resource attribute for that environment if available. If the resource detector detects that the application
+OpenTelemetry Go SDK has AWS EC2, ECS and EKS resource detector support. The resource detectors are responsible for detecting whether a Go application instrumented with OpenTelemetry is running on the respective environment, and populating resource attributes for that environment if available. If the resource detector detects that the application
 is not running on an environment (EC2, ECS or EKS), then it will return an empty `resource` struct.
 
 <img src={goImg5} alt="Diagram" style="margin: 30px 0;" />
@@ -127,7 +127,7 @@ resource, err := ec2ResourceDetector.Detect(context.Background())
 
 // Associate resource with TracerProvider
 tracerProvider := trace.NewTracerProvider(
-   trace.WithResource(resource),
+	trace.WithResource(resource),
 )
 ```
 
@@ -141,17 +141,17 @@ Visit the [OpenTelemetry Go SDK repository](https://github.com/open-telemetry/op
 
 ### Instrumenting the AWS SDK
 
-Run `go get go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-sdk-go-v2/otelaws` command to import the AWS SDK v2 instrumentation module. Below example displays AWS SDK v2 instrumentation. Check out complete AWS SDK v2 instrumentation [example](https://github.com/open-telemetry/opentelemetry-go-contrib/tree/987c197ab0ca775f06a157f2db689fb9af9337d7/instrumentation/github.com/aws/aws-sdk-go-v2/otelaws/example).
+Run `go get go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-sdk-go-v2/otelaws` command to import the AWS SDK v2 instrumentation module. The below example displays AWS SDK v2 instrumentation. Check out the complete AWS SDK v2 instrumentation [example](https://github.com/open-telemetry/opentelemetry-go-contrib/tree/987c197ab0ca775f06a157f2db689fb9af9337d7/instrumentation/github.com/aws/aws-sdk-go-v2/otelaws/example).
 Note: We currently don't provide support for instrumenting AWS SDK v1 calls.
 ```go lineNumbers=true
-var trace = otel.Tracer("demo")
+tracer := otel.Tracer("demo")
 ctx, span := tracer.Start(context.Background(), "AWS SDK instrumentation")
 defer span.End()
 
 // init aws config
 cfg, err := awsConfig.LoadDefaultConfig(ctx)
 if err != nil {
-		panic("configuration error, " + err.Error())
+	panic("configuration error, " + err.Error())
 }
 
 // instrument all aws clients
@@ -169,15 +169,63 @@ if err != nil {
 
 <SectionSeparator />
 
+## Configuring Sampling
+
+By default, the OpenTelemetry Go SDK samples 100% of incoming requests by using [`AlwaysSample`](https://pkg.go.dev/go.opentelemetry.io/otel/sdk/trace#AlwaysSample).
+
+### Reduce Sampling Rate
+
+To reduce the sampling rate, configure OpenTelemetry Go SDK to use [`TraceIDRatioBased`](https://pkg.go.dev/go.opentelemetry.io/otel/sdk/trace#TraceIDRatioBased) sampler. Below is the code
+snippet to configure the `TraceIDRatioBased` sampler to sample 10% of requests.
+
+```go lineNumbers=true
+ // initialize the traceIDRatioBasedSampler
+ traceIDRatioBasedSampler := trace.TraceIDRatioBased(0.10)
+
+ // attach traceIDRatioBasedSampler to tracer provider
+ tp := trace.NewTracerProvider(trace.WithSampler(traceIDRatioBasedSampler))
+```
+
+### Sampling using AWS X-Ray Remote Sampler
+
+AWS X-Ray remote sampler can be initialized using `NewRemoteSampler` API. `NewRemoteSampler` can be configured with below options. If AWS X-Ray remote sampler is not able to fetch sampling rules or targets from AWS X-Ray  due to networking or config issues(collector) then remote sampler uses fallback sampler. Fallback sampler always samples 1 req/sec and 5% of additional requests during that second. Moreover, remote sampler uses `TraceIDRatioBased` sampler to enforce [`Rate`](https://docs.aws.amazon.com/xray/latest/devguide/xray-console-sampling.html#xray-console-config) set by customers on AWS X-Ray Console after
+[`Reservoir`](https://docs.aws.amazon.com/xray/latest/devguide/xray-console-sampling.html#xray-console-config) quota is consumed.
+
+NOTE: ctx passed in `NewRemoteSampler` API is being used in background go routine which serves `getSamplingRules` and `getSamplingTargets` API call. So any cancellation in context would also kill the go routine. Ideally, passed context should not be scoped to any kind of startup processes where context is short lived.
+
+| **NewRemoteSampler API options**                                  | **Description**                                                      | **Default Configuration**                          |
+|-------------------------------------------------------------------|----------------------------------------------------------------------|----------------------------------------------------|
+| `WithEndpoint(endpoint url.URL)`                                  | Endpoint used to communicate with the `awsproxy` collector extension | http://localhost:2000                              |
+| `WithSamplingRulesPollingInterval(interval time.Duration)`        | Duration between polling of the GetSamplingRules API                 | 300 seconds                                        |
+| `WithLogger(l logr.Logger)`                                       | logging for remote sampler                                           | [go-logr/stdr](https://github.com/go-logr/stdr)    |
+
+```go lineNumbers=true
+   ctx := context.Background()
+
+   endpoint, err := url.Parse("http://127.0.0.1:2000"); if err != nil {
+         return
+   }
+
+   // instantiate remote sampler with options
+   rs, err := NewRemoteSampler(ctx, "service_name", "cloud_platform", WithEndpoint(endpoint), WithSamplingRulesPollingInterval(350 * time.Second)); if err != nil {
+         return
+   }
+
+   // attach remote sampler to tracer provider
+   tp := trace.NewTracerProvider(trace.WithSampler(rs))
+```
+
+<SectionSeparator />
+
 ## Custom Instrumentation
 
 ### Creating Custom Spans
 
 You can use custom spans to monitor the performance of internal activities that are not captured by instrumentation libraries. Note that only spans of kind `Server` are converted into X-Ray segments, all other spans are converted into X-Ray subsegments. For more on segments and subsegments, see the [AWS X-Ray developer guide](https://docs.aws.amazon.com/xray/latest/devguide/xray-concepts.html#xray-concepts-segments).
 
-Below example shows how to create custom spans.
+The below example shows how to create custom spans.
 ```go lineNumbers=true
-var tracer = otel.Tracer("demo")
+tracer := otel.Tracer("demo")
 
 // this span will be translated to a segment in X-Ray backend
 ctx, span := tracer.Start(context.Background(), "segment", trace.WithSpanKind(trace.SpanKindServer))
@@ -187,6 +235,7 @@ _, span2 := tracer.Start(ctx, "subsegment", trace.WithSpanKind(trace.SpanKindCli
 
 defer span2.End()
 defer span.End()
+```
 
 <SubSectionSeparator />
 
@@ -196,9 +245,9 @@ You can also add custom key-value pairs as attributes onto your spans. The below
 ```go lineNumbers=true
 var tracer = otel.Tracer("demo")
 _, span := tracer.Start(
-			context.Background(),
-			"DemoExample",
-			trace.WithAttributes(attribute.String("a", "1")))
+	context.Background(),
+	"DemoExample",
+	trace.WithAttributes(attribute.String("a", "1")))
 defer span.End()
 ```
 

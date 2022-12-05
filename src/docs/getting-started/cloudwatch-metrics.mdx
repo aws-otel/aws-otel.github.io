@@ -4,7 +4,7 @@ description:
     To support OpenTelemetry Metrics in Amazon CloudWatch. CloudWatch team contributed AWS EMF Exporter for OpenTelemetry Collector
     as part of AWS OpenTelemetry that converts OpenTelemetry format metrics to CloudWatch Embedded Metric Format
     It enables customer applications integrating OpenTelemetry metrics with CloudWatch and has ability to send high-cardinality
-    application metrics which is well supported by EMF. In this tutorial, we will walk through how to enable CloudWatch metrics in AWS OTel Collector.
+    application metrics which is well supported by EMF. In this tutorial, we will walk through how to enable CloudWatch metrics in the ADOT Collector.
 path: '/docs/getting-started/cloudwatch-metrics'
 ---
 
@@ -19,7 +19,7 @@ Collector as part of AWS OpenTelemetry that converts OpenTelemetry format metric
 It enables customer applications integrating OpenTelemetry metrics with CloudWatch and has ability to send high-cardinality application
 metrics which is well supported by EMF.
 
-In this tutorial, we will walk through how to enable CloudWatch metrics in AWS OTel Collector.
+In this tutorial, we will walk through how to enable CloudWatch metrics in the ADOT Collector.
 
 <SectionSeparator />
 
@@ -27,30 +27,30 @@ In this tutorial, we will walk through how to enable CloudWatch metrics in AWS O
 The following diagram shows a high-level picture of how the application metrics are generated with AWS Observability toolkits.
 <img src={img1} alt="Diagram" style="margin: 30px 0;" />
 
-To get started using AWS OTel Collector to send application metrics, you must first install AWS OTel Collector in your
+To get started using ADOT Collector to send application metrics, you must first install ADOT Collector in your
 computing environment for collecting metrics from various of applications.
 
-For more information about installing AWS OTel Collector for each of the AWS platforms, see the getting started section for
+For more information about installing ADOT Collector for each of the AWS platforms, see the getting started section for
 * <Link to="/docs/setup/ecs">ECS</Link>
 * <Link to="/docs/setup/ec2">EC2</Link>
 * <Link to="/docs/setup/eks">EKS</Link>
 * <Link to="/docs/setup/on-premises">On-Premises</Link>
 
-We will discuss how to configure AWS OTel Collector to send different application metrics.
+We will discuss how to configure the ADOT Collector to send different application metrics.
 
 
-**AWS OpenTelemetry Collector supports CloudWatch metrics with the default configuration**
-AWS OTel Collector provides a default configuration out of box that enables CloudWatch metrics. The default
-configuration includes the essential components for metric enabling in AWS OTel Collector.
+**AWS Distro for OpenTelemetry Collector supports CloudWatch metrics with the default configuration**
+ADOT Collector provides a default configuration out of box that enables CloudWatch metrics. The default
+configuration includes the essential components for metric enabling in ADOT Collector.
 
 ```yaml
 receivers:
   otlp:
     protocols:
       grpc:
-        endpoint: localhost:55680
+        endpoint: localhost:4317
       http:
-        endpoint: localhost:55681
+        endpoint: localhost:4318
 processors:
   batch:
     timeout: 60s
@@ -64,14 +64,14 @@ service:
       exporters: [awsemf]
 ```
 
-This out-of-box configuration from AWS OTel Collector has supported CloudWatch metrics, but we provide more options to
+This out-of-box configuration from ADOT Collector has supported CloudWatch metrics, but we provide more options to
 do the advanced customization for each component on metrics sending. We will walk through some of the available configuration options below.
 
 #### **[CloudWatch EMF Exporter (awsemf)](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/master/exporter/awsemfexporter)**
 
 The application metrics are sent to Amazon CloudWatch in form of EMF Logs format. The various configuration options, including
 EMF Log Group Name, Log Stream Name and CloudWatch Metrics Namespace can be customized in EMF exporter configuration. Note that
-AWS OTel Collector utilizes the default log group name and namespace generated from application to support data correlation.
+ADOT Collector utilizes the default log group name and namespace generated from application to support data correlation.
 The customized values might break the data correlation feature.
 
 The available dimension roll-up options in EMF exporter,
@@ -95,9 +95,9 @@ The following is are sample metrics with dimension rollup in CloudWatch console.
 
 
 **Batch processor (batch)**
-AWS Observability Collector supports all the components from OpenTelemetry Collector. The batch processor is enabled by
+ADOT Collector supports all the components from OpenTelemetry Collector. The batch processor is enabled by
 default to improve CloudWatch EMF request through-put. With this setting, the received OpenTelemetry metrics data will
-be batched in AWS Observability Collector metrics pipeline when either the timeout 30s or batch size (8192) is reached,
+be batched in ADOT Collector metrics pipeline when either the timeout 30s or batch size (8192) is reached,
 the batched metrics data will be sent to CloudWatch backend in an efficient fashion.
 
 * `send_batch_size` (default = 8192): Number of spans or metrics after which a batch will be sent.

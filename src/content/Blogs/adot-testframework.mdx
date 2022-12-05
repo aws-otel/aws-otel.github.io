@@ -1,0 +1,225 @@
+---
+title: 'Integration Test Creation utililzing the ADOT Test Framework'
+description:
+    This blog post provides a walk-through of the ADOT test framework and provides an example for adding an integrated test case using the framework. In order to add new components to ADOT collector, it is required to include end-to-end integrated test cases. This blog post will discuss how and why this framework helps contributors add test case into ADOT Collector.
+---
+
+import integtestworkflow from "assets/img/blogs/adot-testFramework/integtestworkflow.png"
+import validatorexample from "assets/img/blogs/adot-testFramework/validatorexample.png"
+import validationtemplate from "assets/img/blogs/adot-testFramework/validationtemplate.png"
+import validationtype from "assets/img/blogs/adot-testFramework/validationtype.png"
+import yamlfile from "assets/img/blogs/adot-testFramework/yamlfile.png"
+import result from "assets/img/blogs/adot-testFramework/result.png"
+
+import vasivasireddy from "assets/img/blogs/adot-testFramework/vasivasireddy.png"
+import richardto from "assets/img/blogs/adot-testFramework/richardto.png"
+
+This blog post provides a walk-through of the [ADOT test framework](https://github.com/aws-observability/aws-otel-test-framework) and an example for adding an integrated test case using the framework. In order to add new components to ADOT collector, it is required to include end-to-end integrated test cases. This blog post will discuss how and why this framework helps contributors add test case into ADOT Collector.
+
+* Contributors will be able to utilize current validators that exist within the framework to develop test case(s) in Java. The ADOT Integration test framework consists of validators which can be used for many use cases such as testing logs, metrics (**AMP**, **Amazon Cloudwatch**), and traces (**AWS X-Ray**).
+
+* Contributors will need to run the tests locally to test their test cases before making a PR. After pushing your test case, all defined test cases in the testcases.json will be automatically picked by the GitHub workflow in the ADOT Collector repository to run tests on AWS platforms such as Amazon EC2, Amazon ECS, Amazon ECS on AWS Fargate, Amazon EKS, and Amazon EKS on AWS Fargate
+
+The ADOT testing framework support the various test cases for both ADOT collector and OTEL SDKs. It also supports multiple AWS platforms and backends to validate metrics, logs, and traces from Amazon CloudWatch, AWS X-Ray, Amazon Managed Service for Prometheus.
+
+### What is an Integration test?
+
+Integration testing is a type of software testing where individual units of a software are combined together as a group with the purpose of exposing any faults that may come with interaction between the combined units. Similar to unit testing for a project, how you group units is up to the developer.
+
+## Components of the Testing Framework
+
+### Sample Application
+A [sample application](https://github.com/aws-observability/aws-OTEL-test-framework/tree/terraform/sample-apps) is an application built with metrics/traces SDK. It runs as a container for the purpose of supporting multiple computing platforms. This application has the capability to generate metrics and/or trace data in order to send them to the ADOT Collector. There are two types of sample application in general:
+
+1. A web application which serves some APIs. Validator call these APIs and then the web application generates metrics or trace data. The [StatsD Sample Application](https://github.com/aws-observability/aws-otel-test-framework/tree/terraform/sample-apps/statsd) is a good example of this process.
+2. A self emitting application which generates metrics or trace data once it starts. Ex, Performance [Load Generator](https://github.com/aws-observability/aws-otel-test-framework/tree/terraform/load-generator).
+
+Sample application is not necessary for some test cases when the receivers in ADOT Collector collect metrics/traces automatically. For example, in this [ECS Metric test](https://github.com/aws-observability/aws-otel-test-framework/tree/terraform/terraform/testcases/ecsmetrics).
+
+### Collector
+[AWS Distro for OpenTelemetry Collector](https://aws.amazon.com/otel/?otel-blogs.sort-by=item.additionalFields.createdDate&otel-blogs.sort-order=desc) (ADOT Collector) is an AWS supported version of the upstream OpenTelemetry Collector which is fully configurable with the components listed [here](https://github.com/aws-observability/aws-otel-collector#aws-otel-collector-built-in-components). It is fully compatible with AWS computing platforms including Amazon EC2, Amazon ECS, and Amazon EKS. The ADOT Collector enables users to send telemetry data to Amazon CloudWatch, AWS X-Ray, Amazon Managed Service for Prometheus (AMP), and other services. The collector runs alongside a sample application to receive data from the application for data processing in order to send to our backend.
+
+### Validator
+A [validator](https://github.com/aws-observability/aws-otel-test-framework/tree/terraform/validator/src/main/java/com/amazon/aoc/validators) is a java function which fetches metric and/or trace data from backend endpoints such as Amazon CloudWatch, AWS X-Ray and Prometheus for validation using existing data schema and values. Currently, the supported backends for validation are
+1. Amazon CloudWatch
+2. AWS X-Ray
+3. AMP Endpoint
+
+### Platform
+A platform is a service where the sample application and ADOT Collector can execute their container on. Currently the supported platforms.
+1. Amazon EC2
+2. Amazon EC2 Based ECS
+3. AWS Fargate Based ECS
+4. Amazon EC2 Based EKS
+5. AWS Fargate Based EKS
+
+### Test Case:
+A Test Case is the entry point of the ADOT test framework, it defines which sample app and which validator to use. For example, the Statsd Sample App and CloudWatch Metric Validator are configured to test a case when StatsD receiver and AWS EMF exporter are enabled in ADOT Collector. Examples of test cases can be found [here](https://github.com/aws-observability/aws-otel-test-framework/tree/4393637cf54f6409de2690604cc17c8391adf034/validator/src/main/resources/validations).
+
+An expected test result needs to be created when you are creating your test case. Depending on the validator in your test case, you have to create either [.mustache](https://mustache.github.io/) file or a [JSON schema file](https://json-schema.org/). Examples of expected test results can be found [here](https://github.com/aws-observability/aws-otel-test-framework/tree/4393637cf54f6409de2690604cc17c8391adf034/validator/src/main/resources/expected-data-template).
+
+### Mock Server:
+A mock server is a backend server running in the framework, it simulates the real backend and enables the tests to be run in a non-credential environment. The supported mock servers are
+1. https
+2. grpc metric & traces
+
+You can find an example of running a mock-test which utilizes a mock-server [here](https://github.com/aws-observability/aws-otel-test-framework/blob/terraform/docs/run-mock-test.md).
+
+**Diagram: Components of an integration test using the ADOT Test Framework**
+<img src={integtestworkflow} alt="Diagram" style="margin: 30px 0;" />
+
+There are two logic paths in the diagram
+1. **Provisioning Path[Orange]:** In the red path, the end-user can use Terraform to deploy a configuration from a test case, launch a platform service (Ex. Amazon EC2, AWS Fargate, Amazon EKS), and deploy a sample application image as well as collector into the platform. Finally after everything is instantiated, the validator will begin to validate the observability data.
+2. **Validation Path[Green]:** Once the validator is instantiated, the validator will send requests to the sample application for metric and traces generation. The sample application will then send the observability data to the collector. Afterwards, the collector will send the processed observability data to the backend (Ex. Amazon CloudWatch) and the validator will query the backend to fetch the processed observability data for validation.
+
+**Environment setup**
+
+Run ADOT test framework locally
+1. Clone the ADOT test framework repo
+  * ` git clone git@github.com:aws-observability/aws-otel-test-framework.git `
+
+2. Install Terraform CLI using this [link](https://learn.hashicorp.com/tutorials/terraform/install-cli) to manage the infrastructure and ineract with cloud platforms.
+
+3. Install [Docker compose](https://docs.docker.com/compose/install/)
+  * Docker Desktop for Mac includes compose along with other Docker apps, so Mac users do not need to install compose separately
+
+4. Running one of the test cases:
+    ```
+    cd aws-otel-test-framework/terraform/mock
+        terraform init
+        terraform apply -var="testcase=../testcases/otlp_mock"
+        terraform destroy
+     ```
+5. What does the running the test case with this method execute?
+  * Builds collector image from the directory ` ../../../aws-otel-collector `
+  * Runs the collector, sample app, and mock server in docker.
+  * Validates if the mock server receives data from collector.
+
+### Run ADOT test framework for AWS platform usage
+
+In the case that you want to debug for a certain platform, you can also use this testing framework to run your test case locally to pull data from multiple AWS platforms including [Amazon Elastic Kubernetes Service](https://aws.amazon.com/eks/getting-started/) (EKS), [Amazon Elastic Compute Cloud](https://aws.amazon.com/ec2/getting-started/) (EC2), [Amazon Elastic Container Service](https://aws.amazon.com/ecs/getting-started/) (ECS).
+
+1. Setup your AWS credentials
+  * Refer to this [guide](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html#cli-configure-quickstart-config) to quickly configure basic settings.
+2. Navigate inside the ADOT test framework repo in your local and run the following commands to automatically create the necessary resources in your AWS account.
+  * ` cd terraform/setup && terraform init && terraform apply`
+  * `cd terraform/imagebuild && terraform init && terraform apply`
+3. This task will build and push the sample application image and mocked server image to the Amazon ECR registry, so your integration test(s) can use them. The setup will also create an IAM role, VPC, security group, and two private ECRs.
+  * To deploy applications, your application components must be created to run in containers. A container is a standardized unit of software that contains everything that your software application needs to run.
+  * In this use case you will have to build a sample application image & ADOT image and then push it up to one of these registries so you can then run your images with your integration tests during deployment.
+  * Please follow these [instructions](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/build-docker.md) to build & push your image with the new component, be sure to save the image link for usage.
+4. Run the test cases:
+  * Running test cases in [EC2](https://github.com/aws-observability/aws-otel-test-framework/blob/terraform/docs/run-testing-framework.md#24-run-in-ec2)
+  * Running test cases in [ECS](https://github.com/aws-observability/aws-otel-test-framework/blob/terraform/docs/run-testing-framework.md#22-run-in-ecs)
+  * Running test cases in [EKS](https://github.com/aws-observability/aws-otel-test-framework/blob/terraform/docs/run-testing-framework.md#23-run-in-eks)
+  * Running test cases in [EKS Fargate](https://github.com/aws-observability/aws-otel-test-framework/blob/terraform/docs/run-testing-framework.md#231-run-in-eks-fargate)
+  * Running test cases in [Canary](https://github.com/aws-observability/aws-otel-test-framework/blob/terraform/docs/run-testing-framework.md#25-run-in-canary)
+
+The testing framework uses terraform to run the tests in various platforms as listed above. see [here](https://github.com/aws-observability/aws-otel-test-framework/tree/terraform/terraform) for more details.
+
+5. Don’t forget to clean up your resources after running the tests.
+
+  * ` terraform destroy --auto-approve`
+
+### Integration Test Tutorial
+
+In this section we are going to use an example to help explain how to create an integration test using the ADOT Test Framework. This example utilizes a log validator to validate logs from CloudWatch Container Insights for the EKS Fargate Integration testing. The use case for this integrated test is to validate the added components to the ADOT collector by the Container Observability team at AWS. Specifically, we will demonstrate on how to create a test case and then deploy it locally for testing.
+
+### Prerequisites
+
+* [Sample Application Image](https://github.com/aws-observability/aws-OTEL-test-framework/tree/terraform/sample-apps)
+* ADOT Collector Image
+* Environment Setup
+
+## Example
+
+We have added the following processors into the ADOT collector and built a new ADOT collector image for this use case
+
+* cumulativetodelta processor
+* deltatorate processor
+* experimental_metricsgeneration processor
+
+There are many validators that you can utilize to validate logs, metrics and traces. For our use case, we used the ContainerInsightStructuredLogValidator in order to compare our expected test result JSON schema to the actual result in the Amazon Cloudwatch Logs.
+
+1. Create a validator or use an existing one in the file:` validator/src/main/java/com/amazon/aoc/validators/ValidatorFactory.java `.
+  * Here we will use ` container-insight-eks-logs ` test case because it utilizes the ContainerInsightStructuredLogValidator validator.
+<img src={validatorexample} alt="Diagram" style="margin: 30px 0;" />
+
+2. Setup your expected test results in the following path:` resources/expected-data-template/ `. The JSON templates are used for log validations and Mustache files are used for metric validations in the framework.
+
+  * Create a JSON template using the JSON [schema](http://json-schema.org/draft-04/schema#)
+  * Create a .mustache file using the [schema](https://mustache.github.io/)
+
+Based on the dimensions and the metrics generated by the processors, we have created an expected JSON template Pod.json that generates the expected output in the test Framework for the validation,
+located at the following path:` validator/src/main/resources/expected-data-template/container-insight/eks/fargate/ `
+
+```
+dimensions: [ [ClusterName, LaunchType], [ClusterName, Namespace, LaunchType], [ClusterName, Namespace, PodName, LaunchType]]
+metric names:
+              - pod_cpu_utilization_over_pod_limit
+              - pod_memory_utilization_over_pod_limit
+              - pod_memory_working_set
+              - pod_memory_limit
+              - pod_network_rx_bytes
+              - pod_network_tx_bytes
+```
+
+3. Define a path for your expected test result in the following file: validator/src/main/java/com/amazon/aoc/fileconfigs/PredefinedExpectedTemplate.java
+<img src={validationtemplate} alt="Diagram" style="margin: 30px 0;" />
+
+4. Create an config file to specify the validationType and expectedLogsStructureTemplate  under ` validator/src/main/resources/validations/` to finalize the test case.
+  * We have created ` eks-cw-container-insight.yml` as shown below
+<img src={validationtype} alt="Diagram" style="margin: 30px 0;" />
+
+5. Next, we will create sub folder ‘containerinsight_eks’ under the [testcase directory](https://github.com/aws-observability/aws-otel-test-framework/tree/terraform/terraform/testcases). We placed the parameters.tfvars file under the test case folder to override the [default parameters](https://github.com/aws-observability/aws-otel-test-framework/blob/terraform/terraform/common.tf). In this file you will need to add the fields: validation_config,  aoc_base_scenario and deployment_type depending on your use case.
+<img src={yamlfile} alt="Diagram" style="margin: 30px 0;" />
+
+6. Depending on the type of validation, you will need an Amazon ECS Cluster, Amazon EKS Cluster, etc..
+  * For our example we are required to create an Amazon EKS cluster in AWS account.
+  * Refer to the environment setup for guidance on setting up these platforms for your testing purposes.
+
+7. By using the following command we are able to run our test case using AWS Fargate on Amazon EKS. You will need to specify the correct variables & values according to the parameters.
+  * Don’t forget to specify the necessary variable for your environment
+
+```
+cd terraform/eks && terraform init && terraform apply \
+    -var="eks_cluster_name={the eks cluster name in your account}" \
+    -var="aoc_version=v0.15.0" \
+    -var="aoc_image_repo=public.ecr.aws/aws-observability/aws-otel-collector" \
+    -var="testcase=../testcases/eks_containerinsights_fargates" \
+    -var-file="../testcases/eks_containerinsights_fargate/parameters.tfvars"
+```
+**Note**: Please make sure to clean up your resources after the testing.
+
+```
+terraform destroy -var="cluster_name=<you_cluster_name>" -var="deployment_type=fargate"
+```
+8. After running the test case `containerinsights_eks` using terraform, ContainerInsightStructuredLogValidator will validate the expected test result that is generated from Pod.json to the actual data received from CloudWatch Logs. The image below shows that the test case passed from successful validation.
+<img src={result} alt="Diagram" style="margin: 30px 0;" />
+
+### Challenges and Learnings
+
+While working on this project, we were able learn about the ADOT test framework and the development process that comes along in adding the components the ADOT collector. Some of the major challenges we have faced was identifying the dependencies required in order to deploy an integration test using the framework. Although there is a good documentation about the test framework, it was bit challenging to create a test case and identify a appropriate validator. As a result, we thought it was a good idea to create a blog post to consolidate all of this information into one document.
+
+### Conclusion
+
+Throughout this project, we gained lot of knowledge and deeper understanding on how to use the ADOT test framework and AWS services such as [Amazon Elastic Kubernetes Service](https://aws.amazon.com/eks/getting-started/) (EKS), [Amazon Elastic Compute Cloud](https://aws.amazon.com/ec2/getting-started/) (EC2), [AWS Fargate](https://aws.amazon.com/fargate/?nc=sn&loc=0). We also learned how to write quality end-to-end integrated test cases and identify the specific steps of deploying a test case.
+
+We would like to take a moment to thank our manager [Alolita Sharma](https://github.com/alolita/) and fellow engineers [Jeffrey chein](https://github.com/jefchien), [Seth Levine](https://github.com/sethAmazon) for their continued support and guidance at every stage of our project. Please file an [issue](https://github.com/aws-observability/aws-otel-test-framework/issues) if you have questions or request for enhancements in the ADOT test framework.
+
+### Reference links
+
+* Learn more about the ADOT Collector at the [website](https://aws-otel.github.io/docs/getting-started/collector).
+* Learn more about contributing your components to ADOT collector at this [page](https://github.com/aws-observability/aws-otel-test-framework#1-two-prs-to-contribute-your-component-to-aws-otel-collector).
+* Learn more about the [AWS Distro for OpenTelemetry Community](https://github.com/aws-observability/aws-otel-community) and [ADOT preview program](https://github.com/aws-observability/aws-otel-community/tree/master/preview-program).
+* Learn how to get involved at in the [Open Telemetry Community](https://github.com/open-telemetry/community) and participate in the [OpenTelemetry SIG meetings](https://github.com/open-telemetry/community#calendar).
+
+### About the Authors
+
+<img src={vasivasireddy} alt="Diagram" style="width: 125px;" />
+
+[Pavan Sai Vasireddy](https://github.com/vasireddy99) is a recent graduate working as a Software Development Engineer on the AWS Observability team. He is passionate about monitoring and observability, currently focussed on release engineering for ADOT collector, building monitoring tools and contributing to open source.
+
+<img src={richardto} alt="Diagram" style="width: 125px;" />
+
+Richard To is a Software Development Engineer Intern on the AWS Observability team and is interested in observability and infrastructure.

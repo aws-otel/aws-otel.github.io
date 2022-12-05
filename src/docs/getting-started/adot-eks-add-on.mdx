@@ -1,0 +1,65 @@
+---
+title: 'Getting Started with AWS Distro for OpenTelemetry using EKS Add-Ons'
+description:
+    This page is about getting started with leveraging Amazon EKS add-ons to use ADOT.
+path: '/docs/getting-started/adot-eks-add-on'
+---
+
+import operatorImg1 from "assets/img/docs/gettingStarted/operator/img1.png"
+import operatorImg2 from "assets/img/docs/gettingStarted/operator/img2.png"
+
+## Table of Contents
+
+### [Introduction](/docs/getting-started/adot-eks-add-on#introduction-1)
+### [Requirements](/docs/getting-started/adot-eks-add-on/requirements)
+### [Installation](/docs/getting-started/adot-eks-add-on/installation)
+### [Collector Configuration Introduction](/docs/getting-started/adot-eks-add-on/config-intro)
+#### [Collector Configuration for Amazon Managed Prometheus](/docs/getting-started/adot-eks-add-on/config-amp)
+#### [Collector Configuration for AWS CloudWatch](/docs/getting-started/adot-eks-add-on/config-cloudwatch)
+#### [Collector Configuration for AWS X-Ray](/docs/getting-started/adot-eks-add-on/config-xray)
+#### [Advanced Collector Configuration for Amazon Managed Prometheus](/docs/getting-started/adot-eks-add-on/config-advanced)
+### [Update and Cleanup](/docs/getting-started/adot-eks-add-on/update-and-cleanup)
+
+
+## Introduction
+
+Welcome to the getting started guide for AWS Distro for OpenTelemetry (ADOT) using Elastic Kubernetes Service (EKS) add-ons. This guide shows you how to leverage Amazon EKS add-ons to install and manage ADOT within your Amazon EKS cluster. [ADOT](https://aws-otel.github.io/) is generally available (GA) for tracing and can also be used for metrics. Amazon EKS add-ons support for ADOT enables a simplified experience through EKS APIs to install one component of ADOT, the [ADOT Operator](/docs/getting-started/adot-eks-add-on#the-adot-operator-and-adot-collector), in your Amazon EKS cluster for your metrics and/or trace collection pipeline. Amazon EKS add-ons support reduces the amount of configuration, setup, and deployment that would be required otherwise. For more information, see [Amazon EKS add-ons](https://docs.aws.amazon.com/eks/latest/userguide/eks-add-ons.html).
+
+This guide contains:
+
+* Requirements to install ADOT
+* How to install the ADOT using Amazon EKS add-ons.
+* How to set up the ADOT Operator and Collector.
+* How to instrument your applications on Amazon EKS.
+* How to configure the ADOT Collector to collect, and send infrastructure and application metrics from Amazon EKS clusters and applications to either Amazon Managed Service for Prometheus or CloudWatch.
+* How to configure an ADOT Collector to collect and send application traces from workloads running on Amazon EKS to AWS X-Ray.
+* How to update the ADOT EKS add-on
+
+This diagram shows an end-to-end pipeline utilizing the ADOT EKS add-on. It breaks down the different components of the pipeline, as well as splits it up into three smaller pipelines; those three pipelines are configured for:
+
+* Discovering and collecting Prometheus metrics and sending to Amazon Managed Service for Prometheus (AMP)
+* Receiving OTLP metrics, and sending to Amazon Managed Service for Prometheus (AMP) and Amazon CloudWatch
+* Receiving distributed application traces, and sending them to AWS X-Ray
+
+<img src={operatorImg2} alt="Diagram" style="margin: 30px 0;" />
+<p style="text-align: center;"><i>Diagram: EKS ADOT Operator end to end pipeline</i></p>
+
+
+## The ADOT Operator and ADOT Collector
+
+When you leverage EKS add-ons, EKS will install the ADOT Operator. The ADOT Operator is an implementation of a [Kubernetes Operator](https://cloud.redhat.com/learn/topics/operators), a method of packaging and deploying a Kubernetes-native application and managed using Kubernetes APIs. In this case, the application is the ADOT Collector, which is a collection agent that receives, processes, and exports telemetry data in multiple data formats to multiple open source and vendor-service backends. A Kubernetes Operator is a custom controller, which uses a [Custom Resource Definition (CRD)](https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definitions/) to simplify the deployment and configuration of Custom Resources (CR). The ADOT Operator introduces a new CR called the `OpenTelemetryCollector` through a CRD.
+
+ The ADOT Operator detects the presence of or changes for the `OpenTelemetryCollector` resource. For any such change, the ADOT Operator performs the following actions:
+
+1. Verifies that all the required connections for these creation, update, or deletion requests to the Kubernetes API server are available. 
+2. Deploys ADOT Collector instances in the way the user expressed in the `OpenTelemetryCollector` resource configuration. 
+
+The diagram below shows how the Collector CR request flows from the customer to the ADOT Operator to deploy the ADOT Collector.
+
+<img src={operatorImg1} alt="Diagram" style="margin: 30px 0;" />
+
+You can leverage EKS add-ons to maintain the ADOT Operator. The ADOT Collector is released and supported through regular ADOT releases on [Amazon Elastic Container Registry (Amazon ECR)](https://aws.amazon.com/ecr/) public gallery. If you want to update your ADOT Collector version to the latest release, apply a new configuration via CRD with an updated image. You can ask questions and report bugs on [GitHub](https://github.com/aws-observability/aws-otel-community/issues).
+
+See [this section](/docs/getting-started/adot-eks-add-on/update-and-cleanup) to update these components.
+
+## [Next Topic: Requirements](/docs/getting-started/adot-eks-add-on/requirements)

@@ -1,10 +1,10 @@
 ---
 title: 'Setting up AWS Distro for OpenTelemetry Collector in Amazon Elastic Container Service'
 description:
-    In this tutorial, we will demonstrate how to run AWS Distro for OpenTelemetry Collector (AWS Otel Collector) as a
+    In this tutorial, we will demonstrate how to run AWS Distro for OpenTelemetry Collector (ADOT Collector) as a
     sidecar on the Amazon Elastic Container Service (Amazon ECS) in Fargate and in Amazon Elastic Compute Cloud
     (Amazon EC2) mode. We provide a sample application within the same Amazon ECS task to send monitoring data to
-    AWS OTel Collector. Also, we will demonstrate how to run AWS Distro for OpenTelemetry Collector (AWS Otel Collector)
+    ADOT Collector. Also, we will demonstrate how to run AWS Distro for OpenTelemetry Collector (ADOT Collector)
     as a daemon service to collect the EC2 instance metrics from the Amazon Elastic Container Service (Amazon ECS).
 path: '/docs/setup/ecs'
 ---
@@ -14,7 +14,7 @@ import { Link } from "gatsby"
 import img8 from "assets/img/docs/img8.png"
 import img9 from "assets/img/docs/img9.png"
 
-In this tutorial, we will demonstrate how to run AWS Distro for OpenTelemetry Collector (AWS Otel Collector) as a
+In this tutorial, we will demonstrate how to run AWS Distro for OpenTelemetry Collector (ADOT Collector) as a
 sidecar on the Amazon Elastic Container Service (Amazon ECS) in Fargate and in Amazon Elastic Compute Cloud
 (Amazon EC2) mode. We provide a sample application within the same Amazon ECS task to send monitoring data to AWS
 OTel Collector.
@@ -28,9 +28,9 @@ If you don't have a cluster, follow this <Link to="/docs/setup/ecs/create-cluste
 
 <SectionSeparator />
 
-## 2. Setup the AWS OTel Collector for Xray, StatsD and ECS Container metrics
+## 2. Setup the ADOT Collector for Xray, StatsD and ECS Container metrics
 
-There are three different ways to get started by installing AWS OTel Collector as a sidecar in ECS- using CloudFormation template, using Task 
+There are three different ways to get started by installing ADOT Collector as a sidecar in ECS- using CloudFormation template, using Task 
 Definition, and using AWS Management Console. Follow any of the following three options to setup the collector.
 
 ### 2.1 Setup using CloudFormation template
@@ -54,7 +54,7 @@ This option is recommended for developers who are familier with ECS and know how
 
 ### 2.3 Setup using AWS Management Console
 
-This option shows the whole process step by step to setup AWS OTel Collector using AWS Management Console. 
+This option shows the whole process step by step to setup ADOT Collector using AWS Management Console. 
 - <Link to="/docs/setup/ecs/create-iam-policy">Create IAM Policy</Link> 
 - <Link to="/docs/setup/ecs/create-iam-role">Create IAM Role</Link> 
 - <Link to="/docs/setup/ecs/create-task-definition-console">Create Task Definition using AWS Console</Link> 
@@ -62,9 +62,9 @@ This option shows the whole process step by step to setup AWS OTel Collector usi
 
 <SectionSeparator />
 
-## 3. Setup the AWS OTel Collector for ECS EC2 instance Metrics
+## 3. Setup the ADOT Collector for ECS EC2 instance Metrics
 
-There are three different ways to get started by installing AWS OTel as a daemon service in ECS - using
+There are three different ways to get started by installing ADOT as a daemon service in ECS - using
 CloudFormation template, using Task Definition, and using AWS Management Console. Follow any of the following
 three options to setup the collector.
 
@@ -86,7 +86,7 @@ This option is recommended for developers who are familier with ECS and know how
 
 ### 3.3 Setup using AWS Management Console
 
-This option shows the whole process step by step to setup AWS OTel Collector using AWS Management Console.
+This option shows the whole process step by step to setup ADOT Collector using AWS Management Console.
 - <Link to="/docs/setup/ecs/create-iam-policy">Create IAM Policy</Link>
 - <Link to="/docs/setup/ecs/create-iam-role">Create IAM Role</Link>
 - <Link to="/docs/setup/ecs/create-task-definition-instance-console">Create Task Definition using AWS Console</Link>

@@ -16,16 +16,16 @@ jobs:
           - ubuntu-latest
           - windows-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3.1.0
+      - uses: actions/setup-node@v3
         with:
-          node-version: '14'
+          node-version: '16'
           check-latest: true
       - name: Get npm cache directory
         id: npm-cache-dir
         run: |
           echo "::set-output name=dir::$(npm config get cache)"
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         id: npm-cache
         with:
           path: ${{ steps.npm-cache-dir.outputs.dir }}
@@ -38,7 +38,7 @@ jobs:
           GH_API_KEY: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload site as actions artifact
         if: ${{ runner.os == 'Linux' }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: site
           path: public

@@ -33,6 +33,14 @@ export const sideBarData = [
       link: "/download"
     }
   },
+  {
+    node: {
+      id: nextId(),
+      label: "Testing",
+      items: null,
+      link: "https://aws-observability.github.io/aws-otel-collector/benchmark/report"
+    }
+  },
   // {
   //   node: {
   //     id: nextId(),
@@ -51,14 +59,20 @@ export const sideBarData = [
         {label: "Java", link: "/docs/getting-started/java-sdk"},
         {label: "JavaScript", link: "/docs/getting-started/javascript-sdk"},
         {label: "Python", link: "/docs/getting-started/python-sdk"},
+        {label: "Ruby", link: "/docs/getting-started/ruby-sdk"},
         {label: ".NET", link: "/docs/getting-started/dotnet-sdk"},
+        {label: "PHP", link: "/docs/getting-started/php-sdk"},
         {label: "k8s Operator", link: "/docs/getting-started/operator"},
+        {label: "ADOT with EKS add-ons", link: "/docs/getting-started/adot-eks-add-on"},
         {label: "Lambda", link: "/docs/getting-started/lambda"},
-        {label: "Managed Service for Prometheus (AMP)", link: "/docs/getting-started/prometheus-remote-write-exporter"},
+        {label: "Amazon Managed Service for Prometheus (AMP)", link: "/docs/getting-started/prometheus-remote-write-exporter"},
         {label: "Prometheus Configurations", link: "/docs/getting-started/advanced-prometheus-remote-write-configurations"},
         {label: "CloudWatch Metrics", link: "/docs/getting-started/cloudwatch-metrics"},
         {label: "CloudWatch Container Insights", link: "/docs/getting-started/container-insights"},
         {label: "X-Ray", link: "/docs/getting-started/x-ray"},
+        {label: "ECS Configurations", link: "/docs/getting-started/using-ecs-console-for-ecs-adot-observability"},
+        {label: "App Runner", link: "/docs/getting-started/apprunner"},
+
       ],
       link: "/docs/null"
     }
@@ -71,6 +85,7 @@ export const sideBarData = [
         {label: "Permissions", link: "/docs/setup/permissions"},
         {label: "Docker Images", link: "/docs/setup/docker-images"},
         {label: "ECS", link: "/docs/setup/ecs"},
+	{label: "ECS Console Setup", link: "/docs/getting-started/ecs-configurations/ecs-console-setup"},
         {label: "EC2", link: "/docs/setup/ec2"},
         {label: "EKS", link: "/docs/setup/eks"},
         {label: "On-Premises", link: "/docs/setup/on-premises"},

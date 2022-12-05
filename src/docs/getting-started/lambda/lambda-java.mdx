@@ -7,7 +7,7 @@ description:
      together with an out-of-the-box configuration for AWS Lambda and AWS X-Ray.
      Users can enable and disable OpenTelemetry for their Lambda function without changing code.
      With the ADOT Lambda Layer for Java, the wrapper has built-in support for instrumenting the AWS SDK automatically.
-     For additional instrumenting functionality, see the documentation on [auto-instrumentation for traces](https://quip-amazon.com/CLFnA0caodZV/AWS-Distro-for-OpenTelemetry-Lambda-Support-For-Java-Auto-instrumentation-Agent).
+     For additional instrumenting functionality, see the documentation on [auto-instrumentation for traces](https://github.com/aws-observability/aws-otel-java-instrumentation/blob/main/README.md).
 
 path: '/docs/getting-started/lambda/lambda-java'
 ---
@@ -16,7 +16,7 @@ import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.js
 
 The AWS managed Lambda layer for ADOT Java provides a plug-and-play user experience by wrapping an AWS Lambda function, and by packaging the [OpenTelemetry Java SDK](https://aws-otel.github.io/docs/getting-started/java-sdk/trace-manual-instr) together with an out-of-the-box configuration for AWS Lambda and AWS X-Ray. Users can enable and disable OpenTelemetry for their Lambda function without changing code.
 
-With the ADOT Lambda Layer for Java, the wrapper has built-in support for instrumenting the AWS SDK automatically. For additional instrumenting functionality, see the documentation on [auto-instrumentation for traces](https://quip-amazon.com/CLFnA0caodZV/AWS-Distro-for-OpenTelemetry-Lambda-Support-For-Java-Auto-instrumentation-Agent).
+With the ADOT Lambda Layer for Java, the wrapper has built-in support for instrumenting the AWS SDK automatically. For additional instrumenting functionality, see the documentation on [auto-instrumentation for traces](https://aws-otel.github.io/docs/getting-started/java-sdk/trace-auto-instr).
 
 
 <SectionSeparator />
@@ -35,12 +35,14 @@ In this section, we consume the Lambda layer for use with Java Lambda Functions.
 Note: Lambda layers are a regionalized resource, meaning that they can only be used in the Region in which they are published.
  Make sure to use the layer in the same region as your Lambda functions.
 
-Find the supported regions and ARN in the table below for the ARNs to consume.
+Find the supported regions and amd64(x86_64)/arm64 layer ARN in the table below for the ARNs to consume.
 
-|Supported   Regions |Lambda layer ARN format| Contents |
+|Supported   Regions  |Lambda layer ARN format  | Contents |
 |---------------------|-------------------------|----------|
-| ap-northeast-1<br/>ap-northeast-2<br/>ap-south-1<br/>ap-southeast-1<br/>ap-southeast-2<br/>ca-central-1<br/>eu-central-1<br/>eu-north-1<br/>eu-west-1<br/>eu-west-2<br/>eu-west-3<br/>sa-east-1<br/>us-east-1<br/>us-east-2<br/>us-west-1<br/>us-west-2 | arn:aws:lambda:\<region\>:901920570463:layer:aws-otel-java-wrapper-ver-1-7-0:1 | Contains [OpenTelemetry for Java v1.7.0](https://github.com/open-telemetry/opentelemetry-java/releases/tag/v1.7.0) with [Java Instrumentation v1.7.0](https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/tag/v1.6.0) <br/><br/> Contains the [ADOT Collector for Lambda v0.14.0](https://github.com/aws-observability/aws-otel-collector/releases/tag/pkg%2Flambdacomponents%2Fv0.14.0) |
+| ap-northeast-1<br/>ap-northeast-2<br/>ap-south-1<br/>ap-southeast-1<br/>ap-southeast-2<br/>ca-central-1<br/>eu-central-1<br/>eu-north-1<br/>eu-west-1<br/>eu-west-2<br/>eu-west-3<br/>sa-east-1<br/>us-east-1<br/>us-east-2<br/>us-west-1<br/>us-west-2 | arn:aws:lambda:<region\>:901920570463:layer:aws-otel-java-wrapper-<architecture\>-ver-1-19-0:1 | Contains [OpenTelemetry for Java v1.19.0](https://github.com/open-telemetry/opentelemetry-java/releases/tag/v1.19.0) with [Java Instrumentation v1.19.2](https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/tag/v1.19.2) <br/><br/> Contains the [ADOT Collector for Lambda v0.23.0](https://github.com/aws-observability/aws-otel-collector/releases/tag/pkg%2Flambdacomponents%2Fv0.23.0) |
 
+**Note**
+The arm64 lambda Layer for the region ca-central-1 is arn:aws:lambda:ca-central-1:901920570463:layer:aws-otel-java-wrapper-arm64-ver-1-19-0:2
 
 ### Enable auto-instrumentation for your Lambda function
 To enable the AWS Distro for OpenTelemetry in your Lambda function, you need to add and configure the layer, and then enable tracing.
@@ -88,7 +90,7 @@ The configuration of the ADOT Collector follows the OpenTelemetry standard.
 
 By default, the ADOT Lambda layer uses the [config.yaml](https://github.com/aws-observability/aws-otel-lambda/blob/main/adot/collector/config.yaml),
  which exports telemetry data to AWS X-Ray. To customize the Collector config,
- see the [main Lambda section for custom configuration instructions](/docs/getting-started/lambda)
+ see the [main Lambda section for custom configuration instructions](/docs/getting-started/lambda#custom-configuration-for-the-adot-collector-on-lambda)
 
 
 <SectionSeparator />

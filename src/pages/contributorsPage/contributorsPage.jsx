@@ -7,6 +7,7 @@ import Parallax from "components/Parallax/Parallax.jsx"
 import HeaderLinks from "components/Header/HeaderLinks.jsx"
 import ContributorsPageStyle from "../../assets/jss/material-kit-react/views/contributorsPage"
 import Contributors from "./sections/contributors"
+import BackgroundImage from "assets/img/adot_bg.jpg"
 
 class ContributorsPage extends React.Component {
   render() {
@@ -25,7 +26,7 @@ class ContributorsPage extends React.Component {
               }}
               {...rest}
           />
-          <Parallax small image={require("assets/img/himalia_bg.jpg")}>
+          <Parallax small image={BackgroundImage}>
           </Parallax>
 
           <div className={classNames(classes.main, classes.mainRaised)} >

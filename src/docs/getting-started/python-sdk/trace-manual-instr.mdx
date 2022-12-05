@@ -19,7 +19,7 @@ In this guide, we walk through the steps needed to trace an application with aut
 
 ## Requirements
 
-Python 3.6 or later is required to run an application using OpenTelemetry.
+Python 3.7 or later is required to run an application using OpenTelemetry.
 
 Note: You’ll also need to have the [ADOT Collector](https://aws-otel.github.io/docs/getting-started/collector) running to export traces to X-Ray.
 
@@ -27,22 +27,23 @@ Note: You’ll also need to have the [ADOT Collector](https://aws-otel.github.io
 
 ## Installation
 
-Install the following packages and its dependencies from OpenTelemetry Python using pip.
+Install the following packages and their dependencies from OpenTelemetry Python using pip.
 
 ```bash
-$ pip install opentelemetry-sdk-extension-aws~=2.0 \
+$ pip install opentelemetry-sdk==1.11.1 \
+              opentelemetry-sdk-extension-aws~=2.0 \
               opentelemetry-propagator-aws-xray~=1.0 \
-              opentelemetry-exporter-otlp~=1.5 \
+              opentelemetry-exporter-otlp==1.11.1 \
 ```
 
-OpenTelemetry Python distributes many packages, which provide instrumentation for well-known Python dependencies. You need to install the relevant instrumentation package for every dependency you want to generate traces for. To see supported frameworks and libraries, check out the [OpenTelemetry Registry](https://opentelemetry.io/registry/?s=python).
+OpenTelemetry Python distributes many packages, which provide instrumentation for well-known Python dependencies. You need to install the relevant instrumentation package for every dependency you want to generate traces for. To see supported frameworks and libraries, check out the [OpenTelemetry Registry](https://opentelemetry.io/registry/?s=python&component=instrumentation).
 
 For example, use pip to install the follow instrumentation libraries:
 
 ```bash
 # Supported instrumentation packages for the dependencies of the example above
-$ pip install opentelemetry-instrumentation-flask==0.24b0 \
-              opentelemetry-instrumentation-requests==0.24b0
+$ pip install opentelemetry-instrumentation-flask==0.30b1 \
+              opentelemetry-instrumentation-requests==0.30b1
 ```
 
 <SectionSeparator />
@@ -63,10 +64,10 @@ import json
 from opentelemetry import trace
 from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
 from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import BatchExportSpanProcessor
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
 
 # Import the AWS X-Ray for OTel Python IDs Generator into the application.
-from opentelemetry.sdk.extension.aws.trace import AwsXRayIdsGenerator
+from opentelemetry.sdk.extension.aws.trace import AwsXRayIdGenerator
 ```
 
 Next, configure the Global Tracer Provider to export to the ADOT Collector. The configuration of your SDK exporter depends on how you wish to connect with your configured ADOT Collector.
@@ -77,9 +78,9 @@ Connecting to an ADOT Collector running as a sidecar, we can set up the TracerPr
 # Sends generated traces in the OTLP format to an ADOT Collector running on port 4317
 otlp_exporter = OTLPSpanExporter(endpoint="http://localhost:4317")
 # Processes traces in batches as opposed to immediately one after the other
-span_processor = BatchExportSpanProcessor(otlp_exporter)
+span_processor = BatchSpanProcessor(otlp_exporter)
 # Configures the Global Tracer Provider
-trace.set_tracer_provider(TracerProvider(active_span_processor=span_processor, ids_generator=AwsXRayIdsGenerator()))
+trace.set_tracer_provider(TracerProvider(active_span_processor=span_processor, id_generator=AwsXRayIdGenerator()))
 ```
 
 The `endpoint=` argument allows you to set the address that the exporter will use to connect to the collector. If unset, the SDK will try to connect to `http://localhost:4317` by default. Note that because the scheme is `http` by default, you have to explicitly set it to be `https` if necessary.
@@ -171,7 +172,7 @@ logger.debug("My debug level log.")
 
 OpenTelemetry provides a wide range of instrumentations for popular python libraries such as Flask, Django, Redis, MySQL, PyMongo and many more. Instrumenting a library means that every time the library is used to make or handle a request, that library call is automatically wrapped with a populated span contain the relevant values that were used. Web framework, downstream HTTP, SQL, gRPC, and other requests can all be recorded using OpenTelemetry.
 
-A full list of support instrumentation packages and configuration instructions can be found on the [OpenTelemetry Python Contrib repo](https://github.com/open-telemetry/opentelemetry-python-contrib/tree/main/instrumentation).
+A full list of supported instrumentation packages and configuration instructions can be found on the [OpenTelemetry Python Contrib repo](https://github.com/open-telemetry/opentelemetry-python-contrib/tree/main/instrumentation).
 
 To enable tracing of the calls made by your package dependencies, you need to import and initialize the relevant `Instrumentor` classes. `Instrumentor`s have individual
 initialization requirements, so refer to the `Instrumentor`’s package documentation for configuration details.
@@ -193,13 +194,13 @@ To install the instrumentation library for the AWS SDK and its dependencies, run
 For instrumenting the `boto` (AWS SDK V2) package:
 
 ```bash
-$ pip install opentelemetry-instrumentation-boto==0.24b0
+$ pip install opentelemetry-instrumentation-boto==0.30b1
 ```
 
 For instrumenting the `boto3` (AWS SDK V3) package (which depends on the `botocore` package):
 
 ```bash
-$ pip install opentelemetry-instrumentation-botocore==0.24b0
+$ pip install opentelemetry-instrumentation-botocore==0.30b1
 ```
 
 Instrumenting the AWS SDK is as easy as configuring the `BotoInstrumentor` or `BotocoreInstrumentor` class. This should be done as soon as possible in your application so that subsequent calls using the SDK are wrapped by OpenTelemetry. This give OpenTelemetry the chance to record relevant information used by the SDK at the time of your application's call and export the information as spans.
@@ -268,7 +269,9 @@ from opentelemetry import trace
 # Get a tracer from the Global Tracer Provider
 tracer = trace.get_tracer(__name__)
 
-with tracer.start_as_current_span("Root Span") as span:
+with tracer.start_as_current_span(
+    "Root Span",
+    kind=trace.SpanKind.SERVER) as span:
 
     print('Started a root span')
 
@@ -283,7 +286,9 @@ from opentelemetry import trace
 # Get a tracer from the Global Tracer Provider
 tracer = trace.get_tracer(__name__)
 
-with tracer.start_as_current_span("Root Span") as span:
+with tracer.start_as_current_span(
+    "Root Span",
+    kind=trace.SpanKind.SERVER) as span:
 
     print('Started a root span')
 

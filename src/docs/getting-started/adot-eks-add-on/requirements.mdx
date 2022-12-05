@@ -1,0 +1,61 @@
+---
+title: 'Requirements for Getting Started with AWS Distro for OpenTelemetry using EKS Add-Ons'
+description:
+    This page is about the requirements needed to get started with leveraging Amazon EKS add-ons to use ADOT.
+path: '/docs/getting-started/adot-eks-add-on/requirements'
+---
+
+## ADOT requirements
+
+* [kubectl](https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html) is installed
+    * There is no specified version, but will be dependent on your cluster’s Kubernetes version (see section below)
+    
+* [eksctl](https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html) is installed
+
+* Your cluster should be on Kubernetes version 1.19 or higher. You can verify the version you’re running with the following command:
+```console
+kubectl version | grep "Server Version"`
+```
+
+* Make sure that you can use kubectl with your EKS cluster by updating your `kubeconfig` if necessary:
+```console
+aws eks update-kubeconfig --name cluster_name --region YOUR_AWS_REGION
+```
+
+* [AWS CLI v2](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) is installed
+
+* Grant permissions to Amazon EKS Add-ons to install ADOT with the command below. For more information, see this article on [RBAC Authorization](https://kubernetes.io/docs/reference/access-authn-authz/rbac/).
+```
+kubectl apply -f https://amazon-eks.s3.amazonaws.com/docs/addons-otel-permissions.yaml
+```
+
+* Meet the [TLS certificate](https://cert-manager.io/docs/) requirement as described in the following section. We recommend using the latest `cert-manager` version.
+
+
+### TLS Certificate Requirement
+The ADOT Operator uses admission [webhooks](https://kubernetes.io/docs/reference/access-authn-authz/webhook/) to mutate and validate the Collector Custom Resource (CR) requests. In Kubernetes, the webhook requires a TLS certificate that the API server is configured to trust. There are multiple ways for you to generate the required TLS certificate, but the default method is to install the latest version of the [cert-manager](https://cert-manager.io/docs/) manually.The cert-manager will generate a self-signed certificate. See [cert-manager installation](https://cert-manager.io/docs/installation/) for more details.
+
+To learn more about certificate management, please read the **TLS certificate-related issues** section of [this](https://aws.amazon.com/blogs/opensource/building-a-helm-chart-for-deploying-the-opentelemetry-operator/) blog post. This post provides more information regarding not just the cert-manager, but the ADOT Operator as well.
+
+#### Install cert manager
+
+1. Install cert-manager with the command:
+```console
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.8.2/cert-manager.yaml
+```
+
+2. Check that cert-manager is ready with the following command:
+```console
+kubectl get pod -w -n cert-manager
+```
+
+Output:
+```console
+NAME READY  STATUS RESTARTS  AGE
+cert-manager-5597cff495-mnb2p  1/1  Running  0 12s
+cert-manager-cainjector-bd5f9c764-8jp5g  1/1  Running  0 12s
+cert-manager-webhook-5f57f59fbc-h9st8  1/1  Running  0 12s
+```
+
+## [Previous Topic: Introduction](/docs/getting-started/adot-eks-add-on)
+## [Next Topic: Installation](/docs/getting-started/adot-eks-add-on/installation)

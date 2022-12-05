@@ -15,7 +15,7 @@ The AWS managed Lambda layer for ADOT Java Auto-instumentation Agent provides a 
 
 ## Requirements
 
-The Lambda layer supports Java 8 and 11 Lambda runtimes. For more information about supported Java versions, see the [OpenTelemetry Java documentation](https://github.com/open-telemetry/opentelemetry-java).
+The Lambda layer supports the Java 11 (Corretto) Lambda runtime. It _does not_ support the Java 8 Lambda runtimes. For more information about supported Java versions, see the [OpenTelemetry Java documentation](https://github.com/open-telemetry/opentelemetry-java).
 
 Note: ADOT Lambda Layer for Java Auto-instrumentation Agent - Automatic instrumentation has a notable impact on startup time on AWS Lambda and you will generally need to use this along with provisioned concurrency and warmup requests to serve production requests without causing timeouts on initial requests while it initializes.
 
@@ -25,11 +25,11 @@ In this section, we consume the Lambda layer for use with Java Lambda Functions.
 
 Note: Lambda layers are a regionalized resource, meaning that they can only be used in the region in which they are published. Make sure to use the layer in the same region as your Lambda functions.
 
-Find the supported regions and ARN in the table below for the ARNs to consume.
+Find the supported regions and amd64(x86_64)/arm64 layer ARN in the table below for the ARNs to consume.
 
-|Supported   Regions |Lambda layer ARN format| Contents |
+|Supported   Regions  |Lambda layer ARN format  | Contents |
 |---------------------|-------------------------|----------|
-| ap-northeast-1<br/>ap-northeast-2<br/>ap-south-1<br/>ap-southeast-1<br/>ap-southeast-2<br/>ca-central-1<br/>eu-central-1<br/>eu-north-1<br/>eu-west-1<br/>eu-west-2<br/>eu-west-3<br/>sa-east-1<br/>us-east-1<br/>us-east-2<br/>us-west-1<br/>us-west-2 | arn:aws:lambda:\<region\>:901920570463:layer:aws-otel-java-agent-ver-1-7-0:1 | Contains [ADOT Java Auto-Instrumentation Agent v1.7.0](https://github.com/aws-observability/aws-otel-java-instrumentation/releases/tag/v1.7.0) <br/><br/> Contains the [ADOT Collector for Lambda v0.14.0](https://github.com/aws-observability/aws-otel-collector/releases/tag/pkg%2Flambdacomponents%2Fv0.14.0) |
+| ap-northeast-1<br/>ap-northeast-2<br/>ap-south-1<br/>ap-southeast-1<br/>ap-southeast-2<br/>ca-central-1<br/>eu-central-1<br/>eu-north-1<br/>eu-west-1<br/>eu-west-2<br/>eu-west-3<br/>sa-east-1<br/>us-east-1<br/>us-east-2<br/>us-west-1<br/>us-west-2 | arn:aws:lambda:<region\>:901920570463:layer:aws-otel-java-agent-<architecture\>-ver-1-19-2:1 | Contains [ADOT Java Auto-Instrumentation Agent v1.19.2](https://github.com/aws-observability/aws-otel-java-instrumentation/releases/tag/v1.19.2) <br/><br/> Contains the [ADOT Collector for Lambda v0.23.0](https://github.com/aws-observability/aws-otel-collector/releases/tag/pkg%2Flambdacomponents%2Fv0.23.0)|
 
 ### Enable auto-instrumentation for your Lambda function
 
@@ -109,15 +109,19 @@ To disable OpenTelemetry for your Lambda function, remove the Lambda layer, remo
 The ADOT Java Auto-instrumentation Agent layer combines both OpenTelemetry Auto Agent and the ADOT Collector.
 The configuration of the ADOT Collector follows the OpenTelemetry standard.
 
-By default, the ADOT Lambda layer uses the [config.yaml](https://github.com/aws-observability/aws-otel-lambda/blob/main/adot/collector/config.yaml), which exports telemetry data to AWS X-Ray. To customize the Collector config, see the [main Lambda section for custom configuration instructions](/docs/getting-started/lambda).
+By default, the ADOT Lambda layer uses the [config.yaml](https://github.com/aws-observability/aws-otel-lambda/blob/main/adot/collector/config.yaml), which exports telemetry data to AWS X-Ray. To customize the Collector config, see the [main Lambda section for custom configuration instructions](/docs/getting-started/lambda#custom-configuration-for-the-adot-collector-on-lambda).
 
 ## Exporting Metrics to AMP
 
 The layer is not configured by default to export Prometheus metrics to Amazon Managed Service for Prometheus (AMP) (https://docs.aws.amazon.com/prometheus/latest/userguide/what-is-Amazon-Managed-Service-Prometheus.html). To enable it: 
 
-1. Upload a custom collector configuration file `collector.yaml` with your Lambda application, like the example shown below, with the awsprometheusremoteexporter enabled. Set up the `endpoint` and `region` of your own AMP workspace. Note that since AMP is in preview, only these [AMP supported regions](https://docs.aws.amazon.com/prometheus/latest/userguide/AMP_quotas.html) can be used. 
+1. Upload a custom collector configuration file `collector.yaml` with your Lambda application, like the example shown below, with the `prometheusremotewriteexporter` and the `sigv4authextension` enabled. Set up the `endpoint` of your own AMP workspace, and `region` of the `sigv4authextension`. 
 ```
 # collector.yaml
+extensions:
+  sigv4auth:
+    service: "aps" 
+    region: <workspace_region>
 
 receivers:
   otlp:
@@ -127,22 +131,22 @@ receivers:
 exporters:
   logging:
   awsxray:
-  awsprometheusremotewrite:
+  prometheusremotewrite:
     endpoint: <workspace_remote_write_url>
-    aws_auth: 
-        service: "aps" 
-        region: <workspace_region>
+    auth: 
+      authenticator: sigv4auth
 
 service:
+  extensions: [sigv4auth]
   pipelines:
     traces:
       receivers: [otlp]
       exporters: [awsxray]
     metrics:
       receivers: [otlp]
-      exporters: [logging, awsprometheusremotewrite]
+      exporters: [logging, prometheusremotewrite]
 ```
-2. Upload this collector config as the OPENTELEMETRY_CONFIG_FILE environment variable to configure the Lambda Layer to export metrics to your workspace, following these [instructions](https://aws-otel.github.io/docs/getting-started/lambda#custom-configuration-for-the-adot-collector-on-lambda).
+2. Upload this collector config as the OPENTELEMETRY_CONFIG_FILE environment variable to configure the Lambda Layer to export metrics to your workspace, following these [instructions](/docs/getting-started/lambda#custom-configuration-for-the-adot-collector-on-lambda).
 
 Note: If enabling metrics, make sure your Lambda role has the required AWS Prometheus permissions. For more on permissions and policies required on AMP for AWS Lambda, see the [AWS Managed Service for Prometheus documentation](https://docs.aws.amazon.com/prometheus/latest/userguide/AMP-and-IAM.html#AMP-IAM-policies-built-in).
 

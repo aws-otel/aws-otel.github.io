@@ -19,52 +19,35 @@ module.exports = {
   },
   plugins: [
     {
-      resolve: `gatsby-plugin-google-analytics`,
+      resolve: require.resolve(`./src/plugins/contributorsPlugin`),
       options: {
-        trackingId: 'UA-180925204-1',
-      }
+        repos: [
+          "aws-observability/aws-otel-collector",
+          "aws-observability/aws-otel-java-instrumentation",
+          "aws-observability/aws-otel-js",
+          "aws-observability/aws-otel-community",
+          "aws-observability/aws-otel-playground",
+          "aws-observability/aws-otel-test-framework"
+        ],
+        token: process.env.GH_API_KEY,
+        useMockData: process.env.NO_GH_API_KEY,
+      },
     },
     {
-      resolve: `gatsby-source-github-contributors`,
+      resolve: require.resolve(`./src/plugins/websiteAnalyticsPlugin`),
       options: {
-        repo: "aws-observability/aws-otel-test-framework",
-        token: process.env.GH_API_KEY,
-      }
-    },
-    {
-      resolve: `gatsby-source-github-contributors`,
-      options: {
-        repo: "aws-observability/aws-otel-collector",
-        token: process.env.GH_API_KEY,
-      }
-    },
-    {
-      resolve: `gatsby-source-github-contributors`,
-      options: {
-        repo: "aws-observability/aws-otel-java-instrumentation",
-        token: process.env.GH_API_KEY,
-      }
-    },
-    {
-      resolve: `gatsby-source-github-contributors`,
-      options: {
-        repo: "aws-observability/aws-otel-js",
-        token: process.env.GH_API_KEY,
-      }
-    },
-    {
-      resolve: `gatsby-source-github-contributors`,
-      options: {
-        repo: "aws-observability/aws-otel-community",
-        token: process.env.GH_API_KEY,
-      }
-    },
-    {
-      resolve: `gatsby-source-github-contributors`,
-      options: {
-        repo: "aws-observability/aws-otel-playground",
-        token: process.env.GH_API_KEY,
-      }
+        // https://github.com/aws-observability/aws-rum-web/blob/main/docs/configuration.md
+        applicationId: "9948254b-cc33-4c70-869d-2fd6615a914c",
+        applicationVersion: "1.0.0",
+        applicationRegion: "us-west-2",
+        endpoint: "https://dataplane.rum.us-west-2.amazonaws.com",
+        sessionSampleRate: 1,
+        guestRoleArn: "arn:aws:iam::611364707713:role/SiteAnalyticsStack-AdotWebSiteAnalyticsAdotWebSite-1R6C5CIIDEABQ",
+        identityPoolId: "us-west-2:426eefd0-dee5-4e37-b281-618a29de085e",
+        telemetries: ["errors", "performance", "http"],
+        allowCookies: false,
+        enableXRay: false
+      },
     },
     `gatsby-transformer-yaml`,
     {
@@ -77,6 +60,12 @@ module.exports = {
       resolve: `gatsby-source-filesystem`,
       options: {
         path: `./src/content/BlogPosts`,
+      },
+    },
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        path: `./src/content/Blogs`,
       },
     },
     {

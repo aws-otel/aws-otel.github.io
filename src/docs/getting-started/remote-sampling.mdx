@@ -1,0 +1,98 @@
+---
+title: 'Configuring the OpenTelemetry Collector for X-Ray remote Sampling'
+description:
+  This page is about setting up X-Ray remote Sampling.
+path: '/docs/getting-started/remote-sampling'
+---
+
+import sampling_attributes from "assets/img/docs/gettingStarted/remote-sampling/sampling_attributes.png"
+
+## Enable awsproxy extension
+
+Note that in order to use X-Ray remote sampling, your application's tracer must use an X-Ray sampler. Today the X-Ray sampler is available for the following:
+
+* [ADOT Java agent](https://aws-otel.github.io/docs/getting-started/java-sdk/trace-auto-instr#using-x-ray-remote-sampling)
+* [ADOT Java SDK](https://aws-otel.github.io/docs/getting-started/java-sdk/trace-manual-instr#using-x-ray-remote-sampling)
+* [ADOT Go SDK](https://aws-otel.github.io/docs/getting-started/go-sdk/trace-manual-instr#using-x-ray-remote-sampling)
+
+Enable the extension by adding this snippet to your collector configuration.
+
+```yaml
+extensions:
+  awsproxy:
+service:
+  extensions: [awsproxy]
+```
+
+For example, a full configuration that receives spans as OTLP, exports to X-Ray, and enables remote sampling may
+look like this.
+
+```yaml
+receivers:
+  otlp:
+    protocols:
+      grpc:
+exporters:
+  awsxray:
+extensions:
+  awsproxy:
+service:
+  extensions: [awsproxy]
+  pipeline:
+    traces:
+      receivers: [otlp]
+      exporters: [awsxray]
+```
+
+This enables the proxy listening on the default endpoint of `0.0.0.0:2000` - SDK sampling extensions for X-Ray remote
+sampling connect to `localhost:2000` by default and will work out of the box when deploying the collector as a sidecar.
+
+The full list of configuration options can be found in the [component documentation](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/awsproxy).
+
+Once you have enabled the proxy extension and configured the remote sampler in your application, you can follow the [AWS X-Ray documentation](https://docs.aws.amazon.com/xray/latest/devguide/xray-console-sampling.html) to define custom sampling rules for incoming requests and see them applied across your entire fleet.
+
+The IAM policy used with the collector also needs permission to fetch sampling rules. This policy would allow the collector
+to export trace data and fetch sampling rules.
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+```
+
+**Warning: The proxy extension allows any application with network connectivity to the collector to send requests to X-Ray
+without authentication. If not using any other authentication mechanism in front of the collector, it is recommended to
+configure network policy to only allow network connectivity to applications that should be allowed to access X-Ray with
+the above IAM permissions, for example using network firewall rules.**
+
+## OTel Remote Sampling Implementation Caveats
+To note that X-Ray Sampling attributes can be configured from AWS X-Ray Console shown in below image.
+
+<img src={sampling_attributes} alt="Diagram" style="margin: 30px 0;" />
+
+Below mentioned table displays X-Ray sampling attributes and X-Ray equivalent OTel sampling attributes used by the OTel remote sampling implementation. Here's how you can [configure X-Ray sampling attributes](https://docs.aws.amazon.com/xray/latest/devguide/xray-console-sampling.html#xray-console-config) in AWS X-Ray Console. Below mentioned caveats to keep in mind when using OTel remote sampling implementation.
+
+1. Some of the X-Ray equivalent OTel sampling fields are instrumentation specific like `http.target`, `http.url`, `http.method` and `http.host`. If instrumentation you're using in your application won't set them then remote sampling implementation would not have all these fields to match against in that case it would only use resource attributes like `service.name` and `cloud.platform`
+2. Sampling implementation would match `URLPath` (X-Ray sampling attribute set on AWS X-Ray Console) with `http.target` as well as `http.url` and if it finds a match with one of them it would consider matched
+
+| X-Ray Sampling Attributes | X-Ray equivalent OTel Sampling Semantic Attributes |
+|---------------------------|----------------------------------------------------|
+| ServiceName               | service.name                                       |
+| ServiceType               | cloud.platform                                     |
+| URLPath                   | http.target/http.url                               |
+| Host                      | http.host                                          |
+| HTTPMethod                | http.method                                        |
+| Attributes                | attributes                                         |

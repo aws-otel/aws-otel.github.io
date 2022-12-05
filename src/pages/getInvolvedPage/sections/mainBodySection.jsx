@@ -24,12 +24,8 @@ class MainBodySection extends React.Component {
                   return <li key={`content_item_${index}`}><p className={classes.about}>{data.item}</p></li>
                 })}
               </ul>
-              <p className={classes.about}>
-                If you want to get in touch, contact us at: <span style={{fontWeight: "bold"}}>aws-distro-for-opentelemetry@amazon.com</span>
-              </p>
               <h2 className={classes.about}> Additional Links </h2>
               <ul>
-                <li><a href="https://gitter.im/aws-otel-distro/community" target="_blank" rel="noopener noreferrer"> <p className={classes.about}>Gitter</p> </a></li>
                 <li><a href="https://github.com/aws-observability/aws-otel-community/issues" target="_blank" rel="noopener noreferrer"> <p className={classes.about}>File an Issue</p> </a></li>
                 <li><a href="https://github.com/aws-observability/aws-otel-community/issues" target="_blank" rel="noopener noreferrer"> <p className={classes.about}>File a Pull Request</p> </a></li>
                 <li><a href="https://opentelemetry.io/community/" target="_blank" rel="noopener noreferrer"> <p className={classes.about}>OpenTelemetry Community</p> </a></li>

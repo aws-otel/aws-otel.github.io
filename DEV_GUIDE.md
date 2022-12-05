@@ -8,23 +8,41 @@
 ## Development Setup
 
 1. Clone this repository onto your local machine
-2. [Download and Set up Gatsby Environment](https://www.gatsbyjs.com/tutorial/part-zero/) Note: When using Gatsby, you will need downgrade your version of Node to 14 prior to installation of gatsby-cli. You can do this via `nvm use 14`.
+2. [Download and Set up Gatsby Environment](https://www.gatsbyjs.com/tutorial/part-zero/).
 3. Open up the project using your preferred code editor
 4. Install the required node modules for this project.
     ```
     npm install
     ```
-5. [Generate a GitHub Personal Access Token](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token)
-6. Create a new file in the root called `.env.development` (See [Project Structure](#project-structure) for more information)
-7. In the `.env.development` file, add the following line:
+5. Disable GitHub API access (Used to fetch the list of contributors)
+   Create a new file in the root called `.env.development` (See [Project Structure](#project-structure) for more information)
+   Write the following line to it:
    ```
-   GH_API_KEY=<INSERT YOUR ACCESS TOKEN>
+   NO_GH_API_KEY=true
    ```
-8. Start up the Gatsby site
+4. Start up the Gatsby site
     ```
     npm start
     ```
-9. Open http://localhost:8000 to check the site
+5. Open http://localhost:8000 to check the site
+
+**Obs**: The `NO_GH_API_KEY` environment variable can also be passed through command line. E.g.: `NO_GH_API_KEY=true npm run start`.
+
+### Optional - Test the GitHub API integration
+
+This step is optional and allows you to test that the list of contributors is being fetched from GitHub.
+
+1. [Generate a GitHub Personal Access Token](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token)
+2. Create a new file in the root called `.env.development` (See [Project Structure](#project-structure) for more information)
+3. In the `.env.development` file, add the following line:
+   ```
+   GH_API_KEY=<INSERT YOUR ACCESS TOKEN>
+   ```
+4. Start up the Gatsby site
+    ```
+    npm start
+    ```
+5. Open http://localhost:8000 to check the site
 
 ## Making Changes to the Site
 
@@ -80,6 +98,6 @@
 | `/src/assets`       | Contains images and styling for the site                                                                      |
 | `/src/components`   | Contains the React Components used throughout the site                                                        |
 | `/src/config`       | Defines routing for technical documentation pages and side navigation bar                                     |
-| `/src/content`      | Holds the site's static content using YAML format                                                             |
+| `/src/content`      | Holds the site's static content using YAML format and blog pages under `/blogs` using mdx markdown            |
 | `/src/docs`         | Holds the technical documentation pages content using MDX markdown                                            |
 | `/src/pages`        | Files for each site page                                                                                      |

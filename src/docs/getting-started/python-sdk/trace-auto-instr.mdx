@@ -55,7 +55,7 @@ For example, if you have `boto3` installed, this command will automatically inst
 
 Auto-instrumentation uses the `opentelemetry-instrument` executable functions as a wrapper to automatically initialize the `Instrumentors` installed by the `opentelemetry-bootstrap` command and start the provided application.
 
-The AWS X-Ray Id Generator can be configured using an environment variable as `OTEL_PYTHON_ID_GENERATOR=aws_xray`, and the AWS X-Ray Propagator can be configured using `OTEL_PROPAGATORS=xray`.
+The AWS X-Ray Id Generator can be configured using an environment variable as `OTEL_PYTHON_ID_GENERATOR=xray`, and the AWS X-Ray Propagator can be configured using `OTEL_PROPAGATORS=xray`.
 
 Currently, it is not possible to configure the Resource Detectors using auto-instrumentation.
 
@@ -77,7 +77,7 @@ Environment variables are the primary way in which the OpenTelemetry SDK for Pyt
 * `OTEL_EXPORTER_OTLP_ENDPOINT`
 * `OTEL_EXPORTER_OTLP_CERTIFICATE`
 
-The `IdGenerator` can be configured to use the AWS X-Ray Id Generator with an environment variable as `OTEL_PYTHON_ID_GENERATOR=aws_xray` to ensure spans use an Id format compatible with the AWS X-Ray backend.
+The `IdGenerator` can be configured to use the AWS X-Ray Id Generator with an environment variable as `OTEL_PYTHON_ID_GENERATOR=xray` to ensure spans use an Id format compatible with the AWS X-Ray backend.
 
 The global propagator can be configured to use the AWS X-Ray Propagator with an environment variable as `OTEL_PROPAGATORS=xray` to allow the span context to propagate downstream when the application makes calls to external services.
 
@@ -110,3 +110,11 @@ Because there can only be one global `TracerProvider`, manual instrumentation sh
 ## Sample Application
 
 See a [sample Flask App using OpenTelemetry Python SDK Automatic Instrumentation](https://github.com/aws-observability/aws-otel-python/tree/main/integration-test-apps/auto-instrumentation/flask).
+
+**NOTE:** Python Web Frameworks like Flask and Django normally include a "reloader" when running in `debug` mode so that you can apply changes during development. This reloader will break auto-instrumentation because the app is restarted without giving OpenTelemetry a chance to wrap the instrumented libraries. When using `debug` mode, set the `use_reloader=False` as is done in the referenced sample app:
+
+```python
+# See more: https://github.com/open-telemetry/opentelemetry-python-contrib/issues/546
+if __name__ == "__main__":
+    app.run(port=8082, debug=True, use_reloader=False)
+```

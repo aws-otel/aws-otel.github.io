@@ -1,0 +1,81 @@
+---
+title: 'Installation of AWS Distro for OpenTelemetry using EKS Add-Ons'
+description:
+    This page is about leveraging Amazon EKS add-ons to install ADOT.
+path: '/docs/getting-started/adot-eks-add-on/installation'
+---
+
+The steps to fully deploy ADOT are:
+
+1. Meet the prerequisites described [here](/docs/getting-started-adot-eks-add-on/requirements).
+2. Leverage EKS add-ons to deploy the ADOT Operator to your Amazon EKS cluster.
+3. Deploy the ADOT Collector Custom Resource Definition (CRD). You have the option to associate your IAM role with your EKS service account using [IRSA](https://docs.aws.amazon.com/emr/latest/EMR-on-EKS-DevelopmentGuide/setting-up-enable-IAM.html). By doing this, your service account can then provide AWS permissions to the containers you run in any pod that use that service account.
+
+## Leverage EKS Add-Ons to deploy the ADOT Operator to your Amazon EKS cluster
+
+1. Apply the necessary permissions for ADOT to your cluster with the command:
+```console
+kubectl apply -f https://amazon-eks.s3.amazonaws.com/docs/addons-otel-permissions.yaml
+```
+
+2. Install the ADOT Operator into your Amazon EKS cluster using the command:
+```console
+aws eks create-addon --addon-name adot --cluster-name <your_cluster_name>
+```
+
+The `status` field value will be `CREATING` until complete.
+
+`your_cluster_name` is the name of your cluster, you can find it by executing the command below, and a list of cluster names will appear:
+```console
+aws eks list-clusters --region <your_region>
+```
+
+3. Verify that ADOT is installed and running with the command:
+```console
+aws eks describe-addon --addon-name adot --cluster-name <your_cluster_name>
+```
+
+You'll see `"status": "ACTIVE"` when creation is complete.
+
+### Deploy the ADOT Operator to your Amazon EKS cluster through the EKS console
+
+Follow these steps to use the EKS console to leverage EKS add-ons for deploying the ADOT Operator to your Amazon EKS cluster.
+
+#### [EKS console instructions](https://docs.aws.amazon.com/eks/latest/userguide/adot-manage.html#adot-install)
+
+## Deploy the ADOT Collector
+
+Once the ADOT EKS Add-On is running, you can deploy the ADOT Collector into your EKS cluster. The ADOT Collector can be deployed in one of four modes: Deployment, Daemonset, StatefulSet, and Sidecar. See [this page](https://aws-otel.github.io/docs/getting-started/operator#step-2-install-adot-collector-as-kubernetes-custom-resource-to-your-eks-cluster) for more information on these deployment modes.
+
+### Use your IAM role to launch the ADOT Collector
+You can associate your IAM role to your EKS service account using [IRSA](https://docs.aws.amazon.com/emr/latest/EMR-on-EKS-DevelopmentGuide/setting-up-enable-IAM.html). Your service account can then provide AWS permissions to the containers you run in any pod that use that service account. You must use this command for each cluster where you're installing ADOT to grant your AWS service account permissions.
+Follow these steps to associate your IAM role to your EKS service account using IRSA:
+
+1. Create an IAM OIDC provider for your cluster by following the steps in the link below:
+    * [Create an IAM OIDC provider for your cluster](https://docs.aws.amazon.com/eks/latest/userguide/enable-iam-roles-for-service-accounts.html)
+2. Create your service account and IAM role. In this command, you must have values for the following flags:
+    * For the `--name` flag, add the name of the service account you want to create; for this example we will name it `adot-collector`.
+    * For the `--namespace` flag, use the namespace your service account will reside in; for our example we will use the default namespace.
+    * For the `--cluster` flag, use the name of your cluster.
+    * The three `--attach-policy-arn` values are the policies to be attached. These three policies are the policies needed for each service we want to export to. If you only plan on using 1 or 2 of the services, you only need to attach the policies for that service:
+        * `arn:aws:iam::aws:policy/AmazonPrometheusRemoteWriteAccess` grants write access to the Prometheus service.
+        * `arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess` grants write access to the AWS X-Ray service.
+        * `arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy` grants access to write the CloudWatch service.
+    * The `--override-existing-serviceaccounts` flag is for if you have a service account already created in the cluster without an IAM Role. You can exclude this if that is not the case.
+
+```console
+eksctl create iamserviceaccount \
+    --name adot-collector \
+    --namespace default \
+    --cluster <your_cluster_name> \
+    --attach-policy-arn arn:aws:iam::aws:policy/AmazonPrometheusRemoteWriteAccess \
+    --attach-policy-arn arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess \
+    --attach-policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy \
+    --approve \
+    --override-existing-serviceaccounts
+```
+
+We will see in our collector configurations in the next sections that we add the `serviceAccount: adot-collector` field to our configuration to use IRSA.
+
+## [Previous Topic: Requirements](/docs/getting-started/adot-eks-add-on/requirements)
+## [Next Topic: Collector configuration introduction](/docs/getting-started/adot-eks-add-on/config-intro)

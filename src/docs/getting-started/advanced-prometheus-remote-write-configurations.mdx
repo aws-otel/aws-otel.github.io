@@ -486,31 +486,37 @@ roleRef:
 
 <SectionSeparator />
 
-## AWS Prometheus Remote Write Exporter Configurations
+## Prometheus Remote Write Exporter Configurations
 
-For the AWS Prometheus Remote Write Exporter to sign your HTTP requests with AWS SigV4 (AWS’ authentication protocol for secure authentication), 
-you will need to provide the aws_auth configurations. If aws_auth is not provided, HTTPs requests will not be signed.
+For the Prometheus Remote Write Exporter to sign your HTTP requests with AWS SigV4 (AWS’ authentication protocol for secure authentication), 
+you will need to provide the `auth` configuration with the `sigv4auth` authenticator. If `auth` is not provided, HTTPs requests will not be signed.
 
 ```yaml lineNumbers=true 
+extensions:
+  sigv4auth:
+    service: "aps"
+    region: "user-region"
 exporters:
-  awsprometheusremotewrite:
+  prometheusremotewrite:
     endpoint: "https://aws-managed-prometheus-endpoint/v1/api/remote_write"
-    aws_auth:
-      service: "aps"
-      region: "user-region"
+    auth:
+      authenticator: sigv4auth
 ```
 
-Aside from the auth configurations, the AWS Prometheus Remote Write Exporter is also configurable with retry, sending queue, and timeout 
+Aside from the auth configurations, the Prometheus Remote Write Exporter is also configurable with retry, sending queue, and timeout 
 settings. An example of these configurations is provided below.
 
 ```yaml lineNumbers=true 
+extensions:
+  sigv4auth:
+    service: "aps"
+    region: "us-east-1"
 exporters:
-  awsprometheusremotewrite:
+  prometheusremotewrite:
     endpoint: "https://aps-workspaces-gamma.us-east-1.amazonaws.com/workspaces/ws-7cd45747-2381-4a2a-847f-fa61a3694a74/api/v1/remote_write"
     namespace: test
     auth:
-      region: "us-east-1"
-      service: "aps"
+      authenticator: sigv4auth
     retry_on_failure:
       enabled: true
       initial_interval: 5s

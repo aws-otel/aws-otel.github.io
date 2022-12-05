@@ -1,0 +1,75 @@
+---
+title: 'Collector Configuration for AWS X-Ray'
+description:
+    This page introduces Collector configuration for AWS XRay for the ADOT Collector.
+path: '/docs/getting-started/adot-eks-add-on/config-xray'
+---
+
+## Collector Configuration
+
+The Collector configuration below is set up to receive OTLP traces and export to X-Ray.  The OTLP Receiver in the traces pipeline accepts data via gRPC or HTTP using [OTLP format](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/protocol/otlp.md). It is configured to receive via gRPC on the `host:port 0.0.0.0:4317` and via HTTP on `0.0.0.0:4318`. Per this configuration, workloads that want to send trace data to this receiver should be configured to send to the endpoint `my-collector-xray-collector:4317` for gRPC and `my-collector-xray-collector:4318` for HTTP.  The X-Ray exporter sends these segments directly to X-Ray using the [PutTraceSegments](https://docs.aws.amazon.com/xray/latest/api/API_PutTraceSegments.html) API. Note that segments or spans ingested by the OTLP receiver must be in [X-Ray Segment format](https://docs.aws.amazon.com/xray/latest/devguide/xray-api-segmentdocuments.html). Note that the file below is also hosted [here](https://github.com/aws-observability/aws-otel-community/blob/master/sample-configs/operator/collector-config-xray.yaml). Save this into a file called `collector-config-xray.yaml` and execute the command
+```console
+kubectl apply -f collector-config-xray.yaml
+```
+to deploy your Collector.  Make sure to replace `<YOUR_AWS_REGION>` in the `awsxray` exporter config, as per your own target environment.
+
+<details>
+  <summary>
+    Click to View: Collector Configuration for AWS X-Ray
+  </summary>
+
+```yaml
+apiVersion: opentelemetry.io/v1alpha1
+kind: OpenTelemetryCollector
+metadata:
+  name: my-collector-xray
+spec:
+  mode: deployment 
+  serviceAccount: adot-collector 
+  config: |
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
+    processors:
+
+    exporters:
+      awsxray:
+        region: <YOUR_AWS_REGION>
+
+    service:
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: []
+          exporters: [awsxray]
+```
+
+</details>
+
+## Utilize a Sample Application to generate Trace Data
+
+Provided below is a link to EKS documentation for a sample workload that is configured to send trace data to your configured Collector. 
+
+[Sample Application for Trace Data](https://docs.aws.amazon.com/eks/latest/userguide/sample-app.html)
+
+## Verify that Trace Data is being sent to X-Ray
+
+* Open the [X-Ray console](https://console.aws.amazon.com/xray/home)
+* Select “Traces” in the menu on the left
+* See if your Trace data is there
+
+## [Previous Topic: Collector Configuration Introduction](/docs/getting-started/adot-eks-add-on/config-intro)
+
+## Related Topics:
+
+### [Collector Configuration for Amazon Managed Prometheus](/docs/getting-started/adot-eks-add-on/config-amp)
+
+### [Collector Configuration for AWS CloudWatch](/docs/getting-started/adot-eks-add-on/config-cloudwatch)
+
+### [Advanced Collector Configuration for Amazon Managed Prometheus](/docs/getting-started/adot-eks-add-on/config-advanced)
+
+## [Next Topic: Updating and Cleanup](/docs/getting-started/adot-eks-add-on/update-and-cleanup)

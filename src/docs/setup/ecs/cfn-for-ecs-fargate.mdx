@@ -1,27 +1,27 @@
 ---
 title: 'ECS Fargate Cloudformation Template'
 description:
-    In this tutorial, we will demonstrate how to run OpenTelemetry Collector (AWS Otel Collector) as a sidecar on the
+    In this tutorial, we will demonstrate how to run OpenTelemetry Collector (ADOT Collector) as a sidecar on the
     Amazon Elastic Container Service (Amazon ECS) on Fargate. We
-    provide sample applications within the same Amazon ECS task to send monitoring data to AWS OTel Collector.
+    provide sample applications within the same Amazon ECS task to send monitoring data to ADOT Collector.
 path: '/docs/setup/ecs/cfn-for-ecs-fargate'
 ---
 
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
 import { Link } from "gatsby"
 
-In this tutorial, we will demonstrate how to run OpenTelemetry Collector (AWS Otel Collector) as a sidecar on the
+In this tutorial, we will demonstrate how to run OpenTelemetry Collector (ADOT Collector) as a sidecar on the
 Amazon Elastic Container Service (Amazon ECS) on Fargate. We provide sample applications within the same Amazon ECS
-task to send monitoring data to AWS OTel Collector.
+task to send monitoring data to ADOT Collector.
 
 <SectionSeparator />
 
-To Install AWS OTel Collector by using CloudFormation, you have to have a cluster.
+To Install ADOT Collector by using CloudFormation, you have to have a cluster.
 If you are not famaliar with how to create a cluster, you can check this <Link to="/docs/setup/ecs/create-cluster">create-cluster</Link>
 section.
 
 ### Setup for ECS Fargate
-1. Download CloudFormation template file for installing AWS OTel Collector on ECS Fargate mode on GitHub.
+1. Download CloudFormation template file for installing ADOT Collector on ECS Fargate mode on GitHub.
 ```
 curl -O https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/deployment-template/ecs/aws-otel-fargate-sidecar-deployment-cfn.yaml
 ```

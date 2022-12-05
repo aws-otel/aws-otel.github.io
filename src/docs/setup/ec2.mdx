@@ -1,8 +1,8 @@
 ---
 title: 'Setting up AWS Distro for OpenTelemetry Collector in Amazon Elastic Computer Cloud'
 description:
-    'In this tutorial, we will demonstrate how to set up  AWS Distro for OpenTelemetry Collector (AWS OTel Collector)
-    on Amazon Elastic Computer Cloud(EC2) to collect application metrics. Note: This tutorial will set up AWS OTel
+    'In this tutorial, we will demonstrate how to set up  AWS Distro for OpenTelemetry Collector (ADOT Collector)
+    on Amazon Elastic Computer Cloud(EC2) to collect application metrics. Note: This tutorial will set up ADOT
     Collector on an Amazon EC2 instance in _us-west-2_ with a provided CloudFormation template. if you want to run the
     example in the other AWS regions, please replace AMI ID in CloudFormation template we provided. '
 path: '/docs/setup/ec2'
@@ -20,11 +20,11 @@ import imgSSM6 from "assets/img/docs/setup/ec2/ssm/imgSSM6.png"
 import imgSSM7 from "assets/img/docs/setup/ec2/ssm/imgSSM7.png"
 import imgSSM8 from "assets/img/docs/setup/ec2/ssm/imgSSM8.png"
 
-In this tutorial, we will demonstrate how to set up  AWS Distro for OpenTelemetry Collector (AWS OTel Collector) on
+In this tutorial, we will demonstrate how to set up  AWS Distro for OpenTelemetry Collector (ADOT Collector) on
 Amazon Elastic Computer Cloud(EC2) to collect application metrics.
 
 **Note**
-This tutorial will set up AWS OTel Collector on an Amazon EC2 instance in _us-west-2_ with a provided CloudFormation
+This tutorial will set up ADOT Collector on an Amazon EC2 instance in _us-west-2_ with a provided CloudFormation
 template. if you want to run the example in the other AWS regions, please replace AMI ID in CloudFormation template we provided.
 
 <SectionSeparator />
@@ -46,11 +46,11 @@ See the <Link to="/docs/setup/permissions">Permissions</Link> section for the pe
 <SectionSeparator />
 
 ## Install AWS Distro for OpenTelemetry Collector on EC2 instance using CloudFormation
-1. Download the CloudFormation template file `aws-otel-ec2-deployment-cfn.yaml` for installing AWS OTel Collector on  Amazon EC2.
+1. Download the CloudFormation template file `aws-otel-ec2-deployment-cfn.yaml` for installing ADOT Collector on  Amazon EC2.
 ```
 curl -O https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/deployment-template/ec2/aws-otel-ec2-deployment-cfn.yaml
 ```
-2. Replace the below parameters and then run AWS CloudFormation CLI command. It will launch one EC2 instance with AWS OTel Collector installed.
+2. Replace the below parameters and then run AWS CloudFormation CLI command. It will launch one EC2 instance with ADOT Collector installed.
     * `ec2-ssh-key-name` - the key pair name for login to EC2 instance
     * `template_path` - the local location where CloudFormation template file is downloaded in step 1
 ```console lineNumbers=true
@@ -69,7 +69,7 @@ aws cloudformation create-stack --stack-name AOCEC2-Test \
 ```
 ssh -i "<ec2-ssh-key-name>.pem" ec2-user@ec2-<instance_id>.us-west-2.compute.amazonaws.com (mailto:ec2-user@ec2-34-221-1-180.us-west-2.compute.amazonaws.com)
 ```
-5. Check if  AWS OTel Collector is set up and running on the new EC2 instance. If it is, you’ll see the following status.
+5. Check if  ADOT Collector is set up and running on the new EC2 instance. If it is, you’ll see the following status.
 ```
 sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -a status
 ```
@@ -82,14 +82,14 @@ sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -a status
 
 AWS Systems Manager Distributor can simplify and scale distribution, installation, and update process of software package, such as AWS Distro for OpenTelemetry Collector. With Distributor, you manage your software packages from a centralized location. Software packages are securely stored in Systems Manager, providing a centralized repository with version control. You can use Run Command to install AWS Distro for OpenTelemetry Collector on demand, or you can use State Manager to update AWS Distro for OpenTelemetry Collector on target instances automatically or on a schedule.
 
-To use [AWS Systems Manager Distributor](https://docs.aws.amazon.com/systems-manager/latest/userguide/distributor.html) to install AWS OTel Collector on EC2 instances, the target EC2 instances need to meet following requirements.
+To use [AWS Systems Manager Distributor](https://docs.aws.amazon.com/systems-manager/latest/userguide/distributor.html) to install ADOT Collector on EC2 instances, the target EC2 instances need to meet following requirements.
 
 * SSM agent version 2.3.1550.0 or later installed
 * Permissions Policy `AmazonSSMManagedInstanceCore` attached in IAM Role of EC2 instance
 
 To install AWSDistroOTel-Collector package using AWS Systems Manager Distributor.
 
-1. Based on your preferences, prepare AWS Distro for OpenTelemetry Collector YAML configuration file according to [AWS OTel Collector Configuration](https://github.com/aws-observability/aws-otel-collector/#aws-otel-collector-configuration).
+1. Based on your preferences, prepare AWS Distro for OpenTelemetry Collector YAML configuration file according to [ADOT Collector Configuration](https://github.com/aws-observability/aws-otel-collector/#aws-otel-collector-configuration).
 
 2. SSM parameter doesn't support mulit-line text as String Type. So encode AWS Distro for OpenTelemetry Collector YAML configuration file as Base64 and copy the Base64 string to a new SSM parameter in [SSM Parameter Store](https://us-west-2.console.aws.amazon.com/systems-manager/parameters/). Listed below are examples to do Base64 encoding:
     * Linux: `base64 -w0 config.yaml > aoc-config-base64.txt`
@@ -128,6 +128,9 @@ To install AWSDistroOTel-Collector package on EC2 instances of Auto Scaling grou
 <img src={imgSSM8} alt="Diagram" style="margin: 30px 0;" />
 
 **Notes**
+
+The SSM distributor creates an environment file at ```/opt/aws/aws-otel-collector/etc/.env``` . Any environment variable that will be used in the [open telemetry configuration](https://opentelemetry.io/docs/collector/configuration/#configuration-environment-variables) needs to be added to this file.
+
 After you finished the tutorial, remember to shut down the new EC2 instance we created in the tutorial in order to avoid additional charges.
 
 

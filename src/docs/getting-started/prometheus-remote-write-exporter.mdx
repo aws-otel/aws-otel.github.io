@@ -2,7 +2,7 @@
 title: 'Getting Started with Prometheus Remote Write Exporter for AMP'
 description:
     In this Getting Started guide, we’ll show you how to configure the ADOT Collector to scrape from a Prometheus-instrumented application, 
-    and send metrics to AWS Managed Service for Prometheus (AMP).
+    and send metrics to Amazon Managed Service for Prometheus (AMP).
 path: '/docs/getting-started/prometheus-remote-write-exporter'
 ---
 
@@ -25,7 +25,7 @@ to AWS Managed Service for Prometheus (AMP).
 
 <img src={prometheusPipelineEKSImg} alt="Diagram" style="margin: 30px 0;" />
 
-The ADOT-AMP pipeline includes two OpenTelemetry Collector components specific to Prometheus — the Prometheus Receiver and the AWS Prometheus 
+The ADOT-AMP pipeline includes two OpenTelemetry Collector components specific to Prometheus — the Prometheus Receiver and the Prometheus 
 Remote Write Exporter. 
 
 <SectionSeparator />
@@ -99,26 +99,30 @@ relabel_configs:
 
 <SubSectionSeparator />
 
-### AWS Prometheus Remote Write Exporter
+### Prometheus Remote Write Exporter
 
-The configuration for the AWS Prometheus Remote Write Exporter is a lot simpler than the Prometheus receiver. At this stage in the pipeline, metrics 
+The configuration for the Prometheus Remote Write Exporter is a lot simpler than the Prometheus receiver. At this stage in the pipeline, metrics 
 have already been ingested, and we’re ready to export this data to AMP. The minimum requirement for a successful configuration to communicate with AMP is as follows:
 
 ```yaml lineNumbers=true 
+extensions:
+  sigv4auth:
+    service: "aps"
+    region: "user-region"
+
 exporters:
-  awsprometheusremotewrite:
+  prometheusremotewrite:
     endpoint: "https://aws-managed-prometheus-endpoint/v1/api/remote_write"
-    aws_auth:
-      service: "aps"
-      region: "user-region"
+    auth:
+      authenticator: sigv4auth
 ```
 
-This configuration sends an HTTPS request that is signed by AWS SigV4 using the credentials that are set up from the prerequisites section. It is 
-mandatory that customers specify the service to be “aps”
+This configuration sends an HTTPS request that is signed by AWS SigV4 using the credentials that are set up from the prerequisites section. 
+This is enabled by using the `sigv4auth` extension. It is mandatory that customers specify the service to be “aps”.
 
 Regardless of the method of deployment, the ADOT Collector must have access to one of the listed options in the 
-[default AWS credentials chain](https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/configuring-sdk.html). The AWS Prometheus Remote Write 
-Exporter depends on the AWS Go SDK and uses it to fetch credentials and authenticate. You must ensure that these credentials have remote writing 
+[default AWS credentials chain](https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/configuring-sdk.html). The `sigv4auth` 
+extension depends on the AWS Go SDK and uses it to fetch credentials and authenticate. You must ensure that these credentials have remote writing 
 permissions to AMP (`aps:RemoteWrite`).
 
 <SectionSeparator />
@@ -132,4 +136,3 @@ For more advanced configurations with the ADOT Collector-AMP, please take a look
 
 We would love to hear more common configuration scenarios or improvements to this documentation from you! Please submit an issue 
 on the [aws-otel community](https://github.com/aws-observability/aws-otel-community) to let us know.
-

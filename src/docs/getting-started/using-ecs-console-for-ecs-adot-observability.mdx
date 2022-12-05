@@ -1,0 +1,73 @@
+---
+title: 'Getting Started with ECS Configurations'
+description:
+    In this tutorial we will provide a step-by-step walk-through of collecting ECS metrics and traces
+    using the ADOT Collector to send to the AWS monitoring service destination of your choice.
+path: '/docs/getting-started/ecs-config'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import ecsDataPathImg from "assets/img/docs/gettingStarted/ecs-configurations/datapath.png"
+
+In this tutorial we will provide a step-by-step walk-through of collecting ECS metrics and traces
+using the ADOT Collector to send to the AWS monitoring service destination of your choice. In this 
+tutorial the monitoring destinations include AWS X-Ray for traces, Amazon CloudWatch, and Amazon 
+Managed Service for Prometheus (AMP) for metrics. 
+
+This guide also provides a walk through of the setup 
+and configuration needed for the ADOT Collector to receive and send telemetry data. We will provide an 
+example of the end-to-end data path for ECS and the pipeline to collect and send metrics to Amazon CloudWatch or 
+Amazon Managed Service for Prometheus (AMP), Amazon Managed Grafana (AMG) and send traces to X-Ray.
+
+<SectionSeparator />
+
+## What is ECS?
+
+Amazon Elastic Container Service (Amazon ECS) is a highly scalable, fast, container management service that makes it easy to run, stop, and manage Docker containers on a cluster of Amazon EC2 instances.
+
+<SectionSeparator />
+
+## What is ADOT Collector?
+
+AWS Distro for OpenTelemetry Collector (ADOT Collector) is a AWS supported version of the upstream OpenTelemetry Collector. It is fully compatible with AWS computing platforms including EC2, ECS and EKS. It enables users to send telemetry data to Amazon CloudWatch, AWS X-Ray, Amazon Managed Service for Prometheus (AMP), and other services. 
+
+<SectionSeparator />
+
+## End-to-End Data Path for ECS 
+
+<img src={ecsDataPathImg} alt="Diagram" style="margin: 30px 0;" />
+
+<SectionSeparator />
+
+## Types of metrics being collected
+
+The metrics that are listed in the table below are exported from the [java-sample-app](https://github.com/aws-observability/aws-otel-java-instrumentation/tree/main/sample-apps/springboot) as an example, however your results may vary depending on your application.
+
+| Metrics	                  | Definition		                 	                 	                 	                 	        |
+| --------------------------- | -------------------------------------------------------------------------------------------------------	|
+| http_server_active_requests | HTTP requests are messages sent by the client to initiate an action on the server	                    |
+| http_server_duration_count  | The average amount of time it takes for a queried metric to deliver	   							        |
+| queuesize	                  | Size of HTTP queue  requests that provides time for new connections to become available on the server,	|
+| runtime_jvm_gc_count	      | Java virtual machine runtime metrics																	|
+| runtime_jvm_gc_time	      | Java virtual machine runtime metrics																	|
+| runtime_jvm_memory_area	  | Java virtual machine runtime metrics																	|
+| runtime_jvm_memory_pool	  | Java virtual machine runtime metrics																	|
+| spansExportedByExporter	  | Number of spans that are exported by the exporter														|
+| spansSeenByExporter	      | Number of spans that are seen by the exporter															|
+
+<SectionSeparator />
+
+## Understanding your Configurations
+
+### [Configurations](/docs/getting-started/ecs-configurations/ecs-config-section)
+
+
+## Prerequisites and Configuration Setup Using ECS Console
+
+### [ECS Console Setup](/docs/getting-started/ecs-configurations/ecs-console-setup)
+
+<SectionSeparator />
+
+## Questions or Bugs?
+
+Technical documentation is available on the AWS Distro for OpenTelemetry developer [site](https://aws-otel.github.io/). To learn more about how you can use AWS Distro for OpenTelemetry (ADOT) to collect data for your observability solution, check out the hands-on [AWS Observability workshop](https://catalog.us-east-1.prod.workshops.aws/v2/workshops/31676d37-bbe9-4992-9cd1-ceae13c5116c/en-US/adot). Please file an [issue](https://github.com/aws-observability/aws-otel-community/issues) if you have questions or request for enhancements in the ADOT distribution, features, or components.
