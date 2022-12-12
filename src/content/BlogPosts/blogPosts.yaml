@@ -6,6 +6,13 @@ description:
 path: /blog
 
 blogs:
+  - title: "ADOT for EKS add-ons announces advanced configuration for Collector deployment"
+    author: "Eric Hsueh"
+    date: "12-December-2022"
+    body:
+      "This blog post announces the addition of Collector deployment to ADOT for EKS add-ons using add-ons advanced configuration."
+    link: "/docs/adot-eks-add-on-collector-deployment"
+
   - title: "AWS Distro for OpenTelemetry v0.23.1 is now available"
     author: "Huy Vo"
     date: "09-December-2022"
