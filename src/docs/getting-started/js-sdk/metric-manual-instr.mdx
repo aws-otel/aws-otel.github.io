@@ -152,7 +152,7 @@ const histogramExample = meter.createHistogram('histogram', {
     counterExample.add(cfg.RandomTimeAliveIncrementer, common_attributes);
     updateMockTotalHeapSize();
     updateMockCpuUsage();
-    histogram.record(returnTime, attributes);
+    histogramExample.record(returnTime, attributes);
   }, cfg.TimeInterval * 1000);
 ```
 
