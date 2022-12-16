@@ -97,20 +97,20 @@ const meter = metricsApi.metrics.getMeter('js-sample-app-meter');
 
 // synchronous counter metric
 const counterExample = meter.createCounter('counter', {
-    description: 'Mock total time that the application has been alive',
+    description: 'Creates a counter metric',
     unit: 's'
 });
 
 // asynchronous updown counter metric
 const observableUpdownCounterExample = meter.createObservableUpDownCounter('updownCounter', {
-    description: 'Mock total heap size',
+    description: 'Creates an asynchronous updown counter metric',
     unit:'1'
 });
-observableUpdownCounterExample.addCallback((measurement) => {measurement.observe(mockTotalHeapSize, common_attributes)});
+observableUpdownCounterExample.addCallback((measurement) => {measurement.observe(counterVar, common_attributes)});
 
 // updates updown counter
-function updateMockTotalHeapSize() {
-    mockTotalHeapSize += Math.random() * 100;
+function updateObservableCounter() {
+    counterVar += Math.random() * 100;
 }
 ```
 
@@ -124,14 +124,14 @@ const meter = metricsApi.metrics.getMeter('js-sample-app-meter');
 
 // observable gauge metric
 const observableGaugeExample = meter.createObservableGauge('observableGauge', {
-    description: 'Mock CPU usage percent',
+    description: 'Creates an observable gauge metric',
     unit: '1'
 });
-observableGaugeExample.addCallback((measurement) => {measurement.observe(mockCpuUsage, common_attributes)});
+observableGaugeExample.addCallback((measurement) => {measurement.observe(gaugeVar, common_attributes)});
 
 // updates observable gauge
-function updateMockCpuUsage() {
-    mockCpuUsage = Math.random() * 100;
+function updateObservableGauge() {
+    gaugeVar = Math.random() * 100;
 }
 ```
 
@@ -143,7 +143,7 @@ const metricsApi = require('@opentelemetry/api-metrics');
 const meter = metricsApi.metrics.getMeter('js-sample-app-meter');
 
 const histogramExample = meter.createHistogram('histogram', {
-    description: "Measures mock latency time.",
+    description: "Creates a histogram metric.",
     unit: 'ms'
 });
 ```
@@ -155,8 +155,8 @@ const common_attributes = { signal: 'metric',  language: 'javascript', metricTyp
 // update metrics
 setInterval(() => {
     counterExample.add(1, common_attributes);
-    updateMockTotalHeapSize();
-    updateMockCpuUsage();
+    updateObservableCounter();
+    updateObservableGauge();
     histogramExample.record(Math.random() * 1000, common_attributes);
 }, 1000);
 ```
