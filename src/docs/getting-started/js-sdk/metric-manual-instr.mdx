@@ -147,15 +147,15 @@ const histogramExample = meter.createHistogram('histogram', {
 
 4. Send metrics
 ```JavaScript
-  const common_attributes = { signal: 'metric',  language: 'javascript', metricType: 'random' };
+const common_attributes = { signal: 'metric',  language: 'javascript', metricType: 'random' };
 
-  // update metrics
-  setInterval(() => {
+// update metrics
+setInterval(() => {
     counterExample.add(1, common_attributes);
     updateMockTotalHeapSize();
     updateMockCpuUsage();
     histogramExample.record(Math.random() * 1000, common_attributes);
-  }, 1000);
+}, 1000);
 ```
 
 These steps provided the sample code for applications to create application metrics.
