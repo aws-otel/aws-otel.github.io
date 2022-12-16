@@ -135,7 +135,6 @@ function updateMockCpuUsage() {
 [Histograms](https://opentelemetry.io/docs/reference/specification/metrics/api/#histogram):
 ```JavaScript
 const metricsApi = require('@opentelemetry/api-metrics');
-const commmon_attributes = { signal: 'metric',  language: 'javascript', metricType: 'request' };
 
 // acquire meter 
 const meter = metricsApi.metrics.getMeter('js-sample-app-meter');
@@ -152,7 +151,7 @@ const histogramExample = meter.createHistogram('histogram', {
     counterExample.add(1, common_attributes);
     updateMockTotalHeapSize();
     updateMockCpuUsage();
-    histogramExample.record(Math.random() * 1000, attributes);
+    histogramExample.record(Math.random() * 1000, common_attributes);
   }, 1000);
 ```
 
