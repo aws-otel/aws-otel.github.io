@@ -44,7 +44,7 @@ $ npm install \
 ## Instrumenting Code
 Once OpenTelemetry Dependencies have been imported to application, we can start to instrument code for creating metrics.
 
-1. Initiate OpenTelemetry with components to export metrics to ADOT Collector
+1. Initiate OpenTelemetry Metrics exporter to send metrics to ADOT Collector
 ```javascript lineNumbers=true
 const process = require('process');
 const opentelemetry = require("@opentelemetry/sdk-node");
@@ -61,7 +61,10 @@ const _metricReader = new PeriodicExportingMetricReader({
     exporter: new OTLPMetricExporter(),
     exportIntervalMillis: 1000
 });
+```
 
+2. Create a OpenTelemetry Metric Provider for initiating metrics
+```javascript lineNumbers=true
 async function nodeSDKBuilder() {
     const sdk = new opentelemetry.NodeSDK({
         metricReader: _metricReader,
@@ -80,7 +83,7 @@ async function nodeSDKBuilder() {
 }
 ```
 
-3. Define Metrics and metrics labels(dimensions) for the application
+3. Define metrics and metric labels(dimensions) for the application
 In the following example application we demonstrate how to use the three types of metric instruments that
 are available to record metrics: Counters, Gauges and Histograms.
 
