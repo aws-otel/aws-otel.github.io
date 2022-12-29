@@ -6,6 +6,43 @@ description:
 path: /blog
 
 blogs:
+  - title: "AWS Distro for OpenTelemetry Lambda Layers are now available with ADOT Collector v0.24.0"
+    author: "Anthony Mirabella"
+    date: "22-DEC-2022"
+    body:
+      "ADOT Lambda Layers now distribute ADOT Collector v0.24.0 with new layers supporting AMD64 and ARM64 Lambda functions"
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-lambda-layer-v0.24.0"
+  - title: "ADOT for EKS add-ons announces advanced configuration for Collector deployment"
+    author: "Eric Hsueh"
+    date: "12-December-2022"
+    body:
+      "This blog post announces the addition of Collector deployment to ADOT for EKS add-ons using add-ons advanced configuration."
+    link: "/docs/adot-eks-add-on-collector-deployment"
+
+  - title: "AWS Distro for OpenTelemetry v0.23.1 is now available"
+    author: "Huy Vo"
+    date: "09-December-2022"
+    body:
+      "AWS Distro for OpenTelemetry v0.23.1 is now available. You can download the latest AWS Distro for OpenTelemetry Collector image
+      from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-collector-v0.23.1"
+
+  - title: "AWS Distro for OpenTelemetry v0.24.1 is now available"
+    author: "Bryan Aguilar"
+    date: "08-December-2022"
+    body:
+      "AWS Distro for OpenTelemetry v0.24.1 is now available. You can download the latest AWS Distro for OpenTelemetry Collector image
+      from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-collector-v0.24.1"
+
+  - title: "AWS Distro for OpenTelemetry v0.24.0 is now available"
+    author: "Bryan Aguilar"
+    date: "01-December-2022"
+    body:
+      "AWS Distro for OpenTelemetry v0.24.0 is now available. You can download the latest AWS Distro for OpenTelemetry Collector image
+      from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-collector-v0.24.0"
+
   - title: "AWS Distro for OpenTelemetry v0.22.1 is now available"
     author: "Pavan Sai Vasireddy"
     date: "09-November-2022"
