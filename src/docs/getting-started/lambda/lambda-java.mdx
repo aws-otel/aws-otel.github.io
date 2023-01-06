@@ -59,6 +59,7 @@ To enable the AWS Distro for OpenTelemetry in your Lambda function, you need to 
     1. `/opt/otel-handler` - for wrapping regular handlers (implementing RequestHandler)
     2. `/opt/otel-proxy-handler` - for wrapping regular handlers (implementing RequestHandler) proxied through API Gateway, enabling HTTP context propagation
     3. `/opt/otel-stream-handler` - for wrapping streaming handlers (implementing RequestStreamHandler), enabling HTTP context propagation for HTTP requests
+    4. `/opt/otel-sqs-handler` - for wrapping SQS-triggered function handlers (implementing RequestHandler)
 5. [Enable active tracing](https://docs.aws.amazon.com/lambda/latest/dg/services-xray.html) for your AWS Lambda function.
 
 
