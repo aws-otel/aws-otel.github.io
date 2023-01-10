@@ -7,7 +7,23 @@ path: '/docs/partners/dynatrace'
 ---
 ## Overview
 
-The Dynatrace metrics exporter exports metrics to the [metrics API v2](https://www.dynatrace.com/support/help/dynatrace-api/environment-api/metric-v2/post-ingest-metrics/) using the [metrics ingestion protocol](https://www.dynatrace.com/support/help/how-to-use-dynatrace/metrics/metric-ingestion/metric-ingestion-protocol/). This enables Dynatrace to receive metrics collected by the OpenTelemetry Collector. Dynatrace is an all-in-one software intelligence platform delivering continuous, automatic discovery and observability across your full stack. The Dynatrace Open Source Engineering team developed this exporter for metrics in the OpenTelemetry Collector. This exporter allows metrics collected by the OpenTelemetry Collector to be stored, viewed, and analyzed in Dynatrace.
+[Dynatrace](https://www.dynatrace.com/integrations/opentelemetry/) is an all-in-one software intelligence platform delivering continuous, automatic discovery and observability across your full stack.
+
+Dynatrace can receive OpenTelemetry metrics in the following ways:
+
+- Using OTLP/HTTP (OpenTelemetry Protocol) metrics exporter (recommended)
+- Using Dynatrace OpenTelemetry metrics exporter described below
+
+More information on exporting metrics to Dynatrace can be found in the
+[Dynatrace documentation for OpenTelemetry metrics](https://www.dynatrace.com/support/help/shortlink/opentelemetry-metrics).
+
+For ingesting traces (spans) into Dynatrace, use the generic OTLP/HTTP exporter shipped with the Collector.  
+More information on exporting traces to Dynatrace can be found in the
+[Dynatrace documentation for OpenTelemetry traces](https://www.dynatrace.com/support/help/extend-dynatrace/opentelemetry/opentelemetry-traces/opentelemetry-ingest).
+
+The Dynatrace Open Source Engineering team developed this exporter for metrics in the OpenTelemetry Collector.
+The Dynatrace metrics exporter exports metrics to the [metrics API v2](https://www.dynatrace.com/support/help/dynatrace-api/environment-api/metric-v2/post-ingest-metrics/) using the [metrics ingestion protocol](https://www.dynatrace.com/support/help/how-to-use-dynatrace/metrics/metric-ingestion/metric-ingestion-protocol/).
+This enables Dynatrace to receive, store, view, and analyze metrics collected by the OpenTelemetry Collector.
 
 ## Requirements
 
