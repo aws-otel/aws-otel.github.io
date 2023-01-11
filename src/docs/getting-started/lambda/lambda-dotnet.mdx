@@ -1,21 +1,20 @@
 ---
-title: 'AWS Distro for OpenTelemetry Lambda Support For .NET'
+title: "AWS Distro for OpenTelemetry Lambda Support For .NET"
 description:
-    The [AWS Distro for OpenTelemetry Lambda (ADOT Lambda) SDK for .NET](https://github.com/open-telemetry/opentelemetry-dotnet-contrib/tree/main/src/OpenTelemetry.Contrib.Instrumentation.AWSLambda)
-     provides extension and tracing APIs you can use to instrument your Lambda function.
-     The ADOT Lambda layer provides a reduced version of the [AWS Distro for OpenTelemetry Collector](https://github.com/aws-observability/aws-otel-collector),
-     which can further export OpenTelemetry spans to back-end servers.
+  The [AWS Distro for OpenTelemetry Lambda (ADOT Lambda) SDK for .NET](https://github.com/open-telemetry/opentelemetry-dotnet-contrib/tree/main/src/OpenTelemetry.Contrib.Instrumentation.AWSLambda)
+  provides extension and tracing APIs you can use to instrument your Lambda function.
+  The ADOT Lambda layer provides a reduced version of the [AWS Distro for OpenTelemetry Collector](https://github.com/aws-observability/aws-otel-collector),
+  which can further export OpenTelemetry spans to back-end servers.
 
-path: '/docs/getting-started/lambda/lambda-dotnet'
+path: "/docs/getting-started/lambda/lambda-dotnet"
 ---
 
-import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
-import img16 from "assets/img/docs/img16.png"
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx";
+import img16 from "assets/img/docs/img16.png";
 
-The [AWS Distro for OpenTelemetry Lambda (ADOT Lambda) SDK for .NET](https://github.com/open-telemetry/opentelemetry-dotnet-contrib/tree/main/src/OpenTelemetry.Contrib.Instrumentation.AWSLambda) provides extension and tracing APIs you can use to instrument your Lambda function. The ADOT Lambda layer provides a reduced version of the [AWS Distro for OpenTelemetry Collector](https://github.com/aws-observability/aws-otel-collector), which can further export OpenTelemetry spans to back-end servers. 
+The [AWS Distro for OpenTelemetry Lambda (ADOT Lambda) SDK for .NET](https://github.com/open-telemetry/opentelemetry-dotnet-contrib/tree/main/src/OpenTelemetry.Contrib.Instrumentation.AWSLambda) provides extension and tracing APIs you can use to instrument your Lambda function. The ADOT Lambda layer provides a reduced version of the [AWS Distro for OpenTelemetry Collector](https://github.com/aws-observability/aws-otel-collector), which can further export OpenTelemetry spans to back-end servers.
 
 This chapter will walk you through the steps to manually instrument your Lambda function using the ADOT Lambda .NET SDK, and apply ADOT Lambda layer to enable end-to-end tracing.
-
 
 <SectionSeparator />
 
@@ -43,8 +42,8 @@ TracerProvider tracerProvider = Sdk.CreateTracerProviderBuilder()
 ```
 
 3. Create a wrapper function with the same signature as the original Lambda function.
-Call `AWSLambdaWrapper.Trace()` API and pass `TracerProvider`, the original Lambda function, and its inputs as parameters. 
-**Set the wrapper function as the Lambda handler input.** See [sample app](https://github.com/open-telemetry/opentelemetry-lambda/blob/main/dotnet/sample-apps/aws-sdk/wrapper/SampleApps/AwsSdkSample/Function.cs) for more code instrumentation details.
+   Call `AWSLambdaWrapper.Trace()` API and pass `TracerProvider`, the original Lambda function, and its inputs as parameters.
+   **Set the wrapper function as the Lambda handler input.** See [sample app](https://github.com/open-telemetry/opentelemetry-lambda/blob/main/dotnet/sample-apps/aws-sdk/wrapper/SampleApps/AwsSdkSample/Function.cs) for more code instrumentation details.
 
 ```csharp
 // new Lambda function handler passed in
@@ -60,21 +59,22 @@ public string OriginalFunctionHandler(JObject input, ILambdaContext context)
 ### Lambda Layer
 
 This layer includes a reduced version of the [AWS Distro for OpenTelemetry Collector (ADOT Collector)](https://github.com/aws-observability/aws-otel-collector),
-  which runs as a Lambda extension.
+which runs as a Lambda extension.
 
 Note: Lambda layers are a regionalized resource, meaning that they can only be used in the Region in which they are published.
- Make sure to use the layer in the same region as your Lambda functions.
+Make sure to use the layer in the same region as your Lambda functions.
 
 Find the supported regions and amd64(x86_64)/arm64 layer ARN in the table below for the ARNs to consume.
 
-|Supported   Regions  |Lambda layer ARN format  | Contents |
-|---------------------|-------------------------|----------|
-| ap-northeast-1<br/>ap-northeast-2<br/>ap-south-1<br/>ap-southeast-1<br/>ap-southeast-2<br/>ca-central-1<br/>eu-central-1<br/>eu-north-1<br/>eu-west-1<br/>eu-west-2<br/>eu-west-3<br/>sa-east-1<br/>us-east-1<br/>us-east-2<br/>us-west-1<br/>us-west-2 | arn:aws:lambda:<region\>:901920570463:layer:aws-otel-collector-<architecture\>-ver-0-66-0:1 | Contains the [ADOT Collector for Lambda v0.24.0](https://github.com/aws-observability/aws-otel-collector/releases/tag/pkg%2Flambdacomponents%2Fv0.24.0)|
+| Supported Regions                                                                                                                                                                                                                                       | Lambda layer ARN format                                                                     | Contents                                                                                                                                                |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ap-northeast-1<br/>ap-northeast-2<br/>ap-south-1<br/>ap-southeast-1<br/>ap-southeast-2<br/>ca-central-1<br/>eu-central-1<br/>eu-north-1<br/>eu-west-1<br/>eu-west-2<br/>eu-west-3<br/>sa-east-1<br/>us-east-1<br/>us-east-2<br/>us-west-1<br/>us-west-2 | arn:aws:lambda:<region\>:901920570463:layer:aws-otel-collector-<architecture\>-ver-0-68-0:1 | Contains the [ADOT Collector for Lambda v0.25.1](https://github.com/aws-observability/aws-otel-collector/releases/tag/pkg%2Flambdacomponents%2Fv0.25.1) |
 
 ### Enable Tracing
+
 Once you’ve instrumented the Lambda function code and deployed to Lambda service, you can follow the instructions below to apply Lambda layer.
 
-1. Open the Lambda function you intend to trace in the AWS console. 
+1. Open the Lambda function you intend to trace in the AWS console.
 2. In the **Layers** section, choose **Add a layer**.
 3. Under **Specify an ARN**, paste the layer ARN, and then choose **Add**.
 
@@ -82,10 +82,10 @@ Also, remember to turn on [active tracing](https://docs.aws.amazon.com/lambda/la
 
 Tips:
 
-* By default, the layer is configured to export traces to AWS X-Ray.
- Make sure your Lambda role has the required AWS X-Ray permissions.
+- By default, the layer is configured to export traces to AWS X-Ray.
+  Make sure your Lambda role has the required AWS X-Ray permissions.
   See more on [AWS X-Ray permissions](https://docs.aws.amazon.com/lambda/latest/dg/services-xray.html#services-xray-permissions) for AWS Lambda.
-* To disable tracing, you’ll need to remove ADOT Lambda layer from your Lambda function and disable active tracing as described above.
+- To disable tracing, you’ll need to remove ADOT Lambda layer from your Lambda function and disable active tracing as described above.
 
 <SectionSeparator />
 
@@ -94,9 +94,8 @@ Tips:
 The ADOT layer contains the ADOT Collector. The configuration of the ADOT Collector follows the OpenTelemetry standard.
 
 By default, the ADOT Lambda layer uses the [config.yaml](https://github.com/aws-observability/aws-otel-lambda/blob/main/adot/collector/config.yaml),
- which exports telemetry data to AWS X-Ray. To customize the Collector config,
- see the [main Lambda section for custom configuration instructions](/docs/getting-started/lambda#custom-configuration-for-the-adot-collector-on-lambda)
-
+which exports telemetry data to AWS X-Ray. To customize the Collector config,
+see the [main Lambda section for custom configuration instructions](/docs/getting-started/lambda#custom-configuration-for-the-adot-collector-on-lambda)
 
 <SectionSeparator />
 
