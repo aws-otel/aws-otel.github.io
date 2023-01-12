@@ -154,14 +154,18 @@ Dynatrace without the need for additional plugins or non-OTLP exporters.
 ### Configuration (Collector)
 
 The configuration takes place in the OTLP exporter in the Collector config YAML file.
-Configure the [OTLP HTTP Exporter](https://github.com/open-telemetry/opentelemetry-collector/tree/master/exporter/otlphttpexporter) with the following settings:
+Configure the [OTLP HTTP Exporter](https://github.com/open-telemetry/opentelemetry-collector/tree/master/exporter/otlphttpexporter) with the following settings. For additional details see the [Dynatrace documentation for the Collector](https://www.dynatrace.com/support/help/extend-dynatrace/opentelemetry/basics/collector#example-configuration).
  
-* `endpoint: "https://{your-environment-id}.live.dynatrace.com/api/v2/otlp"`
-* `headers`
-  * `Authorization: "Api-Token <API_TOKEN>"`
+#### `endpoint`
+
+Your Dynatrace environment OTLP ingest endpoint `https://{your-environment-id}.live.dynatrace.com/api/v2/otlp`
 
 
-For additional details see the [Dynatrace documentation for the Collector](https://www.dynatrace.com/support/help/extend-dynatrace/opentelemetry/basics/collector#example-configuration).
+#### `headers`
+
+Set the `Authorization` header with the format `"Api-Token <API_TOKEN>"`
+
+
 
 <SubSectionSeparator />
 
