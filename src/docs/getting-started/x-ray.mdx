@@ -191,6 +191,8 @@ The attributes in this section are translated into the AWS resource field `cloud
 | aws.log.group.arns      | cloudwatch_logs.arn       |                                                                                                                                                                                                                                                                                                                                             |
 | aws.log.group.names     | cloudwatch_logs.log_group | If both `aws.log.group.arns` and `aws.log.group.names` are defined, precedence is given to `aws.log.group.arns`                                                                                                                                                                                                                             |
 
+Obs.: These resource attributes are of type array and cannot be set using the OTEL_RESOURCE_ATTRIBUTES environment variable. Currently you have to setup this resource attribute programatically.
+
 See [AWS X-Ray Segment Documents](https://docs.aws.amazon.com/xray/latest/devguide/xray-api-segmentdocuments.html) for more information on the AWS X-Ray data model. See [OpenTelemetry data model spec](https://github.com/open-telemetry/opentelemetry-specification) for more information on OpenTelemetry data model. See [X-Ray Logging Configuration](https://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-java-configuration.html#xray-sdk-java-configuration-logging) for references of expected log pattern.
 
 ### Enable The Customized X-Ray Annotations
