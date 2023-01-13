@@ -35,11 +35,10 @@ In order to trace your application, the following OpenTelemetry packages will be
 ```bash lineNumbers=true
 $ npm install \
   @opentelemetry/api \
-  @opentelemetry/core \
-  @opentelemetry/exporter-collector \
-  @opentelemetry/exporter-collector-grpc \
-  @opentelemetry/exporter-collector-proto \
-  @opentelemetry/metrics
+  @opentelemetry/sdk-node \
+  @opentelemetry/exporter-metrics-otlp-grpc \
+  @opentelemetry/sdk-metrics \
+  @opentelemetry/api-metrics
 ```
 
 ## Instrumenting Code
@@ -47,55 +46,118 @@ Once OpenTelemetry Dependencies have been imported to application, we can start 
 
 1. Initiate OpenTelemetry Metrics exporter to send metrics to ADOT Collector
 ```javascript lineNumbers=true
-const metricExporter = new CollectorMetricExporter({
-  serviceName: 'aws-otel-js-sample',
-  logger: new ConsoleLogger(LogLevel.DEBUG),
-  // port configured in the Collector config, defaults to 4317
-  url: "localhost:4317"
-  // credentials only required if tls setup on Collector instance
-  credentials: grpc.credentials.createSsl(
-    fs.readFileSync('./ca.crt'),
-    fs.readFileSync('./client.key'),
-    fs.readFileSync('./client.crt')
-  )
+const process = require('process');
+const opentelemetry = require("@opentelemetry/sdk-node");
+const { Resource } = require("@opentelemetry/resources");
+const { SemanticResourceAttributes } = require("@opentelemetry/semantic-conventions");
+const { PeriodicExportingMetricReader } = require("@opentelemetry/sdk-metrics");
+const { OTLPMetricExporter } = require("@opentelemetry/exporter-metrics-otlp-grpc");
+
+const _resource = Resource.default().merge(new Resource({
+        [SemanticResourceAttributes.SERVICE_NAME]: "js-sample-app",
+    }));
+}
+const _metricReader = new PeriodicExportingMetricReader({
+    exporter: new OTLPMetricExporter(),
+    exportIntervalMillis: 1000
 });
 ```
 
 2. Create a OpenTelemetry Metric Provider for initiating metrics
 ```javascript lineNumbers=true
-const meter = new MeterProvider({
-  exporter: metricExporter,
-  interval: 1000,
-}).getMeter('aws-otel-js');
+async function nodeSDKBuilder() {
+    const sdk = new opentelemetry.NodeSDK({
+        metricReader: _metricReader,
+        resource: _resource,
+    });
+    
+    // this enables the API to record telemetry
+    await sdk.start(); 
+    // gracefully shut down the SDK on process exit
+    process.on('SIGTERM', () => {
+    sdk.shutdown()
+      .then(() => console.log('Metrics terminated'))
+      .catch((error) => console.log('Error terminating metrics', error))
+      .finally(() => process.exit(0));
+    });
+}
 ```
 
-3. Define Metrics and metrics labels(dimensions) for the application
-```javascript lineNumbers=true
-/** Counter Metrics */
-const payloadMetric = meter.createCounter('payload', {
-  description: 'Metric for counting request payload size',
+3. Define metrics and metric labels(dimensions) for the application
+In the following example application we demonstrate how to use the three types of metric instruments that
+are available to record metrics: Counters, Gauges and Histograms.
+
+[Counters](https://opentelemetry.io/docs/reference/specification/metrics/api/#counter):
+```JavaScript
+const metricsApi = require('@opentelemetry/api-metrics');
+const common_attributes = { signal: 'metric',  language: 'javascript', metricType: 'random' };
+
+// acquire meter 
+const meter = metricsApi.metrics.getMeter('js-sample-app-meter');
+
+// synchronous counter metric
+const counterExample = meter.createCounter('counter', {
+    description: 'Creates a counter metric',
+    unit: 's'
 });
 
-/** Up and Down Counter Metrics */
-const activeReqMetric = meter.createUpDownCounter('activeRequest', {
-  description: 'Metric for record active requests',
+// asynchronous updown counter metric
+const observableUpdownCounterExample = meter.createObservableUpDownCounter('updownCounter', {
+    description: 'Creates an asynchronous updown counter metric',
+    unit:'1'
 });
+observableUpdownCounterExample.addCallback((measurement) => {measurement.observe(counterVar, common_attributes)});
 
-/** Value Recorder Metrics with Histogram */
-const requestLatency = meter.createValueRecorder('latency', {
-  description: 'Metric for record request latency',
+// updates updown counter
+function updateObservableCounter() {
+    counterVar += Math.random() * 100;
+}
+```
+
+[Gauges](https://opentelemetry.io/docs/reference/specification/metrics/api/#asynchronous-gauge):
+```JavaScript
+const metricsApi = require('@opentelemetry/api-metrics');
+const common_attributes = { signal: 'metric',  language: 'javascript', metricType: 'random' };
+
+// acquire meter 
+const meter = metricsApi.metrics.getMeter('js-sample-app-meter');
+
+// observable gauge metric
+const observableGaugeExample = meter.createObservableGauge('observableGauge', {
+    description: 'Creates an observable gauge metric',
+    unit: '1'
 });
+observableGaugeExample.addCallback((measurement) => {measurement.observe(gaugeVar, common_attributes)});
 
-/** Define Metrics Dimensions */
-const labels = { pid: process.pid, env: 'beta' };
+// updates observable gauge
+function updateObservableGauge() {
+    gaugeVar = Math.random() * 100;
+}
+```
+
+[Histograms](https://opentelemetry.io/docs/reference/specification/metrics/api/#histogram):
+```JavaScript
+const metricsApi = require('@opentelemetry/api-metrics');
+
+// acquire meter 
+const meter = metricsApi.metrics.getMeter('js-sample-app-meter');
+
+const histogramExample = meter.createHistogram('histogram', {
+    description: "Creates a histogram metric.",
+    unit: 'ms'
+});
 ```
 
 4. Send metrics
-```javascript lineNumbers=true
+```JavaScript
+const common_attributes = { signal: 'metric',  language: 'javascript', metricType: 'random' };
+
+// update metrics
 setInterval(() => {
-  payloadMetric.bind(labels).add(1);
-  activeReqMetric.bind(labels).add(Math.random() > 0.5 ? 1 : -1);
-  requestLatency.bind(labels).record(Math.random() * 1000)
+    counterExample.add(1, common_attributes);
+    updateObservableCounter();
+    updateObservableGauge();
+    histogramExample.record(Math.random() * 1000, common_attributes);
 }, 1000);
 ```
 
