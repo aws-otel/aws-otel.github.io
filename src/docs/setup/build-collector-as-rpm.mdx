@@ -9,9 +9,9 @@ import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.js
 
 <SectionSeparator />
 
-## Run AWSOTelCollector Beta on AWS EC2 Linux
+## Run ADOTCollector Beta on AWS EC2 Linux
 
-To run AWSOTelCollector on AWS EC2 Linux host, you can choose to install AWSOTelCollector RPM on your host by the following steps.
+To run ADOTCollector on AWS EC2 Linux host, you can choose to install ADOTCollector RPM on your host by the following steps.
 
 **Steps,**
 
@@ -24,34 +24,34 @@ make package-rpm
 ```
 sudo rpm -Uvh  ./aws-otel-collector.rpm
 ```
-3. Once RPM is installed, it will create AWSOTelCollector in directory ```/opt/aws/aws-otel-collector/```
+3. Once RPM is installed, it will create ADOTCollector in directory ```/opt/aws/aws-otel-collector/```
 
-4. We provided a control script to manage AWSOTelCollector. Customer can use it to Start, Stop and Check Status of AWSOTelCollector.
+4. We provided a control script to manage ADOTCollector. Customer can use it to Start, Stop and Check Status of ADOTCollector.
 
-    * Start AWSOTelCollector with CTL script. The config.yaml is optional, if it is not provided the default [config](../../config.yaml) will be applied.
+    * Start ADOTCollector with CTL script. The config.yaml is optional, if it is not provided the default [config](../../config.yaml) will be applied.
     ```
         sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -c </path/config.yaml> -a start
     ```
-    * Stop the running AWSOTelCollector when finish the testing.
+    * Stop the running ADOTCollector when finish the testing.
     ```
         sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl  -a stop
     ```
-    * Check the status of AWSOTelCollector
+    * Check the status of ADOTCollector
     ```
         sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl  -a status
     ```
 
-5. Test the data with the running AWSOTelCollector on EC2. you can run the following command on EC2 host. (Docker app has to be pre-installed)
+5. Test the data with the running ADOTCollector on EC2. you can run the following command on EC2 host. (Docker app has to be pre-installed)
 ```
-docker run --rm -it -e "OTEL_OTLP_ENDPOINT=172.17.0.1:4317" -e "otlp_instance_id=test_insance_rpm" -e "OTEL_RESOURCE_ATTRIBUTES=service.namespace=AWSOTelCollectorRPMDemo,service.name=AWSOTelCollectorRPMDemoService" -e S3_REGION=us-west-2 aottestbed/aws-otel-collector-sample-app:java-0.1.0
+docker run --rm -it -e "OTEL_OTLP_ENDPOINT=172.17.0.1:4317" -e "otlp_instance_id=test_insance_rpm" -e "OTEL_RESOURCE_ATTRIBUTES=service.namespace=ADOTCollectorRPMDemo,service.name=ADOTCollectorRPMDemoService" -e S3_REGION=us-west-2 aottestbed/aws-otel-collector-sample-app:java-0.1.0
 ```
 
 **View Your Metrics**
-You should now be able to view your metrics in your [CloudWatch console](https://console.aws.amazon.com/cloudwatch/). In the navigation bar, click on **Metrics**. The collected AWSOTelCollector metrics can be found in the **AWSOTelCollectorRPMDemo/AWSOTelCollectorRPMDemoService** namespace.
+You should now be able to view your metrics in your [CloudWatch console](https://console.aws.amazon.com/cloudwatch/). In the navigation bar, click on **Metrics**. The collected ADOTCollector metrics can be found in the **ADOTCollectorRPMDemo/ADOTCollectorRPMDemoService** namespace.
 
-### Installing AWSOTelCollector via CloudFormation
-### Install AWSOTelCollector on ECS EC2
-Download CloudFormation template file for installing AWSOTelCollector on ECS EC2 mode
+### Installing ADOTCollector via CloudFormation
+### Install ADOTCollector on ECS EC2
+Download CloudFormation template file for installing ADOTCollector on ECS EC2 mode
 ```
 curl -O https://github.com/mxiamxia/aws-opentelemetry-collector/blob/master/deployment-template/ec2/aws-otel-ec2-deployment-cfn.template
 ```
@@ -60,7 +60,7 @@ Run CloudFormation the following command once ```IAMRole```, ```Region```, ```EC
 Region=<aws-region>
 IAMRole=<iam-role>
 EC2Key=<ec2-ssh-key-name>
-aws cloudformation create-stack --stack-name AWSOTelCollectorEC2-Test \
+aws cloudformation create-stack --stack-name ADOTCollectorEC2-Test \
 	--template-body file://<CFN_File_Downloaded> \
 	--parameters ParameterKey=IAMRole,ParameterValue=${IAMRole} \
                  ParameterKey=KeyName,ParameterValue=${EC2Key} \
