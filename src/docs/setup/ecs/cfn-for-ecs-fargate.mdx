@@ -31,18 +31,18 @@ curl -O https://raw.githubusercontent.com/aws-observability/aws-otel-collector/m
     * `AWS_Region` - Region the data will be sent
     * `PATH_TO_CloudFormation_TEMPLATE` - CFN template path downloaded in Step 1
     * `Security_Groups` - the security group for your ECS Fargate Task
-    * `Subnets` - the subnet your ECS Fargate task is running (*ex: Subnets=SubnetID1\\\,SubnetID2*)
-    * `command` -  Assign value to the command variable to select the config file path; the AWS Collector comes with
-                   two configs baked in for ECS customers (choose one of them based on your purpose):
-                   `--config=/etc/ecs/ecs-default-config.yaml` - To consume StatsD metrics, OTLP metrics/traces and X-Ray SDK traces (custom application metrics/traces)
-                   `--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml` - To Use StatsD, OTLP, Xray and Container Resource utilization metrics
+    * `Subnets` - the subnet your ECS Fargate task is running (Ex: Subnets=SubnetID1\\\\,SubnetID2)
+    * `command` - Assign value to the command variable to select the config file path; the ADOT Collector comes with two configs baked in for ECS customers (choose one of them based on your purpose):
+        * `--config=/etc/ecs/ecs-default-config.yaml` - To consume StatsD metrics, OTLP metrics/traces and X-Ray SDK traces (custom application metrics/traces)
+        * `--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml` - To Use StatsD, OTLP, Xray and Container Resource utilization metrics
+
 ```console lineNumbers=true
 ClusterName=<Cluster_Name>
 Region=<AWS_Region>
 SecurityGroups=<Security_Groups>
 Subnets=<Subnets>
 command=<command>
-aws cloudformation create-stack --stack-name AOCECS-${ClusterName}-${Region} \
+aws cloudformation create-stack --stack-name ADOTECS-${ClusterName}-${Region} \
     --template-body file://<PATH_TO_CloudFormation_TEMPLATE> \
     --parameters ParameterKey=ClusterName,ParameterValue=${ClusterName} \
                  ParameterKey=CreateIAMRoles,ParameterValue=True \
