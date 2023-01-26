@@ -59,7 +59,7 @@
     "react-swipeable-views": "^0.13.1",
     "sass": "^1.5.4",
     "typeface-roboto": "1.1.13",
-    "typeface-roboto-slab": "0.0.72"
+    "typeface-roboto-slab": "1.1.13"
   },
   "overrides": {
     "multer": "1.4.4-lts.1"
