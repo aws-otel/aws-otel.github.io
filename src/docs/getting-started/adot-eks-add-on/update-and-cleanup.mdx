@@ -19,6 +19,17 @@ aws eks update-addon --addon-name adot --addon-version new-addon-version --clust
 
 After updating the ADOT Operator using EKS add-ons, the Collector CR will also have been updated, as the default ADOT Collector image the ADOT Operator uses will have been updated as well. Reapply the Collector configurations with any changes from the last Collector Custom Resource Definition, if necessary.
 
+### Updating ADOT using EKS add-ons advanced configuration feature
+
+If you followed steps from [Add-on Advanced Configuration](/docs/getting-started/adot-eks-add-on/add-on-configuration), then you can update ADOT using EKS add-ons advanced configuration feature as well. You can execute the command
+```console
+aws eks update-addon --addon-name adot --addon-version new-addon-version --cluster-name <your_cluster_name> --configuration-values <your_configuration_values> 
+```
+
+Updating the configuration values used by the add-on with a new JSON string will override previously set configuration values. If you would like to reset the configuration values used back to default values, you can use an empty JSON string (`--configuration-values "{}"`).
+
+ADOT can also be updated to a new add-on version alongside updates to configuration values. However, the configuration values must be compatible with the add-on version that ADOT is being updated to; the add-on will not update if those configuration values are not available in the new version.
+
 ## Cleanup of ADOT using EKS Add-ons and Cleanup of Other Components
 
 ### Delete the Collector resource
@@ -51,6 +62,10 @@ To learn more about how you can use ADOT to collect data for your observability 
 
 The troubleshooting guide can be found [here](https://docs.aws.amazon.com/eks/latest/userguide/troubleshooting-adot.html).
 
-## [Previous Topic: Collector Configuration Introduction](/docs/getting-started/adot-eks-add-on/config-intro)
+## Previous Topics:
+
+### [Add-on Advanced Configuration](/docs/getting-started/adot-eks-add-on/add-on-configuration)
+
+### [Collector Configuration Introduction](/docs/getting-started/adot-eks-add-on/config-intro)
 
 ## [Next Topic: Return to the Beginning of the Guide](/docs/getting-started/adot-eks-add-on)

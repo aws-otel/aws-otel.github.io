@@ -71,8 +71,12 @@ do the advanced customization for each component on metrics sending. We will wal
 
 The application metrics are sent to Amazon CloudWatch in form of EMF Logs format. The various configuration options, including
 EMF Log Group Name, Log Stream Name and CloudWatch Metrics Namespace can be customized in EMF exporter configuration. Note that
-ADOT Collector utilizes the default log group name and namespace generated from application to support data correlation.
-The customized values might break the data correlation feature.
+ADOT Collector utilizes the default log group name and namespace generated from application to support data correlation.  The customized values might break the data correlation feature.  The log retention of the Cloudwatch log group created by the EMF 
+Exporter can also be customized in the configuration and be set to the following values (in days):
+
+0 (Never Expire), 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, 2192, 2557, 2922, 3288, or 3653.
+
+Log Retention can only be set this way for newly created Cloudwatch log groups.  This feature will not update log retention for existing Cloudwatch log groups.
 
 The available dimension roll-up options in EMF exporter,
 * "ZeroAndSingleDimensionRollup" - Enable both zero dimension rollup and single dimension rollup
@@ -83,10 +87,11 @@ The available dimension roll-up options in EMF exporter,
 
 ```
 awsemf:
-    log_group_name: 'AOTLogGroup'
-    log_stream_name: 'AOTLogStream'
-    namespace: 'AOTMetricNS'
+    log_group_name: 'ADOTLogGroup'
+    log_stream_name: 'ADOTLogStream'
+    namespace: 'ADOTMetricNS'
     dimension_rollup_option: 1
+    log_retention: 60
 ```
 
 The following is are sample metrics with dimension rollup in CloudWatch console.

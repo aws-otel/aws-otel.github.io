@@ -34,10 +34,10 @@
     "gatsby-plugin-react-helmet": "^4.0.8",
     "gatsby-plugin-remove-trailing-slashes": "^3.0.0",
     "gatsby-plugin-resolve-src": "^2.0.0",
-    "gatsby-plugin-sass": "4.0.0",
-    "gatsby-plugin-sitemap": "^3.0.0",
+    "gatsby-plugin-sass": "4.15.0",
+    "gatsby-plugin-sitemap": "^4.11.0",
     "gatsby-source-filesystem": "^3.0.0",
-    "gatsby-transformer-remark": "^4.11.0",
+    "gatsby-transformer-remark": "^4.12.0",
     "gatsby-transformer-yaml": "^3.0.0",
     "github-base": "^1.0.0",
     "history": "^4.7.2",
@@ -50,7 +50,7 @@
     "react": "^16.13.1",
     "react-datetime": "^2.16.3",
     "react-dom": "^16.13.1",
-    "react-helmet": "^5.2.0",
+    "react-helmet": "^6.1.0",
     "react-icon": "^1.0.0",
     "react-icons": "^4.4.0",
     "react-id-generator": "^3.0.1",
@@ -59,7 +59,7 @@
     "react-swipeable-views": "^0.13.1",
     "sass": "^1.5.4",
     "typeface-roboto": "1.1.13",
-    "typeface-roboto-slab": "0.0.72"
+    "typeface-roboto-slab": "1.1.13"
   },
   "overrides": {
     "multer": "1.4.4-lts.1"

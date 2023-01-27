@@ -15,7 +15,7 @@ import img11 from "assets/img/docs/img11.png"
 import img12 from "assets/img/docs/img12.png"
 import img13 from "assets/img/docs/img13.png"
 
-In this tutorial, we will demonstrate how to run the AWS Distro for OpenTelemetry(ADOT Collector) Collector as
+In this tutorial, we will demonstrate how to run the AWS Distro for OpenTelemetry(ADOT) Collector as
 sidecar on the Amazon Elastic Kubernetes Service (Amazon EKS).
 
 <SectionSeparator />
@@ -40,15 +40,17 @@ Sidecar is a microservice design pattern where a companion service runs next to 
 abilities or intercepting resources it is utilizing. We recommend deploying ADOT Collector on Amazon EKS as a sidecar,
 defining it in the same task definition as your application. This allows the ADOT Collector to collect the metric and
 trace data for the application.
+
 1. Create a Kubernetes namespace.
 ```
 kubectl create namespace aws-otel-eks
 ```
-2. An example configuration template can be
-found [under examples in the AWS Distro for OpenTelemetry Collector GitHub](https://github.com/aws-observability/aws-otel-collector/blob/main/examples/eks/aws-cloudwatch/otel-sidecar.yaml).
-Replace `{{aws-otelImage}}` with the name of the ADOT Collector Docker image you built
-(For example, `aottestbed/awscollector:v0.1.12`), and `{{region}}` with the name of the Region where the logs are published (For example, `us-west-2`).
+2. An example configuration template can be found under [examples here](https://github.com/aws-observability/aws-otel-collector/blob/main/examples/eks/aws-cloudwatch/otel-sidecar.yaml) in the AWS Distro for OpenTelemetry Collector GitHub Repo.
+  * In this example you can replace [image](https://github.com/aws-observability/aws-otel-collector/blob/main/examples/eks/aws-cloudwatch/otel-sidecar.yaml#L41) with ADOT Collector Docker image you built
+(Ex:`amazon/aws-otel-collector:latest`), and `AWS_REGION` with the name of the region where the logs are published (Ex: `us-west-2`).
+
 3. Deploy the application.
+
 ```
 kubectl apply -f https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/examples/eks/aws-cloudwatch/otel-sidecar.yaml
 ```
@@ -57,17 +59,20 @@ kubectl apply -f https://raw.githubusercontent.com/aws-observability/aws-otel-co
 kubectl get all -n aws-otel-eks
 ```
 <img src={img11} alt="Diagram" style="margin: 30px 0;" />
+
 5. View the details of the deployed deployment.
+
 ```
 kubectl -n aws-otel-eks describe deployment aws-otel-eks-sidecar
 ```
+
 <img src={img12} alt="Diagram" style="margin: 30px 0;" />
-The example template runs the AWS-OTel-Collector as a sidecar to send application metrics and traces on Amazon EKS.
+
+The example template runs the ADOT Collector as a sidecar to send application metrics and traces on Amazon EKS.
 We run two applications: the main application (`aws-otel-emitter`) and the ADOT Collector (`aws-otel-collector`).
 After the setup is finished, we should see the following sample metrics in Amazon CloudWatch console.
 <img src={img13} alt="Diagram" style="margin: 30px 0;" />
 
-<div style="height: 40px" />
 
-**Notes**
+**Note** :
 After you’ve finished the tutorial, remember to shut down the new EKS cluster created in the tutorial in order to avoid additional charges.
