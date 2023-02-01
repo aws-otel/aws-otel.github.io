@@ -49,7 +49,7 @@ For more on AWS X-Ray permissions for AWS Lambda, see the [AWS Lambda documentat
 
 * By default, the ADOT Java Agent in the Layer will try to auto-instrument all the code in your application. This can have a negative impact on the Lambda cold startup time.
 
-  We recommend that you only enable auto instrumentation for the libraries/frameworks that are used by your application.
+  We recommend that you only enable auto-instrumentation for the libraries/frameworks that are used by your application.
 
   To enable only specific instrumentation you can use the following environment variables:
   * `OTEL_INSTRUMENTATION_COMMON_DEFAULT_ENABLED` - When set to `false`, disables auto-instrumentation in the Layer, requiring each instrumentation to be enabled individually.
