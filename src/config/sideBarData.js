@@ -62,7 +62,7 @@ export const sideBarData = [
         {label: "Ruby", link: "/docs/getting-started/ruby-sdk"},
         {label: ".NET", link: "/docs/getting-started/dotnet-sdk"},
         {label: "PHP", link: "/docs/getting-started/php-sdk"},
-        {label: "EKS add-ons", link: "/docs/getting-started/adot-eks-add-on"},
+        {label: "EKS add-on", link: "/docs/getting-started/adot-eks-add-on"},
         {label: "Lambda", link: "/docs/getting-started/lambda"},
         {label: "Amazon Managed Service for Prometheus (AMP)", link: "/docs/getting-started/prometheus-remote-write-exporter"},
         {label: "Prometheus Configurations", link: "/docs/getting-started/advanced-prometheus-remote-write-configurations"},
