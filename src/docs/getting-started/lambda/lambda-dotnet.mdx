@@ -12,7 +12,7 @@ path: '/docs/getting-started/lambda/lambda-dotnet'
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
 import img16 from "assets/img/docs/img16.png"
 
-The [AWS Distro for OpenTelemetry Lambda (ADOT Lambda) SDK for .NET](https://github.com/open-telemetry/opentelemetry-dotnet-contrib/tree/main/src/OpenTelemetry.Contrib.Instrumentation.AWSLambda) provides extension and tracing APIs you can use to instrument your Lambda function. The ADOT Lambda layer provides a reduced version of the [AWS Distro for OpenTelemetry Collector](https://github.com/aws-observability/aws-otel-collector), which can further export OpenTelemetry spans to back-end servers. 
+The [OpenTelemetry Lambda instrumentation for .NET](https://github.com/open-telemetry/opentelemetry-dotnet-contrib/tree/main/src/OpenTelemetry.Contrib.Instrumentation.AWSLambda) provides extension and tracing APIs you can use to instrument your Lambda function. The ADOT Lambda layer provides a reduced version of the [AWS Distro for OpenTelemetry Collector](https://github.com/aws-observability/aws-otel-collector), which can further export OpenTelemetry spans to back-end servers.
 
 This chapter will walk you through the steps to manually instrument your Lambda function using the ADOT Lambda .NET SDK, and apply ADOT Lambda layer to enable end-to-end tracing.
 
@@ -21,7 +21,7 @@ This chapter will walk you through the steps to manually instrument your Lambda 
 
 ## Requirements
 
-The ADOT Lambda .NET SDK supports `dotnetcore2.1` and `dotnetcore3.1` Lambda runtimes.
+The OpenTelemetry Lambda SDK for .NET supports both `dotnetcore3.1` and `dotnet6` Lambda runtimes.
 
 ## Instrumentation
 
@@ -91,9 +91,7 @@ Tips:
 
 ## Configuration
 
-The ADOT layer contains the ADOT Collector. The configuration of the ADOT Collector follows the OpenTelemetry standard.
-
-By default, the ADOT Lambda layer uses the [config.yaml](https://github.com/aws-observability/aws-otel-lambda/blob/main/adot/collector/config.yaml),
+The ADOT Lambda layer contains the ADOT Collector. The configuration of the ADOT Collector follows the OpenTelemetry standard and uses the [config.yaml](https://github.com/aws-observability/aws-otel-lambda/blob/main/adot/collector/config.yaml) by default,
  which exports telemetry data to AWS X-Ray. To customize the Collector config,
  see the [main Lambda section for custom configuration instructions](/docs/getting-started/lambda#custom-configuration-for-the-adot-collector-on-lambda)
 
