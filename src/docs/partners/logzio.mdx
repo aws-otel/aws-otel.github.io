@@ -30,7 +30,7 @@ Once your account is created,  in the platform menu tabs, **activate** your Metr
 
 ## Configuring the Logz.io Exporter
 
-To send data to Logz.io you will need to configure the AWS OpenTelemetry collector. Trace data and Metric data are configured separately. The only change needed to your OpenTelemetry configuration is to add the Logz.io exporter. This is the component used to direct the data to Logz.io from the AWS OpenTelemetry collector.
+To send data to Logz.io you will need to configure the ADOT collector. Trace data and Metric data are configured separately. The only change needed to your OpenTelemetry configuration is to add the Logz.io exporter. This is the component used to direct the data to Logz.io from the AWS OpenTelemetry collector.
 Add a Logz.io exporter to the YAML file for your OpenTelemetry configuration, along with your Logz.io tokens.  Check out the exporter part of the [sample yaml file that is available from OpenTelemetry](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/logzioexporter). 
 
 *Note that based on your deployment, you’ll need to use your customized OpenTelemetry collector configuration changes, instead of the default OpenTelemetry file available from the AWS Distro.*

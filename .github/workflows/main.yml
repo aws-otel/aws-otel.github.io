@@ -13,7 +13,7 @@ jobs:
   publish-smoke-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3.1.0
+      - uses: actions/checkout@v3.3.0
       - uses: enriikke/gatsby-gh-pages-action@v2
         env:
           GH_API_KEY: ${{ secrets.GITHUB_TOKEN }}
@@ -25,7 +25,7 @@ jobs:
     needs: publish-smoke-test
     steps:
       - name: Checkout Smoke Test Branch
-        uses: actions/checkout@v3.1.0
+        uses: actions/checkout@v3.3.0
         with:
           path: smoke-test
           ref: smoke-test
@@ -35,7 +35,7 @@ jobs:
           echo $ST_LC
           echo "SMOKE_TEST_LINE_COUNT=$ST_LC" >> $GITHUB_ENV
       - name: Checkout Published Branch
-        uses: actions/checkout@v3.1.0
+        uses: actions/checkout@v3.3.0
         with:
           path: published
           ref: gh-pages
@@ -58,7 +58,7 @@ jobs:
     needs: verify-smoke-test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3.1.0
+      - uses: actions/checkout@v3.3.0
         with:
           ref: gh-pages
       - name: merge commit push

@@ -32,7 +32,7 @@ Find the supported regions and amd64(x86_64)/arm64 layer ARN in the table below 
 
 |Supported   Regions  |Lambda layer ARN format  | Contents |
 |---------------------|-------------------------|----------|
-| ap-northeast-1<br/>ap-northeast-2<br/>ap-south-1<br/>ap-southeast-1<br/>ap-southeast-2<br/>ca-central-1<br/>eu-central-1<br/>eu-north-1<br/>eu-west-1<br/>eu-west-2<br/>eu-west-3<br/>sa-east-1<br/>us-east-1<br/>us-east-2<br/>us-west-1<br/>us-west-2 | arn:aws:lambda:<region\>:901920570463:layer:aws-otel-python-<architecture\>-ver-1-15-0:1 | Contains [OpenTelemetry Python v1.15.0](https://github.com/open-telemetry/opentelemetry-python/releases/tag/v1.15.0) <br/><br/> Contains the [ADOT Collector for Lambda v0.24.0](https://github.com/aws-observability/aws-otel-collector/releases/tag/pkg%2Flambdacomponents%2Fv0.24.0)|
+| ap-northeast-1<br/>ap-northeast-2<br/>ap-south-1<br/>ap-southeast-1<br/>ap-southeast-2<br/>ca-central-1<br/>eu-central-1<br/>eu-north-1<br/>eu-west-1<br/>eu-west-2<br/>eu-west-3<br/>sa-east-1<br/>us-east-1<br/>us-east-2<br/>us-west-1<br/>us-west-2 | arn:aws:lambda:<region\>:901920570463:layer:aws-otel-python-<architecture\>-ver-1-15-0:2 | Contains [OpenTelemetry Python v1.15.0](https://github.com/open-telemetry/opentelemetry-python/releases/tag/v1.15.0) <br/><br/> Contains the [ADOT Collector for Lambda v0.25.0](https://github.com/aws-observability/aws-otel-collector/releases/tag/pkg%2Flambdacomponents%2Fv0.25.1)|
 
 ### Enable auto-instrumentation for your Lambda function
 To enable the AWS Distro for OpenTelemetry in your Lambda function, you need to add and configure the layer, and then enable tracing.
@@ -65,6 +65,9 @@ By default, the ADOT Lambda layer uses the [config.yaml](https://github.com/aws-
  which exports telemetry data to AWS X-Ray. To customize the Collector config,
  see the [main Lambda section for custom configuration instructions](/docs/getting-started/lambda#custom-configuration-for-the-adot-collector-on-lambda)
 
+The ADOT Python Lambda Layer can also be configured to set a Meter Provider with an appropriate reader and exporter if the `OTEL_METRICS_EXPORTER` environment variable is set to the values noted [here](https://opentelemetry.io/docs/reference/specification/sdk-environment-variables/#exporter-selection).  
+The `OTEL_EXPORTER_OTLP_PROTOCOL` environment variable should also be set in correlation to the metrics exporter with [these supported values](https://opentelemetry.io/docs/reference/specification/protocol/exporter/#specify-protocol).
+If these environment variables are not set, then a default Meter Provider with no readers will be set and cannot be overriden.
 
 <SectionSeparator />
 

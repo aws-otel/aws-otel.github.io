@@ -15,7 +15,7 @@ The AWS managed Lambda layer for ADOT Java Auto-instumentation Agent provides a 
 
 ## Requirements
 
-The Lambda layer supports the Java 11 (Corretto) Lambda runtime. It _does not_ support the Java 8 Lambda runtimes. For more information about supported Java versions, see the [OpenTelemetry Java documentation](https://github.com/open-telemetry/opentelemetry-java).
+The Lambda layer supports the Java 11 (Corretto) Lambda runtime. It _does not_ support the Java 8 Lambda runtimes. For more information about supported Java versions, see the [OpenTelemetry Java documentation](https://github.com/open-telemetry/opentelemetry-java#requirements).
 
 Note: ADOT Lambda Layer for Java Auto-instrumentation Agent - Automatic instrumentation has a notable impact on startup time on AWS Lambda and you will generally need to use this along with provisioned concurrency and warmup requests to serve production requests without causing timeouts on initial requests while it initializes.
 
@@ -29,7 +29,7 @@ Find the supported regions and amd64(x86_64)/arm64 layer ARN in the table below 
 
 |Supported   Regions  |Lambda layer ARN format  | Contents |
 |---------------------|-------------------------|----------|
-| ap-northeast-1<br/>ap-northeast-2<br/>ap-south-1<br/>ap-southeast-1<br/>ap-southeast-2<br/>ca-central-1<br/>eu-central-1<br/>eu-north-1<br/>eu-west-1<br/>eu-west-2<br/>eu-west-3<br/>sa-east-1<br/>us-east-1<br/>us-east-2<br/>us-west-1<br/>us-west-2 | arn:aws:lambda:<region\>:901920570463:layer:aws-otel-java-agent-<architecture\>-ver-1-20-1:1 | Contains [ADOT Java Auto-Instrumentation Agent v1.20.1](https://github.com/aws-observability/aws-otel-java-instrumentation/releases/tag/v1.20.1) <br/><br/> Contains the [ADOT Collector for Lambda v0.24.0](https://github.com/aws-observability/aws-otel-collector/releases/tag/pkg%2Flambdacomponents%2Fv0.24.0)|
+| ap-northeast-1<br/>ap-northeast-2<br/>ap-south-1<br/>ap-southeast-1<br/>ap-southeast-2<br/>ca-central-1<br/>eu-central-1<br/>eu-north-1<br/>eu-west-1<br/>eu-west-2<br/>eu-west-3<br/>sa-east-1<br/>us-east-1<br/>us-east-2<br/>us-west-1<br/>us-west-2 | arn:aws:lambda:<region\>:901920570463:layer:aws-otel-java-agent-<architecture\>-ver-1-21-0:1 | Contains [ADOT Java Auto-Instrumentation Agent v1.21.0](https://github.com/aws-observability/aws-otel-java-instrumentation/releases/tag/v1.21.0) <br/><br/> Contains the [ADOT Collector for Lambda v0.25.0](https://github.com/aws-observability/aws-otel-collector/releases/tag/pkg%2Flambdacomponents%2Fv0.25.1)|
 
 ### Enable auto-instrumentation for your Lambda function
 
@@ -47,23 +47,39 @@ Tips:
 * By default, the layer is configured to export traces to AWS X-Ray. Make sure your Lambda role has the required AWS X-Ray permissions.
 For more on AWS X-Ray permissions for AWS Lambda, see the [AWS Lambda documentation](https://docs.aws.amazon.com/lambda/latest/dg/services-xray.html#services-xray-permissions).
 
+* By default, the ADOT Java Agent in the Layer will try to auto-instrument all the code in your application. This can have a negative impact on the Lambda cold startup time.
+
+  We recommend that you only enable auto-instrumentation for the libraries/frameworks that are used by your application.
+
+  To enable only specific instrumentations you can use the following environment variables:
+  * `OTEL_INSTRUMENTATION_COMMON_DEFAULT_ENABLED` - When set to `false`, disables auto-instrumentation in the Layer, requiring each instrumentation to be enabled individually.
+  * `OTEL_INSTRUMENTATION_[NAME]_ENABLED` - Set to `true` to enable auto-instrumentation for a specific library or framework. `[NAME]` should be replaced by the instrumentation that you want to enable. The full list of available instrumentations can be found in [this link](https://opentelemetry.io/docs/instrumentation/java/automatic/agent-config/#suppressing-specific-agent-instrumentation).
+
+  For example, to only enable auto-instrumentation for Lambda and the AWS SDK, you would have to set the following environment variables:
+  ```bash
+  OTEL_INSTRUMENTATION_COMMON_DEFAULT_ENABLED=false
+  OTEL_INSTRUMENTATION_AWS_LAMBDA_ENABLED=true
+  OTEL_INSTRUMENTATION_AWS_SDK_ENABLED=true
+  ```
+
 ### Metric Instrumentation in your Lambda Function
 
-**Note:** As of v1.6.0 of the OpenTelemetry Java Agent, metric exporting is disabled by default to preserve stability. To enable exporting metrics for use with backends like Amazon Managed Prometheus, set the environment variable `OTEL_METRICS_EXPORTER=otlp`.
-
-Unlike traces, Metric auto instrumentation has not been supported in OpenTelemetry yet. You would have to manually instrument your code in your Lambda application in order to generate application metrics. We will be using the [OpenTelemetry Java Metrics API](https://github.com/open-telemetry/opentelemetry-java/tree/main/api/metrics/src/main/java/io/opentelemetry/api/metrics) to define our metrics. You can define your metric types in a MetricGenerator.java file.
+Metric auto instrumentation is supported in OpenTelemetry. You would have to instrument your code in your Lambda application in order to generate application metrics. We will be using the [OpenTelemetry Java Metrics API](https://github.com/open-telemetry/opentelemetry-java/tree/main/api/metrics/src/main/java/io/opentelemetry/api/metrics) to define our metrics. You can define your metric types in a MetricGenerator.java file. To enable exporting metrics for use with backends like Amazon Managed Prometheus, set the environment variable `OTEL_METRICS_EXPORTER=otlp`.
 
 1. Import the OpenTelemetry Java Metrics API into your dependency file
 ```
 dependencies {
-  implementation platform("io.opentelemetry:opentelemetry-bom:1.6.0")
+  implementation platform("io.opentelemetry:opentelemetry-bom:1.19.0")
   implementation('io.opentelemetry:opentelemetry-api')
 }
 ```
 2. Create Metric instruments by using the OpenTelemetry Java Metrics API
 ```
 // get meter
-Meter meter = GlobalMeterProvider.getMeter("aws-otel", "1.0");
+Meter meter = GlobalOpenTelemetry.getMeterProvider()
+                       .meterBuilder("aws-otel")
+                       .setInstrumentationVersion("1.0")
+                       .build();
 
 // creating a Counter metric to count total API payload bytes sent
 LongUpDownCounter apiBytesSentCounter = meter
@@ -96,8 +112,6 @@ memoryObserver.observer(Runtime.getRuntime().totalMemory(), Attributes.empty());
 ```
 4. The Lambda layer will take care of exporting the metrics to the Collector and then to AMP.
 
-*Please note that the [OpenTelemetry Java Metrics API](https://github.com/open-telemetry/opentelemetry-java) is currently in alpha, there may be future breaking changes to the API.* 
-
 ### Remove OpenTelemetry from your Lambda function
 
 To disable OpenTelemetry for your Lambda function, remove the Lambda layer, remove the environment variable AWS_LAMBDA_EXEC_WRAPPER, and disable active tracing, as explained in the section above.
@@ -113,7 +127,7 @@ By default, the ADOT Lambda layer uses the [config.yaml](https://github.com/aws-
 
 ## Exporting Metrics to AMP
 
-The layer is not configured by default to export Prometheus metrics to Amazon Managed Service for Prometheus (AMP) (https://docs.aws.amazon.com/prometheus/latest/userguide/what-is-Amazon-Managed-Service-Prometheus.html). To enable it: 
+The layer is not configured by default to export Prometheus metrics, see Amazon Managed Service for Prometheus (AMP)(https://docs.aws.amazon.com/prometheus/latest/userguide/what-is-Amazon-Managed-Service-Prometheus.html). To enable it:
 
 1. Upload a custom collector configuration file `collector.yaml` with your Lambda application, like the example shown below, with the `prometheusremotewriteexporter` and the `sigv4authextension` enabled. Set up the `endpoint` of your own AMP workspace, and `region` of the `sigv4authextension`. 
 ```

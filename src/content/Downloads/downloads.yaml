@@ -1,3 +1,17 @@
+- version: 'AWS Distro for OpenTelemetry Collector Version 0.26.0'
+  releaseDate: 'February-02-2023'
+  license: 'Apache-2.0'
+  releaseNotesLink: 'https://github.com/aws-observability/aws-otel-collector/releases/tag/v0.26.0'
+  documentationLink: 'https://github.com/aws-observability/aws-otel-collector/blob/v0.26.0/README.md'
+  downloadLink: 'https://gallery.ecr.aws/aws-observability/aws-otel-collector'
+
+- version: 'AWS Distro for OpenTelemetry Collector Version 0.25.0'
+  releaseDate: 'January-10-2023'
+  license: 'Apache-2.0'
+  releaseNotesLink: 'https://github.com/aws-observability/aws-otel-collector/releases/tag/v0.25.0'
+  documentationLink: 'https://github.com/aws-observability/aws-otel-collector/blob/v0.25.0/README.md'
+  downloadLink: 'https://gallery.ecr.aws/aws-observability/aws-otel-collector'
+
 - version: 'AWS Distro for OpenTelemetry Collector Version 0.23.1'
   releaseDate: 'December-09-2022'
   license: 'Apache-2.0'
@@ -86,7 +100,7 @@
   releaseDate: 'Mar-04-2022'
   license: 'Apache-2.0'
   releaseNotesLink: 'https://github.com/open-telemetry/opentelemetry-operator/releases/tag/v0.45.0'
-  documentationLink: 'https://aws-otel.github.io/docs/getting-started/operator'
+  documentationLink: 'https://aws-otel.github.io/docs/getting-started/adot-eks-add-on'
   downloadLink: 'https://gallery.ecr.aws/aws-observability/adot-operator'
 
 - version: 'AWS Distro for OpenTelemetry Collector Version 0.17.1'
@@ -142,7 +156,7 @@
   releaseDate: 'Nov-23-2021'
   license: 'Apache-2.0'
   releaseNotesLink: 'https://github.com/open-telemetry/opentelemetry-operator/releases/tag/v0.38.0'
-  documentationLink: 'https://aws-otel.github.io/docs/getting-started/operator'
+  documentationLink: 'https://aws-otel.github.io/docs/getting-started/adot-eks-add-on'
   downloadLink: 'https://gallery.ecr.aws/aws-observability/adot-operator'
 
 - version: 'AWS Distro for OpenTelemetry Collector Version 0.14.1'
@@ -163,7 +177,7 @@
   releaseDate: 'Oct-29-2021'
   license: 'Apache-2.0'
   releaseNotesLink: 'https://github.com/open-telemetry/opentelemetry-operator/releases/tag/v0.37.1'
-  documentationLink: 'https://aws-otel.github.io/docs/getting-started/operator'
+  documentationLink: 'https://aws-otel.github.io/docs/getting-started/adot-eks-add-on'
   downloadLink: 'https://gallery.ecr.aws/aws-observability/adot-operator'
 
 - version: 'AWS Distro for OpenTelemetry Collector Version 0.13.0'
@@ -184,7 +198,7 @@
   releaseDate: 'Sep-22-2021'
   license: 'Apache-2.0'
   releaseNotesLink: 'https://github.com/open-telemetry/opentelemetry-operator/releases/tag/v0.34.0'
-  documentationLink: 'https://aws-otel.github.io/docs/getting-started/operator'
+  documentationLink: 'https://aws-otel.github.io/docs/getting-started/adot-eks-add-on'
   downloadLink: 'https://gallery.ecr.aws/aws-observability/adot-operator'
   
 - version: 'Nuget:OpenTelemetry.Contrib.Extensions.AWSXRay v1.1.0'
