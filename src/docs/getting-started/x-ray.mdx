@@ -186,14 +186,23 @@ exporters:
 
 The attributes in this section are translated into the AWS resource field `cloudwatch_logs`. This resource field is used to correlate Cloudwatch Log Groups with the segments associated with it. This correlation can be explored when analyzing individual traces in the X-Ray console.
 
+If an attribute is not specified, then the exporter's aws_log_groups field will be used if available.
+
 | OTel Attributes env var | X-Ray data model field    | Notes                                                                                                                                                                                                                                                                                                                                       |
 |-------------------------|---------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | aws.log.group.arns      | cloudwatch_logs.arn       |                                                                                                                                                                                                                                                                                                                                             |
-| aws.log.group.names     | cloudwatch_logs.log_group | If both `aws.log.group.arns` and `aws.log.group.names` are defined, precedence is given to `aws.log.group.arns`                                                                                                                                                                                                                             |
+| aws.log.group.names     | cloudwatch_logs.log_group | Precedence is given in the order of `aws.log.group.arns`, `aws.log.group.names`, then the exporter config's `aws_log_groups`.|
 
-Obs.: These resource attributes are of type array and cannot be set using the OTEL_RESOURCE_ATTRIBUTES environment variable. Currently you have to setup this resource attribute programatically.
+##### Using Config to set Cloud Watch Log Group Names
 
-See [AWS X-Ray Segment Documents](https://docs.aws.amazon.com/xray/latest/devguide/xray-api-segmentdocuments.html) for more information on the AWS X-Ray data model. See [OpenTelemetry data model spec](https://github.com/open-telemetry/opentelemetry-specification) for more information on OpenTelemetry data model. See [X-Ray Logging Configuration](https://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-java-configuration.html#xray-sdk-java-configuration-logging) for references of expected log pattern.
+```yaml lineNumbers=true 
+awsxray:
+  aws_log_groups: ["group1", "group2"]
+```
+
+Obs.: These resource attributes are of type array and cannot be set using the OTEL_RESOURCE_ATTRIBUTES environment variable. Currently you have to setup this resource attribute programatically or by config.
+
+See [AWS X-Ray Segment Documents](https://docs.aws.amazon.com/xray/latest/devguide/xray-api-segmentdocuments.html) for more information on the AWS X-Ray data model. See [OpenTelemetry data model spec](https://github.com/open-telemetry/opentelemetry-specification) for more information on OpenTelemetry data model. See [X-Ray Logging Configuration](https://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-java-configuration.html#xray-sdk-java-configuration-logging) for references of expected log pattern. See [AWS X-Ray Tracing Exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/awsxrayexporter) for more information on the exporter's config.
 
 ### Enable The Customized X-Ray Annotations
 By using OpenTelemetry SDK, we can add the customized attributes for each trace subsegment. By default, these OpenTelemetry
