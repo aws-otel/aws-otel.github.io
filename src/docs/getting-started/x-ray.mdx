@@ -200,7 +200,12 @@ awsxray:
   aws_log_groups: ["group1", "group2"]
 ```
 
-Obs.: These resource attributes are of type array and cannot be set using the OTEL_RESOURCE_ATTRIBUTES environment variable. Currently you have to setup this resource attribute programatically or by config.
+With the ADOT Collector v0.26.0 and newer, it is also possible to set the resource attributes `aws.log.group.names` and `aws.log.group.arns` using the environment variable `OTEL_RESOURCE_ATTRIBUTES`. This is useful for the case you are using auto-instrumentation in your application. The following is an example of value that you could use in that environment variable.
+
+```bash
+OTEL_RESOURCE_ATTRIBUTES=aws.log.group.names=group1
+```
+
 
 See [AWS X-Ray Segment Documents](https://docs.aws.amazon.com/xray/latest/devguide/xray-api-segmentdocuments.html) for more information on the AWS X-Ray data model. See [OpenTelemetry data model spec](https://github.com/open-telemetry/opentelemetry-specification) for more information on OpenTelemetry data model. See [X-Ray Logging Configuration](https://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-java-configuration.html#xray-sdk-java-configuration-logging) for references of expected log pattern. See [AWS X-Ray Tracing Exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/awsxrayexporter) for more information on the exporter's config.
 
