@@ -14,7 +14,7 @@ path: '/docs/getting-started/adot-eks-add-on/requirements'
 
 * Your cluster should be on Kubernetes version 1.21 or higher. You can verify the version you’re running with the following command:
 ```console
-kubectl version --client --output=yaml
+kubectl version | grep "Server Version"
 ```
 
 * Make sure that you can use kubectl with your EKS cluster by updating your `kubeconfig` if necessary:
