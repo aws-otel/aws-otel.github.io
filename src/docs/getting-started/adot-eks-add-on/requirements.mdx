@@ -12,9 +12,9 @@ path: '/docs/getting-started/adot-eks-add-on/requirements'
     
 * [eksctl](https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html) is installed
 
-* Your cluster should be on Kubernetes version 1.19 or higher. You can verify the version you’re running with the following command:
+* Your cluster should be on Kubernetes version 1.21 or higher. You can verify the version you’re running with the following command:
 ```console
-kubectl version | grep "Server Version"`
+kubectl version --client --output=yaml
 ```
 
 * Make sure that you can use kubectl with your EKS cluster by updating your `kubeconfig` if necessary:
