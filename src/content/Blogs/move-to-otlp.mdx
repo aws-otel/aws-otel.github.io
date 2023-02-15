@@ -1,0 +1,43 @@
+---
+title: 'AWS Distro for OpenTelemetry unifies ingestion with OpenTelemetry Protocol Exporter'
+description:
+    This blog post describes why and how we plan to migrate all partner integrations in ADOT to OTLP.
+
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+
+<SectionSeparator />
+
+In September of 2020, AWS launched support for AWS Distro for OpenTelemetry (ADOT), 
+a secure, production-ready open-source distribution of the OpenTelemetry collector
+ with reliable performance. The OpenTelemetry (OTel) collector is a vendor-agnostic way 
+to receive, process and export telemetry data. At the time ADOT was launched, 
+[OpenTelemetry Protocol (OTLP)](https://opentelemetry.io/docs/reference/specification/protocol/otlp/) 
+was still in its early days. The OTLP specification describes the encoding, transport, 
+and delivery mechanism of telemetry data between telemetry sources, intermediate nodes such 
+as collectors and telemetry backends. The [OTLP Exporter](https://aws-otel.github.io/docs/components/otlp-exporter) 
+is a component of ADOT that supports configuration options available for OTLP as well as the retry 
+behavior. OTLP and the OTLP Exporter helps standardize how data can be exported from ADOT to 
+a customer or an [AWS Partner](https://aws.amazon.com/partners/) destination ensuring minimal
+security risks and more reliable support that AWS customers expect from ADOT.
+
+<SectionSeparator />
+
+The only methods of integration with ADOT to export data will be a. OTLP Exporter, b) AWS Exporters 
+such as [Amazon CloudWatch Embedded Metric Format (EMF) via logs](https://aws-otel.github.io/docs/getting-started/cloudwatch-metrics#cloudwatch-emf-exporter-awsemf) 
+and [AWS X-Ray](https://aws-otel.github.io/docs/getting-started/x-ray#configuring-the-aws-x-ray-exporter), 
+and c) other open source Exporters such as [Prometheus](https://aws-otel.github.io/docs/components/prometheus-exporters), 
+[File](https://aws-otel.github.io/docs/components/misc-exporters#file-exporter) and [Logging](https://aws-otel.github.io/docs/components/misc-exporters#logging-exporter).
+
+<SectionSeparator />
+
+We plan to migrate all partner integrations to OTLP by end of 2023 and will keep you updated on next steps.
+The process will be as follows:
+
+1. We add instructions how to use the OTLP Exporter for partners who have not yet covered this.
+2. We provide a per-partner deprecation timeline via the ADOT docs.
+3. By January 2024, the ADOT distribution will no longer include some of the existing custom exporters.
+
+If you have any questions, please contact us on the [CNCF Slack](https://communityinviter.com/apps/cloud-native/cncf)
+in the `#opentelemetry` channel or create an issue against the [AWS OTel community](https://github.com/aws-observability/aws-otel-community) repo.
