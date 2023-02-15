@@ -6,6 +6,13 @@ description:
 path: /blog
 
 blogs:
+  - title: "AWS Distro for OpenTelemetry unifies ingestion with OpenTelemetry Protocol Exporter"
+    author: "Michael Hausenblas"
+    date: "17-Feb-2023"
+    body:
+      "Why and how we plan to migrate all partner integrations in the ADOT collector to OTLP."
+    link: "/docs/move-to-otlp"
+
   - title: "AWS Distro for OpenTelemetry v0.26.0 is now available"
     author: "Bryan Aguilar"
     date: "02-Feb-2023"
