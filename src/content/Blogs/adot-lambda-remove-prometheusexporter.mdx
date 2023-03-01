@@ -1,0 +1,16 @@
+---
+title: 'AWS managed OpenTelemetry Lambda Layers announces removal of prometheusexporter from March 2023 release'
+description:
+    This blog post announces the removal of prometheusexporter in AWS managed OpenTelemetry Lambda Layers.
+
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+
+<SectionSeparator />
+
+AWS managed OpenTelemetry Lambda Layers announces removal of `prometheusexporter` from March 2023 release in favour of using `prometheusremotewriteexporter` as the default exporter to send telemetry data to Prometheus.
+
+<SectionSeparator />
+
+Customers are advised to change their collector configuration to use `prometheusremotewriteexporter` by the **end of March 2023**. The instructions to set the exporter are mentioned [in our documentation](https://aws-otel.github.io/docs/getting-started/advanced-prometheus-remote-write-configurations#prometheus-remote-write-exporter-configurations) and [OTEL upstream](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/exporter/prometheusremotewriteexporter/README.md#getting-started). If you have any questions on the migration to the new exporter, please feel free to [file an issue.](https://github.com/aws-observability/aws-otel-lambda/issues)

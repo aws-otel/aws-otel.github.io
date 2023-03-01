@@ -6,6 +6,13 @@ description:
 path: /blog
 
 blogs:
+  - title: "AWS managed OpenTelemetry Lambda Layers announces removal of prometheusexporter from March 2023 release"
+    author: "Kausik Amancherla"
+    date: "01-March-2023"
+    body:
+      "This blog post announces the removal of prometheusexporter in AWS managed OpenTelemetry Lambda Layers."
+    link: "/content/Blogs/adot-lambda-remove-prometheusexporter"
+
   - title: "AWS Distro for OpenTelemetry Lambda Layers are now available with ADOT Collector v0.26.0"
     author: "Kausik Amancherla"
     date: "22-Feb-2023"
