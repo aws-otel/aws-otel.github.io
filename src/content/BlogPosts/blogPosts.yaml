@@ -7,7 +7,7 @@ path: /blog
 
 blogs:
   - title: "AWS Distro for OpenTelemetry v0.27.0 is now available"
-    author: "Bryan Aguilar"
+    author: "Huy Vo"
     date: "03-Mar-2023"
     body:
       "AWS Distro for OpenTelemetry v0.27.0 is now available. You can download the latest AWS Distro for OpenTelemetry Collector image
