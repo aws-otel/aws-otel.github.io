@@ -86,7 +86,7 @@ export const sideBarData = [
         {label: "ECS", link: "/docs/setup/ecs"},
 	{label: "ECS Console Setup", link: "/docs/getting-started/ecs-configurations/ecs-console-setup"},
         {label: "EC2", link: "/docs/setup/ec2"},
-        {label: "EKS", link: "/docs/setup/eks"},
+        {label: "EKS", link: "/docs/getting-started/adot-eks-add-on"},
         {label: "On-Premises", link: "/docs/setup/on-premises"},
         {label: "Debian", link: "/docs/setup/build-collector-as-debian"},
         {label: "RPM", link: "/docs/setup/build-collector-as-rpm"},
