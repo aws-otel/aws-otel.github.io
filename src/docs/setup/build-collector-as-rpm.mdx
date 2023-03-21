@@ -20,6 +20,28 @@ To run ADOT Collector on AWS EC2 Linux host, you can choose to install ADOT Coll
 git clone https://github.com/aws-observability/aws-otel-collector.git
 make package-rpm
 ```
+
+Alternatively, you can also choose to download the ADOT Collector rpm package directly from S3:
+    1. Login on Amazon Linux 2 EC2 host and download ADOT Collector installation file.
+    ```
+    wget https://aws-otel-collector.s3.amazonaws.com/amazon_linux/amd64/latest/aws-otel-collector.rpm
+    ```
+    2. (Optional) Verify the package integrity.
+    ```
+    wget https://aws-otel-collector.s3.amazonaws.com/aws-otel-collector.gpg
+    sudo rpm --import aws-otel-collector.gpg
+    rpm --checksig aws-otel-collector.rpm
+    ```
+    If the package is verified correctly, you'll see output similar to:
+    ```
+    aws-otel-collector.rpm: digests signatures OK
+    ```
+    However, if you see output like:
+    ```
+    aws-otel-collector.rpm: digests SIGNATURES NOT OK
+    ```
+    You should stop, and try download the rpm package from the official source again.
+
 2. Install aws-otel-collector RPM by the following command on the host
 ```
 sudo rpm -Uvh  ./aws-otel-collector.rpm
