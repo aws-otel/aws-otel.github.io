@@ -261,4 +261,4 @@ With the above customizations, the final `metric_declarations` will become:
 ```  
 This configuration will produce only 4 metrics (rather than 55 metrics as in the default configuration).
 
-**Note:** ContainerFS(Container Filesystem) metrics when using the containerd runtime for Amazon EKS or Kubernetes are currently not available, This is a known issue and is being worked on by community contributors. For more information, see [Disk usage metric for containerd](https://github.com/google/cadvisor/issues/2785)
+**Note:** When using the `containerd` runtime for Amazon EKS or Kubernetes, the Container Filesystem (ContainerFS) metrics are currently not available. This is a known issue and we're working on it, see also [Disk usage metric for containerd](https://github.com/google/cadvisor/issues/2785).
