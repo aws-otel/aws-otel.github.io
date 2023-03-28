@@ -1,0 +1,73 @@
+---
+title: 'Kafka receiver and exporter'
+description: |
+    There are two components that allows you to use Kafka as a transport mechanism for telemetry signals:
+    The Kafka receiver allows the collector to receive telemetry signals from Kafka while the Kafka exporter allows you to send them to Kafka.
+path: '/docs/components/kafka-receiver-exporter'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+
+
+The Kafka receiver and exporter allows you to send and receive telemetry signals from a Kafka cluster. The exporter will
+produce telemetry signals and will submit it to a configured topic. A Kafka receiver can consume from this topic and further send
+data to the telemetry pipeline configured in this collector instance. This component is flexible enough that you can have
+multiple consumer groups for the same topic.
+
+<SectionSeparator />
+
+## Upstream Kafka Exporter/Receiver documentation
+
+Please find bellow the documentation for each of these components:
+
+* [Kafka Exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/exporter/kafkaexporter/README.md)
+* [Kafka Receiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/kafkareceiver/README.md)
+
+Notes:
+
+* These components don't create Kafka topics on your behalf. They need to be pre-created or you need to set the
+cluster configuration to [auto create topics](https://kafka.apache.org/documentation/#brokerconfigs_auto.create.topics.enable).
+* It is a good practice to set the `protocol_version` property to match the version of Kafka used in your cluster.
+
+The ADOT Collector is tested with Kafka Versions 2.8.1 and 3.2.0.
+
+## Integrating with Amazon Managed Streaming for Apache Kafka (MSK)
+
+The Kafka receiver and exporters can be integrated with Amazon Managed Streaming for Apache Kafka (MSK).
+
+You can create a MSK cluster following [this guide](https://docs.aws.amazon.com/msk/latest/developerguide/getting-started.html).
+  * Select the authentication method accordingly to the options supported by the receivers/exporters.
+  * Enable TLS.
+
+After the cluster is provisioned, you can get the list of brokers by selecting the newly created cluster in the console and then
+clicking in the `View client information` button.
+
+With the list of brokers, you can configure the collector accordingly.
+
+For a Kafka receiver the configuration would look like:
+
+```
+  kafka/receiver:
+    topic: some-topic
+    protocol_version: 3.2.0
+    auth:
+      tls:
+    brokers:
+      - b-2.testcluster.abc123.c13.kafka.us-west-2.amazonaws.com:9094
+      - b-1.testcluster.abc123.c13.kafka.us-west-2.amazonaws.com:9094
+      - b-3.testcluster.abc123.c13.kafka.us-west-2.amazonaws.com:9094
+```
+
+For a Kafka exporter, the configuration would look like:
+```
+  kafka/exporter:
+    protocol_version: 3.2.0
+    auth:
+      tls:
+        insecure: false
+    topic: some-topic
+    brokers:
+      - b-2.testcluster.abc123.c13.kafka.us-west-2.amazonaws.com:9094
+      - b-1.testcluster.abc123.c13.kafka.us-west-2.amazonaws.com:9094
+      - b-3.testcluster.abc123.c13.kafka.us-west-2.amazonaws.com:9094
+```

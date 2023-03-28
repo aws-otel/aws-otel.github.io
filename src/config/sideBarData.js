@@ -105,6 +105,7 @@ export const sideBarData = [
         {label: "ECS Container Metrics Receiver", link: "/docs/components/ecs-metrics-receiver"},
         {label: "File Exporter", link: "/docs/components/misc-exporters#file-exporter"},
         {label: "Jaeger Receiver", link: "/docs/components/jaeger-zipkin-receiver#jaeger-receiver"},
+        {label: "Kafka Receiver/Expoter", link: "/docs/components/kafka-receiver-exporter"},
         {label: "Logging Exporter", link: "/docs/components/misc-exporters#logging-exporter"},
         {label: "OTLP Exporters", link: "/docs/components/otlp-exporter"},
         {label: "Prometheus Exporters", link: "/docs/components/prometheus-exporters"},
