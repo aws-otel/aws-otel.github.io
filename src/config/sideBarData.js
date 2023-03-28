@@ -98,18 +98,19 @@ export const sideBarData = [
   {
     node: {
       id: nextId(),
-      label: "Components",
+      label: "ADOT Collector Components",
       items: [
+        {label: "CloudWatch EMF Exporter", link: "/docs/getting-started/cloudwatch-metrics#cloudwatch-emf-exporter-awsemf"},
+        {label: "Confmap Providers", link: "/docs/components/confmap-providers"},
+        {label: "ECS Container Metrics Receiver", link: "/docs/components/ecs-metrics-receiver"},
+        {label: "File Exporter", link: "/docs/components/misc-exporters#file-exporter"},
+        {label: "Jaeger Receiver", link: "/docs/components/jaeger-zipkin-receiver#jaeger-receiver"},
+        {label: "Logging Exporter", link: "/docs/components/misc-exporters#logging-exporter"},
         {label: "OTLP Exporters", link: "/docs/components/otlp-exporter"},
         {label: "Prometheus Exporters", link: "/docs/components/prometheus-exporters"},
-        {label: "CloudWatch EMF Exporter", link: "/docs/getting-started/cloudwatch-metrics#cloudwatch-emf-exporter-awsemf"},
-        {label: "X-Ray Exporter", link: "/docs/getting-started/x-ray#configuring-the-aws-x-ray-exporter"},
-        {label: "Logging Exporter", link: "/docs/components/misc-exporters#logging-exporter"},
-        {label: "File Exporter", link: "/docs/components/misc-exporters#file-exporter"},
-        {label: "ECS Container Metrics Receiver", link: "/docs/components/ecs-metrics-receiver"},
-        {label: "X-Ray Receiver", link: "/docs/components/x-ray-receiver"},
         {label: "StatsD Receiver", link: "/docs/components/statsd-receiver"},
-        {label: "Jaeger Receiver", link: "/docs/components/jaeger-zipkin-receiver#jaeger-receiver"},
+        {label: "X-Ray Exporter", link: "/docs/getting-started/x-ray#configuring-the-aws-x-ray-exporter"},
+        {label: "X-Ray Receiver", link: "/docs/components/x-ray-receiver"},
         {label: "Zipkin Receiver", link: "/docs/components/jaeger-zipkin-receiver#zipkin-receiver"},
       ],
       link: "/docs/null"
