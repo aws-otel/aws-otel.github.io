@@ -4,9 +4,7 @@ env:
   DELTA_THRESHOLD: .90
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
     
 
 jobs:
@@ -20,53 +18,3 @@ jobs:
         with:
           access-token: ${{ secrets.demo }}
           deploy-branch: smoke-test
-  verify-smoke-test:
-    runs-on: ubuntu-latest
-    needs: publish-smoke-test
-    steps:
-      - name: Checkout Smoke Test Branch
-        uses: actions/checkout@v3.3.0
-        with:
-          path: smoke-test
-          ref: smoke-test
-      - name: Calculate total lines in smoke-test branch
-        run: |
-          export ST_LC=$(find ./smoke-test -type f -print0 | wc -l --files0=- | tail -n 1 | cut -d ' ' -f 1)
-          echo $ST_LC
-          echo "SMOKE_TEST_LINE_COUNT=$ST_LC" >> $GITHUB_ENV
-      - name: Checkout Published Branch
-        uses: actions/checkout@v3.3.0
-        with:
-          path: published
-          ref: gh-pages
-      - name: Calculate total lines in published branch
-        run: |
-          export PUB_LC=$(find ./published -type f -print0 | wc -l --files0=- | tail -n 1 | cut -d ' ' -f 1)
-          echo $PUB_LC
-          echo "PUBLISHED_LINE_COUNT=$PUB_LC" >> $GITHUB_ENV
-      - name: Generate percentile diff
-        run: |
-          export PERCENTILE_DIFF=$(bc<<<"scale=2;${{ env.SMOKE_TEST_LINE_COUNT}} / ${{ env.PUBLISHED_LINE_COUNT }}")
-          echo $PERCENTILE_DIFF
-          if [ 1 -eq $(bc<<<"$PERCENTILE_DIFF < ${{ env.DELTA_THRESHOLD }}") ]; then
-            exit 1
-          else
-            exit 0
-          fi
-
-  publish-live:
-    needs: verify-smoke-test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3.3.0
-        with:
-          ref: gh-pages
-      - name: merge commit push
-        env:
-          GITHUB_TOKEN: ${{ secrets.demo }}
-        run: |
-          git config --global user.name 'Gatsby Publish Workflow'
-          git config --global user.email 'gatsby-publish-workflow@users.noreply.github.com'
-          git fetch --all
-          git reset --hard origin/smoke-test
-          git push -f origin gh-pages
