@@ -240,7 +240,9 @@ service:
 In the example presented above, we are embeeding three different URIs. These embedded URIs will be expanded when the collector load the configuration.
 
 The following is the content of each URI:
-s3://example-bucket.s3.us-west-2.amazonaws.com/receivers.yaml
+
+`s3://example-bucket.s3.us-west-2.amazonaws.com/receivers.yaml`
+
 ```
   otlp:
     protocols:
@@ -253,7 +255,8 @@ s3://example-bucket.s3.us-west-2.amazonaws.com/receivers.yaml
     transport: udp
 ```
 
-s3://example-bucket.s3.us-west-2.amazonaws.com/processors.yaml
+`s3://example-bucket.s3.us-west-2.amazonaws.com/processors.yaml`
+
 ```
   batch/traces:
     timeout: 1s
@@ -262,7 +265,8 @@ s3://example-bucket.s3.us-west-2.amazonaws.com/processors.yaml
     timeout: 60s
 ```
 
-s3://example-bucket.s3.us-west-2.amazonaws.com/exporters.yaml
+`s3://example-bucket.s3.us-west-2.amazonaws.com/exporters.yaml`
+
 ```
   awsxray:
   awsemf:
