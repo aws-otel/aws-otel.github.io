@@ -6,6 +6,8 @@ env:
 on:
   workflow_dispatch:
     
+permissions:
+  contents: write
 
 jobs:
   publish-smoke-test:
@@ -16,5 +18,5 @@ jobs:
         env:
           GH_API_KEY: ${{ secrets.GITHUB_TOKEN }}
         with:
-          access-token: ${{ secrets.demo }}
+          access-token: ${{ secrets.GITHUB_TOKEN }}
           deploy-branch: smoke-test
