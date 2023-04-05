@@ -3,7 +3,7 @@ title: 'Confmap providers - Get configuration from different sources'
 description: |
     Confmap represents the raw configuration for the OpenTelemetry Collector. A Confmap provider
     is a Collector component that provides configuration retrieved from a URI to configure the collector.
-    This section will describe all the confmap providers supported by the ADOT Collector.
+    This section will describe all the confmap providers supported by the ADOT collector.
 path: '/docs/components/confmap-providers'
 ---
 
@@ -18,9 +18,9 @@ More technical details about this component can be found [here](https://github.c
 
 <SectionSeparator />
 
-## Confmap providers supported by the ADOT Collector
+## Confmap providers supported by the ADOT collector
 
-The ADOT Collector support the following types of confmap providers: file, env, yaml, http, https and s3.
+The ADOT collector support the following types of confmap providers: file, env, yaml, http, https and s3.
 
 
 ### File provider
@@ -40,7 +40,7 @@ The ADOT Collector support the following types of confmap providers: file, env, 
 * examples:
   * `env:ENVIRONMENT_FILE_NAME`
 
-### Yaml provider
+### YAML provider
 
 * scheme: `yaml`
 * description: Retrieves configuration directly from the command line, in yaml format.
@@ -72,8 +72,8 @@ The ADOT Collector support the following types of confmap providers: file, env, 
 
 ## Passing command line parameters to the collector
 
-When installing the ADOT Collector in EC2 from a RPM or MSI, you can pass the configuration parameter to a control
-script that is responsible by managing the Operating system service that run the ADOT Collector. Control scripts support
+When installing the ADOT collector in EC2 from a RPM or MSI, you can pass the configuration parameter to a control
+script that is responsible by managing the Operating system service that run the ADOT collector. Control scripts support
 the following confmap providers: file, http, https and s3.
 
 ### Linux
@@ -100,7 +100,7 @@ sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -c "s3://bucket-exam
 
 ### Windows
 
-O Windows you can use the `-ConfigLocation` command line parameter of the `aws-otel-collector-ctl.ps1` control script to setup the ADOT Collector service.
+On Windows you can use the `-ConfigLocation` command line parameter of the `aws-otel-collector-ctl.ps1` control script to setup the ADOT collector service.
 
 Assuming you are in a Powershell session:
 ```
@@ -122,8 +122,8 @@ Here are some examples:
 
 ### Container environments
 
-In container environments, you can override the docker [CMD instruction](https://docs.docker.com/engine/reference/builder/#cmd) to use the configuration from the uri that you want. This can be done
-because all the parameters passed in the CMD instruction are passed to the ADOT collector since the [entrypoint for the ADOT Collector image](https://github.com/aws-observability/aws-otel-collector/blob/main/cmd/awscollector/Dockerfile#L79) is the
+In container environments, you can override the Docker [CMD instruction](https://docs.docker.com/engine/reference/builder/#cmd) to use the configuration from the URI that you want. This can be done
+because all the parameters passed in the CMD instruction are passed to the ADOT collector since the [entrypoint for the ADOT collector image](https://github.com/aws-observability/aws-otel-collector/blob/main/cmd/awscollector/Dockerfile#L79) is the
 Collector executable itself.
 
 
@@ -153,7 +153,7 @@ Example:
 ```
 
 Similarly, In Kubernetes you can use the `args` property of container definition to specify the command line parameters
-that should be passed to the ADOT Collector.
+that should be passed to the ADOT collector.
 
 Example:
 ```yaml

@@ -9,7 +9,7 @@ path: '/docs/components/kafka-receiver-exporter'
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
 
 
-The Kafka receiver and exporter allows you to send and receive telemetry signals from a Kafka cluster. The exporter will
+The Kafka receiver and exporter allows you to send and receive telemetry signals (currently traces and metrics) from a Kafka cluster. The exporter will
 produce telemetry signals and will submit it to a configured topic. A Kafka receiver can consume from this topic and further send
 data to the telemetry pipeline configured in this collector instance. This component is flexible enough that you can have
 multiple consumer groups for the same topic.
@@ -28,10 +28,11 @@ Notes:
 * These components don't create Kafka topics on your behalf. They need to be pre-created or you need to set the
 cluster configuration to [auto create topics](https://kafka.apache.org/documentation/#brokerconfigs_auto.create.topics.enable).
 * It is a good practice to set the `protocol_version` property to match the version of Kafka used in your cluster.
+* The kafka exporter uses a synchronous producer that blocks and does not batch messages, therefore it should be used with batch and queued retry processors for higher throughput and resiliency.
 
-The ADOT Collector is tested with Kafka Versions 2.8.1 and 3.2.0.
+The ADOT collector is tested with Kafka Versions 2.8.1 and 3.2.0.
 
-## Integrating with Amazon Managed Streaming for Apache Kafka (MSK)
+## Integrating with [Amazon Managed Streaming for Apache Kafka (MSK)](https://aws.amazon.com/msk/)
 
 The Kafka receiver and exporters can be integrated with Amazon Managed Streaming for Apache Kafka (MSK).
 
@@ -52,6 +53,7 @@ For a Kafka receiver the configuration would look like:
     protocol_version: 3.2.0
     auth:
       tls:
+        insecure: false
     brokers:
       - b-2.testcluster.abc123.c13.kafka.us-west-2.amazonaws.com:9094
       - b-1.testcluster.abc123.c13.kafka.us-west-2.amazonaws.com:9094
@@ -71,3 +73,5 @@ For a Kafka exporter, the configuration would look like:
       - b-1.testcluster.abc123.c13.kafka.us-west-2.amazonaws.com:9094
       - b-3.testcluster.abc123.c13.kafka.us-west-2.amazonaws.com:9094
 ```
+
+With such configuration you decouple producers (collector with exporter) and consumers (collector with receiver). This allow you to scale out consumers in case they perform some kind of processing on the telemetry signals as well as change the destination backend in the consumers without downtime as telemetry signals will still be recorded into the kafka topics while consumers are having their configuration changed.
