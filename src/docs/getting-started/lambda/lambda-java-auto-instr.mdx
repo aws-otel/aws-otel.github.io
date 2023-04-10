@@ -29,8 +29,7 @@ Find the supported regions and amd64(x86_64)/arm64 layer ARN in the table below 
 
 |Supported   Regions  |Lambda layer ARN format  | Contents |
 |---------------------|-------------------------|----------|
-| ap-northeast-1<br/>ap-northeast-2<br/>ap-south-1<br/>ap-southeast-1<br/>ap-southeast-2<br/>ca-central-1<br/>eu-central-1<br/>eu-north-1<br/>eu-west-1<br/>eu-west-2<br/>eu-west-3<br/>sa-east-1<br/>us-east-1<br/>us-east-2<br/>us-west-1<br/>us-west-2 | arn:aws:lambda:<region\>:901920570463:layer:aws-otel-java-agent-<architecture\>-ver-1-21-0:1 | Contains [ADOT Java Auto-Instrumentation Agent v1.21.0](https://github.com/aws-observability/aws-otel-java-instrumentation/releases/tag/v1.21.0) <br/><br/> Contains the [ADOT Collector for Lambda v0.25.0](https://github.com/aws-observability/aws-otel-collector/releases/tag/pkg%2Flambdacomponents%2Fv0.25.1)|
-
+| ap-northeast-1<br/>ap-northeast-2<br/>ap-south-1<br/>ap-southeast-1<br/>ap-southeast-2<br/>ca-central-1<br/>eu-central-1<br/>eu-north-1<br/>eu-west-1<br/>eu-west-2<br/>eu-west-3<br/>sa-east-1<br/>us-east-1<br/>us-east-2<br/>us-west-1<br/>us-west-2 | arn:aws:lambda:<region\>:901920570463:layer:aws-otel-java-agent-<architecture\>-ver-1-23-0:1 | Contains [ADOT Java Auto-Instrumentation Agent v1.23.0](https://github.com/aws-observability/aws-otel-java-instrumentation/releases/tag/v1.23.0) <br/><br/> Contains the [ADOT Collector for Lambda v0.27.0](https://github.com/aws-observability/aws-otel-lambda/releases/tag/adot%2Fcollector%2Flambdacomponents%2Fv0.27.0) |
 ### Enable auto-instrumentation for your Lambda function
 
 To enable the AWS Distro for OpenTelemetry in your Lambda function, you need to add and configure the layer, and then enable tracing.
@@ -120,14 +119,13 @@ To disable OpenTelemetry for your Lambda function, remove the Lambda layer, remo
 
 ## Configuration
 
-The ADOT Java Auto-instrumentation Agent layer combines both OpenTelemetry Auto Agent and the ADOT Collector.
-The configuration of the ADOT Collector follows the OpenTelemetry standard.
+The ADOT Java Auto-instrumentation Agent layer combines both OpenTelemetry Auto Agent and the ADOT Collector. The configuration of the ADOT Collector follows the OpenTelemetry standard.
 
 By default, the ADOT Lambda layer uses the [config.yaml](https://github.com/aws-observability/aws-otel-lambda/blob/main/adot/collector/config.yaml), which exports telemetry data to AWS X-Ray. To customize the Collector config, see the [main Lambda section for custom configuration instructions](/docs/getting-started/lambda#custom-configuration-for-the-adot-collector-on-lambda).
 
 ## Exporting Metrics to AMP
 
-The layer is not configured by default to export Prometheus metrics, see Amazon Managed Service for Prometheus (AMP)(https://docs.aws.amazon.com/prometheus/latest/userguide/what-is-Amazon-Managed-Service-Prometheus.html). To enable it:
+The layer is not configured by default to export Prometheus metrics, see Amazon Managed Service for Prometheus (AMP)[https://docs.aws.amazon.com/prometheus/latest/userguide/what-is-Amazon-Managed-Service-Prometheus.html]. To enable it:
 
 1. Upload a custom collector configuration file `collector.yaml` with your Lambda application, like the example shown below, with the `prometheusremotewriteexporter` and the `sigv4authextension` enabled. Set up the `endpoint` of your own AMP workspace, and `region` of the `sigv4authextension`. 
 ```
@@ -166,7 +164,7 @@ Note: If enabling metrics, make sure your Lambda role has the required AWS Prome
 
 ## AMP and AWS Lambda Service Quotas when using the Lambda Layer for Metrics
 
-To learn more about the limits for the number of metrics that can be sent through this Lambda Layer to Amazon Service for Prometheus, refer to the [AMP service quotas](https://docs.aws.amazon.com/prometheus/latest/userguide/AMP_quotas.html). The layer has been tested to output up to the posted service Quotas of AMP without requesting for an increase.  This layer has been tested with the maximum concurrency levels of [AWS Lambda](https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html), of 1000 concurrent invocations, and is able to receive all metrics in AMP. Any higher levels of concurrency or of the posted service quota is not guaranteed. 
+To learn more about the limits for the number of metrics that can be sent through this Lambda Layer to Amazon Service for Prometheus, refer to the [AMP service quotas](https://docs.aws.amazon.com/prometheus/latest/userguide/AMP_quotas.html). The layer has been tested to output up to the posted service Quotas of AMP without requesting for an increase. This layer has been tested with the maximum concurrency levels of [AWS Lambda](https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html), of 1000 concurrent invocations and is able to receive all metrics in AMP. Any higher levels of concurrency or of the posted service quota is not guaranteed.
 
 <SectionSeparator />
 
