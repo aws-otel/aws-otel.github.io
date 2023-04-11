@@ -120,7 +120,7 @@ while True:
 
 ## Using Manual Instrumentation
 
-Because there can only be one global `TracerProvider`, manual instrumentation should not instantiate its own `TracerProvider` if used together alongside auto-instrumentation. Given that the same `TracerProvider` is used, custom tracing works the same way when using automatic instrumentation or manual instrumentation. For information about custom trace instrumentation, see our [docs on manual instrumentation](/docs/getting-started/python-sdk/trace-metric-manual-instr).
+Because there can only be one global `TracerProvider` and `MeterProvider`, manual instrumentation should not instantiate its own `TracerProvider` or `MeterProvider` if used together alongside auto-instrumentation. Given that the same `TracerProvider` and `MeterProvider` is used, custom tracing and metrics works the same way when using automatic instrumentation or manual instrumentation. For information about custom trace instrumentation, see our [docs on manual instrumentation](/docs/getting-started/python-sdk/trace-metric-manual-instr).
 
 <SectionSeparator />
 
