@@ -71,6 +71,11 @@ OpenTelemetry Go requires an exporter to send traces to a backend. Exporters all
 that data to various back-end systems.
 
 To initialize the OTLP exporter, add the following code to the file the `main.go` file.
+
+
+**IMPORTANT**: The following example creates an OTLP exporter that does not encrypt data at transfer because it uses the `otlptracegrpc.WithInsecure()` option. This should only be used for creating proof of concepts and experimenting with the Go SDK.
+For production environments you must properly configure TLS using the `otlptracegrpc.WithTLSCredentials` function.
+
 ```go lineNumbers=true
 // Create and start new OTLP trace exporter
 traceExporter, err := otlptracegrpc.New(ctx, otlptracegrpc.WithInsecure(), otlptracegrpc.WithEndpoint("0.0.0.0:4317"), otlptracegrpc.WithDialOption(grpc.WithBlock()))

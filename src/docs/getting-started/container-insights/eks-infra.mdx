@@ -259,4 +259,6 @@ With the above customizations, the final `metric_declarations` will become:
           - pod_cpu_utilization_over_pod_limit
           - pod_memory_utilization_over_pod_limit
 ```  
-This configuration will produce only 4 metrics (rather than 55 metrics as in the default configuration). 
+This configuration will produce only 4 metrics (rather than 55 metrics as in the default configuration).
+
+**Note:** When using the `containerd` runtime for Amazon EKS or Kubernetes, the Container Filesystem (ContainerFS) metrics are currently not available. This is a known issue and we're working on it, see also [Disk usage metric for containerd](https://github.com/google/cadvisor/issues/2785).
