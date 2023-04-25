@@ -39,7 +39,8 @@ which exports telemetry data to AWS X-Ray.
 
 Please find the list of available components supported for custom configuration [here](https://github.com/aws-observability/aws-otel-lambda/blob/main/README.md#adot-lambda-layer-available-components). To enable debugging, you can use the configuration file to set log level to debug. See the example below.
 
-The ADOT Lambda Layer support the following types of confmap providers: file, env, yaml, http, https and s3. To customize the ADOT collector configuration using different Confmap providers, Please refer to [Confmap providers](/docs/components/confmap-providers#confmap-providers-supported-by-the-adot-collector) section.
+The ADOT Lambda Layers supports the following types of confmap providers: file, env, yaml, http, https and s3. To customize the ADOT collector configuration using different Confmap providers, Please refer to [Confmap providers](/docs/components/confmap-providers#confmap-providers-supported-by-the-adot-collector) section for more information.
+
 Once your collector configuration is set through a `confmap` providers.
 Create an environment variable on your Lambda function `OPENTELEMETRY_COLLECTOR_CONFIG_FILE` and set the path of configuration w.r.t to the confmap provider as its value. for e.g, if you are using a file configmap provider, set its value to `/var/task/*<path/<to>/<filename>*`.
 This will tell the extension where to find the collector configuration.
