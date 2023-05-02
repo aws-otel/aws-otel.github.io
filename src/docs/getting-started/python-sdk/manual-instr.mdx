@@ -1,5 +1,5 @@
 ---
-title: 'Tracing and Metrics with the AWS Distro for OpenTelemetry Python SDK and X-Ray/Cloudwatch'
+title: 'Tracing and Metrics with the AWS Distro for OpenTelemetry Python Manual-Instrumentation'
 description:
     OpenTelemetry provides different language SDKs to instrument code for collecting telemetry data in the application.
     In this tutorial, we will introduce how to use OpenTelemetry Python SDK for traces and metrics instrumentation in the application...
@@ -13,7 +13,7 @@ import SubSectionSeparator from "components/MdxSubSectionSeparator/subsectionSep
 
 With OpenTelemetry Python manual instrumentation, you configure the OpenTelemetry SDK within your application's code. It automatically produces spans with telemetry data describing the values used by the Python frameworks in your application with only a few lines of code. This telemetry data can then be exported to a backend like AWS X-Ray using the ADOT Python `opentelemetry-sdk-extension-aws` package. We also strongly recommend using the `opentelemetry-propagator-aws-xray` package to support propagating the trace context across AWS services. This propagator handles the extraction and injecting of the [AWS X-Ray Tracing header](https://docs.aws.amazon.com/xray/latest/devguide/xray-concepts.html#xray-concepts-tracingheader) for requests from or to remote services.
 
-In this guide, we walk through the steps needed to trace an application and produce metrics with auto instrumentation and produce metrics.
+In this guide, we walk through the steps needed to trace an application and produce metrics with manual instrumentation and produce metrics.
 
 <SectionSeparator />
 
@@ -21,7 +21,7 @@ In this guide, we walk through the steps needed to trace an application and prod
 
 Python 3.7 or later is required to run an application using OpenTelemetry.
 
-Note: You’ll also need to have the [ADOT Collector](https://aws-otel.github.io/docs/getting-started/collector) running to export traces to X-Ray and metrics to Cloudwatch.
+Note: You’ll also need to have the [ADOT Collector](https://aws-otel.github.io/docs/getting-started/collector) running to export traces and metrics.
 
 <SectionSeparator />
 
@@ -50,7 +50,7 @@ $ pip install opentelemetry-instrumentation-flask==0.30b1 \
 
 ## Setting up the Global Tracer and Meter
 
-### Sending Traces to AWS X-Ray and Metrics to Cloudwatch
+### Sending Traces
 
 As soon as possible in your application code, add imports for the OpenTelemetry packages installed above.
 
@@ -325,4 +325,4 @@ while True:
 
 ## Sample Application
 
-See a [sample Flask App using OpenTelemetry Python SDK Manual Instrumentation](https://github.com/aws-observability/aws-otel-community/tree/master/sample-apps/python-manual-instrumentation-sample-app).
+See a [Sample App using OpenTelemetry Python SDK Manual Instrumentation](https://github.com/aws-observability/aws-otel-community/tree/master/sample-apps/python-manual-instrumentation-sample-app).

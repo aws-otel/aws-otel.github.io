@@ -1,5 +1,5 @@
 ---
-title: 'Using the AWS Distro for OpenTelemetry Go SDK with X-Ray and Cloudwatch'
+title: 'Using the AWS Distro for OpenTelemetry Go SDK'
 description:
     OpenTelemetry provides different language SDKs to instrument code for collecting telemetry data in the application.
     In this tutorial, we will introduce how to use OpenTelemetry Go SDK for traces and metrics instrumentation in the application.
@@ -19,7 +19,7 @@ import goImg6 from "assets/img/docs/gettingStarted/goSDK/img6.jpg"
 
 ## Introduction
 Welcome to the AWS Distro for OpenTelemetry (ADOT) Go getting started guide. This walk-through covers the ADOT Go components, how to
-configure the ADOT components to capture traces and metrics with OpenTelemetry Go and AWS X-Ray/Cloudwatch, as well as how to use the AWS Elastic Container Service
+configure the ADOT components to capture traces and metrics with OpenTelemetry Go, as well as how to use the AWS Elastic Container Service
 (AWS ECS) and AWS Elastic Kubernetes Service (AWS EKS) resource detectors. Before reading this guide, you should familiarize with
 distributed tracing/metrics and the basics of OpenTelemetry. To learn more about getting started with OpenTelemetry Go, see the
 [OpenTelemetry developer documentation](https://opentelemetry.io/docs/go/).
@@ -29,9 +29,9 @@ distributed tracing/metrics and the basics of OpenTelemetry. To learn more about
 <SectionSeparator />
 
 ## Requirements
-Go `v1.15` or later is required to run an application using OpenTelemetry. Visit the [compatibility chart](https://github.com/open-telemetry/opentelemetry-go#compatibility) of OpenTelemetry Go SDK with different `OS`, `Go Version` and `Architecture`.
+Go `v1.19` or later is required to run an application using OpenTelemetry. Visit the [compatibility chart](https://github.com/open-telemetry/opentelemetry-go#compatibility) of OpenTelemetry Go SDK with different `OS`, `Go Version` and `Architecture`.
 
-Note: You’ll also need to have the [ADOT Collector](https://aws-otel.github.io/docs/getting-started/collector) running to export traces to X-Ray and metrics to Cloudwatch.
+Note: You’ll also need to have the [ADOT Collector](https://aws-otel.github.io/docs/getting-started/collector) running to export traces and metrics.
 
 <SectionSeparator />
 
@@ -62,9 +62,9 @@ go get go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc
 
 <SectionSeparator />
 
-## Setting up the Global Tracer and Meter
+## Setting up the Global Tracer
 
-### Sending Traces to AWS X-Ray and Metrics to Cloudwatch
+### Sending Traces
 
 This section talks about how to instantiate a new tracer provider with the X-Ray ID generator and sampling config, setting global options (X-Ray propagator, tracer provider) and instantiate OTLP exporter with the collector's address to export trace data.
 
@@ -72,11 +72,10 @@ This section talks about how to instantiate a new tracer provider with the X-Ray
 
 <img src={goImg2} alt="Diagram" style="margin: 30px 0;" />
 
-OpenTelemetry Go requires an exporter to send traces or metrics to a backend. Exporters allow telemetry data to be transferred either to the AWS Distro for OpenTelemetry Collector (ADOT Collector), or to a remote system or console for further analysis. The ADOT Collector is a separate process that is designed to be a "sink" for telemetry data emitted by many processes, which can then export
+OpenTelemetry Go requires an exporter to send traces to a backend. Exporters allow telemetry data to be transferred either to the AWS Distro for OpenTelemetry Collector (ADOT Collector), or to a remote system or console for further analysis. The ADOT Collector is a separate process that is designed to be a "sink" for telemetry data emitted by many processes, which can then export
 that data to various back-end systems.
 
 To initialize the OTLP trace exporter, add the following code to the file the `main.go` file.
-
 
 **IMPORTANT**: The following examples creates an OTLP exporter that does not encrypt data at transfer because it uses the `otlptracegrpc.WithInsecure()` option. This should only be used for creating proof of concepts and experimenting with the Go SDK.
 For production environments you must properly configure TLS using the `otlptracegrpc.WithTLSCredentials` function.
@@ -89,22 +88,12 @@ if err != nil {
 }
 ```
 
-To add support for metrics we can also create an exporter to send metrics to a backend.  We can initialize the OTLP exporter for metrics by adding the following code after the above setup.
-
-```go lineNumbers=true
-// Create and start new OTLP metric exporter
-metricExporter, err := otlpmetricgrpc.New(ctx, otlpmetricgrpc.WithInsecure(), otlpmetricgrpc.WithEndpoint("0.0.0.0:4317"), otlpmetricgrpc.WithDialOption(grpc.WithBlock()))
-if err != nil {
-	log.Fatalf("failed to create new OTLP metric exporter: %v", err)
-}
-```
-
 This creates a new OTLP exporter with a few options - `WithInsecure()` disables client transport security for the exporter's gRPC connection, `WithEndpoint()` allows you to set the address that the exporter will connect to the Collector on. If the address is unset, it will instead try to use connect to `localhost:4317`. If the Collector you are connecting uses TLS, for example in a [service deployment](/docs/getting-started/collector/sidecar-vs-service),
-pass `otlptracegrpc.WithTLSCredentials()` and `otlpmetricgrpc.WithTLSCredentials()` instead of `otlptracegrpc.WithInsecure()` and `otlpmetric.WithInsecure()` respectively.
+pass `otlptracegrpc.WithTLSCredentials()` instead of `otlptracegrpc.WithInsecure()`.
 
-#### Creating a Tracer Provider and Meter Provider
+#### Creating a Tracer Provider
 
-In order to generate traces or metrics, OpenTelemetry Go SDK requires a tracer provider or meter provider to be created. A tracer provider can have multiple different span processors, which are components that give the ability to modify and export span data after it has been created.
+In order to generate traces, OpenTelemetry Go SDK requires a tracer provider to be created. A tracer provider can have multiple different span processors, which are components that give the ability to modify and export span data after it has been created.
 
 To create a new tracer provider, add the following lines to the `main.go` file.
 ```go lineNumbers=true
@@ -119,20 +108,14 @@ tp := trace.NewTracerProvider(
 
 Above block of code creates a new `TracerProvider` with a Sampler that samples every trace, and an ID Generator that will generate trace IDs that conform to AWS X-Ray’s format, as well as register the OLTP exporter we created in the previous section.
 
-To create a new meter provider with a peridiodic reader, add the following lines after the above snippet.
-```go lineNumbers=true
-mp := metric.NewMeterProvider(metric.WithReader(metric.NewPeriodicReader(metricExporter))
-```
-
 #### Setting Global Options
 
-In addition to setting a global tracer provider and meter provider, we will also configure the context propagation option. Context propagation refers to sharing data across multiple processes or services. Propagator structs are configured inside Tracer structs to support context propagation across process boundaries. A context will often have information
+In addition to setting a global tracer provider, we will also configure the context propagation option. Context propagation refers to sharing data across multiple processes or services. Propagator structs are configured inside Tracer structs to support context propagation across process boundaries. A context will often have information
 identifying the current span and trace, and can contain arbitrary information as key-value pairs.
 
 To set up global options, we will use the `otel` package and add the following lines to the `main.go` file.
 ```go lineNumbers=true
 otel.SetTracerProvider(tp)
-otel.SetMeterProvider(mp)
 otel.SetTextMapPropagator(xray.Propagator{})
 ```
 
@@ -155,6 +138,48 @@ resource, err := ec2ResourceDetector.Detect(context.Background())
 tracerProvider := trace.NewTracerProvider(
 	trace.WithResource(resource),
 )
+```
+## Setting up the Global Meter
+
+### Sending metrics
+
+This section talks about how to instantiate a new meter provider , setting global options (meter provider) and instantiate OTLP exporter with the collector's address to export metric data.
+
+#### Creating an OpenTelemetry Protocol (OTLP) Exporter
+
+OpenTelemetry Go requires an exporter to send metrics to a backend. Exporters allow telemetry data to be transferred either to the AWS Distro for OpenTelemetry Collector (ADOT Collector), or to a remote system or console for further analysis. The ADOT Collector is a separate process that is designed to be a "sink" for telemetry data emitted by many processes, which can then export
+that data to various back-end systems.
+
+To initialize the OTLP metric exporter, add the following code to the file the `main.go` file.
+
+**IMPORTANT**: The following examples creates an OTLP exporter that does not encrypt data at transfer because it uses the `otlpmetricgrpc.WithInsecure()` option. This should only be used for creating proof of concepts and experimenting with the Go SDK.
+For production environments you must properly configure TLS using the `otlpmetricgrpc.WithTLSCredentials` function.
+
+```go lineNumbers=true
+// Create and start new OTLP metric exporter
+metricExporter, err := otlpmetricgrpc.New(ctx, otlpmetricgrpc.WithInsecure(), otlpmetricgrpc.WithEndpoint("0.0.0.0:4317"), otlpmetricgrpc.WithDialOption(grpc.WithBlock()))
+if err != nil {
+	log.Fatalf("failed to create new OTLP metric exporter: %v", err)
+}
+```
+
+#### Creating a Meter Provider
+
+In order to generate metrics, OpenTelemetry Go SDK requires a meter provider to be created.  The meter provider is configured with a periodic reader in this example.
+
+To create a new meter provider, add the following lines to the `main.go` file.
+```go lineNumbers=true
+mp := metric.NewMeterProvider(metric.WithReader(metric.NewPeriodicReader(metricExporter))
+```
+
+Above block of code creates a new `MeterProvider` with a periodic reader.
+
+
+#### Setting Global Options
+
+To set up global options for the meter provider, we will use the `otel` package and add the following line to the `main.go` file.
+```go lineNumbers=true
+otel.SetMeterProvider(mp)
 ```
 
 <SubSectionSeparator />
