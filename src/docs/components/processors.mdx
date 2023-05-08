@@ -1,0 +1,67 @@
+---
+title: 'Processors'
+description: |
+    Processors pre-process the data collected by the receivers before they are exported by exporters. Processors can modify, batch or
+    filter the data flowing through the pipeline.
+path: '/docs/components/kafka-receiver-exporter'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+
+Processors are used in several stages of an OpenTelemetry collector pipeline. They are used to pre-process the data being passed in the pipeline. In a processor the data can be modified, batched, filtered or sampled. The
+ADOT collector supports a selected list of processors.
+
+<SectionSeparator />
+
+## Processors supported by ADOT collector
+
+The ADOT collector supports the following processors:
+
+* [attributesprocessor](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/attributesprocessor#attributes-processor)
+* [batchprocessor](https://github.com/open-telemetry/opentelemetry-collector/tree/main/processor/batchprocessor#batch-processor)
+* [deltatorateprocessor](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/deltatorateprocessor#delta-to-rate-processor)
+* [filterprocessor](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/filterprocessor#filter-processor)
+* [groupbytraceprocessor](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/processor/groupbytraceprocessor/README.md)
+* [memorylimiterprocessor](https://github.com/open-telemetry/opentelemetry-collector/tree/main/processor/memorylimiterprocessor#memory-limiter-processor)
+* [metricsgenerationprocessor](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/metricsgenerationprocessor#metrics-generation-processor)
+* [metricstransformprocessor](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/metricstransformprocessor#metrics-transform-processor)
+* [probabilisticsamplerprocessor](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/probabilisticsamplerprocessor#probabilistic-sampling-processor)
+* [resourcedetectionprocessor](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/resourcedetectionprocessor#resource-detection-processor)
+* [resourceprocessor](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/resourceprocessor#resource-processor)
+* [spanprocessor](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/spanprocessor#span-processor)
+* [tailsamplingprocessor](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/tailsamplingprocessor/README.md)
+
+## Notes on Group by Trace and Tail Sampling processors
+
+In order to achieve the desired results when using the tailsampling processor and groupbytrace, **do not use a batch processor before these components in a pipeline**. It is important to pay attention to this detail because these components will try to group all the spans belonging to a trace. In the case of the tailsampling processor this will allow for a sampling decision to affect all spans of a trace, creating a full picture of the trace in case the trace is sampled. A batch processor immediately after these components does not cause any problems and is recommended to properly pre-process data for subsequent exporters.
+
+Besides that, you have to tune the `wait_duration` parameter of the groupbytrace processor and `decision_wait` parameter of the tailsampling processor to be greater than or equal to the maximum expected latency of a trace in your system. Again, this will guarantee that spans of a same trace are processed in the same batch.
+
+Finally to really limit the number of traces that should be kept in memory, we recommend that you use the groupbytrace processor before the tailsampling processor. The reason why is because the groupbytrace processor implements a limit for the number of traces to be kept in memory while this is not fully implemented in the tailsampling processor.
+
+The groupbytrace processor will drop the oldest trace in case the `num_traces` limit is exceeded. `wait_duration` and `num_traces` should be scaled to consider the expected traffic in the monitored applications. For example, if the maximum expected latency for a request in your application is 10s and the maximum traffic in number of requests per second that your application can have is 1000 requests per second, `wait_duration` should be set to 10s and `num_traces` should be set to at least 10000 (10 * 1000 requests per second). It is highly recommended that you monitor the `otelcol_processor_groupbytrace_traces_evicted` metric from the collector [self telemetry](https://opentelemetry.io/docs/collector/configuration/#service). If the value in the metric is greater than zero, that means that the collector is receiving more traffic than it can handle and you should increase the `num_traces` accordingly.
+
+
+Example:
+```
+processors:
+  groupbytrace:
+    wait_duration: 10s
+    num_traces: 20000 # Double the max expected traffic (10 * 1000 requests per second)
+  tail_sampling:
+    decision_wait: 1s # This value should be smaller than wait_duration
+    policies:
+      - ..... # Applicable policies
+  batch/traces:
+    timeout: 0s # No need to wait more since this will happen in previous processors
+    send_batch_max_size: 8196 # This will still allow us to limit the size of the batches sent to subsequent exporters
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [groupbytrace, tail_sampling, batch/traces]
+      exporters: [awsxray]
+
+```
+
