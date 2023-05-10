@@ -78,19 +78,41 @@ processors:
   tail_sampling:
     decision_wait: 1s
     policies:
-      - name: and-policy,
-        type: and,
+      - name: and-policy
+        type: and
         and:
           and_sub_policy:
-            - name: test-policy-9,
-              type: string_attribute,
+            - name: path-policy
+              type: string_attribute
               string_attribute:
-                key: http.url,
+                key: http.url
                 values: ["\/users"]
                 enabled_regex_matching: true
-            - name: error-policy,
-              type: status_code,
-              status_code: {status_codes: [ERROR, UNSET]}
+            - name: error-policy
+              type: status_code
+              status_code:
+                status_codes: ["ERROR", "UNSET"]
+```
+
+In the next example we will sample 20% of the spans that present an error:
+
+```yaml
+processors:
+  tail_sampling:
+    decision_wait: 1s
+    policies:
+      - name: and-policy
+        type: and
+        and:
+          and_sub_policy:
+            - name: error-policy
+              type: status_code
+              status_code:
+                status_codes: ["ERROR", "UNSET"]
+            - name: probabilistic-policy
+              type: probabilistic
+              probabilistic:
+                sampling_percentage: 20
 ```
 
 It is highly recommended that you take a look into the [README](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/tailsamplingprocessor/README.md) of this component to understand all the available policies.
