@@ -1,7 +1,7 @@
 ---
 title: 'Create IAM Policy'
 description:
-    The AWS OpenTelemetry Collector requires permissions to publish app metrics 
+    The AWS Distro for OpenTelemetry Collector requires permissions to publish app metrics
     and container metrics to AWS CloudWatch Logs and sending app traces to AWS X-Ray. 
     In this section, we will create an IAM policy with proper permission.
 path: '/docs/setup/ecs'
@@ -13,7 +13,7 @@ import iam_policy_01 from "assets/img/docs/setup/ecs/iam_policy/iam_policy_01.pn
 import iam_policy_02 from "assets/img/docs/setup/ecs/iam_policy/iam_policy_02.png"
 import iam_policy_03 from "assets/img/docs/setup/ecs/iam_policy/iam_policy_03.png"
 
-The AWS OpenTelemetry Collector requires permissions to publish app metrics and container 
+The AWS Distro for OpenTelemetry Collector requires permissions to publish app metrics and container
 metrics to AWS CloudWatch and sending app traces to AWS X-Ray. Metrics are sent to CloudWatch 
 using [EMF Logs](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Embedded_Metric_Format.html), 
 so CloudWatch Logs permissions are required to send metrics. In this section, we will create 
@@ -48,6 +48,7 @@ Click the `JSON` tab on top of the page. Copy and paste the following policy tex
                 "logs:CreateLogStream",
                 "logs:DescribeLogStreams",
                 "logs:DescribeLogGroups",
+                "logs:PutRetentionPolicy",
                 "xray:PutTraceSegments",
                 "xray:PutTelemetryRecords",
                 "xray:GetSamplingRules",

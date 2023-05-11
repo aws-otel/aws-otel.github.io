@@ -12,9 +12,9 @@ path: '/docs/getting-started/adot-eks-add-on/requirements'
     
 * [eksctl](https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html) is installed
 
-* Your cluster should be on Kubernetes version 1.19 or higher. You can verify the version you’re running with the following command:
+* Your cluster should be on Kubernetes version 1.21 or higher. You can verify the version you’re running with the following command:
 ```console
-kubectl version | grep "Server Version"`
+kubectl version | grep "Server Version"
 ```
 
 * Make sure that you can use kubectl with your EKS cluster by updating your `kubeconfig` if necessary:
@@ -24,7 +24,7 @@ aws eks update-kubeconfig --name cluster_name --region YOUR_AWS_REGION
 
 * [AWS CLI v2](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) is installed
 
-* Grant permissions to Amazon EKS Add-ons to install ADOT with the command below. For more information, see this article on [RBAC Authorization](https://kubernetes.io/docs/reference/access-authn-authz/rbac/).
+* Grant permissions to Amazon EKS Add-ons to install ADOT with the command below. For more information, see this article on [RBAC Authorization](https://kubernetes.io/docs/reference/access-authn-authz/rbac/). *Note that these permissions are only needed if installing an add-on version that is `v0.62.1` or before*. 
 ```
 kubectl apply -f https://amazon-eks.s3.amazonaws.com/docs/addons-otel-permissions.yaml
 ```

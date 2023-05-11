@@ -79,7 +79,7 @@ of AOC is passive, if your application doesn’t emit the data to the port (X-ra
    *  Collect Application Metrics & Traces and Container Resource Metrics
 
       In the container definition section for   Environment Command section add `--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml`,
-      which is  already included as part of AOT collector, select the ECS default configuration for Container Insights experience.
+      which is  already included as part of ADOT collector, select the ECS default configuration for Container Insights experience.
       This will collect Application Metrics, Traces  and task-level Container Resource Metrics, and send them to Amazon CloudWatch Metrics
       and AWS X-Ray. This configuration file can collect metrics and traces from the OpenTelemetry SDKs (OTLP)
       , X-Ray traces from the X-Ray SDKs and StatsD metrics from your app.
@@ -108,7 +108,7 @@ of AOC is passive, if your application doesn’t emit the data to the port (X-ra
        <img src={task12} alt="Diagram" style="margin: 30px 0;" />
        2.  In Environment Section, add Environment variable: **AWS_XRAY_DAEMON_ADDRESS** with **aws-otel-collector:2000**
        <img src={task13} alt="Diagram" style="margin: 30px 0;" />
-       3.  In the NETWORK SETTINGS Links, put the container name aws-otel-collector you used in step 6 as AOT collector.
+       3.  In the NETWORK SETTINGS Links, put the container name aws-otel-collector you used in step 6 as ADOT collector.
        <img src={task14} alt="Diagram" style="margin: 30px 0;" />
        4.  Keep the rest information as default and click add.
        <img src={task15} alt="Diagram" style="margin: 30px 0;" />
