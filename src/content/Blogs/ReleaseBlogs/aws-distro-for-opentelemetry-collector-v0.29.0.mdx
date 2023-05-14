@@ -21,6 +21,8 @@ You can download the latest [ADOT Collector image](https://gallery.ecr.aws/aws-o
 * OpenTelemetry Collector [v0.76.1](https://github.com/open-telemetry/opentelemetry-collector/releases/tag/v0.76.1)
 * Add support to Group By Trace and Tail Sampling processors. More details can be found [here](/docs/components/processors).
 
+**IMPORTANT:**
+* [There are upstream breaking changes in prometheus related components](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v0.76.3) that affects metric names. The ADOT collector will adopt the upstream behavior starting v0.31.0 so that there is more time for users to prepare and test the upstream changes. More details about the issue and how to test the upstream behavior in ADOT collector v0.29.0, please refer to issue [#2043](https://github.com/aws-observability/aws-otel-collector/issues/2043).
 
 
 Detailed release notes are on [GitHub](https://github.com/aws-observability/aws-otel-collector/releases).
