@@ -58,7 +58,7 @@ processors:
     decision_wait: 1s # This value should be smaller than wait_duration
     policies:
       - ..... # Applicable policies
-  batch/traces:
+  batch/tracesampling:
     timeout: 0s # No need to wait more since this will happen in previous processors
     send_batch_max_size: 8196 # This will still allow us to limit the size of the batches sent to subsequent exporters
 
