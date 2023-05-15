@@ -37,7 +37,7 @@ In order to achieve the desired results when using the Tail Sampling and Group b
 
 Also, you need to make sure that all the spans for a trace are processed in the same collector instances. This is specially important for a collector running in gateway mode.
 
-Besides that, you have to tune the `wait_duration` parameter of the Group by Trace processor and `decision_wait` parameter of the Tail Sampling processor to be greater than or equal to the maximum expected latency of a trace in your system. Again, this will guarantee that spans of a same trace are processed in the same batch.
+Besides that, you have to tune the `wait_duration` parameter of the Group by Trace processor and `decision_wait` parameter of the Tail Sampling processor to be greater than or equal to the maximum expected latency of a trace in your system. Also, be sure to include a grace period for network latency between an application and collector. Again, this will guarantee that spans of a same trace are processed in the same batch.
 
 Finally to really limit the number of traces that should be kept in memory, we recommend that you use the Group by Trace processor before the Tail Sampling processor. The reason why is because the Group by Trace processor implements a limit for the number of traces to be kept in memory while this is not fully implemented in the Tail Sampling processor.
 
