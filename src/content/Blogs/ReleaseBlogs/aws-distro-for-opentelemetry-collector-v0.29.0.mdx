@@ -14,15 +14,25 @@ You can download the latest [ADOT Collector image](https://gallery.ecr.aws/aws-o
 
 <SectionSeparator />
 
+**Upstream changelog**
+
+* [OpenTelemetry Collector v0.75.0](https://github.com/open-telemetry/opentelemetry-collector/releases/tag/v0.75.0)
+* [OpenTelemetry Collector v0.76.1](https://github.com/open-telemetry/opentelemetry-collector/releases/tag/v0.76.1)
+* [OpenTelemetry Collector Contrib v0.75.0](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v0.75.0)
+* [OpenTelemetry Collector Contrib v0.76.3](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v0.76.3)
+
 **Release Highlights**
 
-* OpenTelemetry Collector [v0.75.0](https://github.com/open-telemetry/opentelemetry-collector/releases/tag/v0.75.0)
-* OpenTelemetry Collector [v0.76.0](https://github.com/open-telemetry/opentelemetry-collector/releases/tag/v0.76.0)
-* OpenTelemetry Collector [v0.76.1](https://github.com/open-telemetry/opentelemetry-collector/releases/tag/v0.76.1)
-* Add support to Group By Trace and Tail Sampling processors. More details can be found [here](/docs/components/processors).
+* Update notices for prometheus receiver [\#2053](https://github.com/aws-observability/aws-otel-collector/pull/2053) ([bryan-aguilar](https://github.com/bryan-aguilar))
+* Add Group by Trace and Tail Sampling processors [\#2052](https://github.com/aws-observability/aws-otel-collector/pull/2052) ([rapphil](https://github.com/rapphil))
+* Update to use public ecr rather than dockerhub in vended templates. [\#2045](https://github.com/aws-observability/aws-otel-collector/pull/2045) ([bryan-aguilar](https://github.com/bryan-aguilar))
+* Disable pkg.translator.prometheus.NormalizeName feature gate by default [\#2044](https://github.com/aws-observability/aws-otel-collector/pull/2044) ([bryan-aguilar](https://github.com/bryan-aguilar))
+* Deprecate lambdacomponents module [\#1981](https://github.com/aws-observability/aws-otel-collector/pull/1981) ([bryan-aguilar](https://github.com/bryan-aguilar))
 
 **IMPORTANT:**
-* [There are upstream breaking changes in prometheus related components](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v0.76.3) that affects metric names. The ADOT collector will adopt the upstream behavior starting v0.31.0 so that there is more time for users to prepare and test the upstream changes. More details about the issue and how to test the upstream behavior in ADOT collector v0.29.0, please refer to issue [#2043](https://github.com/aws-observability/aws-otel-collector/issues/2043).
+
+* [There are upstream breaking changes in prometheus related components](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v0.76.3) that affects metric names. The ADOT collector will adopt the upstream behaviour starting v0.31.0. For more details and testing instructions please refer to issue [#2043](https://github.com/aws-observability/aws-otel-collector/issues/2043).
+* The `aws.ecs.service.name` property is being set to `ServiceName` metadata in the case a collector with `awsecscontainermetricsreceiver` is running in ECS on EC2. For ECS on Fargate, `aws.ecs.service.name` is an empty string. Previously this value was always set to `"undefined"` for both EC2 and Fargate compute types.  [\#19744](https://github.com/open-telemetry/opentelemetry-collector-contrib/pull/19744) ([erichsueh3](https://github.com/erichsueh3))
 
 
 Detailed release notes are on [GitHub](https://github.com/aws-observability/aws-otel-collector/releases).
