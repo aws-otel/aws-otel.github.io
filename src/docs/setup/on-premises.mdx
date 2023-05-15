@@ -26,7 +26,7 @@ make package-rpm
 ```
 sudo rpm -Uvh ./aws-otel-collector.rpm
 ```
-4. After RPM is installed, it will create  ADOT Collector in directory `/opt/aws/aws-otel-collector/` with the
+4. After RPM is installed, it will create ADOT Collector in directory `/opt/aws/aws-otel-collector/` with the
 following folder layout.
 <img src={img14} alt="Diagram" style="margin: 30px 0;" />
 
@@ -40,8 +40,122 @@ following folder layout.
     ```
     sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -a stop
     ```
-    c) Check the status of  ADOT Collector
+    c) Check the status of ADOT Collector
     ```
     sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl  -a status
     ```
 
+
+<SectionSeparator />
+
+## Configure AWS IAM Roles Anywhere
+
+AWS Introduced [IAM Roles Anywhere](https://docs.aws.amazon.com/rolesanywhere/latest/userguide/introduction.html) to allow 
+workloads to obtain temporary security credentials in IAM. ADOT can leverage this service to obtain the credentials needed for
+the exporters that target AWS (CloudWatch EMF, X-Ray, Amazon Managed Service for Prometheus).
+
+In order to leverage IAM Roles Anywhere on your on-premises environment you'll need to create:
+
+* A [trust anchor](https://docs.aws.amazon.com/rolesanywhere/latest/userguide/introduction.html#first-time-user) that is trusted by both AWS 
+and your Certificate Authority of choice.
+* An IAM Role for ADOT Collector with proper permissions to interact with Amazon Managed Services for Prometheus.
+* A [profile](https://docs.aws.amazon.com/rolesanywhere/latest/userguide/introduction.html#first-time-user) to specify what roles can be assumed by your workload through the trust anchor in IAM Roles Anywhere.
+* End user certificate used by ADOT Collector to [obtain temporary AWS credentials](https://docs.aws.amazon.com/rolesanywhere/latest/userguide/credential-helper.html).
+    
+1. A Trust Anchor is a reference to a Certificate Authority Certificate trusted by you. You have two options:
+
+* Use [AWS Private Certificate Authority (AWS Private CA)](https://docs.aws.amazon.com/privateca/latest/userguide/PcaWelcome.html) that integrates with IAM Roles Anywhere on the same account.
+* Use an external Certificate Authority by importing the CA Certificate Body in AWS in Privacy Enhanced Mail (PEM) format.
+
+You can create an IAM Roles Anywhere trust anchor following the [AWS documentation](https://docs.aws.amazon.com/rolesanywhere/latest/userguide/getting-started.html#getting-started-step1):
+
+2. Create an IAM Role with the permissions needed for your workload. An example of the IAM policies can be found in the AWS Documentation for [Amazon Managed Service for Prometheus](https://docs.aws.amazon.com/prometheus/latest/userguide/security_iam_id-based-policy-examples.html#security_iam_amp_policies),
+and create a trust policy to allow IAM Roles Anywhere service to assume the role on behalf of your workload as described in the [AWS Documentation](https://docs.aws.amazon.com/rolesanywhere/latest/userguide/getting-started.html#getting-started-step2)
+
+It's [recommended](https://docs.aws.amazon.com/rolesanywhere/latest/userguide/trust-model.html#trust-policy) to include conditions 
+in the trust policy using attributes from the X.509 certificate. For example the following trust policy restricts the actions by using
+the certificate Subject Common Name (CN) attribute.
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "",
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "rolesanywhere.amazonaws.com"
+            },
+            "Action": [
+                "sts:AssumeRole",
+                "sts:SetSourceIdentity",
+                "sts:TagSession"
+            ],
+            "Condition": {
+                "StringEquals": {
+                "aws:PrincipalTag/x509Subject/CN": "VM01"
+            }
+        }            
+        }
+    ]
+}
+```
+
+3. Create a profile on IAM Roles Anywhere to match the IAM Role created in the previous step with the Trust Anchor created on Step 1.
+
+4. Create a private key pair and end user certificate for your workload. Instructions to perform this operation depends on your OS as well as
+the Certificate Authority of choice. An example of how to generate and end user certificate for AWS Private CA can be found in the [AWS Documentation](https://docs.aws.amazon.com/privateca/latest/userguide/PcaIssueCert.html).
+
+## Configuring ADOT Collector to use IAM Roles Anywhere 
+
+
+1. Install credential helper tool (`aws_signing_helper`) as instructed in the [AWS documentation](https://docs.aws.amazon.com/rolesanywhere/latest/userguide/credential-helper.html). Ensure the tool is included in the system PATH.
+
+2. Create a home folder for the `aoc` user, copy the X509 certificate and private key.
+
+    ```
+    mkdir /home/aoc/.x509
+    mv <x509_private_key> /home/aoc/.x509/private-key.pem
+    mv <x509_certificate> /home/aoc/.x509/cert.pem
+    chown -R aoc:aoc /home/aoc/.x509/
+
+    echo "AWS_CONFIG_FILE=/home/aoc/.x509/config" | sudo tee -a /opt/aws/aws-otel-collector/etc/.env
+    ```
+
+3. Create an AWS SDK configuration (`config`) to use credential helper tool to generate temporary credentials using the provided X509 key and certificate.
+You'll need to provide the following values from your AWS Environment. You can find more information in the [AWS documentation](https://docs.aws.amazon.com/rolesanywhere/latest/userguide/credential-helper.html#credential-helper-options):
+
+- `TA_ARN`: `--trust-anchor-arn` ARN of Trust anchor to to use for authentication.
+- `PROFILE_ID_ARN`: `--profile-arn` ARN of the profile to pull policies from.
+- `REMOTE_ROLE`: `--role-arn` Target role to assume.
+
+Note that we stored the certificate and private keys in the `aoc` user home folder inside the `.x509` directory. If you use a different path
+you'll need to update the configuration accordingly.
+
+```
+export TA_ARN=<Trust Anchor ARN>
+export PROFILE_ID_ARN=<Profile ID ARN>
+export REMOTE_ROLE=<Role ARN with AWS permission>
+
+cat > config << EOF
+[default]
+credential_process = aws_signing_helper credential-process --certificate /home/aoc/.x509/cert.pem --private-key /home/aoc/.x509/private-key.pem --trust-anchor-arn $TA_ARN --profile-arn $PROFILE_ID_ARN --role-arn $REMOTE_ROLE
+EOF
+
+sudo chown aoc:aoc config
+sudo mv config /home/aoc/.x509/
+```
+
+4. Add `AWS_CONFIG_FILE` environment variable to the ADOT Collector configuration by adding an entry in the `.env` file used to load
+the service. *Note that this file is only loaded for `systemd` enabled Linux distributions. For other systems you might need to make additional modifications to load the environment variable before running the service.*
+
+```
+echo "AWS_CONFIG_FILE=/home/aoc/.x509/config" | sudo tee -a /opt/aws/aws-otel-collector/etc/.env
+```
+
+5. Restart the ADOT Collector to use the newly configured role.
+
+```
+sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -a stop
+sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -a start
+```

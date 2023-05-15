@@ -5,7 +5,7 @@ description:
     instrumentations for all supported libraries and all available data exporters, providing a complete out of the box
     experience for tracing and metrics on AWS. The agent is preconfigured to generate trace IDs compatible with AWS X-Ray, which
     will also work with any other tracing system, and enables trace propagation using W3C Trace Context, B3, and X-Ray.
-path: '/docs/getting-started/java-sdk/trace-auto-instr'
+path: '/docs/getting-started/java-sdk/auto-instr'
 ---
 
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
@@ -93,7 +93,7 @@ artifact, any usage of it will be disabled by the agent.
 ##### For Gradle:
 ```kotlin lineNumbers=true
 dependencies {
-    implementation("io.opentelemetry:opentelemetry-api:1.20.1")
+    implementation("io.opentelemetry:opentelemetry-api:1.24.0")
 }
 ```
 
@@ -103,7 +103,7 @@ dependencies {
   <dependency>
     <groupId>io.opentelemetry</groupId>
     <artifactId>opentelemetry-api</artifactId>
-    <version>1.20.1</version>
+    <version>1.24.0</version>
   </dependency>
 </dependencies>
 ```
@@ -115,5 +115,5 @@ for more detail on using the OpenTelemetry API.
 
 ## Sample Applications
 
-* Visit the [Sample Spring App using OpenTelemetry Java Auto-Instrumentation](https://catalog.us-east-1.prod.workshops.aws/v2/workshops/31676d37-bbe9-4992-9cd1-ceae13c5116c/en-US/adot/javawalkthrough).
+* Visit the [Sample Spring App using OpenTelemetry Java Auto-Instrumentation](https://catalog.us-east-1.prod.workshops.aws/workshops/31676d37-bbe9-4992-9cd1-ceae13c5116c/en-US/aws-managed-oss/adot/javawalkthrough).
 * [SparkJava Sample Application Using Traces and Metrics](https://github.com/aws-observability/aws-otel-java-instrumentation/tree/main/sample-apps/spark).

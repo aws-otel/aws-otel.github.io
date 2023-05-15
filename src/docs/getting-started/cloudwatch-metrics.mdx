@@ -33,7 +33,7 @@ computing environment for collecting metrics from various of applications.
 For more information about installing ADOT Collector for each of the AWS platforms, see the getting started section for
 * <Link to="/docs/setup/ecs">ECS</Link>
 * <Link to="/docs/setup/ec2">EC2</Link>
-* <Link to="/docs/setup/eks">EKS</Link>
+* <Link to="/docs/getting-started/adot-eks-add-on">EKS</Link>
 * <Link to="/docs/setup/on-premises">On-Premises</Link>
 
 We will discuss how to configure the ADOT Collector to send different application metrics.
@@ -87,9 +87,9 @@ The available dimension roll-up options in EMF exporter,
 
 ```
 awsemf:
-    log_group_name: 'AOTLogGroup'
-    log_stream_name: 'AOTLogStream'
-    namespace: 'AOTMetricNS'
+    log_group_name: 'ADOTLogGroup'
+    log_stream_name: 'ADOTLogStream'
+    namespace: 'ADOTMetricNS'
     dimension_rollup_option: 1
     log_retention: 60
 ```
@@ -117,6 +117,3 @@ processors:
 
 For new updates and configuration options on CloudWatch Metrics support, follow us on
 [AWS EMF Repo](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/master/exporter/awsemfexporter).
-
-
-

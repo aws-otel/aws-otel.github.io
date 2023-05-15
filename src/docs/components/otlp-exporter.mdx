@@ -130,6 +130,72 @@ service:
 
 <SubSectionSeparator />
 
+## Dynatrace
+
+Dynatrace supports OpenTelemetry by ingesting OTLP directly, so users of the AWS Distro for OpenTelemetry (ADOT) can send tracing data directly to 
+Dynatrace without the need for additional plugins or non-OTLP exporters.
+
+<SubSectionSeparator />
+
+### Requirements
+
+#### OTLP Trace Ingest
+
+- Dynatrace 1.222 or later
+- An API token with the **Ingest OpenTelemetry traces** scope
+
+#### OTLP Metric Ingest
+
+- Dynatrace 1.254 or later
+- An API token with the **Ingest metrics** scope
+
+<SubSectionSeparator />
+
+### Configuration (Collector)
+
+The configuration takes place in the OTLP exporter in the Collector config YAML file.
+Configure the [OTLP HTTP Exporter](https://github.com/open-telemetry/opentelemetry-collector/tree/master/exporter/otlphttpexporter) with the following settings. For additional details see the [Dynatrace documentation for the Collector](https://www.dynatrace.com/support/help/extend-dynatrace/opentelemetry/basics/collector#example-configuration).
+ 
+#### `endpoint`
+
+Your Dynatrace environment OTLP ingest endpoint `https://{your-environment-id}.live.dynatrace.com/api/v2/otlp`
+
+
+#### `headers`
+
+Set the `Authorization` header with the format `"Api-Token <API_TOKEN>"`
+
+
+
+<SubSectionSeparator />
+
+### Example 
+
+```
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+exporters:
+  otlphttp:
+    endpoint: "https://{your-environment-id}.live.dynatrace.com/api/v2/otlp"
+    headers:
+      Authorization: "Api-Token <API_TOKEN>"
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: []
+      exporters: [otlphttp]
+    metrics:
+      receivers: [otlp]
+      processors: []
+      exporters: [otlphttp]
+```
+
+<SubSectionSeparator />
+
 ## Honeycomb
 
 Honeycomb supports OpenTelemetry by ingesting OTLP directly, so users of the AWS Distro for OpenTelemetry (ADOT) can send tracing data directly to
@@ -160,7 +226,7 @@ The configuration will take place in the OTLP exporter in the Collector config Y
 
 To send trace data, all you need is the API key for your Environment:
 
-```yaml lineNumbers=true highlight={7,9}
+```yaml lineNumbers=true highlight={7}
 # Honeycomb Collector configuration
 exporters:
   otlp/traces:
@@ -179,7 +245,7 @@ service:
 
 To send metrics data, you also need to specify the dataset for metrics data:
 
-```yaml lineNumbers=true highlight={7,9}
+```yaml lineNumbers=true highlight={7,8}
 # Honeycomb Collector configuration
 exporters:
   otlp/metrics:

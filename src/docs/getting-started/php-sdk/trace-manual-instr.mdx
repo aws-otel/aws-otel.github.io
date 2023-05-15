@@ -226,7 +226,7 @@ $span = $tracer
         ->spanBuilder('span')
         ->startSpan();
         
-$spanScope = $root->activate();
+$spanScope = $span->activate();
         
 $span->setAttributes(["a" => "1"]);
         

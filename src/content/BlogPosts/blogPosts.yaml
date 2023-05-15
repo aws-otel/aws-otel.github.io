@@ -6,12 +6,119 @@ description:
 path: /blog
 
 blogs:
+  - title: "AWS Distro for OpenTelemetry Lambda Layers are now available with ADOT Collector v0.28.0"
+    author: "Pavan Sai Vasireddy"
+    date: "25-April-2023"
+    body:
+      "ADOT Lambda Layers now distribute ADOT Collector v0.28.0 with new layers supporting AMD64 and ARM64 Lambda functions"
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-lambda-layer-v0.28.0"
+
+  - title: "AWS Distro for OpenTelemetry Java Instrumentation v1.24.0 is now available"
+    author: "Paurush Garg"
+    date: "14-Apr-2023"
+    body:
+      "AWS Distro for OpenTelemetry Java Instrumentation v1.24.0 is now available. You can download the latest ADOT Java auto-instrumentation Docker image
+        from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery and the jar artifacts from the Maven Central Repository."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-java-instrumentation-v1.24.0"
+
+  - title: "AWS Distro for OpenTelemetry v0.28.0 is now available"
+    author: "Raphael Silva"
+    date: "07-Apr-2023"
+    body:
+      "AWS Distro for OpenTelemetry v0.28.0 is now available. You can download the latest AWS Distro for OpenTelemetry Collector image
+        from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-collector-v0.28.0"
+
+  - title: "AWS Distro for OpenTelemetry v0.27.1 is now available"
+    author: "Bryan Aguilar"
+    date: "05-Apr-2023"
+    body:
+      "AWS Distro for OpenTelemetry v0.27.1 is now available. You can download the latest AWS Distro for OpenTelemetry Collector image
+        from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-collector-v0.27.1"
+
+  - title: "AWS Distro for OpenTelemetry Lambda Layers are now available with ADOT Collector v0.27.0"
+    author: "Raphael Silva"
+    date: "10-Mar-2023"
+    body:
+      "ADOT Lambda Layers now distribute ADOT Collector v0.27.0 with new layers supporting AMD64 and ARM64 Lambda functions"
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-lambda-layer-v0.27.0"
+
+  - title: "AWS Distro for OpenTelemetry v0.26.2 is now available"
+    author: "Paurush Garg"
+    date: "04-Mar-2023"
+    body:
+      "AWS Distro for OpenTelemetry v0.26.2 is now available. You can download the latest AWS Distro for OpenTelemetry Collector image
+        from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-collector-v0.26.2"
+
+  - title: "AWS Distro for OpenTelemetry v0.27.0 is now available"
+    author: "Huy Vo"
+    date: "03-Mar-2023"
+    body:
+      "AWS Distro for OpenTelemetry v0.27.0 is now available. You can download the latest AWS Distro for OpenTelemetry Collector image
+      from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-collector-v0.27.0"
+
+  - title: "AWS Distro for OpenTelemetry Lambda announces removal of prometheusexporter from March 2023 release"
+    author: "Kausik Amancherla"
+    date: "01-March-2023"
+    body:
+      "This blog post announces the removal of prometheusexporter in AWS Distro for OpenTelemetry Lambda."
+    link: "/docs/adot-lambda-remove-prometheusexporter"
+
+  - title: "AWS Distro for OpenTelemetry Lambda Layers are now available with ADOT Collector v0.26.0"
+    author: "Kausik Amancherla"
+    date: "22-Feb-2023"
+    body:
+      "ADOT Lambda Layers now distribute ADOT Collector v0.26.0 with new layers supporting AMD64 and ARM64 Lambda functions"
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-lambda-layer-v0.26.0"
+    
+  - title: "AWS Distro for OpenTelemetry unifies ingestion with OpenTelemetry Protocol Exporter"
+    author: "Michael Hausenblas"
+    date: "17-Feb-2023"
+    body:
+      "Why and how we plan to migrate all partner integrations in the ADOT collector to OTLP."
+    link: "/docs/move-to-otlp"
+    
+  - title: "AWS Distro for OpenTelemetry Collector v0.26.1 and v0.25.1 are now available"
+    author: "Pavan Sai Vasireddy"
+    date: "16-Feb-2023"
+    body:
+      "AWS Distro for OpenTelemetry Collector v0.26.1 and v0.25.1 are now available. You can download the latest AWS Distro for OpenTelemetry Collector image
+      from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-collector-v0.25.1-and-v0.26.1"
+
+  - title: "AWS Distro for OpenTelemetry v0.26.0 is now available"
+    author: "Bryan Aguilar"
+    date: "02-Feb-2023"
+    body:
+      "AWS Distro for OpenTelemetry v0.26.0 is now available. You can download the latest AWS Distro for OpenTelemetry Collector image
+      from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-collector-v0.26.0"
+
+  - title: "AWS Distro for OpenTelemetry Lambda Layers are now available with ADOT Collector v0.25.0"
+    author: "Bryan Aguilar"
+    date: "11-Jan-2023"
+    body:
+      "ADOT Lambda Layers now distribute ADOT Collector v0.25.0 with new layers supporting AMD64 and ARM64 Lambda functions"
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-lambda-layer-v0.25.0"
+
+  - title: "AWS Distro for OpenTelemetry v0.25.0 is now available"
+    author: "Paurush Garg"
+    date: "10-Jan-2023"
+    body:
+      "AWS Distro for OpenTelemetry v0.25.0 is now available. You can download the latest AWS Distro for OpenTelemetry Collector image
+      from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-collector-v0.25.0"
+
   - title: "AWS Distro for OpenTelemetry Lambda Layers are now available with ADOT Collector v0.24.0"
     author: "Anthony Mirabella"
     date: "22-DEC-2022"
     body:
       "ADOT Lambda Layers now distribute ADOT Collector v0.24.0 with new layers supporting AMD64 and ARM64 Lambda functions"
     link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-lambda-layer-v0.24.0"
+
   - title: "ADOT for EKS add-ons announces advanced configuration for Collector deployment"
     author: "Eric Hsueh"
     date: "12-December-2022"

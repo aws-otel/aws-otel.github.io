@@ -33,7 +33,7 @@ In order to set up the ADOT Collector on a particular platform such as EKS, ECS,
 
 * [ECS](https://aws-otel.github.io/docs/setup/ecs)
 * [EC2](https://aws-otel.github.io/docs/setup/ec2)
-* [EKS](https://aws-otel.github.io/docs/setup/eks)
+* [EKS](https://aws-otel.github.io/docs/getting-started/adot-eks-add-on)
 * [On-Premises](https://aws-otel.github.io/docs/setup/on-premises)
 
 ADOT also includes fully managed AWS Lambda Layers, which include an OpenTelemetry SDK and the ADOT Collector to auto-instrument your function for tracing with X-Ray.
@@ -186,12 +186,28 @@ exporters:
 
 The attributes in this section are translated into the AWS resource field `cloudwatch_logs`. This resource field is used to correlate Cloudwatch Log Groups with the segments associated with it. This correlation can be explored when analyzing individual traces in the X-Ray console.
 
+If an attribute is not specified, then the exporter's aws_log_groups field will be used if available.
+
 | OTel Attributes env var | X-Ray data model field    | Notes                                                                                                                                                                                                                                                                                                                                       |
 |-------------------------|---------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | aws.log.group.arns      | cloudwatch_logs.arn       |                                                                                                                                                                                                                                                                                                                                             |
-| aws.log.group.names     | cloudwatch_logs.log_group | If both `aws.log.group.arns` and `aws.log.group.names` are defined, precedence is given to `aws.log.group.arns`                                                                                                                                                                                                                             |
+| aws.log.group.names     | cloudwatch_logs.log_group | Precedence is given in the order of `aws.log.group.arns`, `aws.log.group.names`, then the exporter config's `aws_log_groups`.|
 
-See [AWS X-Ray Segment Documents](https://docs.aws.amazon.com/xray/latest/devguide/xray-api-segmentdocuments.html) for more information on the AWS X-Ray data model. See [OpenTelemetry data model spec](https://github.com/open-telemetry/opentelemetry-specification) for more information on OpenTelemetry data model. See [X-Ray Logging Configuration](https://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-java-configuration.html#xray-sdk-java-configuration-logging) for references of expected log pattern.
+##### Using Config to set Cloud Watch Log Group Names
+
+```yaml lineNumbers=true 
+awsxray:
+  aws_log_groups: ["group1", "group2"]
+```
+
+With the ADOT Collector v0.26.0 and newer, it is also possible to set the resource attributes `aws.log.group.names` and `aws.log.group.arns` using the environment variable `OTEL_RESOURCE_ATTRIBUTES`. This is useful for the case you are using auto-instrumentation in your application. The following is an example of value that you could use in that environment variable.
+
+```bash
+OTEL_RESOURCE_ATTRIBUTES=aws.log.group.names=group1
+```
+
+
+See [AWS X-Ray Segment Documents](https://docs.aws.amazon.com/xray/latest/devguide/xray-api-segmentdocuments.html) for more information on the AWS X-Ray data model. See [OpenTelemetry data model spec](https://github.com/open-telemetry/opentelemetry-specification) for more information on OpenTelemetry data model. See [X-Ray Logging Configuration](https://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-java-configuration.html#xray-sdk-java-configuration-logging) for references of expected log pattern. See [AWS X-Ray Tracing Exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/awsxrayexporter) for more information on the exporter's config.
 
 ### Enable The Customized X-Ray Annotations
 By using OpenTelemetry SDK, we can add the customized attributes for each trace subsegment. By default, these OpenTelemetry
