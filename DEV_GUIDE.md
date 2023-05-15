@@ -8,25 +8,16 @@
 ## Development Setup
 
 1. Clone this repository onto your local machine
-2. [Download and Set up Gatsby Environment](https://www.gatsbyjs.com/tutorial/part-zero/).
-3. Open up the project using your preferred code editor
-4. Install the required node modules for this project.
+2. Open up the project using your preferred code editor
+3. Install the required node modules for this project.
     ```
     npm install
     ```
-5. Disable GitHub API access (Used to fetch the list of contributors)
-   Create a new file in the root called `.env.development` (See [Project Structure](#project-structure) for more information)
-   Write the following line to it:
-   ```
-   NO_GH_API_KEY=true
-   ```
 4. Start up the Gatsby site
     ```
-    npm start
+    NO_GH_API_KEY=true npm start
     ```
 5. Open http://localhost:8000 to check the site
-
-**Obs**: The `NO_GH_API_KEY` environment variable can also be passed through command line. E.g.: `NO_GH_API_KEY=true npm run start`.
 
 ### Optional - Test the GitHub API integration
 
