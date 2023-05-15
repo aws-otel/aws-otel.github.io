@@ -64,7 +64,7 @@ processors:
 
 service:
   pipelines:
-    traces:
+    traces/tailsampling:
       receivers: [otlp]
       processors: [groupbytrace, tail_sampling, batch/tracesampling]
       exporters: [awsxray]
