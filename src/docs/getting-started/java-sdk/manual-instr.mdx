@@ -37,7 +37,7 @@ to align dependency versions for non-contrib components.
 ##### For Gradle:
 ```kotlin lineNumbers=true
 dependencies {
-    api(platform("io.opentelemetry:opentelemetry-bom:1.24.0"))
+    api(platform("io.opentelemetry:opentelemetry-bom:1.26.0"))
 
     implementation("io.opentelemetry:opentelemetry-api")
     implementation("io.opentelemetry:opentelemetry-exporter-otlp")
@@ -46,7 +46,7 @@ dependencies {
 
     implementation("io.opentelemetry:opentelemetry-extension-aws")
     implementation("io.opentelemetry:opentelemetry-sdk-extension-aws")
-    implementation("io.opentelemetry.contrib:opentelemetry-aws-xray:1.24.0")
+    implementation("io.opentelemetry.contrib:opentelemetry-aws-xray:1.26.0")
 }
 ```
 
@@ -57,7 +57,7 @@ dependencies {
     <dependency>
       <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-bom</artifactId>
-      <version>1.24.0</version>
+      <version>1.26.0</version>
       <type>pom</type>
       <scope>import</scope>
     <dependency>
@@ -87,7 +87,7 @@ dependencies {
   <dependency>
     <groupId>io.opentelemetry.contrib</groupId>
     <artifactId>opentelemetry-aws-xray</artifactId>
-    <version>1.24.0</version>
+    <version>1.26.0</version>
   </dependency>
 </dependencies>
 ```
@@ -211,7 +211,7 @@ library instrumentation. When using this, do not include `opentelemetry-bom`.
 ##### For Gradle:
 ```kotlin lineNumbers=true
 dependencies {
-    api(platform("io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom-alpha:1.24.0-alpha"))
+    api(platform("io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom-alpha:1.26.0-alpha"))
 
     implementation("io.opentelemetry:opentelemetry-api")
     implementation("io.opentelemetry:opentelemetry-exporter-otlp")
@@ -230,7 +230,7 @@ dependencies {
     <dependency>
       <groupId>io.opentelemetry.instrumentation</groupId>
       <artifactId>opentelemetry-instrumentation-bom-alpha</artifactId>
-      <version>1.24.0-alpha</version>
+      <version>1.26.0-alpha</version>
       <type>pom</type>
       <scope>import</scope>
     <dependency>
@@ -264,7 +264,7 @@ The `opentelemetry-instrumentation-aws-sdk-2.2` artifact provides instrumentatio
 ##### For Gradle:
 ```java lineNumbers=true
 dependencies {
-    api(platform("io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom-alpha:1.24.0-alpha"))\
+    api(platform("io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom-alpha:1.26.0-alpha"))\
 
     implementation("io.opentelemetry.instrumentation:opentelemetry-aws-sdk-2.2")
 
@@ -279,7 +279,7 @@ dependencies {
     <dependency>
       <groupId>io.opentelemetry.instrumentation</groupId>
       <artifactId>opentelemetry-instrumentation-bom-alpha</artifactId>
-      <version>1.24.0-alpha</version>
+      <version>1.26.0-alpha</version>
       <type>pom</type>
       <scope>import</scope>
     <dependency>
