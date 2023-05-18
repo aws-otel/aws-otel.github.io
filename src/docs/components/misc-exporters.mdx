@@ -28,7 +28,8 @@ OpenTelemetry [Collector](https://aws-otel.github.io/docs/getting-started/collec
 
 The following settings are optional:
 
-* `loglevel` (default = `info`): there are 4 type of settings debug, info, warn, and error. In debug, pipeline data is verbosely logged.
+* `loglevel` (default = `info`): there are 4 type of settings debug, info, warn, and error. In debug, pipeline data is verbosely logged. - **Note**: This option has been deprecated in favor of verbosity logged.
+* `verbosity` (default = `normal`): the verbosity of the logging export (detailed|normal|basic). When set to `detailed`, pipeline data is verbosely logged.
 * `sampling_initial` (default = `2`): number of messages initially logged each second.
 * `sampling_thereafter` (default = `500`): sampling rate after the initial messages are logged (every ith message is logged).
 
@@ -46,7 +47,7 @@ exporters:
 ```
 exporters:
   logging:
-    loglevel: debug
+    verbosity: detailed
     sampling_initial: 5
     sampling_thereafter: 200
 ```
