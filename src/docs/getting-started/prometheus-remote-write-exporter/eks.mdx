@@ -90,7 +90,7 @@ $ cd ./sample-apps/prometheus
 $ docker build . -t prometheus-sample-app:latest
 ```
 
-In order to use this Docker image for Kubernetes, we need to push this image to a registry. You will need to push your image to your Amazon ECR or DockerHub registry. 
+In order to use this Docker image for Kubernetes, you will need to push your image to your either [Amazon ECR](https://docs.aws.amazon.com/AmazonECR/latest/public/docker-push-ecr-image.html) or Dockerhub.
 
 To deploy the sample app in EKS, copy this Kubernetes configuration and apply it. Make sure to use the latest image that was pushed.
 
@@ -98,7 +98,7 @@ To deploy the sample app in EKS, copy this Kubernetes configuration and apply it
 $ curl https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/examples/eks/aws-prometheus/prometheus-sample-app.yaml -o prometheus-sample-app.yaml
 ```
 
-Add your image reference to `prometheus-sample-app.yaml`
+Add your image reference to `[prometheus-sample-app.yaml](https://github.com/aws-observability/aws-otel-collector/blob/main/examples/eks/aws-prometheus/prometheus-sample-app.yaml#L29)`
 
 ```bash
 $ kubectl apply -f prometheus-sample-app.yaml
@@ -229,7 +229,7 @@ $ awscurl --service="aps" --region="AMP_REGION" "https://{AMP_ENDPOINT}/api/v1/q
 
 If you receive a metric as the response, that means your pipeline setup is successful! This metric has successfully propagated from the sample app into AMP. 
 
-Similar pipelines can be configured using the components mentioned above to scrape your Kubernetes cluster and applications. Please refer below for advanced configurations.
+Similar pipelines can be configured using the components mentioned above to scrape your Kubernetes cluster and applications. Please refer below to [Advanced Collector Configuration for AMP](https://aws-otel.github.io/docs/getting-started/adot-eks-add-on/config-advanced).
 
 <SectionSeparator />
 

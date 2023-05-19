@@ -16,7 +16,7 @@ The Collector configuration below is set up to receive Prometheus metrics and ex
 ```console
 kubectl apply -f collector-config-amp.yaml
 ```
-to deploy your Collector. Make sure to replace `<YOUR_REMOTE_WRITE_ENDPOINT>` in the `prometheusremoterwite` exporter config, and `<YOUR_AWS_REGION>` in the `sigv4auth` extension config, as per your own target environment. Note that a `ClusterRole` and `ClusterRoleBinding` will also be created, which provide necessary permissions for the `prometheus` receiver during service discovery.
+To deploy your Collector. Make sure to replace `<YOUR_REMOTE_WRITE_ENDPOINT>` in the `prometheusremoterwite` exporter config, and `<YOUR_AWS_REGION>` in the `sigv4auth` extension config, as per your own target environment. Note that a `ClusterRole` and `ClusterRoleBinding` will also be created, which provide necessary permissions for the `prometheus` receiver during service discovery.
 
 <details>
   <summary>
@@ -390,6 +390,27 @@ subjects:
 ```
 
 </details>
+
+**Note: If you have existing Prometheus configurations, you will need to replace the `$` characters with `$$` to avoid having the value replaced with environment variables. **
+This is especially important for the `replacement` value of the relabel_configurations. For instance, the following configuration for relabel_configurations below
+
+```
+relabel_configs:
+- source_labels: [__meta_kubernetes_ingress_scheme,__address__,__meta_kubernetes_ingress_path]
+  regex: (.+);(.+);(.+)
+  replacement: ${1}://${2}${3}
+  target_label: __param_target
+```
+
+would become
+
+```
+relabel_configs:
+- source_labels: [__meta_kubernetes_ingress_scheme,__address__,__meta_kubernetes_ingress_path]
+  regex: (.+);(.+);(.+)
+  replacement: $${1}://${2}${3}
+  target_label: __param_target
+```
 
 ## Verify if the Metrics Data is being sent to Amazon Managed Prometheus using the awscurl tool
 
