@@ -6,6 +6,13 @@ description:
 path: /blog
 
 blogs:
+  - title: "AWS Distro for OpenTelemetry v0.29.1 is now available"
+    author: "Anthony Mirabella"
+    date: "24-May-2023"
+    body:
+      "AWS Distro for OpenTelemetry v0.29.1 is now available. You can download the latest AWS Distro for OpenTelemetry Collector image
+        from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-collector-v0.29.1"
   - title: "AWS Distro for OpenTelemetry Java Instrumentation v1.26.0 is now available"
     author: "Raphael Silva"
     date: "18-May-2023"
