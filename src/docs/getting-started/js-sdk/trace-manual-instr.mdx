@@ -30,7 +30,7 @@ The diagram below shows the data path for exporting traces from an application i
 
 [Node.js v10 (or later)](https://nodejs.org/en/download/) is required to run an application using OpenTelemetry.
 
-Note: You’ll also need to have the ADOT Collector running to export traces to AWS X-Ray. See the ADOT Collector 
+Note: You’ll also need to have the ADOT Collector running to export traces to AWS X-Ray. See the ADOT Collector
 [documentation](https://aws-otel.github.io/docs/getting-started/collector) for setup instructions.
 
 <SectionSeparator />
@@ -42,7 +42,7 @@ In order to trace your application, the following OpenTelemetry JavaScript packa
 ```bash
 npm install --save \
   @opentelemetry/api \
-  opentelemetry/sdk-node \
+  @opentelemetry/sdk-node \
   @opentelemetry/exporter-trace-otlp-grpc
 ```
 
@@ -97,9 +97,9 @@ async function nodeSDKBuilder() {
         traceExporter: _traceExporter,
     });
     sdk.configureTracerProvider(_tracerConfig, _spanProcessor);
-    
+
     // this enables the API to record telemetry
-    await sdk.start(); 
+    await sdk.start();
     // gracefully shut down the SDK on process exit
     process.on('SIGTERM', () => {
     sdk.shutdown()
@@ -167,9 +167,9 @@ async function nodeSDKBuilder() {
         traceExporter: _traceExporter,
     });
     sdk.configureTracerProvider(_tracerConfig, _spanProcessor);
-    
+
     // this enables the API to record telemetry
-    await sdk.start(); 
+    await sdk.start();
     // gracefully shut down the SDK on process exit
     process.on('SIGTERM', () => {
     sdk.shutdown()
@@ -195,13 +195,13 @@ diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
 
 **Warning: Some instrumentations are not yet stable and their configuration and the attributes they collect are subject to change until the instrumentation reaches 1.0 stability. It is recommended to pin a specific version of an instrumentation to avoid breaking changes.**
 
-OpenTelemetry can collect tracing data from various applications automatically using plugins. The plugins offer instrumenting popular frameworks such as 
-Hapi, Express, Redis, GraphQL, and many more. The full list of supported libraries and installation instructions can be found on the 
+OpenTelemetry can collect tracing data from various applications automatically using plugins. The plugins offer instrumenting popular frameworks such as
+Hapi, Express, Redis, GraphQL, and many more. The full list of supported libraries and installation instructions can be found on the
 [OpenTelemetry JavaScript Contrib repo](https://github.com/open-telemetry/opentelemetry-js-contrib#node-instrumentations).
 
 ### Instrumenting the AWS SDK
 
-Tracing support for downstream AWS SDK calls to Amazon DynamoDB, S3, and others is provided by the 
+Tracing support for downstream AWS SDK calls to Amazon DynamoDB, S3, and others is provided by the
 [OpenTelemetry AWS SDK Instrumentation](https://github.com/open-telemetry/opentelemetry-js-contrib/tree/main/plugins/node/opentelemetry-instrumentation-aws-sdk).
 
 Install the following dependency with npm:
@@ -233,11 +233,11 @@ const sdk = new opentelemetry.NodeSDK({
 
 ### Creating Custom Spans
 
-You can use custom spans to monitor the performance of internal activities that are not captured by instrumentation libraries. 
-Note that only spans of kind `Server` are converted into X-Ray segments, all other spans are converted into X-Ray subsegments. 
+You can use custom spans to monitor the performance of internal activities that are not captured by instrumentation libraries.
+Note that only spans of kind `Server` are converted into X-Ray segments, all other spans are converted into X-Ray subsegments.
 For more on segments and subsegments, see the [AWS X-Ray developer guide](https://docs.aws.amazon.com/xray/latest/devguide/xray-concepts.html#xray-concepts-segments).
 
-```javascript 
+```javascript
 const { SpanKind } = require("@opentelemetry/api")
 
 const serverSpan = tracer.startActiveSpan('server', { kind: SpanKind.SERVER });  // This span will appear as a segment in X-Ray
@@ -249,8 +249,8 @@ serverSpan.end();
 
 ### Adding Custom Attributes
 
-You can also add custom key-value pairs as attributes onto your spans. Attributes are converted to metadata by default. 
-If you [configure your collector](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/7bf2266a025425993a233f66c77a0810ab11a78b/exporter/awsxrayexporter#exporter-configuration), you can convert some or all of the attributes to annotations. 
+You can also add custom key-value pairs as attributes onto your spans. Attributes are converted to metadata by default.
+If you [configure your collector](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/7bf2266a025425993a233f66c77a0810ab11a78b/exporter/awsxrayexporter#exporter-configuration), you can convert some or all of the attributes to annotations.
 To read more about X-Ray annotations and metadata see the [AWS X-Ray Developer Guide](https://docs.aws.amazon.com/xray/latest/devguide/xray-concepts.html#xray-concepts-annotations).
 
 ```javascript
@@ -264,6 +264,6 @@ Similarly to Traces, you can create custom metrics in your application using the
 Refer to <Link to="/docs/getting-started/js-sdk/metric-manual-instr">Metric-Manual-Instrumentation</Link> for introduction to metric creation using OpenTelemetry JavaScript SDK.
 
 
-## Sample Application 
+## Sample Application
 
 See the [AWS Distro for OpenTelemetry Sample Code with JavaScript SDK](https://github.com/aws-observability/aws-otel-community/tree/master/sample-apps/javascript-sample-app) for instructions on setting up and using the sample app.
