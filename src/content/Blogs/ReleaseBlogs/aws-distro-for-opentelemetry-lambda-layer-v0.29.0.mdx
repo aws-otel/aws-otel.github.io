@@ -1,0 +1,56 @@
+---
+title: 'AWS Distro for OpenTelemetry Lambda Layers that contains ADOT Collector v0.29.0 are now available'
+description:
+    May 2023 release announcement for ADOT Lambda layers
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+
+<SectionSeparator />
+
+AWS Distro for OpenTelemetry Lambda Layers now supports AMD64 and ARM64 in the following AWS regions:
+
+|Region                   | AMD64 | ARM64 |
+|-------------------------|-------|-------|
+|Asia Pacific (Mumbai)    |  ✓    |  ✓    |
+|Asia Pacific (Singapore) |  ✓    |  ✓    |
+|Asia Pacific (Sydney)    |  ✓    |  ✓    |
+|Asia Pacific (Tokyo)     |  ✓    |  ✓    |
+|Asia pacific (Seoul)     |  ✓    |  ✓    |
+|Canada (Central)         |  ✓    |  ✓    |
+|Europe (Frankfurt)       |  ✓    |  ✓    |
+|Europe (Ireland)         |  ✓    |  ✓    |
+|Europe (London)          |  ✓    |  ✓    |
+|Europe (Stockholm)       |  ✓    |  ✓    |
+|Europe(Paris)            |  ✓    |  ✓    |
+|South America (Sao Paulo)|  ✓    |  ✓    |
+|US East (N. Virginia)    |  ✓    |  ✓    |
+|US East (Ohio)           |  ✓    |  ✓    |
+|US West (N California)   |  ✓    |  ✓    |
+|US West (Oregon)         |  ✓    |  ✓    |
+
+<SectionSeparator />
+
+### Release Highlights
+
+- Python layer [**aws-otel-python-<amd64|arm64>-ver-1-18-0**](https://aws-otel.github.io/docs/getting-started/lambda/lambda-python) contains OpenTelemetry Python `v1.18.0`
+- Nodejs layer [**aws-otel-nodejs-<amd64|arm64>-ver-1-13-0**](https://aws-otel.github.io/docs/getting-started/lambda/lambda-js) contains OpenTelemetry JavaScript Core `v1.13.0` with AWS Lambda Instrumentation `v0.35.2`
+- Java-Wrapper layer [**aws-otel-java-wrapper-<amd64|arm64>-ver-1-26-0**](https://aws-otel.github.io/docs/getting-started/lambda/lambda-java) contains OpenTelemetry Java `v1.26.0`
+- Java-Agent layer [**aws-otel-java-agent-<amd64|arm64>-ver-1-26-0**](https://aws-otel.github.io/docs/getting-started/lambda/lambda-java-auto-instr) contains AWS Distro for OpenTelemetry Java Instrumentation `v1.26.0`
+- Collector layer **aws-otel-collector-<amd64|arm64>-ver-0-76-1** contains ADOT Collector for Lambda `v0.29.0`. Compatible with [.NET](https://aws-otel.github.io/docs/getting-started/lambda/lambda-dotnet) and [Go](https://aws-otel.github.io/docs/getting-started/lambda/lambda-go) runtimes.
+- ADOT Lambda Layers now supports the following confmap providers : file, env, yaml, http, https and s3.
+
+### Download
+
+Learn more about AWS Distro for Open Telemetry Lambda support [here](https://aws-otel.github.io/docs/getting-started/lambda). All code changes are made upstream in the respective OpenTelemetry project components. Please file an [issue](https://github.com/aws-observability/aws-otel-community/issues) if you have any questions about the features, or its components.
+
+We also welcome you to participate in the [OpenTelemetry project](https://github.com/open-telemetry). The project was [approved for incubation](https://www.cncf.io/blog/2021/08/26/opentelemetry-becomes-a-cncf-incubating-project/) status in August 2021 by the Cloud Native Computing Foundation Technical Oversight Committee (CNCF TOC).
+
+More blog posts about
+[AWS Distro for OpenTelemetry](https://aws.amazon.com/blogs/opensource/category/management-tools/aws-distro-for-opentelemetry/) can be found on the
+[AWS Open Source Blog](https://aws.amazon.com/blogs/opensource/category/management-tools/aws-distro-for-opentelemetry/).
+
+
+### Author
+
+[Huy Vo](https://github.com/humivo) is a Software Development Engineer on the AWS OpenSource Observability team.
