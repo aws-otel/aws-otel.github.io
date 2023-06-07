@@ -6,7 +6,7 @@ description:
 path: /blog
 
 blogs:
-- title: "AWS Distro for OpenTelemetry Lambda Layers are now available with ADOT Collector v0.29.0"
+  - title: "AWS Distro for OpenTelemetry Lambda Layers are now available with ADOT Collector v0.29.0"
     author: "Huy Vo"
     date: "7-June-2023"
     body:
