@@ -5,7 +5,7 @@ description:
     instrumentations for all supported libraries and all available data exporters, providing a complete out of the box
     experience for tracing and metrics on AWS. The agent is preconfigured to generate trace IDs compatible with AWS X-Ray, which
     will also work with any other tracing system, and enables trace propagation using W3C Trace Context, B3, and X-Ray.
-path: '/docs/getting-started/java-sdk/trace-auto-instr'
+path: '/docs/getting-started/java-sdk/auto-instr'
 ---
 
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
@@ -93,7 +93,7 @@ artifact, any usage of it will be disabled by the agent.
 ##### For Gradle:
 ```kotlin lineNumbers=true
 dependencies {
-    implementation("io.opentelemetry:opentelemetry-api:1.24.0")
+    implementation("io.opentelemetry:opentelemetry-api:1.26.0")
 }
 ```
 
@@ -103,7 +103,7 @@ dependencies {
   <dependency>
     <groupId>io.opentelemetry</groupId>
     <artifactId>opentelemetry-api</artifactId>
-    <version>1.24.0</version>
+    <version>1.26.0</version>
   </dependency>
 </dependencies>
 ```

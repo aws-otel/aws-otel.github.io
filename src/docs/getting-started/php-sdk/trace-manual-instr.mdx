@@ -56,7 +56,8 @@ composer require open-telemetry/sdk
 In order to use this package, you must also install the GRPC package using PECL. See the instructions on the [OpenTelemetry PHP repository](https://github.com/open-telemetry/opentelemetry-php#optional-dependencies) for more information.
 
 ```bash
-composer require open-telemetry/exporter-otlp-grpc
+composer require open-telemetry/exporter-otlp
+composer require open-telemetry/transport-grpc
 ```
 
 <SectionSeparator />
@@ -71,7 +72,10 @@ In order to send trace data to AWS X-Ray,  instantiate a new tracer provider and
 ```
 // Initialize Span Processor, X-Ray ID generator, Tracer Provider, and Propagator
 
-$spanProcessor = new SimpleSpanProcessor(new OTLPExporter());
+$transport = (new GrpcTransportFactory())->create('http://127.0.0.1:4317' . OtlpUtil::method(Signals::TRACE));
+$exporter = new SpanExporter($transport);
+$spanProcessor = new SimpleSpanProcessor($exporter);
+
 $idGenerator = new IdGenerator();
 $tracerProvider = new TracerProvider($spanProcessor, null, null, null, $idGenerator);
 $propagator = new Propagator();
@@ -137,7 +141,7 @@ Run the following command to import the AWS SDK Instrumentation:
 
 
 ```
-composer require open-telemetry/opentelemetry-php-contrib:0.0.15
+composer require open-telemetry/contrib-aws:1.0.0beta3
 ```
 
 
@@ -145,7 +149,7 @@ Import the `AwsSdkInstrumentation`  class in your PHP source code to activate th
 
 
 ```
-use OpenTelemetry\Instrumentation\AwsSdk\AwsSdkInstrumentation;
+use OpenTelemetry\Aws\AwsSdkInstrumentation;
 ```
 
 
@@ -153,10 +157,12 @@ Tracing support for downstream AWS SDK calls to Amazon DynamoDB, S3, and others 
 
 
 ```
-use OpenTelemetry\Instrumentation\AwsSdk\AwsSdkInstrumentation;
+use OpenTelemetry\Aws\AwsSdkInstrumentation;
 
 // Initialize Span Processor, X-Ray ID generator, Tracer Provider, and Propagator
-$spanProcessor = new SimpleSpanProcessor(new OTLPExporter());
+$transport = (new GrpcTransportFactory())->create('http://127.0.0.1:4317' . OtlpUtil::method(Signals::TRACE));
+$exporter = new SpanExporter($transport);
+$spanProcessor = new SimpleSpanProcessor($exporter);
 $xrayIdGenerator = new IdGenerator();
 $tracerProvider = new TracerProvider($spanProcessor, null, null, null, $xrayIdGenerator);
 $xrayPropagator = new Propagator();
