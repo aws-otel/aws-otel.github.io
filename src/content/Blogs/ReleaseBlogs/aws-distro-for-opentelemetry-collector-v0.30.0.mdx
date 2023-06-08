@@ -1,0 +1,58 @@
+---
+title: 'AWS Distro for OpenTelemetry v0.30.0'
+description:
+    This blog post is the release announcement for ADOT Collector v0.30.0
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+
+<SectionSeparator />
+
+[AWS Distro for OpenTelemetry (ADOT)](https://aws-otel.github.io/) Collector v0.30.0 is now available.
+You can download the latest [ADOT Collector image](https://gallery.ecr.aws/aws-observability/aws-otel-collector) from the
+[Amazon Elastic Container Registry (Amazon ECR)](https://aws.amazon.com/ecr/) Public Gallery.
+
+<SectionSeparator />
+
+**Upstream changelog**
+
+* [OpenTelemetry Collector v0.77.0](https://github.com/open-telemetry/opentelemetry-collector/releases/tag/v0.77.0)
+* [OpenTelemetry Collector v0.78.0](https://github.com/open-telemetry/opentelemetry-collector/releases/tag/v0.78.0)
+* [OpenTelemetry Collector v0.78.2](https://github.com/open-telemetry/opentelemetry-collector/releases/tag/v0.78.2)
+* [OpenTelemetry Collector Contrib v0.77.0](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v0.77.0)
+* [OpenTelemetry Collector Contrib v0.78.0](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v0.78.0)
+
+**Release Highlights**
+
+* Update request limits in fargate template [\#2109](https://github.com/aws-observability/aws-otel-collector/pull/2109) ([bryan-aguilar](https://github.com/bryan-aguilar))
+* Fix permissions on potentially sensitive files in linux packaging scripts [\#2108](https://github.com/aws-observability/aws-otel-collector/pull/2108) ([Aneurysm9](https://github.com/Aneurysm9))
+* Fix: fix upstart style init script [\#2070](https://github.com/aws-observability/aws-otel-collector/pull/2070) ([rapphil](https://github.com/rapphil))
+
+**IMPORTANT:**
+
+* [There are upstream breaking changes in prometheus related components](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v0.76.3) that affects metric names. The ADOT collector will adopt the upstream behaviour starting v0.31.0. For more details and testing instructions please refer to issue [#2043](https://github.com/aws-observability/aws-otel-collector/issues/2043).
+* The `aws.ecs.service.name` property is being set to `ServiceName` metadata in the case a collector with `awsecscontainermetricsreceiver` is running in ECS on EC2. For ECS on Fargate, `aws.ecs.service.name` is an empty string. Previously this value was always set to `"undefined"` for both EC2 and Fargate compute types.  [\#19744](https://github.com/open-telemetry/opentelemetry-collector-contrib/pull/19744) ([erichsueh3](https://github.com/erichsueh3))
+
+Detailed release notes are on [GitHub](https://github.com/aws-observability/aws-otel-collector/releases).
+All code changes are upstream in the respective OpenTelemetry project components.
+
+**Download**
+
+Detailed technical documentation is available on the [ADOT developer site](https://aws-otel.github.io/),
+and you can [download the distribution](https://aws-otel.github.io/download) from
+[GitHub](https://github.com/aws-observability/aws-otel-collector/releases/tag/v0.30.0).
+You can also download the latest [ADOT Collector image](https://gallery.ecr.aws/aws-observability/aws-otel-collector)
+from the [Amazon Elastic Container Registry (Amazon ECR)](https://aws.amazon.com/ecr/) Public Gallery.
+
+To learn more about how to use AWS Distro for OpenTelemetry (ADOT) to collect data for your observability solution,
+check out the hands-on [AWS Observability workshop](https://observability.workshop.aws/en/adot.html).
+Please file an [issue](https://github.com/aws-observability/aws-otel-community/issues) if you have any
+questions about the distribution, features, or its components.
+
+We also welcome you to participate in the [OpenTelemetry project](https://github.com/open-telemetry).
+The project was [approved for incubation](https://www.cncf.io/blog/2021/08/26/opentelemetry-becomes-a-cncf-incubating-project/) status
+in August 2021 by the Cloud Native Computing Foundation Technical Oversight Committee (CNCF TOC). Learn more about
+[AWS Distro for OpenTelemetry](https://aws.amazon.com/blogs/opensource/category/management-tools/aws-distro-for-opentelemetry/) on the
+[AWS Open Source Blog](https://aws.amazon.com/blogs/opensource/category/management-tools/aws-distro-for-opentelemetry/), where we announced
+the distribution’s [general availability for tracing](https://aws.amazon.com/blogs/opensource/aws-distro-for-opentelemetry-is-now-ga-for-tracing/) in September 2021
+and the distribution's [general availability for metrics](https://aws.amazon.com/blogs/opensource/aws-distro-for-opentelemetry-is-now-generally-available-for-metrics/) in May 2022.
