@@ -32,19 +32,21 @@ The AWS Distro for OpenTelemetry now supports AWS Distro for OpenTelemetry Lambd
 See the documentation on the [OpenTelemetry Lambda repository](https://github.com/open-telemetry/opentelemetry-lambda/).
 
 ## Custom configuration for the ADOT Collector on Lambda
-The ADOT Lambda layers combines both OpenTelemetry and the ADOT Collector.
+The ADOT Lambda layers combines both OpenTelemetry SDK and the ADOT Collector components.
 The configuration of the ADOT Collector follows the OpenTelemetry standard.
 By default, the ADOT Lambda layer uses [config.yaml](https://github.com/aws-observability/aws-otel-lambda/blob/main/adot/collector/config.yaml),
 which exports telemetry data to AWS X-Ray.
 
 Please find the list of available components supported for custom configuration [here](https://github.com/aws-observability/aws-otel-lambda/blob/main/README.md#adot-lambda-layer-available-components). To enable debugging, you can use the configuration file to set log level to debug. See the example below.
 
-To customize the collector configuration, add a configuration yaml file to your function code.
-Once the file has been deployed with a Lambda function, create an environment variable on your Lambda
-function `OPENTELEMETRY_COLLECTOR_CONFIG_FILE` and set it to `/var/task/*<path/<to>/<filename>*`.
+The ADOT Lambda Layers supports the following types of confmap providers: file, env, yaml, http, https and s3. To customize the ADOT collector configuration using different Confmap providers, Please refer to [Confmap providers](/docs/components/confmap-providers#confmap-providers-supported-by-the-adot-collector) section for more information.
+
+Once your collector configuration is set through a `confmap` providers.
+Create an environment variable on your Lambda function `OPENTELEMETRY_COLLECTOR_CONFIG_FILE` and set the path of configuration w.r.t to the confmap provider as its value. for e.g, if you are using a file configmap provider, set its value to `/var/task/*<path/<to>/<filename>*`.
 This will tell the extension where to find the collector configuration.
 
-Here is a sample configuration file, collector.yaml in the root directory:
+Here is a sample configuration file of collector.yaml in the root directory:
+
 ```yaml
 #collector.yaml in the root directory
 #Set an environemnt variable 'OPENTELEMETRY_COLLECTOR_CONFIG_FILE' to '/var/task/collector.yaml'
@@ -53,32 +55,35 @@ receivers:
   otlp:
     protocols:
       grpc:
+        endpoint: "localhost:4317"
       http:
+        endpoint: "localhost:4318"
 
 exporters:
   logging:
-    loglevel: debug
   awsxray:
 
-#enables output for traces to xray
 service:
   pipelines:
     traces:
       receivers: [otlp]
-      exporters: [logging, awsxray]
+      exporters: [awsxray]
+    metrics:
+      receivers: [otlp]
+      exporters: [logging]
+  telemetry:
+    metrics:
+      address: localhost:8888
+
 ```
 You can set this via the Lambda console, or via the AWS CLI.
+
 ```
 aws lambda update-function-configuration --function-name Function --environment Variables={OPENTELEMETRY_COLLECTOR_CONFIG_FILE=/var/task/collector.yaml}
 ```
 
-As an alternative to uploading your collector.yaml file directly with your code, you can zip your file and upload your zip as a separate Lambda layer.
-You can set this via the Lambda console, or via the AWS CLI.
-```
-aws lambda update-function-configuration --function-name Function --environment Variables={OPENTELEMETRY_COLLECTOR_CONFIG_FILE=/opt/collector.yaml}
-```
-
 You can configure environment variables via **CloudFormation** template as well:
+
 ```yaml
 Function:
   Type: AWS::Serverless::Function
@@ -88,6 +93,19 @@ Function:
       Variables:
         OPENTELEMETRY_COLLECTOR_CONFIG_FILE: /var/task/collector.yaml
 ```
+Also, to load configuration from an S3 object
+
+```yaml
+  Function:
+    Type: AWS::Serverless::Function
+    Properties:
+      ...
+      Environment:
+        Variables:
+          OPENTELEMETRY_COLLECTOR_CONFIG_FILE: s3://<bucket_name>.s3.<region>.amazonaws.com/collector_config.yaml
+```
+
+Loading configuration from S3 will require that the IAM role attached to your function includes read access to the relevant bucket.
 
 For more information about ADOT Collector configuration, such as adding ca/cert/key files, see the Github [README.md](https://github.com/aws-observability/aws-otel-lambda/blob/main/README.md).
 

@@ -108,6 +108,7 @@ export const sideBarData = [
         {label: "Kafka Receiver/Expoter", link: "/docs/components/kafka-receiver-exporter"},
         {label: "Logging Exporter", link: "/docs/components/misc-exporters#logging-exporter"},
         {label: "OTLP Exporters", link: "/docs/components/otlp-exporter"},
+        {label: "Processors", link: "/docs/components/processors"},
         {label: "Prometheus Exporters", link: "/docs/components/prometheus-exporters"},
         {label: "StatsD Receiver", link: "/docs/components/statsd-receiver"},
         {label: "X-Ray Exporter", link: "/docs/getting-started/x-ray#configuring-the-aws-x-ray-exporter"},
