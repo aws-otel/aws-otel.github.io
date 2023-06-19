@@ -47,7 +47,7 @@ function Footer({ ...props }) {
         </div>
       </section>
       <section className={classes.sectionBottom}>
-        <div>© 2020–2021 Amazon Web Services, Inc. or its affiliates. All rights reserved.</div>
+        <div>© 2020–2023 Amazon Web Services, Inc. or its affiliates. All rights reserved.</div>
       </section>
     </footer>
   );
