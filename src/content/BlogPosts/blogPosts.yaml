@@ -8,7 +8,7 @@ path: /blog
 blogs:
   - title: "Migrating from Prometheus to AWS Distro for OpenTelemetry (ADOT)"
     author: "Pavan Sai Vasireddy"
-    date: "28-June-2023"
+    date: "29-June-2023"
     body:
       "This blog post explains the migration from Prometheus to the AWS Distro for OpenTelemetry (ADOT) collector to collect metrics and provides operational best practices"
     link: "/docs/migration-to-adot"
