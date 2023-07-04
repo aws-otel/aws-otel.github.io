@@ -132,8 +132,8 @@ service:
 
 ## Dynatrace
 
-Dynatrace supports native OpenTelemetry protocol (OTLP) ingest, so users of the AWS Distro for OpenTelemetry (ADOT) 
-can send traces, metrics and logs directly to Dynatrace without the need of additional plugins or non-OTLP exporters.
+[Dynatrace](https://www.dynatrace.com/integrations/opentelemetry) supports native OpenTelemetry protocol (OTLP) ingest, so users of the AWS Distro for OpenTelemetry (ADOT) 
+can send traces, metrics and logs directly to Dynatrace without the need for additional plugins or exporters.
 
 <SubSectionSeparator />
 
@@ -149,7 +149,7 @@ can send traces, metrics and logs directly to Dynatrace without the need of addi
 - Dynatrace 1.254 or later
 - An API token with the **Ingest metrics** scope
 - Delta metrics: Dynatrace only supports ingesting metrics with delta aggregation temporality. 
-  To learn more about aggregation temporality and how to configure your applications and collector, see the 
+  To learn more about aggregation temporality and how to configure your applications or collectors, see the 
   [Dynatrace documentation](https://www.dynatrace.com/support/help/shortlink/migrating-dynatrace-metrics-exporter-otlp-exporter#make-sure-metrics-have-delta-aggregation-temporality).
 
 #### OTLP Logs Ingest
