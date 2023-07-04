@@ -6,12 +6,12 @@ description:
 path: '/docs/partners/dynatrace'
 ---
 
-Dynatrace supports native OpenTelemetry protocol (OTLP) ingest, so users of the AWS Distro for OpenTelemetry (ADOT) 
-can send traces, metrics and logs directly to Dynatrace without the need of additional plugins or non-OTLP exporters.
+[Dynatrace](https://www.dynatrace.com/integrations/opentelemetry) supports native OpenTelemetry protocol (OTLP) ingest, so users of the AWS Distro for OpenTelemetry (ADOT) 
+can send traces, metrics and logs directly to Dynatrace without the need of additional plugins or exporters.
 See the [OTLP documentation](/docs/components/otlp-exporter#dynatrace) for configuration examples. More information on using the collector with Dynatrace can be found in the
 [Dynatrace documentation](https://www.dynatrace.com/support/help/shortlink/opentelemetry-collector-explanation).
 
-The Dynatrace OpenTelemetry metrics exporter is deprecated.
+The proprietary Dynatrace OpenTelemetry metrics exporter is deprecated in favor of exporting via OTLP.
 The rest of this page covers the documentation of this deprecated exporter.
 
 # Dynatrace OpenTelemetry metrics exporter (deprecated)
