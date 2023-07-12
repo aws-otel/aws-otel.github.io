@@ -189,7 +189,7 @@ TODO: Update this section when ADOT Ruby Resource Detectors have been contribute
 
 The ADOT Ruby SDK supports automatically detecting and recording metadata from resources such as EC2, Elastic Beanstalk, ECS, and EKS.
 
-For example, if tracing with OpenTelemetry Ruby on an AWS EC2 instance, you can automatically populate `resource` attributes by initializing the OpenTelemetry Ruby SDK `TraceProvider` to use the `AwsEc2ResourceDetector`:
+For example, if tracing with OpenTelemetry Ruby on an Amazon EC2 instance, you can automatically populate `resource` attributes by initializing the OpenTelemetry Ruby SDK `TraceProvider` to use the `AwsEc2ResourceDetector`:
 
 ```ruby lineNumbers=true
 OpenTelemetry::SDK.configure do |c|
