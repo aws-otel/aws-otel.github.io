@@ -48,7 +48,22 @@ spec:
 To configure and select a specific version of the auto-instrumentation that should be injected in the workload, one can use the
 custom resource definition `Instrumentation`.
 
-Example:
+In the `Instrumentation` CRD you can define the collector endpoint used to submit the telemetry data and the images used
+for each language:
+
+```
+apiVersion: opentelemetry.io/v1alpha1
+kind: Instrumentation
+metadata:
+  name: my-instrumentation
+spec:
+  exporter:
+    endpoint: <endpoint>
+  java:
+    image: <image>
+```
+
+Bellow we can find an example with the `endpoint` and `image` fields populated:
 
 ```
 apiVersion: opentelemetry.io/v1alpha1
@@ -62,9 +77,9 @@ spec:
     image: public.ecr.aws/aws-observability/adot-autoinstrumentation-java:v1.28.0
 ```
 
-In the example above, we are configuring the endpoint that will be used to submit the telemetry signals. If the workload
+In the example above, we are configuring the endpoint that will be used to submit the telemetry signals to `http://adot-collector:4317`. If the workload
 already have the `OTEL_EXPORTER_OTLP_ENDPOINT` environment defined, that will be used instead. In the example
-we are also configuring the version of the ADOT Java Agent that should be used.
+we are also configuring the version of the ADOT Java Agent that should be used to `public.ecr.aws/aws-observability/adot-autoinstrumentation-java:v1.28.0`.
 
 
 For more information about how to configure the auto-instrumentation injection, please refer to the [OpenTelemetry documentation](https://github.com/open-telemetry/opentelemetry-operator/tree/main#opentelemetry-auto-instrumentation-injection).
