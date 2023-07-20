@@ -1,0 +1,50 @@
+---
+title: 'AWS Distro for OpenTelemetry v0.30.0'
+description:
+    This blog post is the release announcement for ADOT Collector v0.31.0
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+
+<SectionSeparator />
+
+[AWS Distro for OpenTelemetry (ADOT)](https://aws-otel.github.io/) Collector v0.31.0 is now available.
+You can download the latest [ADOT Collector image](https://gallery.ecr.aws/aws-observability/aws-otel-collector) from the
+[Amazon Elastic Container Registry (Amazon ECR)](https://aws.amazon.com/ecr/) Public Gallery.
+
+<SectionSeparator />
+
+**Upstream changelog**
+
+* [OpenTelemetry Collector v0.79.0](https://github.com/open-telemetry/opentelemetry-collector/releases/tag/v0.79.0)
+* [OpenTelemetry Collector v0.80.0](https://github.com/open-telemetry/opentelemetry-collector/releases/tag/v0.80.0)
+* [OpenTelemetry Collector Contrib v0.79.0](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v0.79.0)
+* [OpenTelemetry Collector Contrib v0.80.0](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v0.80.0)
+
+**Release Highlights**
+
+- Reduce permission in the folder that stores configuration and logs on Windows [\#2156](https://github.com/aws-observability/aws-otel-collector/pull/2156) ([rapphil](https://github.com/rapphil))
+
+Detailed release notes are on [GitHub](https://github.com/aws-observability/aws-otel-collector/releases).
+All code changes are upstream in the respective OpenTelemetry project components.
+
+**Download**
+
+Detailed technical documentation is available on the [ADOT developer site](https://aws-otel.github.io/),
+and you can [download the distribution](https://aws-otel.github.io/download) from
+[GitHub](https://github.com/aws-observability/aws-otel-collector/releases/tag/v0.31.0).
+You can also download the latest [ADOT Collector image](https://gallery.ecr.aws/aws-observability/aws-otel-collector)
+from the [Amazon Elastic Container Registry (Amazon ECR)](https://aws.amazon.com/ecr/) Public Gallery.
+
+To learn more about how to use AWS Distro for OpenTelemetry (ADOT) to collect data for your observability solution,
+check out the hands-on [AWS Observability workshop](https://observability.workshop.aws/en/adot.html).
+Please file an [issue](https://github.com/aws-observability/aws-otel-community/issues) if you have any
+questions about the distribution, features, or its components.
+
+We also welcome you to participate in the [OpenTelemetry project](https://github.com/open-telemetry).
+The project was [approved for incubation](https://www.cncf.io/blog/2021/08/26/opentelemetry-becomes-a-cncf-incubating-project/) status
+in August 2021 by the Cloud Native Computing Foundation Technical Oversight Committee (CNCF TOC). Learn more about
+[AWS Distro for OpenTelemetry](https://aws.amazon.com/blogs/opensource/category/management-tools/aws-distro-for-opentelemetry/) on the
+[AWS Open Source Blog](https://aws.amazon.com/blogs/opensource/category/management-tools/aws-distro-for-opentelemetry/), where we announced
+the distribution’s [general availability for tracing](https://aws.amazon.com/blogs/opensource/aws-distro-for-opentelemetry-is-now-ga-for-tracing/) in September 2021
+and the distribution's [general availability for metrics](https://aws.amazon.com/blogs/opensource/aws-distro-for-opentelemetry-is-now-generally-available-for-metrics/) in May 2022.
