@@ -7,7 +7,7 @@
   "license": "MIT",
   "starter-name": "gatsby-starter-rocket-docs",
   "dependencies": {
-    "@emotion/react": "^11.7.0",
+    "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.9.3",
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
     "@fortawesome/free-brands-svg-icons": "^5.7.2",
