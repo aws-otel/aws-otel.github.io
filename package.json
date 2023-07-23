@@ -57,7 +57,7 @@
     "react-router-dom": "^6.13.0",
     "react-slick": "^0.29.0",
     "react-swipeable-views": "^0.14.0",
-    "sass": "^1.5.4",
+    "sass": "^1.64.1",
     "typeface-roboto": "1.1.13",
     "typeface-roboto-slab": "1.1.13"
   },
