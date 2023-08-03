@@ -31,6 +31,24 @@ Download the [latest version](https://github.com/aws-observability/aws-otel-java
 
 If you'd prefer to pin to a specific version, check out our [releases](https://github.com/aws-observability/aws-otel-java-instrumentation/releases).
 
+The ADOT Java Agent is also published in the following maven coordinates:
+
+```kotlin lineNumbers=true
+dependencies {
+    implementation("software.amazon.opentelemetry:aws-opentelemetry-agent:1.28.0")
+}
+```
+
+```xml lineNumbers=true
+<dependencies>
+  <dependency>
+      <groupId>software.amazon.opentelemetry</groupId>
+      <artifactId>aws-opentelemetry-agent</artifactId>
+      <version>1.28.0</version>
+  </dependency>
+</dependencies>
+```
+
 <SectionSeparator />
 
 ## Running an Application with Auto-Instrumentation
@@ -93,7 +111,7 @@ artifact, any usage of it will be disabled by the agent.
 ##### For Gradle:
 ```kotlin lineNumbers=true
 dependencies {
-    implementation("io.opentelemetry:opentelemetry-api:1.27.0")
+    implementation("io.opentelemetry:opentelemetry-api:1.28.0")
 }
 ```
 
@@ -103,7 +121,7 @@ dependencies {
   <dependency>
     <groupId>io.opentelemetry</groupId>
     <artifactId>opentelemetry-api</artifactId>
-    <version>1.27.0</version>
+    <version>1.28.0</version>
   </dependency>
 </dependencies>
 ```

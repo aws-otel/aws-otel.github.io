@@ -15,7 +15,7 @@ import availableMetricsECSImg from "assets/img/docs/gettingStarted/prometheus/ec
 In this guide, we'll enable Prometheus collection for an ECS cluster on EC2 and an ECS cluster on Fargate. In this scenario, we will use the Prometheus Receiver to scrape from
 applications and the AWS ECS Container Metrics Receiver to scrape infrastructure metrics. We will scrape from an application that provides us with some example Prometheus metrics.
 
-For ECS clusters powered by both AWS Fargate or AWS EC2, we will create a task definition of an ADOT Collector and a Prometheus metric emitter sample app. 
+For ECS clusters powered by both AWS Fargate or Amazon EC2, we will create a task definition of an ADOT Collector and a Prometheus metric emitter sample app.
 
 Our ADOT Collector configurations will contain two pipelines. 
 
@@ -130,7 +130,7 @@ Next, push this image to a remote repository on either ECR or Dockerhub so that 
 
 <SectionSeparator />
 
-## Demonstration 2: ECS Powered by AWS EC2
+## Demonstration 2: ECS Powered by Amazon EC2
 
 Note that you must have a cluster created with an EC2 instance available. We chose “EC2 Linux + Networking” template. For more detailed cluster setup please refer to the link in the prerequisites section of this document.
 

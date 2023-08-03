@@ -64,7 +64,7 @@ aws cloudformation create-stack --stack-name AOCEC2-Test \
     --capabilities CAPABILITY_NAMED_IAM \
     --region ${Region}
 ```
-3. Go to AWS EC2 Console and verify there is a new EC2 instance that has been launched.
+3. Go to Amazon EC2 Console and verify there is a new EC2 instance that has been launched.
 4. Select the instance, and then choose *Connect. *You can login to the EC2 host with the example command below.
 ```
 ssh -i "<ec2-ssh-key-name>.pem" ec2-user@ec2-<instance_id>.us-west-2.compute.amazonaws.com (mailto:ec2-user@ec2-34-221-1-180.us-west-2.compute.amazonaws.com)
