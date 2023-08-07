@@ -71,6 +71,7 @@ export const sideBarData = [
         {label: "X-Ray", link: "/docs/getting-started/x-ray"},
         {label: "ECS Configurations", link: "/docs/getting-started/using-ecs-console-for-ecs-adot-observability"},
         {label: "App Runner", link: "/docs/getting-started/apprunner"},
+        {label: "Advanced Sampling", link: "/docs/getting-started/advanced-sampling"},
 
       ],
       link: "/docs/null"
