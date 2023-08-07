@@ -17,14 +17,22 @@ updates:
     directory: '/'
     schedule:
       interval: "weekly"
-      day: "sunday"
+      day: "tuesday"
     labels:
       - "npm dependencies"
     rebase-strategy: "auto"
+    groups:
+      node-dependencies:
+        patterns:
+          - "*"
   - package-ecosystem: "github-actions"
     directory: '/'
     schedule:
       interval: "weekly"
-      day: "sunday"
+      day: "tuesday"
     labels:
       - "actions"
+    groups:
+      github-actions-deps:
+        patterns:
+          - "*"
