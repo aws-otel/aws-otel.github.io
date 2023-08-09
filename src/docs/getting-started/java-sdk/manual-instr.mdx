@@ -10,14 +10,14 @@ import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.js
 ## Introduction
 
 The OpenTelemetry Java SDK can be compiled into any Java 8+ application to gather telemetry data from a diverse
-set of libraries and frameworks. [Library instrumentation](https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/main/docs/standalone-library-instrumentation.md)
+set of libraries and frameworks. [Library instrumentation](https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/main/docs/supported-libraries.md)
 can be registered to quickly gather data on popular frameworks and the [OpenTelemetry API](https://github.com/open-telemetry/opentelemetry-java/tree/main/api/all)
 can be used to customize tracing for your application.
 
 For integration with X-Ray, OpenTelemetry provides extension modules for configuring the X-Ray ID generator,
 X-Ray propagator, and AWS resource detectors.
 
-If you are using the Auto-Instrumentation Java Agent, refer to the [documentation on auto-instrumentation](/docs/getting-started/java-sdk/trace-auto-instr).
+If you are using the Auto-Instrumentation Java Agent, refer to the [documentation on auto-instrumentation](/docs/getting-started/java-sdk/auto-instr).
 
 <SectionSeparator />
 
@@ -202,7 +202,7 @@ OpenTelemetry provides a wide range of instrumentations for popular Java librari
 and JDBC. Instrumenting a library means that every time the library is used to make or handle a request is automatically
 wrapped with a populated span.
 
-View the [full list of instrumented libraries](https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/main/docs/standalone-library-instrumentation.md).
+View the [full list of instrumented libraries](https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/main/docs/supported-libraries.md).
 
 Note that library instrumentation is currently `alpha` and some APIs may change before a stable release. You must use
 the `io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom-alpha` BOM to manage versions when adding
