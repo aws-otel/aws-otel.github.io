@@ -1,0 +1,246 @@
+---
+title: 'Kubernetes Attributes Previousrocessor'
+description:
+    This page describes how the kubernetes attributes processor can be used
+path: '/docs/getting-started/adot-eks-add-on/k8s-attr-processor'
+---
+
+import exampleDiag from "assets/img/k8s-attr-diag.png"
+
+In OpenTelemetry a resource is the entity producing telemetry, represented as resource attributes. The 
+Kubernetes attributes processor allows for the automatic setting of span and metric resource attributes 
+with Kubernetes (k8s) metadata. More information in OpenTelemetry resources can be found in the official 
+documentation [here](https://opentelemetry.io/docs/concepts/glossary/#resource). 
+
+# How the Kubernetes Attributes Processor works
+
+By default the processor will use the Connection IP of the data point(metric or span) to associate pod metadata. 
+Custom association rules can also be specified if the Connection IP is not available. To read more about 
+the configuration options for the processor visit its README 
+[here](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/k8sattributesprocessor). 
+
+# How can I leverage these new resource attributes?
+
+After the k8s attributes processor associates a data point with a k8s pod it will automatically attach k8s pod 
+metadata as resource attributes. The default list of resource attributes populated can be found 
+[here](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/processor/k8sattributesprocessor/config.go). 
+Additionalresource attributes from a pre-defined list can be selected using the configuration. Knowing 
+how to leverage these new resource attributes is entirely up to you. In the following two sections we will 
+provide examples in which these resource attributes can be utilized to enhance your observability solution. 
+First, we will introduce a scenario that will leverage the resource attributes in a subsequent collector 
+processor. Second, we will present a few different places where k8s resource attributes can be used after 
+exporting out of the collector and into a backed of your choosing. 
+
+## Gateway collector example
+
+In the following example we have two applications that are instrumented with OpenTelemetry SDKs. 
+One application will send telemetry signals directly to a gateway collector and the other is 
+connected to a proxy. The proxy is responsible for forwarding the telemetry signals to the gateway. 
+The gateway collector is a collector which receives all telemetry signals over a single OTLP endpoint 
+before exporting them out of the cluster. To read more about the gateway deployment pattern see the official
+OpenTelemetry documentation [here](https://opentelemetry.io/docs/collector/deployment/gateway/). Telemetry 
+signals not sent directly to the gateway collector must have k8s resource attributes populated so that the 
+k8s attributes processor can perform associations. OpenTelemetry SDKs allows [configuration of resource 
+attributes](https://opentelemetry.io/docs/concepts/sdk-configuration/general-sdk-configuration/#otel_resource_attributes) 
+through environment variables. The [k8s downward api](https://kubernetes.io/docs/concepts/workloads/pods/downward-api/) 
+can be used to make metatadata fields available to the SDK environment variable. 
+
+<img src={exampleDiag} alt="Diagram" style="margin: 30px 0;" />
+
+This example scenario can support multiple telemetry sources as long as the data ends up at our 
+single gateway collector. 
+
+The following Collector configuration would be used by the gateway ADOT Collector. 
+
+```yaml
+extensions:
+  sigv4auth:
+    region: us-west-2
+    service: "aps"
+
+receivers:  
+  otlp:
+    grpc:
+    http:
+
+processors:
+  batch:
+
+exporters:
+  prometheusremotewrite:
+    endpoint: fake.amp.endpoint
+    auth:
+      authenticator: sigv4auth
+  awsxray:
+
+service:
+  extensions: [sigv4auth]
+  pipelines:   
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [prometheusremotewrite]
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [awsxray]
+```
+
+The starting configuration does not do much. Metrics and traces are ingested using an OTLP receiver 
+which are then exported to Amazon Managed Prometheus (AMP) and X-Ray respectively.
+
+Our observability solution now has a new requirement. We need to drop all metric and traces which 
+flow through or originate from a specific node. The first step to accomplish this is to ensure that 
+all data points have the necessary resource attributes attached to them. To do this we will configure 
+our k8s attributes processor. During this step we also add the indexed_attributes field in the x-ray 
+exporter. The indexed_attributes option ensures that the k8s.node.name resource attribute is 
+searchable in x-ray. By default, resource attributes are added to trace segment metadata. 
+
+```yaml
+extensions:
+  sigv4auth:
+    region: us-west-2
+    service: "aps"
+
+receivers:  
+  otlp:
+    grpc:
+    http:
+
+processors:
+  k8sattributes:
+    pod_association:
+      # for telemetry signals that may have came through a proxy
+      - sources:
+          - from: resource_attribute
+            name: k8s.pod.uid
+          - from: resource_attribute
+            name: k8s.namespace.name
+      # for telemetry signals that are sent directly to the gateway
+      - sources:
+          - from: connection
+  batch:
+
+exporters:
+  prometheusremotewrite:
+    endpoint: fake.amp.endpoint
+    auth:
+      authenticator: sigv4auth
+  awsxray:
+      indexed_attributes: [otel.resource.k8s.node.name]
+
+service:
+  extensions: [sigv4auth]
+  pipelines:   
+    metrics:
+      receivers: [otlp]
+      processors: [k8sattributes, batch]
+      exporters: [prometheusremotewrite]
+    traces:
+      receivers: [otlp]
+      processors: [k8sattributes, batch]
+      exporters: [awsxray]
+```
+
+After our k8s attributes processor is configured we can then leverage additional processors that are 
+available in the ADOT Collector. To drop metrics we will utilize the filter processor and to sample 
+out traces we will leverage the group by trace and tail sampling processor. To read more about 
+the group by trace and tail sampling processor please visit the Advanced Sampling [documentation page](/docs/getting-started/advanced-sampling). 
+
+```yaml
+extensions:
+  sigv4auth:
+    region: us-west-2
+    service: "aps"
+
+receivers:  
+  otlp:
+    grpc:
+    http:
+
+processors:
+  k8sattributes:
+    pod_association:
+      - sources:
+          - from: resource_attribute
+            name: k8s.pod.uid
+          - from: resource_attribute
+            name: k8s.namespace.name
+      - sources:
+          - from: connection
+  groupbytrace:
+  tailsampling:
+    policies:
+      [
+        {
+          name: node-policy,
+          type: string_attribute,
+          string_attribute: {key: k8s.node.name, values: [badnode-1234]}
+        }
+      ]
+  filter:
+    metrics:
+      exclude:
+        resource_attributes:
+          - key: k8s.node.name
+            value: badnode-1234
+  batch:
+
+exporters:
+  prometheusremotewrite:
+    endpoint: fake.amp.endpoint
+    resource_to_telemetry_conversion:
+      enabled: true
+    auth:
+      authenticator: sigv4auth
+  awsxray:
+    indexed_attributes: [otel.resource.k8s.node.name]
+
+service:
+  extensions: [sigv4auth]
+  pipelines:   
+    metrics:
+      receivers: [otlp]
+      processors: [k8sattributes, filter, batch]
+      exporters: [prometheusremotewrite]
+    traces:
+      receivers: [otlp]
+      processors: [k8sattributes, groupbytrace, tailsampling, batch]
+      exporters: [awsxray]
+```
+
+Our final configuration is complete. While this example is very small and very specific the idea is 
+to show you the different ways k8s resource attributes can be used within a collector pipeline. 
+Being able to reliably associate pod metadata with incoming telemetry signals can come in handy 
+in many ways! Next, we will give you a few more ideas on where these resource attributes can be 
+used outside of a collector. 
+
+# Using kubernetes resource attributes outside of a collector
+
+Kubernetes resource attributes are useful outside of the collector also. Below are 
+some different places where these resource attributes can come in handy. Generally, 
+resource attributes can assist you in narrowing down queries while troubleshooting 
+or aggregating data across a specific set of k8s resources. 
+
+1. Visualize your Prometheus metrics in Amazon Managed Grafana. Use Grafana dashboards 
+to query data based on Kubernetes resource attributes. Use the resource_to_telemetry_conversion 
+configuration option to translate resource attributes to Prometheus labels. 
+2. Use Kubernetes resource attributes to filter traces in X-Ray based on annotations values. 
+See [complex keywords](https://docs.aws.amazon.com/xray/latest/devguide/xray-console-filters.html#console-filters-complex) 
+for more information. Use the indexed_attributes configuration option in the X-Ray exporter to ensure 
+that the resource attributes are searchable.
+3. If you leverage the AWS EMF exporter, enable [resource_to_telemetry_conversion](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/awsemfexporter#resource-attributes-to-metric-labels) 
+to make k8s resource attributes available to the EMF Exporter. New dimension sets, dashboards, 
+and alarms that can leverage kubernetes resource attributes. 
+
+## [Previous Topic: Injecting Auto-instrumentation](/docs/getting-started/adot-eks-add-on/config-auto-instrumentation)
+
+## Related Topics:
+
+### [Collector Configuration for Amazon Managed Prometheus](/docs/getting-started/adot-eks-add-on/config-amp)
+
+### [Collector Configuration for AWS CloudWatch](/docs/getting-started/adot-eks-add-on/config-cloudwatch)
+
+### [Advanced Collector Configuration for Amazon Managed Prometheus](/docs/getting-started/adot-eks-add-on/config-advanced)
+
+## [Next Topic: Updating and Cleanup](/docs/getting-started/adot-eks-add-on/update-and-cleanup)
