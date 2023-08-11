@@ -14,9 +14,11 @@ documentation [here](https://opentelemetry.io/docs/concepts/glossary/#resource).
 
 # How the Kubernetes Attributes Processor works
 
-A collector receiver can populate a connection ip, the ip address in which the signal originated from, in the telemetry signals context for use by subsequent components. 
-By default, if the connection ip is available, the Kubernetes attributes processor will use this connection ip to associate pod 
-metadata. Additional association rules can also be specified if the connection ip is not available. The Kubernetes attributes processor 
+A collector receiver is responsible for storing the  connection ip, the ip address in which the signal originated from, 
+in the telemetry signals context for use by subsequent components. By default, if the connection ip is available, 
+the Kubernetes attributes processor will attempt match the connection ip to a pods ip. If a match is made pod metadata 
+is attached as resource attributes. Additional association rules can also be specified if the connection ip is not 
+available. The Kubernetes attributes processor 
 [README](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/k8sattributesprocessor) has more detailed
 information on processor configuration options. 
 
