@@ -93,8 +93,8 @@ Our observability solution now has a new requirement. We need to drop all metric
 flow through or originate from a specific node. The first step to accomplish this is to ensure that 
 all data points have the necessary resource attributes attached to them. To do this we will configure 
 our Kubernetes attributes processor. During this step we also add the indexed_attributes field in the x-ray 
-exporter. The indexed_attributes option ensures that the k8s.node.name resource attribute is 
-searchable in x-ray. By default, resource attributes are added to trace segment metadata. 
+exporter. The indexed_attributes option ensures that the k8s.node.name resource attribute is searchable 
+in AWS X-Ray.
 
 ```yaml
 extensions:
