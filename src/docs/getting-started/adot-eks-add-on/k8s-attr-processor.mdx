@@ -1,7 +1,7 @@
 ---
 title: 'Kubernetes Attributes Processor'
 description:
-    This page describes how the kubernetes attributes processor can be used
+    This page describes how the Kubernetes attributes processor can be used
 path: '/docs/getting-started/adot-eks-add-on/k8s-attr-processor'
 ---
 
@@ -210,14 +210,14 @@ service:
 ```
 
 Our final configuration is complete. While this example is very small and very specific the idea is 
-to show you the different ways Kubernetes resource attributes can be used within a collector pipeline. 
+to show you the different ways Kubernetes resource attributes processor can be used within a collector pipeline. 
 Being able to reliably associate pod metadata with incoming telemetry signals can come in handy 
 in many ways! Next, we will give you a few more ideas on where these resource attributes can be 
 used outside of a collector. 
 
-# Using kubernetes resource attributes outside of a collector
+# Using Kubernetes resource attributes outside of a collector
 
-Kubernetes resource attributes are useful outside of the collector also. Below are 
+Kubernetes resources are useful outside of the collector also. Below are 
 some different places where these resource attributes can come in handy. Generally, 
 resource attributes can assist you in narrowing down queries while troubleshooting 
 or aggregating data across a specific set of Kubernetes resources. 
@@ -227,11 +227,11 @@ to query data based on Kubernetes resource attributes. Use the resource_to_telem
 configuration option to translate resource attributes to Prometheus labels. 
 2. Use Kubernetes resource attributes to filter traces in X-Ray based on annotations values. 
 See [complex keywords](https://docs.aws.amazon.com/xray/latest/devguide/xray-console-filters.html#console-filters-complex) 
-for more information. Use the indexed_attributes configuration option in the X-Ray exporter to ensure 
+for more information. Use the `indexed_attributes` configuration option in the X-Ray exporter to ensure 
 that the resource attributes are searchable.
 3. If you leverage the AWS EMF exporter, enable [resource_to_telemetry_conversion](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/awsemfexporter#resource-attributes-to-metric-labels) 
 to make Kubernetes resource attributes available to the EMF Exporter. New dimension sets, dashboards, 
-and alarms that can leverage kubernetes resource attributes. 
+and alarms that can leverage Kubernetes resource attributes. 
 
 ## [Previous Topic: Injecting Auto-instrumentation](/docs/getting-started/adot-eks-add-on/config-auto-instrumentation)
 
