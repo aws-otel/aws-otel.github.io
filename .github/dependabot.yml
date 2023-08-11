@@ -21,10 +21,7 @@ updates:
     labels:
       - "npm dependencies"
     rebase-strategy: "auto"
-    groups:
-      node-dependencies:
-        patterns:
-          - "*"
+
   - package-ecosystem: "github-actions"
     directory: '/'
     schedule:
