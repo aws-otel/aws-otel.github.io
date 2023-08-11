@@ -7,17 +7,18 @@ path: '/docs/getting-started/adot-eks-add-on/k8s-attr-processor'
 
 import exampleDiag from "assets/img/k8s-attr-diag.png"
 
-In OpenTelemetry a resource is the entity producing telemetry, represented as resource attributes. The 
-Kubernetes attributes processor allows for the automatic setting of span and metric resource attributes 
-with Kubernetes metadata. More information in OpenTelemetry resources can be found in the official 
+In OpenTelemetry, a resource represents the source of telemetry signals, for example, a pod in Kubernetes that exposes 
+Prometheus metrics. The Kubernetes attributes processor allows for the automatic setting of span and metric 
+resource attributes with Kubernetes metadata. More information in OpenTelemetry resources can be found in the official 
 documentation [here](https://opentelemetry.io/docs/concepts/glossary/#resource). 
 
 # How the Kubernetes Attributes Processor works
 
-By default the processor will use the Connection IP of the data point(metric or span) to associate pod metadata. 
-Custom association rules can also be specified if the Connection IP is not available. To read more about 
-the configuration options for the processor visit its README 
-[here](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/k8sattributesprocessor). 
+A collector receiver can populate a connection ip, the ip address in which the signal originated from, in the telemetry signals context for use by subsequent components. 
+By default, if the connection ip is available, the Kubernetes attributes processor will use this connection ip to associate pod 
+metadata. Additional association rules can also be specified if the connection ip is not available. The Kubernetes attributes processor 
+[README](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/k8sattributesprocessor) has more detailed
+information on processor configuration options. 
 
 # How can I leverage these new resource attributes?
 
