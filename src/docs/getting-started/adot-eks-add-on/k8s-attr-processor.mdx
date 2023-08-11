@@ -87,7 +87,7 @@ service:
 ```
 
 The starting configuration does not do much. Metrics and traces are ingested using an OTLP receiver 
-which are then exported to Amazon Managed Prometheus (AMP) and X-Ray respectively.
+which are then exported to Amazon Managed Service for Prometheus (AMP) and AWS X-Ray respectively.
 
 Our observability solution now has a new requirement. We need to drop all metric and traces which 
 flow through or originate from a specific node. The first step to accomplish this is to ensure that 
