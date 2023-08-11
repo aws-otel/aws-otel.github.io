@@ -22,8 +22,8 @@ the configuration options for the processor visit its README
 # How can I leverage these new resource attributes?
 
 After the Kubernetes attributes processor associates a data point with a Kubernetes pod it will automatically attach Kubernetes pod 
-metadata as resource attributes. The default list of resource attributes populated can be found 
-[here](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/processor/k8sattributesprocessor/config.go). 
+metadata as resource attributes. The default list of resource attributes populated can be found within the [Kubernetes attributes processor
+module](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/processor/k8sattributesprocessor/config.go). 
 Additional resource attributes from a pre-defined list can be selected using the configuration. Knowing 
 how to leverage these new resource attributes is entirely up to you. In the following two sections we will 
 provide examples in which these resource attributes can be utilized to enhance your observability solution. 
@@ -37,8 +37,8 @@ In the following example we have two applications that are instrumented with Ope
 One application will send telemetry signals directly to a gateway collector and the other is 
 connected to a proxy. The proxy is responsible for forwarding the telemetry signals to the gateway. 
 The gateway collector is a collector which receives all telemetry signals over a single OTLP endpoint 
-before exporting them out of the cluster. To read more about the gateway deployment pattern see the official
-OpenTelemetry documentation [here](https://opentelemetry.io/docs/collector/deployment/gateway/). Telemetry 
+before exporting them out of the cluster. The OpenTelemetry documentation provides more details about
+the [gateway deployment pattern](https://opentelemetry.io/docs/collector/deployment/gateway/). Telemetry 
 signals not sent directly to the gateway collector must have Kubernetes resource attributes populated so that the 
 Kubernetes attributes processor can perform associations. OpenTelemetry SDKs allows [configuration of resource 
 attributes](https://opentelemetry.io/docs/concepts/sdk-configuration/general-sdk-configuration/#otel_resource_attributes) 
@@ -144,8 +144,8 @@ service:
 
 After our Kubernetes attributes processor is configured we can then leverage additional processors that are 
 available in the ADOT collector. To drop metrics we will utilize the filter processor and to sample 
-out traces we will leverage the group by trace and tail sampling processor. To read more about 
-the group by trace and tail sampling processor please visit the Advanced Sampling [documentation page](/docs/getting-started/advanced-sampling). 
+out traces we will leverage the group by trace and tail sampling processor. The [advanced sampling documentation page](/docs/getting-started/advanced-sampling)
+providers a deeper look into advanced sampling configurations. 
 
 ```yaml
 extensions:
@@ -226,8 +226,8 @@ or aggregating data across a specific set of Kubernetes resources.
 to query data based on Kubernetes resource attributes. Use the resource_to_telemetry_conversion 
 configuration option to translate resource attributes to Prometheus labels. 
 2. Use Kubernetes resource attributes to filter traces in X-Ray based on annotations values. 
-See [complex keywords](https://docs.aws.amazon.com/xray/latest/devguide/xray-console-filters.html#console-filters-complex) 
-for more information. Use the `indexed_attributes` configuration option in the X-Ray exporter to ensure 
+The AWS X-Ray developer guides provides more information about filtering with [complex keywords](https://docs.aws.amazon.com/xray/latest/devguide/xray-console-filters.html#console-filters-complex). 
+Use the `indexed_attributes` configuration option in the X-Ray exporter to ensure 
 that the resource attributes are searchable.
 3. If you leverage the AWS EMF exporter, enable [resource_to_telemetry_conversion](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/awsemfexporter#resource-attributes-to-metric-labels) 
 to make Kubernetes resource attributes available to the EMF Exporter. New dimension sets, dashboards, 
