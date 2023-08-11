@@ -50,7 +50,7 @@ can be used to make metatadata fields available to the SDK environment variable.
 This example scenario can support multiple telemetry sources as long as the data ends up at our 
 single gateway collector. 
 
-The following Collector configuration would be used by the gateway ADOT Collector. 
+The following collector configuration would be used by the gateway ADOT collector. 
 
 ```yaml
 extensions:
@@ -143,7 +143,7 @@ service:
 ```
 
 After our Kubernetes attributes processor is configured we can then leverage additional processors that are 
-available in the ADOT Collector. To drop metrics we will utilize the filter processor and to sample 
+available in the ADOT collector. To drop metrics we will utilize the filter processor and to sample 
 out traces we will leverage the group by trace and tail sampling processor. To read more about 
 the group by trace and tail sampling processor please visit the Advanced Sampling [documentation page](/docs/getting-started/advanced-sampling). 
 
