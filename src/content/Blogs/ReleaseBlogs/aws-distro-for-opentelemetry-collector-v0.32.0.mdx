@@ -1,0 +1,68 @@
+---
+title: 'AWS Distro for OpenTelemetry v0.32.0'
+description:
+    This blog post is the release announcement for ADOT Collector v0.32.0
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+
+<SectionSeparator />
+
+[AWS Distro for OpenTelemetry (ADOT)](https://aws-otel.github.io/) Collector v0.32.0 is now available.
+You can download the latest [ADOT Collector image](https://gallery.ecr.aws/aws-observability/aws-otel-collector) from the
+[Amazon Elastic Container Registry (Amazon ECR)](https://aws.amazon.com/ecr/) Public Gallery.
+
+<SectionSeparator />
+
+**Upstream changelog**
+
+* [OpenTelemetry Collector v0.81.0](https://github.com/open-telemetry/opentelemetry-collector/releases/tag/v0.81.0)
+* [OpenTelemetry Collector v0.82.0](https://github.com/open-telemetry/opentelemetry-collector/releases/tag/v0.82.0)
+* [OpenTelemetry Collector Contrib v0.81.0](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v0.81.0)
+* [OpenTelemetry Collector Contrib v0.82.0](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v0.82.0)
+
+**New Components**
+
+The following components are now included in the ADOT Collector. 
+
+[Kuberentes Attributes Processor](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/k8sattributesprocessor) - The ADOT
+developer portal [Kubernetes Attributes Processor page](/docs/getting-started/adot-eks-add-on/k8s-attr-processor)  contains examples on how to leverage this
+processor and the resource attributes it creates.
+
+[Load Balancing Exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/loadbalancingexporter) - 
+See the [Advanced Sampling](/docs/getting-started/advanced-sampling) documentation page to see how the load balancing exporter can be 
+integrated with your existing advanced sampling configurations. 
+
+**Release Highlights**
+
+- Add the load balancing exporter and k8s attributes processor [#2262](https://github.com/aws-observability/aws-otel-collector/pull/2262)
+- Add Patch file for kafka exporter fixing config validation error [#2244](https://github.com/aws-observability/aws-otel-collector/pull/2244)
+- Add patch file for StatsD Receiver enabling feature gate for instrumentation scope population [#2241](https://github.com/aws-observability/aws-otel-collector/pull/2241)
+- Adding ECS_Observer_Test_Case [#2227](https://github.com/aws-observability/aws-otel-collector/pull/2227)
+- Don't overwrite systemd environment file [#2267](https://github.com/aws-observability/aws-otel-collector/pull/2267)
+
+
+
+Detailed release notes are on [GitHub](https://github.com/aws-observability/aws-otel-collector/releases).
+All code changes are upstream in the respective OpenTelemetry project components.
+
+**Download**
+
+Detailed technical documentation is available on the [ADOT developer site](https://aws-otel.github.io/),
+and you can [download the distribution](https://aws-otel.github.io/download) from
+[GitHub](https://github.com/aws-observability/aws-otel-collector/releases/tag/v0.32.0).
+You can also download the latest [ADOT Collector image](https://gallery.ecr.aws/aws-observability/aws-otel-collector)
+from the [Amazon Elastic Container Registry (Amazon ECR)](https://aws.amazon.com/ecr/) Public Gallery.
+
+To learn more about how to use AWS Distro for OpenTelemetry (ADOT) to collect data for your observability solution,
+check out the hands-on [AWS Observability workshop](https://observability.workshop.aws/en/adot.html).
+Please file an [issue](https://github.com/aws-observability/aws-otel-community/issues) if you have any
+questions about the distribution, features, or its components.
+
+We also welcome you to participate in the [OpenTelemetry project](https://github.com/open-telemetry).
+The project was [approved for incubation](https://www.cncf.io/blog/2021/08/26/opentelemetry-becomes-a-cncf-incubating-project/) status
+in August 2021 by the Cloud Native Computing Foundation Technical Oversight Committee (CNCF TOC). Learn more about
+[AWS Distro for OpenTelemetry](https://aws.amazon.com/blogs/opensource/category/management-tools/aws-distro-for-opentelemetry/) on the
+[AWS Open Source Blog](https://aws.amazon.com/blogs/opensource/category/management-tools/aws-distro-for-opentelemetry/), where we announced
+the distribution’s [general availability for tracing](https://aws.amazon.com/blogs/opensource/aws-distro-for-opentelemetry-is-now-ga-for-tracing/) in September 2021
+and the distribution's [general availability for metrics](https://aws.amazon.com/blogs/opensource/aws-distro-for-opentelemetry-is-now-generally-available-for-metrics/) in May 2022.
