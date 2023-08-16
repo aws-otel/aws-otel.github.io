@@ -108,7 +108,6 @@ the Certificate Authority of choice. An example of how to generate and end user 
 
 ## Configuring ADOT Collector to use IAM Roles Anywhere 
 
-
 1. Install credential helper tool (`aws_signing_helper`) as instructed in the [AWS documentation](https://docs.aws.amazon.com/rolesanywhere/latest/userguide/credential-helper.html). Ensure the tool is included in the system PATH.
 
 2. Create a home folder for the `aoc` user, copy the X509 certificate and private key.
@@ -118,8 +117,6 @@ the Certificate Authority of choice. An example of how to generate and end user 
     mv <x509_private_key> /home/aoc/.x509/private-key.pem
     mv <x509_certificate> /home/aoc/.x509/cert.pem
     chown -R aoc:aoc /home/aoc/.x509/
-
-    echo "AWS_CONFIG_FILE=/home/aoc/.x509/config" | sudo tee -a /opt/aws/aws-otel-collector/etc/.env
     ```
 
 3. Create an AWS SDK configuration (`config`) to use credential helper tool to generate temporary credentials using the provided X509 key and certificate.
@@ -131,6 +128,9 @@ You'll need to provide the following values from your AWS Environment. You can f
 
 Note that we stored the certificate and private keys in the `aoc` user home folder inside the `.x509` directory. If you use a different path
 you'll need to update the configuration accordingly.
+
+*Also note that - due to a limitation in the AWS Go SDK, the entire `credential_process` line must be on a single line in the config file.*
+
 
 ```
 export TA_ARN=<Trust Anchor ARN>
@@ -146,16 +146,17 @@ sudo chown aoc:aoc config
 sudo mv config /home/aoc/.x509/
 ```
 
-4. Add `AWS_CONFIG_FILE` environment variable to the ADOT Collector configuration by adding an entry in the `.env` file used to load
-the service. *Note that this file is only loaded for `systemd` enabled Linux distributions. For other systems you might need to make additional modifications to load the environment variable before running the service.*
+4. Add `AWS_CONFIG_FILE` and `AWS_SDK_LOAD_CONFIG` environment variable to the ADOT Collector configuration by adding an entry in the `.env` file used to load
+the service. *Note that this file is only loaded for `systemd` enabled Linux distributions. For other systems you might need to make additional modifications to set the environment variable before running the service.*
 
 ```
 echo "AWS_CONFIG_FILE=/home/aoc/.x509/config" | sudo tee -a /opt/aws/aws-otel-collector/etc/.env
+echo "AWS_SDK_LOAD_CONFIG=true" | sudo tee -a /opt/aws/aws-otel-collector/etc/.env
 ```
 
-5. Restart the ADOT Collector to use the newly configured role.
+5. Force systemd to reload configuration from disk (installing the RPM above added the service to systemd) and restart the ADOT Collector to use the newly configured role. *Note that the commands below assume you are using a `systemd` enabled Linux distribution. For other systems you may need to make additional modifications to leverage your operating system's service controller.*
 
 ```
-sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -a stop
-sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -a start
+sudo systemctl daemon-reload
+sudo systemctl restart aws-otel-collector.service
 ```
