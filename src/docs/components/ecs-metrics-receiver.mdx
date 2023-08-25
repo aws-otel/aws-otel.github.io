@@ -32,6 +32,8 @@ To enable the `awsecscontainermetrics` receiver, add the name under receiver sec
 By default, the receiver scrapes the ECS task metadata endpoint every 20s and collects all metrics
 (For the full list of metrics, see [Available Metrics](#available-metrics)).
 
+Note: Collecting infrastructure metrics through `awsontainerinsightreceiver` requires running ADOT Collector with privilidged root access as it also collects container-related data from `cadvisor`.
+
 The following configuration collects AWS ECS resource usage metrics by using `awsecscontainermetrics` receiver and sends
 them to CloudWatch using `awsemf` exporter. Check out [SETUP](https://aws-otel.github.io/docs/setup/ecs) section for
 configuring AWS Distro for OpenTelemetry Collector in Amazon Elastic Container Service.

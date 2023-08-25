@@ -32,6 +32,8 @@ CloudWatch Container Insights collects metrics for many resources such as CPU, m
 It also provides diagnostic information such as container restart failures.
 The metrics are aggregated at the cluster, node, pod, task, and service level as CloudWatch metrics.
 
+Note: Collecting infrastructure metrics through `awsontainerinsightreceiver` requires running ADOT Collector with privilidged root access as it also collects container-related data from `cadvisor`.
+
 The following platforms are supported:
 
 - <Link to="/docs/getting-started/container-insights/eks-infra">Amazon EKS and Kubernetes platforms on Amazon EC2</Link>
