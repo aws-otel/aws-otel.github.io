@@ -22,10 +22,11 @@ All code changes are upstream in the respective OpenTelemetry project components
 
 **IMPORTANT:**
 
-* This build of the EKS add on fails to deploy correctly when using advanced configuration of EKS add on. Specifically when using an optional config to enbale Xray at initial addon creation time. The fix is currently in progress.
+* This build of the EKS add on fails to deploy correctly when using advanced configuration of EKS add on. Specifically when using an optional config to enbale Xray at initial addon creation time. The fix is currently in progress. The current workaround for this issue is to
 
-* [There are upstream breaking changes in prometheus related components](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v0.76.3) that affects metric names. 
-The ADOT collector will adopt the upstream behaviour starting v0.31.0. For more details and testing instructions please refer to issue [#2043](https://github.com/aws-observability/aws-otel-collector/issues/2043).
+- Set “Preserve on cluster” and delete the EKS add-on for AWS Distro for OpenTelemetry
+- Re-create the EKS add-on for AWS Distro for OpenTelemetry with the same settings.
+
 
 **Getting Started**
 
