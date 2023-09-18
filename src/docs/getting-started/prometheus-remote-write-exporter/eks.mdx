@@ -86,7 +86,7 @@ We will be using a simple sample app that is used for the integration tests of t
 First, fork the repository. Then clone the repository and run the following commands:
 
 ```bash
-$ cd ./sample-apps/prometheus
+$ cd ./sample-apps/prometheus-sample-app
 $ docker build . -t prometheus-sample-app:latest
 ```
 
@@ -139,7 +139,7 @@ configurations if you would like to scrape a different application.
 To pull the Kubernetes configuration for ADOT Collector:
 
 ```bash
-$ curl https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/examples/eks/prometheus-pipeline/eks-prometheus-daemonset.yaml -o eks-prometheus-daemonset.yaml
+$ curl https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/examples/eks/aws-prometheus/prometheus-daemonset.yaml -o eks-prometheus-daemonset.yaml
 ```
 
 You will have to change the `<YOUR_ENDPOINT>` and `<YOUR_REGION>` to correspond with your own AMP workspace. The changes should be with respect to the Prometheus Remote Write Exporter’s configuration and the `sigv4auth` extension's configuration. 
