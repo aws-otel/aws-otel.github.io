@@ -9,7 +9,7 @@ blogs:
 
   - title: "AWS Distro for OpenTelemetry Java Instrumentation v1.30.0 is now available"
     author: "Huy Vo"
-    date: "18-September-2023"
+    date: "19-September-2023"
     body:
       "AWS Distro for OpenTelemetry Java Instrumentation v1.30.0 is now available. You can download the latest ADOT Java auto-instrumentation Docker image
         from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery and the jar artifacts from the Maven Central Repository."
