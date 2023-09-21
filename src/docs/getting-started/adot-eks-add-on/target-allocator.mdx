@@ -1,0 +1,42 @@
+---
+title: 'Target Allocator'
+description:
+    This page provides an introduction to the Target Allocator
+path: '/docs/getting-started/adot-eks-add-on/target-allocator'
+---
+
+Installing the EKS Add-on gives you access to the Target Allocator (TA). Enabling the target allocator for an
+OpenTelemetry Collector custom resource decouples service discovery and metric collection. Visit the [Target Allocator Readme](https://github.com/open-telemetry/opentelemetry-operator/blob/main/cmd/otel-allocator/README.md)
+for a deeper introduction. 
+
+## Out of Order Samples
+
+In some cases the Target Allocator can be used to solve prometheus remote write out of order sample errors. A common
+reason Collector users will see out of order sample erorrs is due to multiple collectors scraping the same metric
+endpoint. Collector users may experience this when horizontally scaling Collectors with prometheus 
+receivers or daemonset deployments. Both of these scenarios can lead to out of order sample erorrs without sharding
+of prometheus scrape targets.
+
+## Getting Started
+
+Please reference the [OpenTelemetry Operator documentation](https://github.com/open-telemetry/opentelemetry-operator/tree/main#target-allocator) 
+to get started using the Target Allocator. 
+
+### Useful links
+
+[Target Allocator API Spec](https://github.com/open-telemetry/opentelemetry-operator/blob/main/docs/api.md#opentelemetrycollectorspectargetallocator)
+
+[OpenTelmetery Collector Scaling Documentation](https://opentelemetry.io/docs/collector/scaling/)
+
+--- 
+## [Previous Topic: Kubernetes Attributes Processor](/docs/getting-started/adot-eks-add-on/k8s-attr-processor)
+
+## Related Topics:
+
+### [Collector Configuration for Amazon Managed Prometheus](/docs/getting-started/adot-eks-add-on/config-amp)
+
+### [Collector Configuration for AWS CloudWatch](/docs/getting-started/adot-eks-add-on/config-cloudwatch)
+
+### [Advanced Collector Configuration for Amazon Managed Prometheus](/docs/getting-started/adot-eks-add-on/config-advanced)
+
+## [Next Topic: Updating and Cleanup](/docs/getting-started/adot-eks-add-on/update-and-cleanup)
