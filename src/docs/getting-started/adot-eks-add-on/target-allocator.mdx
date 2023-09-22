@@ -11,16 +11,16 @@ for a deeper introduction.
 
 ## Out of Order Samples
 
-In some cases the Target Allocator can be used to solve prometheus remote write out of order sample errors. A common
+In some cases the Target Allocator can be used to solve Prometheus remote write out of order sample errors. A common
 reason Collector users will see out of order sample erorrs is due to multiple collectors scraping the same metric
-endpoint. Collector users may experience this when horizontally scaling Collectors with prometheus 
+endpoint. Collector users may experience this when horizontally scaling Collectors with Prometheus 
 receivers or daemonset deployments without manually sharding scrape targets. Both of these scenarios can lead to
-out of order sample erorrs without sharding of prometheus scrape targets.
+out of order sample erorrs without sharding of Prometheus scrape targets.
 
 ## Getting Started
 
 Enabling the target allocator requires setting `OpenTelemeteryCollector.spec.targetAllocator.enabled` to `true`.
-This will cause the prometheus configuration within the Collector CRD to be rewritten to use an `http_sd_config`
+This will cause the Prometheus configuration within the Collector CRD to be rewritten to use an `http_sd_config`
 from the Target Allocator. The operator will also create a new deployment and service for this http_sd_config
 directive.
 
