@@ -10,7 +10,7 @@ export default function ComingSoon() {
     <div>
       <Helmet>
         <meta charSet="utf-8" />
-        <title>AWS Open Distro for OpenTelemetry</title>
+        <title>AWS Distro for OpenTelemetry</title>
       </Helmet>
       <AboutPage />
     </div>
