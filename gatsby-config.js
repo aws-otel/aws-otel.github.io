@@ -5,11 +5,11 @@ require("dotenv").config({
 module.exports = {
   // pathPrefix: "/",
   siteMetadata: {
-    title: 'AWS Open Distro for OpenTelemetry',
-    siteTitle: `AWS Open Distro for OpenTelemetry`,
-    defaultTitle: `AWS Open Distro for OpenTelemetry`,
+    title: 'AWS Distro for OpenTelemetry',
+    siteTitle: `AWS Distro for OpenTelemetry`,
+    defaultTitle: `AWS Distro for OpenTelemetry`,
     siteTitleShort: `AWS Distro OpenTelemetry`,
-    siteDescription: `Technical documentation for AWS Open Distro for OpenTelemetry`,
+    siteDescription: `Technical documentation for AWS Distro for OpenTelemetry`,
     siteAuthor: `Amazon AWS Observability`,
     // siteImage: `/banner.png`,
     siteLanguage: `en`,
