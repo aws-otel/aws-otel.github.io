@@ -22,7 +22,7 @@
     "@rocketseat/gatsby-theme-docs": "^2.4.0",
     "assets": "^3.0.1",
     "aws-rum-web": "1.13.7",
-    "camelcase-keys": "^6.1.0",
+    "camelcase-keys": "^9.1.0",
     "classnames": "^2.3.2",
     "core-js": "^3.32.1",
     "gatsby": "^3.0.0",
