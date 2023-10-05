@@ -1,29 +1,29 @@
 ---
-title: 'Tracing with the AWS Distro for OpenTelemetry .NET SDK and X-Ray'
+title: 'Manual Instrumentation for Traces and Metrics with the AWS Distro for OpenTelemetry .NET SDK'
 description:
     OpenTelemetry provides different language SDKs to instrument code for collecting telemetry data in the application.
-    In this tutorial, we will introduce how to use OpenTelemetry .NET SDK for traces instrumentation in the application.
-path: '/docs/getting-started/dotnet-sdk/trace-manual-instr'
+    In this tutorial, we will introduce how to use OpenTelemetry .NET SDK for traces and metrics instrumentation in the application.
+path: '/docs/getting-started/dotnet-sdk/manual-instr'
 ---
 
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
 import SubSectionSeparator from "components/MdxSubSectionSeparator/subsectionSeparator.jsx"
 
-The AWS Distro for OpenTelemetry .NET SDK contains an extension library for using OpenTelemetry with AWS X-Ray and for instrumenting the AWS SDK. In this tutorial, we will introduce how to manually instrument your application step-by-step using AWS Distro for OpenTelemetry .NET SDK.
+The AWS Distro for OpenTelemetry .NET SDK contains an extension library for instrumenting the AWS SDK. In this tutorial, we will introduce how to manually instrument your application for traces and metrics step-by-step using AWS Distro for OpenTelemetry .NET SDK.
 
 <SectionSeparator />
 
 ## Requirements
 
-The AWS Distro for OpenTelemetry .NET SDK is compatible for .NET framework (net452 and above) and .NET Core (netstandard2.0 and above).
+The AWS Distro for OpenTelemetry .NET SDK is compatible for all the officially supported versions of [.NET](https://dotnet.microsoft.com/en-us/download/dotnet) and [.NET Framework](https://dotnet.microsoft.com/en-us/download/dotnet-framework).
 
-**Note**: You’ll also need to have the [AWS Distro for OpenTelemetry Collector](https://aws-otel.github.io/docs/getting-started/collector) running to export traces to X-Ray.
+**Note**: You’ll also need to have the [AWS Distro for OpenTelemetry Collector](https://aws-otel.github.io/docs/getting-started/collector) running to export traces and metrics.
 
 <SectionSeparator />
 
 ## Installation
 
-In order to instrument your .NET application for tracing, start by downloading the `OpenTelemetry` nuget package to your application.
+In order to instrument your .NET application for traces and metrics, start by downloading the `OpenTelemetry` nuget package to your application.
 
 ```shell
 dotnet add package OpenTelemetry
@@ -40,7 +40,7 @@ If you plan to call another application instrumented with AWS X-Ray SDK, you’l
 dotnet add package OpenTelemetry.Contrib.Extensions.AWSXRay
 ```
 
-In order to export traces from your application to ADOT Collector, you need to install `OpenTelemetry.Exporter.OpenTelemetryProtocol`.
+In order to export traces and metics from your application to ADOT Collector, you need to install `OpenTelemetry.Exporter.OpenTelemetryProtocol`.
 
 ```shell
 dotnet add package OpenTelemetry.Exporter.OpenTelemetryProtocol
@@ -50,11 +50,12 @@ By default the OpenTelemetry exporter sends data to an OpenTelemetry collector a
 
 <SectionSeparator />
 
-## Setting up the Global Tracer
+## Setting up the Global Tracer and Meter
 
-### Sending Traces to AWS X-Ray
+### Sending Traces and Metrics
 
 Configure AWS X-Ray ID generator, propagator and OpenTelemetry Protocol (OTLP) exporter globally in your application as follows. Make sure to call `AddXRayTraceId()` in the very **beginning** when creating `TracerProvider`
+Also configure the meter provider and add a meter of your choice as well as the OpenTelemetry Protocol (OTLP) exporter.
 
 ```csharp
 using OpenTelemetry;
@@ -62,8 +63,14 @@ using OpenTelemetry.Contrib.Extensions.AWSXRay.Trace;
 using OpenTelemetry.Trace;
 
 var tracerProvider = Sdk.CreateTracerProviderBuilder()
+                        .AddSource("ActivitySourceName")
                         .AddXRayTraceId() // for generating AWS X-Ray compliant trace IDs
                         .AddOtlpExporter() // default address localhost:4317
+                        .Build();
+
+var meterProvider = Sdk.CreateMeterProviderBuilder()
+                        .AddMeter("example_meter")
+                        .AddOtlpExporter()
                         .Build();
 
 Sdk.SetDefaultTextMapPropagator(new AWSXRayPropagator()); // configure AWS X-Ray propagator 
@@ -152,8 +159,30 @@ Attributes are converted to metadata by default. If you configure your collector
 
 For more information about the activity API, see the [OpenTelemetry .NET SDK's developer guide](https://github.com/open-telemetry/opentelemetry-dotnet/tree/main/src/OpenTelemetry.Api#instrumenting-a-libraryapplication-with-net-activity-api).
 
+### Creating Metrics
+
+Similarly to Traces, you can create custom metrics in your application using the OpenTelemetry API and SDK.
+
+In the following example application we demonstrate how to use metric instruments to record metrics with a Counter.
+
+```csharp
+using System.Threading.Tasks;
+
+Meter meter = new Meter("example_meter", "1.0"); 
+
+totalTimeSentObserver = meter.CreateCounter<int>("time_alive",
+                "ms",
+                "Measures the total time the application has been alive");
+
+while (true) {
+    var delayTask = Task.Delay(1000);
+    await Task.Run(() => totalTimeSentObserver.Add(1, new KeyValuePair<string, object>("attribute", "sample")));
+    await delayTask;
+}
+```
+
 <SectionSeparator />
 
 ## Sample Application
 
-Take a reference to the [sample application](https://github.com/aws-observability/aws-otel-dotnet/tree/main/integration-test-app) that is instrumented by ADOT and OpenTelemetry .NET SDK.
+Take a reference to the [sample application](https://github.com/aws-observability/aws-otel-community/tree/master/sample-apps/dotnet-sample-app) that is instrumented by ADOT and OpenTelemetry .NET SDK.

@@ -1,14 +1,14 @@
 ---
-title: 'AWS Distro for OpenTelemetry v0.31.0'
+title: 'AWS Distro for OpenTelemetry v0.33.0'
 description:
-    This blog post is the release announcement for ADOT Collector v0.31.0
+    This blog post is the release announcement for ADOT Collector v0.33.0
 ---
 
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
 
 <SectionSeparator />
 
-[AWS Distro for OpenTelemetry (ADOT)](https://aws-otel.github.io/) Collector v0.31.0 is now available.
+[AWS Distro for OpenTelemetry (ADOT)](https://aws-otel.github.io/) Collector v0.33.0 is now available.
 You can download the latest [ADOT Collector image](https://gallery.ecr.aws/aws-observability/aws-otel-collector) from the
 [Amazon Elastic Container Registry (Amazon ECR)](https://aws.amazon.com/ecr/) Public Gallery.
 
@@ -16,14 +16,22 @@ You can download the latest [ADOT Collector image](https://gallery.ecr.aws/aws-o
 
 **Upstream changelog**
 
-* [OpenTelemetry Collector v0.79.0](https://github.com/open-telemetry/opentelemetry-collector/releases/tag/v0.79.0)
-* [OpenTelemetry Collector v0.80.0](https://github.com/open-telemetry/opentelemetry-collector/releases/tag/v0.80.0)
-* [OpenTelemetry Collector Contrib v0.79.0](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v0.79.0)
-* [OpenTelemetry Collector Contrib v0.80.0](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v0.80.0)
+* [OpenTelemetry Collector v0.83.0](https://github.com/open-telemetry/opentelemetry-collector/releases/tag/v0.83.0)
+* [OpenTelemetry Collector v0.84.0](https://github.com/open-telemetry/opentelemetry-collector/releases/tag/v0.84.0)
+* [OpenTelemetry Collector Contrib v0.83.0](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v0.83.0)
+* [OpenTelemetry Collector Contrib v0.84.0](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v0.84.0)
 
-**Release Highlights**
+** Important: ADOT Collector v0.33.0 Breaking Change **
 
-- Reduce permission in the folder that stores configuration and logs on Windows [\#2156](https://github.com/aws-observability/aws-otel-collector/pull/2156) ([rapphil](https://github.com/rapphil))
+Users of the statsd receiver, please refer to GitHub Issue - [Warning: StatsD Receiver → EMF Exporter 
+Metric Pipeline Breaking Change](https://github.com/aws-observability/aws-otel-collector/issues/2249) for information on an upcoming breaking change.
+
+** Important: ADOT Collector v0.35.0 Breaking Change
+
+Users of the awscontainerinsightreceiver, please refer to the [GitHub Issue - Warning: Container Image Default User Change → Important
+consideration for AWSContainerInsightReceiver](https://github.com/aws-observability/aws-otel-collector/issues/2317) for more information on an upcoming breaking change.
+
+- 
 
 Detailed release notes are on [GitHub](https://github.com/aws-observability/aws-otel-collector/releases).
 All code changes are upstream in the respective OpenTelemetry project components.
@@ -32,7 +40,7 @@ All code changes are upstream in the respective OpenTelemetry project components
 
 Detailed technical documentation is available on the [ADOT developer site](https://aws-otel.github.io/),
 and you can [download the distribution](https://aws-otel.github.io/download) from
-[GitHub](https://github.com/aws-observability/aws-otel-collector/releases/tag/v0.31.0).
+[GitHub](https://github.com/aws-observability/aws-otel-collector/releases/tag/v0.33.0).
 You can also download the latest [ADOT Collector image](https://gallery.ecr.aws/aws-observability/aws-otel-collector)
 from the [Amazon Elastic Container Registry (Amazon ECR)](https://aws.amazon.com/ecr/) Public Gallery.
 

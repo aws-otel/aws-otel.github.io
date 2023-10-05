@@ -1,38 +1,35 @@
 ---
-title: 'AWS Distro for OpenTelemetry v0.31.0'
-description:
-    This blog post is the release announcement for ADOT Collector v0.31.0
+title: "AWS Distro for OpenTelemetry Collector v0.33.1 and v0.32.1"
+description: This blog post is the release announcement for ADOT Collector v0.33.1 and v0.32.1
 ---
 
-import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx";
 
 <SectionSeparator />
 
-[AWS Distro for OpenTelemetry (ADOT)](https://aws-otel.github.io/) Collector v0.31.0 is now available.
+[AWS Distro for OpenTelemetry (ADOT)](https://aws-otel.github.io/) Collector v0.33.1 and v0.32.1 are now available.
 You can download the latest [ADOT Collector image](https://gallery.ecr.aws/aws-observability/aws-otel-collector) from the
 [Amazon Elastic Container Registry (Amazon ECR)](https://aws.amazon.com/ecr/) Public Gallery.
 
 <SectionSeparator />
 
-**Upstream changelog**
+# Notice
 
-* [OpenTelemetry Collector v0.79.0](https://github.com/open-telemetry/opentelemetry-collector/releases/tag/v0.79.0)
-* [OpenTelemetry Collector v0.80.0](https://github.com/open-telemetry/opentelemetry-collector/releases/tag/v0.80.0)
-* [OpenTelemetry Collector Contrib v0.79.0](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v0.79.0)
-* [OpenTelemetry Collector Contrib v0.80.0](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v0.80.0)
+AWS Distro for OpenTelemetry (ADOT) team has discovered an issue where ADOT Collector (aws-otel-collector) prints to stdout the content of the AOT_CONFIG_CONTENT environment variable, when the Collector starts up. This is a concern if that environment variable contains sensitive content.
+We have fixed the issue by removing the log statement to avoid exposure of sensitive content. If you are using ADOT collector, and sets its configuration through the AOT_CONFIG_CONTENT environment variable,
+we recommend you upgrade to either version [v0.32.1](https://github.com/aws-observability/aws-otel-collector/releases/tag/v0.32.1) or [v0.33.1](https://github.com/aws-observability/aws-otel-collector/releases/tag/v0.33.1)
 
 **Release Highlights**
 
-- Reduce permission in the folder that stores configuration and logs on Windows [\#2156](https://github.com/aws-observability/aws-otel-collector/pull/2156) ([rapphil](https://github.com/rapphil))
+- Remove Logging for AOT_CONFIG_CONTENT
 
 Detailed release notes are on [GitHub](https://github.com/aws-observability/aws-otel-collector/releases).
-All code changes are upstream in the respective OpenTelemetry project components.
 
 **Download**
 
 Detailed technical documentation is available on the [ADOT developer site](https://aws-otel.github.io/),
 and you can [download the distribution](https://aws-otel.github.io/download) from
-[GitHub](https://github.com/aws-observability/aws-otel-collector/releases/tag/v0.31.0).
+[GitHub](https://github.com/aws-observability/aws-otel-collector/releases/tag/v0.27.1).
 You can also download the latest [ADOT Collector image](https://gallery.ecr.aws/aws-observability/aws-otel-collector)
 from the [Amazon Elastic Container Registry (Amazon ECR)](https://aws.amazon.com/ecr/) Public Gallery.
 
