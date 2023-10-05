@@ -6,6 +6,13 @@ description:
 path: /blog
 
 blogs:
+  - title: "AWS Distro for OpenTelemetry EKS Add-on v0.82.0-eksbuild.1 is now available"
+    author: "Paurush Garg"
+    date: "06-October-2023"
+    body:
+      "AWS Distro for OpenTelemetry EKS Add-on v0.82.0-eksbuild.1 is now available."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-eks-add-on-v0.82.0"
+
   - title: "AWS Distro for OpenTelemetry v0.33.3 is now available"
     author: "Huy Vo"
     date: "12-October-2023"
