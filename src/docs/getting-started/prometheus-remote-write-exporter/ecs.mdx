@@ -98,26 +98,26 @@ Now, we have defined the roles necessary to execute our ECS ADOT Collector confi
 
 ## Building our Sample App Image
 
-We will be using a simple sample app that is used for the integration tests of this pipeline. You can find the sample app [here](https://github.com/aws-observability/aws-otel-community).
+We will be using a simple sample app that is used for the integration tests of this pipeline. You can find the sample app [here](https://github.com/aws-observability/aws-otel-community/tree/master/sample-apps/prometheus-sample-app).
 
 First, fork the repository. Then clone the repository and run the following commands:
 
 ```bash
-$ cd ./sample-apps/prometheus
+$ cd /sample-apps/prometheus
 $ docker build . -t prometheus-sample-app:latest
 ```
 
-Next, push this image to a remote repository on either ECR or Dockerhub so that it can be used by the ECS deployment
+Next, push this image to a remote repository on either [Amazon ECR](https://docs.aws.amazon.com/AmazonECR/latest/public/docker-push-ecr-image.html) or Dockerhub so that it can be used by the ECS deployment
 
 <SectionSeparator />
 
 ## Demonstration 1: ECS Powered by Fargate
 
-1. [Download the ECS Fargate AMP task definition template from GitHub.](https://github.com/aws-observability/aws-otel-collector/tree/main/examples/ecs/aws-prometheus/ecs-fargate-task-def.json) This definition specifies a Prometheus sample app and an ADOT Collector instance. If you would like to learn more about the sample app, please visit [here](https://github.com/aws-observability/aws-otel-community/tree/master/sample-apps/prometheus).
+1. [Download the ECS Fargate AMP task definition template from GitHub.](https://github.com/aws-observability/aws-otel-collector/tree/main/examples/ecs/aws-prometheus/ecs-fargate-task-def.json) This definition specifies a Prometheus sample app and an ADOT Collector instance. If you would like to learn more about the sample app, please visit [here](https://github.com/aws-observability/aws-otel-community/tree/master/sample-apps/prometheus-sample-app).
 2. Fill the following parameters in the task definition templates:
     * `region` - the region the data will be sent to
     * `ecsTaskRoleArn` - AWSOTTaskRole ARN created in the previous section
-    * `ecsExecutionRoleArn` - AWSOTTaskExcutionRole ARN created in the previous section
+    * `ecsExecutionRoleArn` - AWSOTTaskExecutionRole ARN created in the previous section
     * `sampleAppImage` - the image to the Prometheus sample app we created above
 3. Follow the [ECS task definition setup instructions](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-task-definition.html), and use the “Fargate Launch Type” instructions step 1 to create a task definition using the given template.
     * Be sure to verify all of the fields match the template
@@ -136,11 +136,11 @@ Note that you must have a cluster created with an EC2 instance available. We cho
 
 <img src={createClusterECSImg} alt="Diagram" style="margin: 30px 0;" />
 
-1. [Download the ECS EC2 AMP task definition template from GitHub](https://github.com/aws-observability/aws-otel-collector/tree/main/examples/ecs/aws-prometheus/ecs-ec2-task-def.json). This definition specifies a Prometheus sample app and an ADOT Collector instance. If you would like to learn more about the sample app, please visit [here](https://github.com/aws-observability/aws-otel-community/tree/master/sample-apps/prometheus).
+1. [Download the ECS EC2 AMP task definition template from GitHub](https://github.com/aws-observability/aws-otel-collector/tree/main/examples/ecs/aws-prometheus/ecs-ec2-task-def.json). This definition specifies a Prometheus sample app and an ADOT Collector instance. If you would like to learn more about the sample app, please visit [here](https://github.com/aws-observability/aws-otel-community/tree/master/sample-apps/prometheus-sample-app).
 2. Fill the following parameters in the task definition templates:
     * `region` - the region the data will be sent to
     * `ecsTaskRoleArn` - AWSOTTaskRole ARN created in the previous section
-    * `ecsExecutionRoleArn` - AWSOTTaskExcutionRole ARN created in the previous section
+    * `ecsExecutionRoleArn` - AWSOTTaskExecutionRole ARN created in the previous section
     * `sampleAppImage` - the image to the Prometheus sample app we created above
 3. Follow the [ECS task definition setup instructions](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-task-definition.html), and use the “EC2 Launch Type” instructions step 1 to create a task definition using the given template.
     * Be sure to verify all of the fields match the template

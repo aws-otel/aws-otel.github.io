@@ -11,7 +11,7 @@ The Collector configuration below is set up to receive Prometheus metrics and ex
 ```console
 kubectl apply -f collector-config-cloudwatch.yaml
 ```
-to deploy your Collector. Make sure to replace `<YOUR-EKS-CLUSTER-NAME>` in the `spec::env` section and `<YOUR_AWS_REGION>` in the `awsemf` exporter config, as per your own target environment. Note that a `ClusterRole` and `ClusterRoleBinding` will also be created, which provide necessary permissions for the `prometheus` receiver during service discovery.
+To deploy your Collector. Make sure to replace `<YOUR-EKS-CLUSTER-NAME>` in the `spec::env` section and `<YOUR_AWS_REGION>` in the `awsemf` exporter config, as per your own target environment. Note that a `ClusterRole` and `ClusterRoleBinding` will also be created, which provide necessary permissions for the `prometheus` receiver during service discovery.
 
 <details>
   <summary>
@@ -427,6 +427,27 @@ subjects:
 * Select “Metrics → All metrics” in the menu on the left
 * Click the “ContainerInsights/Prometheus” box under “custom namespaces”
 * Select the “EKS_Cluster, EKS_Namespace, EKS_PodName“ to view your metrics data
+
+**Note: If you have existing Prometheus configurations, you will need to replace the `$` characters with `$$` to avoid having the value replaced with environment variables. **
+This is especially important for the `replacement` value of the relabel_configurations. For instance, the following configuration for relabel_configurations below.
+
+```
+relabel_configs:
+- source_labels: [__meta_kubernetes_ingress_scheme,__address__,__meta_kubernetes_ingress_path]
+  regex: (.+);(.+);(.+)
+  replacement: ${1}://${2}${3}
+  target_label: __param_target
+```
+
+would become
+
+```
+relabel_configs:
+- source_labels: [__meta_kubernetes_ingress_scheme,__address__,__meta_kubernetes_ingress_path]
+  regex: (.+);(.+);(.+)
+  replacement: $${1}://${2}${3}
+  target_label: __param_target
+```
 
 ## [Previous Topic: Collector Configuration Introduction](/docs/getting-started/adot-eks-add-on/config-intro)
 
