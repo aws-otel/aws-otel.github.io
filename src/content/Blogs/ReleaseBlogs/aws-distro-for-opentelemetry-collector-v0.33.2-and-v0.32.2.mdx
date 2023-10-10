@@ -13,8 +13,17 @@ You can download the latest [ADOT Collector image](https://gallery.ecr.aws/aws-o
 
 <SectionSeparator />
 
+# Notice
+
+We are aware of a potential issue in the Go standard library prior to version 1.20.9, used by the AWS Distribution for OpenTelemetry (ADOT) Collector up to and including v0.33.1 and also v0.32.1.
+We have prepared two new releases of the ADOT Collector, v0.33.2 and v0.32.2 using Go 1.20.9. There are no functional changes from the previous patch versions. We recommend that customers update their
+ADOT Collector to at least v0.33.2 or v0.32.2 at the earliest opportunity. See https://aws-otel.github.io/docs/getting-started/collector for information on deploying the ADOT Collector.
+
+Reference: https://groups.google.com/g/golang-announce/c/XBa1oHDevAo
 
 **Release Highlights**
+
+- Recompile with Go 1.20.9 to mitigate CVE-2023-39323 
 
 Detailed release notes are on [GitHub](https://github.com/aws-observability/aws-otel-collector/releases).
 
