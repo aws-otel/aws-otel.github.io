@@ -10,7 +10,7 @@ blogs:
     author: "Pavan Sai Vasireddy"
     date: "17-October-2023"
     body:
-      "AWS Distro for OpenTelemetry v0.34.0 is now available available. You can download the latest AWS Distro for OpenTelemetry Collector image
+      "AWS Distro for OpenTelemetry v0.34.0 is now available. You can download the latest AWS Distro for OpenTelemetry Collector image
         from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery."
     link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-collector-v0.34.0"
 
@@ -25,7 +25,7 @@ blogs:
     author: "Huy Vo"
     date: "12-October-2023"
     body:
-      "AWS Distro for OpenTelemetry v0.33.3 is now available available. You can download the latest AWS Distro for OpenTelemetry Collector image
+      "AWS Distro for OpenTelemetry v0.33.3 is now available. You can download the latest AWS Distro for OpenTelemetry Collector image
         from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery."
     link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-collector-v0.33.3"
     
@@ -40,7 +40,7 @@ blogs:
     author: "Kausik Amancherla"
     date: "10-October-2023"
     body:
-      "AWS Distro for OpenTelemetry v0.33.2 and v0.32.2 are now available available. You can download the latest AWS Distro for OpenTelemetry Collector image
+      "AWS Distro for OpenTelemetry v0.33.2 and v0.32.2 are now available. You can download the latest AWS Distro for OpenTelemetry Collector image
         from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery."
     link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-collector-v0.33.2-and-v0.32.2"
 
@@ -55,7 +55,7 @@ blogs:
     author: "Pavan Sai Vasireddy"
     date: "18-September-2023"
     body:
-      "AWS Distro for OpenTelemetry v0.33.1 and v0.32.1 are now available available. You can download the latest AWS Distro for OpenTelemetry Collector image
+      "AWS Distro for OpenTelemetry v0.33.1 and v0.32.1 are now available. You can download the latest AWS Distro for OpenTelemetry Collector image
         from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery."
     link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-collector-v0.33.1"
 
