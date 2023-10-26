@@ -31,8 +31,7 @@ Note: You’ll also need to have the [ADOT Collector](https://aws-otel.github.io
 In order to send traces from your application, the following OpenTelemetry PHP packages must be installed in your application’s root directory
 
 
-* [X-Ray ID Generator](https://github.com/open-telemetry/opentelemetry-php-contrib/tree/main/src/Aws/Xray)
-* [X-Ray propagator](https://github.com/open-telemetry/opentelemetry-php-contrib/tree/main/src/Aws/Xray)
+* [X-Ray ID Generator and X-Ray Propagator](https://github.com/open-telemetry/opentelemetry-php-contrib/tree/main/src/Aws/src/Xray)
 
 ```bash
  composer require open-telemetry/contrib-aws
@@ -51,12 +50,13 @@ composer require open-telemetry/sdk
 ```
 
 
-* [OTLP GRPC exporter](https://packagist.org/packages/open-telemetry/exporter-otlp-grpc)
+* [OTLP exporter](https://packagist.org/packages/open-telemetry/exporter-otlp) and [gRPC transport](https://packagist.org/packages/open-telemetry/transport-grpc)
 
-In order to use this package, you must also install the GRPC package using PECL. See the instructions on the [OpenTelemetry PHP repository](https://github.com/open-telemetry/opentelemetry-php#optional-dependencies) for more information.
+In order to use these packages, you must also install the GRPC package using PECL. See the instructions on the [OpenTelemetry PHP repository](https://github.com/open-telemetry/opentelemetry-php/tree/4d9720f19e67bb4f313be53d22552877acf821a9/src/Contrib/Otlp#grpc-transport) for more information.
 
 ```bash
-composer require open-telemetry/exporter-otlp-grpc
+composer require open-telemetry/exporter-otlp
+composer require open-telemetry/transport-grpc
 ```
 
 <SectionSeparator />
@@ -71,7 +71,10 @@ In order to send trace data to AWS X-Ray,  instantiate a new tracer provider and
 ```
 // Initialize Span Processor, X-Ray ID generator, Tracer Provider, and Propagator
 
-$spanProcessor = new SimpleSpanProcessor(new OTLPExporter());
+$transport = (new GrpcTransportFactory())->create('http://127.0.0.1:4317' . OtlpUtil::method(Signals::TRACE));
+$exporter = new SpanExporter($transport);
+$spanProcessor = new SimpleSpanProcessor($exporter);
+
 $idGenerator = new IdGenerator();
 $tracerProvider = new TracerProvider($spanProcessor, null, null, null, $idGenerator);
 $propagator = new Propagator();
@@ -137,7 +140,7 @@ Run the following command to import the AWS SDK Instrumentation:
 
 
 ```
-composer require open-telemetry/opentelemetry-php-contrib:0.0.15
+composer require open-telemetry/contrib-aws:1.0.0beta3
 ```
 
 
@@ -145,7 +148,7 @@ Import the `AwsSdkInstrumentation`  class in your PHP source code to activate th
 
 
 ```
-use OpenTelemetry\Instrumentation\AwsSdk\AwsSdkInstrumentation;
+use OpenTelemetry\Aws\AwsSdkInstrumentation;
 ```
 
 
@@ -153,10 +156,12 @@ Tracing support for downstream AWS SDK calls to Amazon DynamoDB, S3, and others 
 
 
 ```
-use OpenTelemetry\Instrumentation\AwsSdk\AwsSdkInstrumentation;
+use OpenTelemetry\Aws\AwsSdkInstrumentation;
 
 // Initialize Span Processor, X-Ray ID generator, Tracer Provider, and Propagator
-$spanProcessor = new SimpleSpanProcessor(new OTLPExporter());
+$transport = (new GrpcTransportFactory())->create('http://127.0.0.1:4317' . OtlpUtil::method(Signals::TRACE));
+$exporter = new SpanExporter($transport);
+$spanProcessor = new SimpleSpanProcessor($exporter);
 $xrayIdGenerator = new IdGenerator();
 $tracerProvider = new TracerProvider($spanProcessor, null, null, null, $xrayIdGenerator);
 $xrayPropagator = new Propagator();

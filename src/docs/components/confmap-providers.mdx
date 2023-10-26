@@ -1,0 +1,315 @@
+---
+title: 'Confmap providers - Get configuration from different sources'
+description: |
+    Confmap represents the raw configuration for the OpenTelemetry Collector. A Confmap provider
+    is a Collector component that provides configuration retrieved from a URI to configure the collector.
+    This section will describe all the confmap providers supported by the ADOT collector.
+path: '/docs/components/confmap-providers'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+
+The confmap providers are a type of OpenTelemetry collector component that is responsible by fetching configuration
+from a URI. This configuration is be used to configure the Collector and all the other components. The URI for the confmap
+providers is passed through the `-c/--config` command line parameter of the collector. The URI has the following format:
+`<scheme>:<opaque data>`.
+
+More technical details about this component can be found [here](https://github.com/open-telemetry/opentelemetry-collector/blob/main/confmap/README.md).
+
+<SectionSeparator />
+
+## Confmap providers supported by the ADOT collector
+
+The ADOT collector support the following types of confmap providers: file, env, yaml, http, https and s3.
+
+
+### File provider
+
+* scheme: `file`. Scheme is optional in the file provider and can be omitted when passing this as parameter.
+* description: Retrieves configuration from the local file system
+* examples:
+  * `/path/to/configuration.yaml`
+  * `file:/path/to/configuration.yaml`
+  * `c:\path\to\configuration.yaml`
+  * `file:c:\path\to\configuration.yaml`
+
+### Env provider
+
+* scheme: `env`. Scheme is optional.
+* description: Retrieves configuration from an environment variable.
+* examples:
+  * `env:ENVIRONMENT_VARIABLE_NAME`
+
+### YAML provider
+
+* scheme: `yaml`
+* description: Retrieves configuration directly from the command line, in yaml format.
+* examples:
+  * `yaml:processors::batch::timeout: 2s`
+
+### HTTP provider
+
+* scheme: `http`
+* description: Retrieves configuration from an http server.
+* examples:
+  * `http://server/path/to/config.yaml`
+
+### HTTPS provider
+
+* scheme: `https`
+* description: Retrieves configuration from an https server. It uses the certificate pool in the operating system to validate the hostname.
+* examples:
+  * `https://server/path/to/config.yaml`
+
+### S3 provider
+
+* scheme: `s3`
+* description: Retrieves configuration from AWS s3. This component uses the [default credentials chain](https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/configuring-sdk.html#specifying-credentials) to authenticate in s3 in order to fetch the configuration.
+* examples:
+  * `s3://<bucket_name>.s3.<region>.amazonaws.com/path/to/config.yaml`
+
+<SectionSeparator />
+
+## Passing command line parameters to the collector
+
+When installing the ADOT collector in EC2 from a RPM or MSI, you can pass the configuration parameter to a control
+script that is responsible by managing the Operating system service that run the ADOT collector. Control scripts support
+the following confmap providers: file, http, https and s3.
+
+### Linux
+
+
+On Linux, to use any of the supported confmap providers, you can use the `-c` parameter of the the `aws-otel-collector-ctl` control script.
+
+```
+sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -c <configuration uri> -a start"
+```
+
+Here are some examples:
+
+```bash
+# File provider
+sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -c /path/to/file.yaml -a start
+# HTTP provider
+sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -c "http://server/configuration.yaml" -a start
+# HTTPS provider
+sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -c "https://server/configuration.yaml" -a start
+# S3 provider
+sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -c "s3://bucket-example.s3.us-west-2.amazonaws.com/object.yaml" -a start
+```
+
+### Windows
+
+On Windows you can use the `-ConfigLocation` command line parameter of the `aws-otel-collector-ctl.ps1` control script to setup the ADOT collector service.
+
+Assuming you are in a Powershell session:
+```
+. C:\\Program Files\\Amazon\\AwsOtelCollector\\aws-otel-collector-ctl.ps1' -ConfigLocation "<uri>" -Action start
+```
+
+Here are some examples:
+
+```
+# File provider
+. 'C:\Program Files\Amazon\AwsOtelCollector\aws-otel-collector-ctl.ps1' -ConfigLocation 'C:\path\to\file.yaml' -a start
+# HTTP provider
+. 'C:\Program Files\Amazon\AwsOtelCollector\aws-otel-collector-ctl.ps1' -ConfigLocation 'http://server/configuration.yaml' -a start
+# HTTPS provider
+. 'C:\Program Files\Amazon\AwsOtelCollector\aws-otel-collector-ctl.ps1' -ConfigLocation 'https://server/configuration.yaml' -a start
+# S3 provider
+. 'C:\Program Files\Amazon\AwsOtelCollector\aws-otel-collector-ctl.ps1' -ConfigLocation 's3://bucket-example.s3.us-west-2.amazonaws.com/object.yaml' -a start
+```
+
+### Container environments
+
+In container environments, you can override the Docker [CMD instruction](https://docs.docker.com/engine/reference/builder/#cmd) to use the configuration from the URI that you want. This can be done
+because all the parameters passed in the CMD instruction are passed to the ADOT collector since the [entrypoint for the ADOT collector image](https://github.com/aws-observability/aws-otel-collector/blob/main/cmd/awscollector/Dockerfile#L79) is the
+Collector executable itself.
+
+
+In ECS you can use the `command` property of the [environment container definition](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#container_definition_environment) to specify the 
+parameters that will be passed to the collector.
+
+Example:
+
+```json
+    {
+      "name": "aoc-collector",
+      "image": "public.ecr.aws/aws-observability/aws-otel-collector:latest",
+      "command": ["--config", "<configuration uri>"],
+      "environment": [],
+      "environmentFiles": [],
+      "dependsOn": [],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/ecs-cwagent-sidecar-collector",
+          "awslogs-region": "us-west-2",
+          "awslogs-stream-prefix": "ecs",
+          "awslogs-create-group": "True"
+        }
+      }
+    }
+```
+
+Similarly, In Kubernetes you can use the `args` property of container definition to specify the command line parameters
+that should be passed to the ADOT collector.
+
+Example:
+```yaml
+# create namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: aws-otel-eks
+  labels:
+    name: aws-otel-eks
+---
+# create deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aws-otel-eks-sidecar
+  namespace: aws-otel-eks
+  labels:
+    name: aws-otel-eks-sidecar
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: aws-otel-eks-sidecar
+  template:
+    metadata:
+      labels:
+        name: aws-otel-eks-sidecar
+    spec:
+      containers:
+        - name: aws-otel-collector
+          image: "public.ecr.aws/aws-observability/aws-otel-collector:latest"
+          env:
+            - name: AWS_REGION
+              value: "us-west-2"
+          imagePullPolicy: Always
+          args: ["--config", "<configuration uri>"]
+          resources:
+            limits:
+              cpu:  256m
+              memory: 512Mi
+            requests:
+              cpu: 32m
+              memory: 24Mi
+```
+
+## Embedding URIs in the configuration
+
+It is possible to embed configuration URIs in a configuration of the OpenTelemetry collector. These URIs will be expanded and replaced by the
+content of the URI that they point to. To use this feature, you need to add the placeholders in the collector configuration with the
+the following format: `${uri}`. You can provided URIs with any of the supported schemes.
+
+
+The following pieces will demonstrate how this feature works. Supposed you have the following configuration that is passed to the
+collector through the command line parameter.
+
+```yaml
+extensions:
+  health_check:
+
+receivers:
+${s3://example-bucket.s3.us-west-2.amazonaws.com/receivers.yaml}
+
+processors:
+${s3://example-bucket.s3.us-west-2.amazonaws.com/processors.yaml}
+
+exporters:
+${s3://example-bucket.s3.us-west-2.amazonaws.com/exporters.yaml}
+
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp,awsxray]
+      processors: [batch/traces]
+      exporters: [awsxray]
+    metrics:
+      receivers: [otlp]
+      processors: [batch/metrics]
+      exporters: [awsemf]
+
+  extensions: [health_check]
+```
+In the example presented above, we are embeeding three different URIs. These embedded URIs will be expanded when the collector load the configuration.
+
+The following is the content of each URI:
+
+`s3://example-bucket.s3.us-west-2.amazonaws.com/receivers.yaml`
+
+```
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+  awsxray:
+    endpoint: 0.0.0.0:2000
+    transport: udp
+```
+
+`s3://example-bucket.s3.us-west-2.amazonaws.com/processors.yaml`
+
+```
+  batch/traces:
+    timeout: 1s
+    send_batch_size: 50
+  batch/metrics:
+    timeout: 60s
+```
+
+`s3://example-bucket.s3.us-west-2.amazonaws.com/exporters.yaml`
+
+```
+  awsxray:
+  awsemf:
+```
+
+The final configuration would look like:
+
+```
+extensions:
+  health_check:
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+  awsxray:
+    endpoint: 0.0.0.0:2000
+    transport: udp
+
+processors:
+  batch/traces:
+    timeout: 1s
+    send_batch_size: 50
+  batch/metrics:
+    timeout: 60s
+
+exporters:
+  awsxray:
+  awsemf:
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp,awsxray]
+      processors: [batch/traces]
+      exporters: [awsxray]
+    metrics:
+      receivers: [otlp]
+      processors: [batch/metrics]
+      exporters: [awsemf]
+
+  extensions: [health_check]
+  ```

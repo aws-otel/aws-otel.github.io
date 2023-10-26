@@ -1,9 +1,9 @@
 ---
-title: 'Tracing with the AWS Distro for OpenTelemetry Python SDK and X-Ray'
+title: 'Tracing and Metrics with the AWS Distro for OpenTelemetry Python Manual-Instrumentation'
 description:
     OpenTelemetry provides different language SDKs to instrument code for collecting telemetry data in the application.
     In this tutorial, we will introduce how to use OpenTelemetry Python SDK for traces and metrics instrumentation in the application...
-path: '/docs/getting-started/python-sdk/trace-manual-instr'
+path: '/docs/getting-started/python-sdk/manual-instr'
 ---
 
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
@@ -13,7 +13,7 @@ import SubSectionSeparator from "components/MdxSubSectionSeparator/subsectionSep
 
 With OpenTelemetry Python manual instrumentation, you configure the OpenTelemetry SDK within your application's code. It automatically produces spans with telemetry data describing the values used by the Python frameworks in your application with only a few lines of code. This telemetry data can then be exported to a backend like AWS X-Ray using the ADOT Python `opentelemetry-sdk-extension-aws` package. We also strongly recommend using the `opentelemetry-propagator-aws-xray` package to support propagating the trace context across AWS services. This propagator handles the extraction and injecting of the [AWS X-Ray Tracing header](https://docs.aws.amazon.com/xray/latest/devguide/xray-concepts.html#xray-concepts-tracingheader) for requests from or to remote services.
 
-In this guide, we walk through the steps needed to trace an application with auto instrumentation.
+In this guide, we walk through the steps needed to trace an application and produce metrics with manual instrumentation and produce metrics.
 
 <SectionSeparator />
 
@@ -21,7 +21,7 @@ In this guide, we walk through the steps needed to trace an application with aut
 
 Python 3.7 or later is required to run an application using OpenTelemetry.
 
-Note: You’ll also need to have the [ADOT Collector](https://aws-otel.github.io/docs/getting-started/collector) running to export traces to X-Ray.
+Note: You’ll also need to have the [ADOT Collector](https://aws-otel.github.io/docs/getting-started/collector) running to export traces and metrics.
 
 <SectionSeparator />
 
@@ -48,9 +48,9 @@ $ pip install opentelemetry-instrumentation-flask==0.30b1 \
 
 <SectionSeparator />
 
-## Setting up the Global Tracer
+## Setting up the Global Tracer and Meter
 
-### Sending Traces to AWS X-Ray
+### Sending Traces and Metrics
 
 As soon as possible in your application code, add imports for the OpenTelemetry packages installed above.
 
@@ -61,16 +61,20 @@ from flask import Flask
 import json
 
 # Add imports for OTel components into the application
-from opentelemetry import trace
+from opentelemetry import trace, metrics
 from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+from opentelemetry.metrics import CallbackOptions, Observation
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from opentelemetry.sdk.metrics import MeterProvider
+from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
+from opentelemetry.exporter.otlp.proto.grpc.metric_exporter import OTLPMetricExporter
 
 # Import the AWS X-Ray for OTel Python IDs Generator into the application.
 from opentelemetry.sdk.extension.aws.trace import AwsXRayIdGenerator
 ```
 
-Next, configure the Global Tracer Provider to export to the ADOT Collector. The configuration of your SDK exporter depends on how you wish to connect with your configured ADOT Collector.
+Next, configure the Global Tracer Provider and Meter Provider to export to the ADOT Collector. The configuration of your SDK exporter depends on how you wish to connect with your configured ADOT Collector.
 
 Connecting to an ADOT Collector running as a sidecar, we can set up the TracerProvider as follows:
 
@@ -81,6 +85,10 @@ otlp_exporter = OTLPSpanExporter(endpoint="http://localhost:4317")
 span_processor = BatchSpanProcessor(otlp_exporter)
 # Configures the Global Tracer Provider
 trace.set_tracer_provider(TracerProvider(active_span_processor=span_processor, id_generator=AwsXRayIdGenerator()))
+# Setting up Metrics
+metric_reader = PeriodicExportingMetricReader(exporter=OTLPMetricExporter())
+metric_provider = MeterProvider(metric_readers=[metric_reader])
+metrics.set_meter_provider(metric_provider)
 ```
 
 The `endpoint=` argument allows you to set the address that the exporter will use to connect to the collector. If unset, the SDK will try to connect to `http://localhost:4317` by default. Note that because the scheme is `http` by default, you have to explicitly set it to be `https` if necessary.
@@ -116,7 +124,7 @@ When you install `opentelemetry-sdk-extension-aws`, you automatically get AWS Re
 
 The ADOT Python SDK supports automatically recording metadata in EC2, Elastic Beanstalk, ECS, and EKS environments.
 
-For example, if tracing with OpenTelemetry on an AWS EC2 instance, you can automatically populate `resource` attributes by creating a `TraceProvider` using the `AwsEc2ResourceDetector`:
+For example, if tracing with OpenTelemetry on an Amazon EC2 instance, you can automatically populate `resource` attributes by creating a `TraceProvider` using the `AwsEc2ResourceDetector`:
 
 
 ```python lineNumbers=true
@@ -296,8 +304,25 @@ with tracer.start_as_current_span(
     current_span.set_attribute("my_attribute", "foo")
 ```
 
+### Creating Metrics
+
+Similarly to Traces, you can create custom metrics in your application using the OpenTelemetry API and SDK.
+
+In the following example application we demonstrate how to use metric instruments to record metrics with a Counter.
+```go lineNumbers=true
+meter = metrics.get_meter(__name__)
+time_alive_counter = meter.create_counter(
+            name="time_alive",
+            description="Total amount of time that the application has been alive",
+            unit='ms'
+        )
+while True:
+    time_alive_counter.add(1, attributes={'a': '1'})
+    time.Sleep(1)
+```
+
 <SectionSeparator />
 
 ## Sample Application
 
-See a [sample Flask App using OpenTelemetry Python SDK Manual Instrumentation](https://github.com/aws-observability/aws-otel-python/tree/main/integration-test-apps/manual-instrumentation/flask).
+See a [Sample App using OpenTelemetry Python SDK Manual Instrumentation](https://github.com/aws-observability/aws-otel-community/tree/master/sample-apps/python-manual-instrumentation-sample-app).

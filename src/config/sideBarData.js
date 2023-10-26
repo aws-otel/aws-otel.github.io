@@ -71,6 +71,7 @@ export const sideBarData = [
         {label: "X-Ray", link: "/docs/getting-started/x-ray"},
         {label: "ECS Configurations", link: "/docs/getting-started/using-ecs-console-for-ecs-adot-observability"},
         {label: "App Runner", link: "/docs/getting-started/apprunner"},
+        {label: "Advanced Sampling", link: "/docs/getting-started/advanced-sampling"},
 
       ],
       link: "/docs/null"
@@ -86,7 +87,7 @@ export const sideBarData = [
         {label: "ECS", link: "/docs/setup/ecs"},
 	{label: "ECS Console Setup", link: "/docs/getting-started/ecs-configurations/ecs-console-setup"},
         {label: "EC2", link: "/docs/setup/ec2"},
-        {label: "EKS", link: "/docs/setup/eks"},
+        {label: "EKS", link: "/docs/getting-started/adot-eks-add-on"},
         {label: "On-Premises", link: "/docs/setup/on-premises"},
         {label: "Debian", link: "/docs/setup/build-collector-as-debian"},
         {label: "RPM", link: "/docs/setup/build-collector-as-rpm"},
@@ -98,18 +99,21 @@ export const sideBarData = [
   {
     node: {
       id: nextId(),
-      label: "Components",
+      label: "ADOT Collector Components",
       items: [
-        {label: "OTLP Exporters", link: "/docs/components/otlp-exporter"},
-        {label: "Prometheus Exporters", link: "/docs/components/prometheus-exporters"},
         {label: "CloudWatch EMF Exporter", link: "/docs/getting-started/cloudwatch-metrics#cloudwatch-emf-exporter-awsemf"},
-        {label: "X-Ray Exporter", link: "/docs/getting-started/x-ray#configuring-the-aws-x-ray-exporter"},
-        {label: "Logging Exporter", link: "/docs/components/misc-exporters#logging-exporter"},
-        {label: "File Exporter", link: "/docs/components/misc-exporters#file-exporter"},
+        {label: "Confmap Providers", link: "/docs/components/confmap-providers"},
         {label: "ECS Container Metrics Receiver", link: "/docs/components/ecs-metrics-receiver"},
-        {label: "X-Ray Receiver", link: "/docs/components/x-ray-receiver"},
-        {label: "StatsD Receiver", link: "/docs/components/statsd-receiver"},
+        {label: "File Exporter", link: "/docs/components/misc-exporters#file-exporter"},
         {label: "Jaeger Receiver", link: "/docs/components/jaeger-zipkin-receiver#jaeger-receiver"},
+        {label: "Kafka Receiver/Expoter", link: "/docs/components/kafka-receiver-exporter"},
+        {label: "Logging Exporter", link: "/docs/components/misc-exporters#logging-exporter"},
+        {label: "OTLP Exporters", link: "/docs/components/otlp-exporter"},
+        {label: "Processors", link: "/docs/components/processors"},
+        {label: "Prometheus Exporters", link: "/docs/components/prometheus-exporters"},
+        {label: "StatsD Receiver", link: "/docs/components/statsd-receiver"},
+        {label: "X-Ray Exporter", link: "/docs/getting-started/x-ray#configuring-the-aws-x-ray-exporter"},
+        {label: "X-Ray Receiver", link: "/docs/components/x-ray-receiver"},
         {label: "Zipkin Receiver", link: "/docs/components/jaeger-zipkin-receiver#zipkin-receiver"},
       ],
       link: "/docs/null"
