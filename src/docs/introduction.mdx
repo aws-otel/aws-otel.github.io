@@ -1,37 +1,52 @@
 ---
 title: Introduction
-description: Welcome to the technical documentation for AWS distro for OpenTelemetry
+description: Welcome to the AWS Distro for OpenTelemetry docs
 path: '/docs/introduction'
 ---
 
-Welcome to the technical documentation for AWS Distro for OpenTelemetry.
+import adotColConcept from "assets/img/docs/img18.png"
+
+Welcome to the AWS Distro for OpenTelemetry (ADOT) technical docs. 
 
 ### About
 
-AWS Distro for OpenTelemetry is a secure, production-ready, AWS-supported
-distribution of the OpenTelemetry project. Part of the Cloud Native Computing
-Foundation, OpenTelemetry provides open source APIs, libraries, and agents to
-collect distributed traces and metrics for application monitoring.
+AWS Distro for OpenTelemetry (ADOT) is a secure, production-ready, AWS-supported
+distribution of the Cloud Native Computing Foundation (CNCF) 
+[OpenTelemetry](https://opentelemetry.io/docs/) project. OpenTelemetry (OTel)
+provides open source APIs, libraries, and agents to collect distributed traces,
+metrics, and logs for application monitoring.
 
-With AWS Distro for OpenTelemetry, you can instrument your applications just once to send
-correlated metrics and traces to multiple monitoring solutions. Use auto-instrumentation agents to collect
-traces without changing your code. AWS Distro
-for OpenTelemetry also collects metadata from your AWS resources and
+With ADOT, you can instrument your applications once and send
+correlated metrics and traces to one or more observability backends
+such as Amazon Managed Service for Prometheus, Amazon CloudWatch, AWS X-Ray,
+Amazon Open Search, any OpenTelemetry Protocol (OTLP) compliant backend,
+as well as Amazon Managed Streaming for Apache Kafka (MSK):
+
+<img src={adotColConcept} alt="ADOT collector concept" style="margin: 30px 0;" />
+<p style="text-align: center;"><i>The ADOT collector</i></p>
+
+Further, you can use auto-instrumentation to generate traces without changing
+your code. ADOT also collects metadata from your AWS resources and
 managed services, so you can correlate application performance data with
 underlying infrastructure data, reducing the mean time to problem resolution.
 
-Use AWS Distro for OpenTelemetry to instrument your applications running on AWS
-App Runner, AWS Lambda, Amazon Elastic Compute Cloud (EC2), Amazon Elastic Container
-Service (ECS), and Amazon Elastic Kubernetes Service (EKS) on EC2, and AWS Fargate,
-as well as on-premises.
+Use ADOT to instrument your applications running on AWS App Runner, AWS Lambda,
+Amazon Elastic Compute Cloud (EC2), Amazon Elastic Container Service (ECS), and
+Amazon Elastic Kubernetes Service (EKS) on EC2, and AWS Fargate, as well as 
+in your datacenter, on-premises.
 
 ### Features
-* **Instrument your applications** just once to send correlated metrics and traces to multiple monitoring solutions and
-use auto-instrumentation agents to collect traces without changing your code.
-* **Collect metadata** from your AWS resources and managed services, so you can correlate application performance data
-with underlying infrastructure data, reducing the mean time to problem resolution.
-* Use AWS Distro for OpenTelemetry to **observe your applications** running on AWS App Runner, AWS Lambda, Amazon Elastic
-Compute Cloud (EC2), Amazon Elastic Container Service (ECS), and Amazon Elastic Kubernetes Service (EKS) on EC2, and AWS
-Fargate, as well as on-premises.
+
+* **Instrument your applications** once to send correlated metrics and traces
+to multiple monitoring solutions and use auto-instrumentation agents to collect 
+traces without changing your code. Note that [logs support in ADOT is currently
+in preview](https://aws-otel.github.io/docs/ReleaseBlogs/aws-distro-for-opentelemetry-collector-v0.34.0).
+* **Collect metadata** from your AWS resources and managed services, so you
+can correlate application performance data with underlying infrastructure data,
+reducing the mean time to problem resolution.
+* Enables you to **observe your applications** running on AWS App Runner, 
+AWS Lambda, Amazon Elastic Compute Cloud (EC2), Amazon Elastic Container 
+Service (ECS), and Amazon Elastic Kubernetes Service (EKS) on EC2, and AWS
+Fargate, as well as in hybrid cloud and on-prem settings.
 
 
