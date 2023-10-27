@@ -14,13 +14,6 @@ blogs:
         from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery and the jar artifacts from the Maven Central Repository."
     link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-java-instrumentation-v1.31.0"
 
-  - title: "AWS Distro for OpenTelemetry EKS Add-on v0.84.0-eksbuild.1 is now available"
-    author: "Bryan Aguilar"
-    date: "24-October-2023"
-    body:
-      "AWS Distro for OpenTelemetry EKS Add-on v0.84.0-eksbuild.1 is now available."
-    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-eks-add-on-v0.84.0"
-
   - title: "AWS Distro for OpenTelemetry v0.34.0 is now available"
     author: "Pavan Sai Vasireddy"
     date: "17-October-2023"
