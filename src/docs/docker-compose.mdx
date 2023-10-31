@@ -13,7 +13,7 @@ services:
       - AWS_SECRET_ACCESS_KEY=<to_be_added>
       - AWS_REGION=<to_be_added>
     volumes:
-      - ~/.aws:/root/.aws
+      - ~/.aws:/home/aoc/.aws
     ports:
       - "1777:1777"   # pprof extension
       - "55679:55679" # zpages extension
