@@ -26,9 +26,6 @@ You can run the following command to confirm that the ADOT Collector is running:
 ```
 kubectl get pods -l name=aws-otel-eks-ci -n aws-otel-eks
 ```
-
-Note: Collecting infrastructure metrics through `awsontainerinsightreceiver` requires running ADOT Collector with privilidged root access as it also collects container-related data from `cadvisor`.
-
 If the results include multiple pods (one for each cluster node) in the Running state, the Collector is running and collecting metrics from the cluster.
 The ADOT Collector creates a log group named `/aws/containerinsights/{your-cluster}/performance` and sends the performance log events to this log group.
 Each collector pod on a cluster node will publish logs to a log stream with the name of the cluster node. In the screenshot, three log streams are present

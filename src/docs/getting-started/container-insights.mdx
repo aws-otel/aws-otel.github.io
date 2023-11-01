@@ -32,7 +32,25 @@ CloudWatch Container Insights collects metrics for many resources such as CPU, m
 It also provides diagnostic information such as container restart failures.
 The metrics are aggregated at the cluster, node, pod, task, and service level as CloudWatch metrics.
 
-Note: Collecting infrastructure metrics through `awsontainerinsightreceiver` requires running ADOT Collector with privilidged root access as it also collects container-related data from `cadvisor`.
+Note: Collecting infrastructure metrics through `awscontainerinsightreceiver` requires running ADOT Collector with privileged root access as it also collects container-related data from `cadvisor`.
+For EKS deployments, use the [Security Context](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#security-context-1) to specify the root user as owner of the Collector process:
+```
+containers:
+    - name: aws-otel-collector
+      image: public.ecr.aws/aws-observability/aws-otel-collector:latest
+      securityContext:
+          runAsUser: 0
+          runAsGroup: 0
+```
+For ECS deployments, use the [Task Definition](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ecs-taskdefinition-containerdefinition.html#cfn-ecs-taskdefinition-containerdefinition-user) to specify the user owner of the collector process:
+```
+{
+  "name": "aoc-collector",
+  "image": "public.ecr.aws/aws-observability/aws-otel-collector:latest",
+  "user": "0",
+  ...
+ }
+```
 
 The following platforms are supported:
 
