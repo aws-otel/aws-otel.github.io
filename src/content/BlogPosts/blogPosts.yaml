@@ -6,6 +6,97 @@ description:
 path: /blog
 
 blogs:
+  - title: "AWS Distro for OpenTelemetry Java Instrumentation v1.31.0 is now available"
+    author: "Paurush Garg"
+    date: "26-Oct-2023"
+    body:
+      "AWS Distro for OpenTelemetry Java Instrumentation v1.31.0 is now available. You can download the latest ADOT Java auto-instrumentation Docker image
+        from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery and the jar artifacts from the Maven Central Repository."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-java-instrumentation-v1.31.0"
+
+  - title: "AWS Distro for OpenTelemetry EKS Add-on v0.84.0-eksbuild.1 is now available"
+    author: "Bryan Aguilar"
+    date: "24-October-2023"
+    body:
+      "AWS Distro for OpenTelemetry EKS Add-on v0.84.0-eksbuild.1 is now available."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-eks-add-on-v0.84.0"
+
+  - title: "AWS Distro for OpenTelemetry v0.34.0 is now available"
+    author: "Pavan Sai Vasireddy"
+    date: "17-October-2023"
+    body:
+      "AWS Distro for OpenTelemetry v0.34.0 is now available. You can download the latest AWS Distro for OpenTelemetry Collector image
+        from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-collector-v0.34.0"
+
+  - title: "AWS Distro for OpenTelemetry EKS Add-on v0.82.0-eksbuild.1 is now available"
+    author: "Paurush Garg"
+    date: "06-October-2023"
+    body:
+      "AWS Distro for OpenTelemetry EKS Add-on v0.82.0-eksbuild.1 is now available."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-eks-add-on-v0.82.0"
+
+  - title: "AWS Distro for OpenTelemetry v0.33.3 is now available"
+    author: "Huy Vo"
+    date: "12-October-2023"
+    body:
+      "AWS Distro for OpenTelemetry v0.33.3 is now available. You can download the latest AWS Distro for OpenTelemetry Collector image
+        from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-collector-v0.33.3"
+    
+  - title: "AWS Distro for OpenTelemetry Lambda Layers are now available with ADOT Collector v0.33.0"
+    author: "Raphael Silva"
+    date: "12-October-2023"
+    body:
+      "ADOT Lambda Layers now distribute ADOT Collector v0.33.0 with new layers supporting AMD64 and ARM64 Lambda functions"
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-lambda-layer-v0.33.0"
+
+  - title: "AWS Distro for OpenTelemetry v0.33.2 and v0.32.2 are now available"
+    author: "Kausik Amancherla"
+    date: "10-October-2023"
+    body:
+      "AWS Distro for OpenTelemetry v0.33.2 and v0.32.2 are now available. You can download the latest AWS Distro for OpenTelemetry Collector image
+        from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-collector-v0.33.2-and-v0.32.2"
+
+  - title: "AWS Distro for OpenTelemetry EKS Add-on v0.80.0-eksbuild.2 and v0.78.0-eksbuild.2 are now available"
+    author: "Pavan Sai Vasireddy"
+    date: "26-September-2023"
+    body:
+      "AWS Distro for OpenTelemetry EKS Add-on v0.80.0-eksbuild.2 and v0.78.0-eksbuild.2 are now available."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-eks-add-on-v0.80.0-and-v0.78.0"
+
+  - title: "AWS Distro for OpenTelemetry v0.33.1 and v0.32.1 are now available"
+    author: "Pavan Sai Vasireddy"
+    date: "18-September-2023"
+    body:
+      "AWS Distro for OpenTelemetry v0.33.1 and v0.32.1 are now available. You can download the latest AWS Distro for OpenTelemetry Collector image
+        from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-collector-v0.33.1"
+
+  - title: "AWS Distro for OpenTelemetry Java Instrumentation v1.30.0 is now available"
+    author: "Huy Vo"
+    date: "19-September-2023"
+    body:
+      "AWS Distro for OpenTelemetry Java Instrumentation v1.30.0 is now available. You can download the latest ADOT Java auto-instrumentation Docker image
+        from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery and the jar artifacts from the Maven Central Repository."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-java-instrumentation-v1.30.0"
+
+  - title: "AWS Distro for OpenTelemetry EKS Add-on v0.80.0 is now available"
+    author: "Kausik Amancherla"
+    date: "15-September-2023"
+    body:
+      "AWS Distro for OpenTelemetry EKS Add-on v0.80.0 is now available."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-eks-add-on-v0.80.0"
+
+  - title: "AWS Distro for OpenTelemetry v0.33.0 is now available"
+    author: "Bryan Aguilar"
+    date: "07-September-2023"
+    body:
+      "AWS Distro for OpenTelemetry v0.33.0 is now available. You can download the latest AWS Distro for OpenTelemetry Collector image
+        from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-collector-v0.33.0"
+
   - title: "AWS Distro for OpenTelemetry Java Instrumentation v1.29.0 is now available"
     author: "Bryan Aguilar"
     date: "21-August-2023"
