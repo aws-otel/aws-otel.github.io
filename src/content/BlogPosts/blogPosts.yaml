@@ -6,6 +6,13 @@ description:
 path: /blog
 
 blogs:
+  - title: "AWS Distro for OpenTelemetry Lambda Layers are now available with ADOT Collector v0.35.0"
+    author: "Pavan Sai Vasireddy"
+    date: "03-November-2023"
+    body:
+      "ADOT Lambda Layers now distribute ADOT Collector v0.35.0 with new layers supporting AMD64 and ARM64 Lambda functions"
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-lambda-layer-v0.35.0"
+
   - title: "AWS Distro for OpenTelemetry v0.35.0 is now available"
     author: "Bryan Aguilar"
     date: "02-November-2023"
@@ -13,6 +20,7 @@ blogs:
       "AWS Distro for OpenTelemetry v0.35.0 is now available. You can download the latest AWS Distro for OpenTelemetry Collector image
         from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery."
     link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-collector-v0.35.0"
+
   - title: "AWS Distro for OpenTelemetry Java Instrumentation v1.31.0 is now available"
     author: "Paurush Garg"
     date: "26-Oct-2023"
