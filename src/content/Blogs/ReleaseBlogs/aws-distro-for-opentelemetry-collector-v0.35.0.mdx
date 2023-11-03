@@ -1,0 +1,74 @@
+---
+title: 'AWS Distro for OpenTelemetry v0.35.0'
+description:
+    This blog post is the release announcement for ADOT Collector v0.35.0
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+
+<SectionSeparator />
+
+[AWS Distro for OpenTelemetry (ADOT)](https://aws-otel.github.io/) Collector v0.35.0 is now available.
+You can download the latest [ADOT Collector image](https://gallery.ecr.aws/aws-observability/aws-otel-collector) from the
+[Amazon Elastic Container Registry (Amazon ECR)](https://aws.amazon.com/ecr/) Public Gallery.
+
+<SectionSeparator />
+
+**Notice**
+
+We are aware of a potential issue in the google.golang.org/grpc package (CVE-2023-44487), used by the AWS Distribution for Open Telemetry (ADOT) Collector up to and including v0.34.0.
+We have a new release of the ADOT Collector, v0.35.0 updating packages affected by this vulnerability. We recommend that customers update their ADOT Collector
+to at least v0.35.0 at the earliest opportunity. See https://aws-otel.github.io/docs/getting-started/collector for information on deploying the ADOT Collector.
+
+**Upstream changelog**
+
+* [OpenTelemetry Collector v0.87.0](https://github.com/open-telemetry/opentelemetry-collector/releases/tag/v0.87.0)
+* [OpenTelemetry Collector v0.88.0](https://github.com/open-telemetry/opentelemetry-collector/releases/tag/v0.88.0)
+* [OpenTelemetry Collector Contrib v0.87.0](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v0.87.0)
+* [OpenTelemetry Collector Contrib v0.88.0](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v0.88.0)
+
+**New Components**
+
+The following feature gates are now enabled by default. The filelog receiver, filestorage extension, and AWS CloudwatchLogs exporter
+can be used with no command line changes. The feature gate can still be used to disable the usage of these components in an ADOT
+Collector configuration. 
+
+`adot.receiver.filelog`
+`adot.exporter.awscloudwatchlogs
+`adot.extension.file_storage`
+
+** Important: ADOT Collector v0.35.0 Breaking Change **
+
+Users of the `statsd` receiver, please refer to GitHub Issue - [Warning: StatsD Receiver → EMF Exporter
+Metric Pipeline Breaking Change](https://github.com/aws-observability/aws-otel-collector/issues/2249) for information on an upcoming breaking change.
+
+** Important: ADOT Collector v0.35.0 Breaking Change
+
+Users of the `awscontainerinsightreceiver`, please refer to the [GitHub Issue - Warning: Container Image Default User Change → Important
+consideration for AWSContainerInsightReceiver](https://github.com/aws-observability/aws-otel-collector/issues/2317) for more information on an upcoming breaking change.
+
+- 
+
+Detailed release notes are available via - [GitHub](https://github.com/aws-observability/aws-otel-collector/releases).
+All code changes are upstream in the respective OpenTelemetry project components.
+
+**Download**
+
+Detailed technical documentation is available on the [ADOT developer site](https://aws-otel.github.io/),
+and you can [download the distribution](https://aws-otel.github.io/download) from
+[GitHub](https://github.com/aws-observability/aws-otel-collector/releases/tag/v0.35.0).
+You can also download the latest [ADOT Collector image](https://gallery.ecr.aws/aws-observability/aws-otel-collector)
+from the [Amazon Elastic Container Registry (Amazon ECR)](https://aws.amazon.com/ecr/) Public Gallery.
+
+To learn more about how to use AWS Distro for OpenTelemetry (ADOT) to collect data for your observability solution,
+check out the hands-on [AWS Observability workshop](https://observability.workshop.aws/en/adot.html).
+Please file an [issue](https://github.com/aws-observability/aws-otel-community/issues) if you have any
+questions about the distribution, features, or its components.
+
+We also welcome you to participate in the [OpenTelemetry project](https://github.com/open-telemetry).
+The project was [approved for incubation](https://www.cncf.io/blog/2021/08/26/opentelemetry-becomes-a-cncf-incubating-project/) status
+in August 2021 by the Cloud Native Computing Foundation Technical Oversight Committee (CNCF TOC). Learn more about
+[AWS Distro for OpenTelemetry](https://aws.amazon.com/blogs/opensource/category/management-tools/aws-distro-for-opentelemetry/) on the
+[AWS Open Source Blog](https://aws.amazon.com/blogs/opensource/category/management-tools/aws-distro-for-opentelemetry/), where we announced
+the distribution’s [general availability for tracing](https://aws.amazon.com/blogs/opensource/aws-distro-for-opentelemetry-is-now-ga-for-tracing/) in September 2021
+and the distribution's [general availability for metrics](https://aws.amazon.com/blogs/opensource/aws-distro-for-opentelemetry-is-now-generally-available-for-metrics/) in May 2022.
