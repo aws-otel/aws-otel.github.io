@@ -20,7 +20,7 @@ procedure in [Install the AWS Distro for OpenTelemetry \(ADOT\) Operator](/docs/
    curl -O https://raw.githubusercontent.com/aws-observability/aws-otel-community/master/sample-configs/traffic-generator.yaml
    ```
 
-1. In `traffic-generator.yaml`, make sure that the second `kind` value reflects your mode\. For more information, 
+2. In `traffic-generator.yaml`, make sure that the second `kind` value reflects your mode\. For more information, 
 see [Deploy the ADOT Collector](https://aws-otel.github.io/docs/getting-started/adot-eks-add-on/installation#deploy-the-adot-collector) on GitHub\.
 
    ```
@@ -30,19 +30,19 @@ see [Deploy the ADOT Collector](https://aws-otel.github.io/docs/getting-started/
    `traffic-generator.yaml` makes `http` calls to the Kubernetes service `sample-app:4567`\. This allows the traffic generator to 
    interact with the sample application on port `4567`\. `sample-app` resolves to the IP address of the `sample-app` Pod\.
 
-1. Apply `traffic-generator.yaml` to your cluster\.
+3. Apply `traffic-generator.yaml` to your cluster\.
 
    ```
    kubectl apply -f traffic-generator.yaml
    ```
 
-1. Download the `sample-app.yaml` file to your computer\. You can also [view the file](https://github.com/aws-observability/aws-otel-community/blob/master/sample-configs/sample-app.yaml) on GitHub\.
+4. Download the `sample-app.yaml` file to your computer\. You can also [view the file](https://github.com/aws-observability/aws-otel-community/blob/master/sample-configs/sample-app.yaml) on GitHub\.
 
    ```
    curl -O https://raw.githubusercontent.com/aws-observability/aws-otel-community/master/sample-configs/sample-app.yaml
    ```
 
-1. In `sample-app.yaml`, replace the following with your own AWS Region:
+5. In `sample-app.yaml`, replace the following with your own AWS Region:
 
    ```
    value: "<YOUR_AWS_REGION>"
@@ -56,11 +56,11 @@ see [Deploy the ADOT Collector](https://aws-otel.github.io/docs/getting-started/
      Kubernetes service that allows the sample application to interact with the ADOT Collector on port `4317`\. In the ADOT Collector configuration, 
      the ADOT Collector receives metrics and traces from an endpoint: `0.0.0.0:4317`\. 
 
-1. In `sample-app.yaml`, update the `value` for `OTEL_EXPORTER_OTLP_ENDPOINT` if it doesn't match your collector service name\.
+6. In `sample-app.yaml`, update the `value` for `OTEL_EXPORTER_OTLP_ENDPOINT` if it doesn't match your collector service name\.
 
    For example, X\-Ray requires replacing `http://my-collector-collector:4317` with `http://my-collector-xray-collector:4317`\.
 
-1. Apply `sample-app.yaml` to your cluster\.
+7. Apply `sample-app.yaml` to your cluster\.
 
    ```
    kubectl apply -f sample-app.yaml
