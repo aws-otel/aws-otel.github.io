@@ -5,45 +5,61 @@ description:
 path: '/docs/getting-started/adot-eks-add-on/installation'
 ---
 
-The steps to fully deploy ADOT are:
+## Prerequisites
 
-1. Meet the prerequisites described [here](/docs/getting-started/adot-eks-add-on/requirements).
-2. Leverage EKS add-ons to deploy the ADOT Operator to your Amazon EKS cluster.
-3. Deploy the ADOT Collector Custom Resource Definition (CRD). You have the option to associate your IAM role with your EKS service account using [IRSA](https://docs.aws.amazon.com/emr/latest/EMR-on-EKS-DevelopmentGuide/setting-up-enable-IAM.html). By doing this, your service account can then provide AWS permissions to the containers you run in any pod that use that service account.
++ You have met the [ADOT prerequisites](/docs/getting-started/adot-eks-add-on/requirements)\.
 
-This section will go into detail for the second and third steps. Alternatively, the second and third steps can be simplified, and combined into one, using the EKS add-ons advanced configuration feature. For more information on advanced configuration for ADOT, see [Add-on Advanced Configuration](/docs/getting-started/adot-eks-add-on/add-on-configuration). For more information on ADOT Collector deployment using advanced configuration, see [Add-on Advanced Configuration: Collector Deployment](/docs/getting-started/adot-eks-add-on/add-on-configuration-collector-deployment).
+------
+## AWS Management Console 
 
-## Leverage EKS Add-Ons to deploy the ADOT Operator to your Amazon EKS cluster
+Install the ADOT Amazon EKS add\-on to your Amazon EKS cluster using the following steps:
 
-1. Apply the necessary permissions for ADOT to your cluster with the command:
-```console
-kubectl apply -f https://amazon-eks.s3.amazonaws.com/docs/addons-otel-permissions.yaml
-```
+1. Open the Amazon EKS console at [https://console\.aws\.amazon\.com/eks/home\#/clusters](https://console.aws.amazon.com/eks/home#/clusters)\.
 
-2. Install the ADOT Operator into your Amazon EKS cluster using the command:
-```console
-aws eks create-addon --addon-name adot --cluster-name <your_cluster_name>
-```
+1. In the left pane, select **Clusters**, and then select the name of your cluster on the **Clusters** page\.
 
-The `status` field value will be `CREATING` until complete.
+1. Choose the **Add\-ons** tab\.
 
-`your_cluster_name` is the name of your cluster, you can find it by executing the command below, and a list of cluster names will appear:
-```console
-aws eks list-clusters --region <your_region>
-```
+1. Choose **Get more add\-ons**\.
 
-3. Verify that ADOT is installed and running with the command:
-```console
-aws eks describe-addon --addon-name adot --cluster-name <your_cluster_name>
-```
+1. On the **Select add\-ons** page, do the following:
 
-You'll see `"status": "ACTIVE"` when creation is complete.
+   1. In the **Amazon EKS\-addons** section, select the **AWS Distro for OpenTelemetry** check box\.
 
-### Deploy the ADOT Operator to your Amazon EKS cluster through the EKS console
+   1. Choose **Next**\.
 
-Follow these steps to use the EKS console to leverage EKS add-ons for deploying the ADOT Operator to your Amazon EKS cluster.
+1. On the **Configure selected add\-ons settings** page, do the following:
 
-#### [EKS console instructions](https://docs.aws.amazon.com/eks/latest/userguide/adot-manage.html#adot-install)
+   1. The default version will be selected in the **Version** dropdown list\. Select the **Version** you'd like to use\.
+
+   1. \(Optional\) If deploying an ADOT Collector, expand **Optional configuration settings** and provide the **Configuration values** that match your use case for Collector deployment\. The **Add\-on configuration schema** provides the available options for your configuration values\.
+
+   1. If a service account is already created in the cluster without an IAM role, expand the **Optional configuration settings** and select **Override** for the **Conflict resolution method**\.
+
+   1. Choose **Next**\.
+
+1. On the **Review and add** page, choose **Create**\. After the add\-on installation is complete, you see your installed add\-on\.
+
+------
+## AWS CLI
+
+1. Install the ADOT Amazon EKS add\-on to your Amazon EKS cluster\. Optionally, the `--configuration-values` flag can be added to deploy an ADOT Collector during add\-on installation\. You may also configure other available values with this flag\.
+
+   ```
+   aws eks create-addon --addon-name adot --cluster-name my-cluster --configuration-values my-configuration-values
+   ```
+
+   The `status` field value will be `CREATING` until complete\.
+
+1. Verify that ADOT is installed and running\.
+
+   ```
+   aws eks describe-addon --addon-name adot --cluster-name my-cluster
+   ```
+
+   You'll see `"status": "ACTIVE"` when creation is complete\.
+
+------
 
 ## Deploy the ADOT Collector
 
