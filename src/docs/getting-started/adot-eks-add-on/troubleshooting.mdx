@@ -1,0 +1,22 @@
+---
+title: 'Troubleshooting for ADOT using EKS Add-Ons'
+description:
+    This page presents common troubleshooting for the ADOT EKS Add-on.
+path: '/docs/getting-started/adot-eks-add-on/troubleshooting'
+---
+
+This topic covers some of the common errors that you might encounter while using the AWS Distro for OpenTelemetry (ADOT) Amazon EKS add-on. The topic also includes instructions on how to resolve or workaround the common errors.
+--- 
+### Error: "code": "AccessDenied", "message": "roles.rbac.authorization.k8s.io \"opentelemetry-operator-leader-election-role\" is forbidden: User \"eks:addon-manager\" cannot patch resource \"roles\" in API group \"rbac.authorization.k8s.io\" in the namespace \"opentelemetry-operator-system\"
+
+You don't have permission to install the ADOT for Amazon EKS add-on. See Install the AWS Distro for OpenTelemetry (ADOT) Operator. If you have deleted the add-on and are now reinstalling, make sure that you have applied the required permissions.
+
+### Error: "status": "CREATE_FAILED" or "status": "UPDATE_FAILED"
+
+This can happen due to the following reasons:
+- There might be a conflict. You can overwrite conflicts by adding the `--resolve-conflicts=OVERWRITE` flag and running the create command again.
+- If you're using an add-on version earlier than v0.51.0, you may be on an unsupported architecture, such as arm64. Consult your logs to determine if this is the case. If so, updating your add-on version may resolve this issue because v0.51.0 and later are multi-arch.
+
+### Delete add-on error: "status": "DELETE_FAILED"
+
+You can remove Amazon EKS management of the ADOT Operator add-on by adding the `--preserve` flag to your aws eks delete-addon command.

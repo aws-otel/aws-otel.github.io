@@ -321,6 +321,7 @@ NOTE: You need to replace placeholder values with actual value
 
 - The account id in the example is `123456` and is used in ARN for taskRole and executionRole, replace it with your own AWS account id.
 - `amazon/aws-otel-collector:v0.11.0` is using dockerhub (potential throttle) and you can use `latest` tag if you don't want to lock version.
+- Collecting infrastructure metrics requires running ADOT Collector with root access and this can be configured through `user` in the container definition.
 - `/aoc/ecs-prometheus` is the name of <Link to="/docs/setup/ecs/config-through-ssm">SSM parameter</Link>.
 - `networkMode` can be `bridge`, `host`, `awsvpc`. For fargate, it has to be `awsvpc`.
 - `logConfiguration` is for log from ADOT Collector itself. Log groups for metrics/log collected by collector is configured using `AOT_CONFIG_CONTENT`.
@@ -338,6 +339,7 @@ e.g. `cpu 255 memory 511` is invalid pair.
     {
       "name": "adot",
       "image": "amazon/aws-otel-collector:v0.11.0",
+      "user": "root",
       "secrets": [
         {
           "name": "AOT_CONFIG_CONTENT",
