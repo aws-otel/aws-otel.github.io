@@ -61,79 +61,14 @@ Install the ADOT Amazon EKS add\-on to your Amazon EKS cluster using the followi
 
 ------
 
-## Deploy the ADOT Collector
+---
 
-Once the ADOT EKS Add-On is running, you can deploy the ADOT Collector into your EKS cluster. The ADOT Collector can be deployed in one of four modes: Deployment, Daemonset, StatefulSet, and Sidecar. Each mode is briefly described below.
-
-### Deployment Mode
-
-If you want to get more control of the Collector and create a standalone application, Deployment would be your choice. With Deployment,
-you can relatively easily scale up the Collector to monitor more targets, roll back to an early version if anything unexpected happens,
-pause the Collector, etc. In general, you can manage your Collector instance just as an application.
-
-### DaemonSet Mode
-
-DaemonSet should satisfy your needs if you want the Collector run as an agent in your Kubernetes nodes. In this case, every Kubernetes
-node will have its own Collector copy which would monitor the pods in it.
-
-### StatefulSet Mode
-
-There are three main advantages to deploying the Collector as a StatefulSet:
-
-- Predictable names of the Collector instance will be expected  
-  If you use above two approaches to deploy the Collector, the pod name of your Collector instance will be unique (its name plus random sequence).
-  However, each Pod in a StatefulSet derives its hostname from the name of the StatefulSet and the ordinal of the Pod (my-col-0, my-col-1, my-col-2, etc.).
-- Rescheduling will be arranged when a Collector replica fails  
-  If a Collector pod fails in the StatefulSet, Kubernetes will attempt to reschedule a new pod with the same name to the same node.
-  Kubernetes will also attempt to attach the same sticky identity (e.g., volumes) to the new pod.
-- The target allocator could be configured  
-  The target allocator will use a HTTP server to expose the scrape targets to a specific endpoint URL, which will be used by the
-  Prometheus receiver to scrape metrics data. Additionally, the target allocator will use that discovery information to evenly delegate scraping
-  jobs to the collector instances inside a StatefulSet based on a replica's current workload.
-
-### Sidecar Mode
-
-The biggest advantage of the sidecar mode is that it allows people to offload their telemetry data as fast and reliable as possible
-from their applications. This Collector instance will work on the container level and no new pod will be created, which is perfect to
-keep your EKS cluster clean and easily to be managed. Moreover, you can also use the sidecar mode when you want to use a different collect/export
-strategy, which just suits this application.
-
-Once a Sidecar instance exists in a given namespace, make sure that your deployment is in that same namespace as well. That deployment can get a sidecar by either adding the annotation `sidecar.opentelemetry.io/inject: "true"` to the pod spec of your application, or to the namespace.
-
-### Use your IAM role to launch the ADOT Collector
-You can associate your IAM role to your EKS service account using [IRSA](https://docs.aws.amazon.com/emr/latest/EMR-on-EKS-DevelopmentGuide/setting-up-enable-IAM.html). Your service account can then provide AWS permissions to the containers you run in any pod that use that service account. You must use this command for each cluster where you're installing ADOT to grant your AWS service account permissions.
-Follow these steps to associate your IAM role to your EKS service account using IRSA:
-
-1. Create an IAM OIDC provider for your cluster by following the steps in the link below:
-    * [Create an IAM OIDC provider for your cluster](https://docs.aws.amazon.com/eks/latest/userguide/enable-iam-roles-for-service-accounts.html)
-2. Create your service account and IAM role. In this command, you must have values for the following flags:
-    * For the `--name` flag, add the name of the service account you want to create; for this example we will name it `adot-collector`.
-    * For the `--namespace` flag, use the namespace your service account will reside in; for our example we will use the default namespace.
-    * For the `--cluster` flag, use the name of your cluster.
-    * The three `--attach-policy-arn` values are the policies to be attached. These three policies are the policies needed for each service we want to export to. If you only plan on using 1 or 2 of the services, you only need to attach the policies for that service:
-        * `arn:aws:iam::aws:policy/AmazonPrometheusRemoteWriteAccess` grants write access to the Prometheus service.
-        * `arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess` grants write access to the AWS X-Ray service.
-        * `arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy` grants access to write the CloudWatch service.
-    * The `--override-existing-serviceaccounts` flag is for if you have a service account already created in the cluster without an IAM Role. You can exclude this if that is not the case.
-
-```console
-eksctl create iamserviceaccount \
-    --name adot-collector \
-    --namespace default \
-    --cluster <your_cluster_name> \
-    --attach-policy-arn arn:aws:iam::aws:policy/AmazonPrometheusRemoteWriteAccess \
-    --attach-policy-arn arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess \
-    --attach-policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy \
-    --approve \
-    --override-existing-serviceaccounts
-```
-
-We will see in our collector configurations in later sections that we add the `serviceAccount: adot-collector` field to our configuration to use IRSA.
+### Please continue to the next links below to learn about deploying the ADOT Collector using the Advanced Configuration.
 
 ## [Previous Topic: Requirements](/docs/getting-started/adot-eks-add-on/requirements)
 
 ## Next Topics:
 
-### [Add-on Advanced Configuration](/docs/getting-started/adot-eks-add-on/add-on-configuration)
+### [Add-on Advanced Configuration (>=v0.88.0-eksbuild.1)](/docs/getting-started/adot-eks-add-on/add-on-configuration)
 
-### [Collector configuration introduction](/docs/getting-started/adot-eks-add-on/config-intro)
+### [Add-on Advanced Configuration (&lt;v0.88.0-eksbuild.1)](/docs/getting-started/adot-eks-add-on/add-on-configuration-deprecated)
