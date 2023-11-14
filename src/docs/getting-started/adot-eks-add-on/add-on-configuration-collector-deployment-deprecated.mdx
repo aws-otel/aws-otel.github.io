@@ -7,7 +7,7 @@ path: '/docs/getting-started/adot-eks-add-on/add-on-configuration-collector-depl
 
 As discussed in the section [Add-on Advanced Configuration (&lt;v0.88.0-eksbuild.1)](/docs/getting-started/adot-eks-add-on/add-on-configuration-deprecated), EKS add-ons now provides the ability to configure ADOT during installation time of the add-on. With this functionality, an ADOT Collector can also be deployed during an installation, provided that add-on version `v0.62.1-eksbuild.1` or higher is being used.
 
-For more information on Collector configuration, and to learn about Amazon Managed Service for Prometheus (AMP), AWS CloudWatch (CW), and AWS X-Ray as telemetry destinations, see the [Collector configuration introduction](/docs/getting-started/adot-eks-add-on/config-collector-intro) section. 
+For more information on Collector configuration, and to learn about Amazon Managed Service for Prometheus (AMP), Amazon CloudWatch (CW), and AWS X-Ray as telemetry destinations, see the [Collector configuration introduction](/docs/getting-started/adot-eks-add-on/config-collector-intro) section. 
 
 Below is a list of configurable values EKS add-ons provides for ADOT, specifically to enable Collector deployment.
 
@@ -29,13 +29,13 @@ Below is a list of configurable values EKS add-ons provides for ADOT, specifical
 
 *Note that in Fargate, resource requests and limits must be equal, see this [troubleshooting guide](https://docs.aws.amazon.com/eks/latest/userguide/troubleshooting-adot.html) for more information.
 
-**This configuration value can be used to annotate your service account and associate it with an IAM role for the IAM Roles for Service Accounts (IRSA). As an alternative to using this configuration value for IRSA, you can use the `--service-account-role-arn` flag when creating or updating the add-on. This flag will annotate service accounts created by the add-on with the role ARN you provide. The equivalent to the example provided for `collector.serviceAccount.annotations` is `--service-account-role-arn arn:aws:iam::000000000000:role/adot-collector`.
+**The `collector.serviceAccount.annotations` configuration value can be used to annotate your service account and associate it with an IAM role for the IAM Roles for Service Accounts (IRSA). As an alternative to using this configuration value for IRSA, you can use the `--service-account-role-arn` flag when creating or updating the add-on. This flag will annotate service accounts created by the add-on with the role ARN you provide. The equivalent to the example provided for `collector.serviceAccount.annotations` is `--service-account-role-arn arn:aws:iam::000000000000:role/adot-collector`.
 
 ## Use your IAM role to launch the ADOT Collector
 You can associate your IAM role to your EKS service account using [IAM Roles for Service Accounts (IRSA)](https://docs.aws.amazon.com/emr/latest/EMR-on-EKS-DevelopmentGuide/setting-up-enable-IAM.html). Your service account can then provide AWS permissions to the containers you run in any pod that use that service account. You must use this command for each cluster where you're installing ADOT to grant your AWS service account permissions.
 Follow these steps to associate your IAM role to your EKS service account using IRSA:
 
-1. Create an IAM OIDC provider for your cluster by following the steps in the link below:
+1. Create an IAM OpenID Connect (OIDC) provider for your cluster by following the steps in the link below:
     * [Create an IAM OIDC provider for your cluster](https://docs.aws.amazon.com/eks/latest/userguide/enable-iam-roles-for-service-accounts.html)
 2. Create your service account and IAM role. In this command, you must have values for the following flags:
     * For the `--name` flag, add the name of the service account you want to create; for this example we will name it `adot-collector`.

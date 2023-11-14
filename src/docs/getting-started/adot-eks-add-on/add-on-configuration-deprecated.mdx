@@ -5,7 +5,7 @@ description:
 path: '/docs/getting-started/adot-eks-add-on/add-on-configuration-deprecated'
 ---
 
-> **IMPORTANT**: The following documentation is for ADOT EKS-Addon versions preceeding `v0.88.0-eksbuild.1`.  If you are using a version greater than or equal to `v0.88.0-eksbuild.1`, 
+> **IMPORTANT**: The following documentation is for ADOT EKS add-on versions less than `v0.88.0-eksbuild.1`.  If you are using a version greater than or equal to `v0.88.0-eksbuild.1`, 
 then please refer to this updated [Add-on Advanced Configuration documentation](/docs/getting-started/adot-eks-add-on/add-on-configuration). Utilize the [v0.88.0 Advanced 
 configuration migration guide](/docs/getting-started/adot-eks-add-on/add-on-v88-migration) if you are upgrading from a pre v0.88.0 version. 
 
@@ -80,7 +80,7 @@ An example list of all configurable values, along with descriptions and examples
 | `collector.serviceAccount.annotations`      | Specifies annotations for a service account for use with Collector deployment.                                                                                 | "{"collector":{"serviceAccount":{"annotations":{"eks.amazonaws.com/role-arn":"arn:aws:iam::000000000000:role/adot-collector"}}}}}"                                      |
 | `collector.amp.enabled`                     | Specify whether or not to enable Amazon Managed Prometheus as a destination for Collector deployment.                                                          | "{"collector":{"amp":{"enabled":true}}}"                                                                                                                                |
 | `collector.amp.remoteWriteEndpoint`         | Specify a remote write endpoint for Amazon Managed Prometheus. Required if `collector.amp.enabled` is true.                                                    | "{"collector":{"amp":{"remoteWriteEndpoint":"https://aps-workspaces.us-west-2.amazonaws.com/workspaces/ws-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/api/v1/remote_write"}}}" |
-| `collector.cloudwatch.enabled`              | Specify whether or not to enable AWS CloudWatch as a destination for Collector deployment.                                                                     | "{"collector":{"cloudwatch":{"enabled":true}}}"                                                                                                                         |
+| `collector.cloudwatch.enabled`              | Specify whether or not to enable Amazon CloudWatch as a destination for Collector deployment.                                                                     | "{"collector":{"cloudwatch":{"enabled":true}}}"                                                                                                                         |
 | `collector.xray.enabled`                    | Specify whether or not to enable AWS X-Ray as a destination for Collector deployment.                                                                          | "{"collector":{"xray":{"enabled":true}}}"                                                                                                                               |
 
 *Note that in fargate, resource requests and limits must be equal, see this [troubleshooting guide](https://docs.aws.amazon.com/eks/latest/userguide/troubleshooting-adot.html) for more information.
@@ -92,7 +92,7 @@ An example list of all configurable values, along with descriptions and examples
 ## [Add-on Advanced Configuration: Collector Deployment (&lt;v0.88.0-eksbuild.1)](/docs/getting-started/adot-eks-add-on/add-on-configuration-collector-deployment-deprecated)
 ## [Collector Configuration Introduction](/docs/getting-started/adot-eks-add-on/config-collector-intro)
 - #### [Collector Configuration for Amazon Managed Prometheus](/docs/getting-started/adot-eks-add-on/config-amp)
-- #### [Collector Configuration for AWS CloudWatch](/docs/getting-started/adot-eks-add-on/config-cloudwatch)
+- #### [Collector Configuration for Amazon CloudWatch](/docs/getting-started/adot-eks-add-on/config-cloudwatch)
 - #### [Collector Configuration for AWS X-Ray](/docs/getting-started/adot-eks-add-on/config-xray)
 ## [Deploy a sample app](/docs/getting-started/adot-eks-add-on/sample-app-deprecated)
 #### [Advanced Collector Configuration for Amazon Managed Prometheus](/docs/getting-started/adot-eks-add-on/config-advanced)
