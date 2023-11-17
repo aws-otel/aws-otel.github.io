@@ -8,7 +8,7 @@ path: /blog
 blogs:
   - title: "AWS Distro for OpenTelemetry EKS Add-on v0.88.0-eksbuild.1 is now available"
     author: "Huy Vo"
-    date: "15-November-2023"
+    date: "17-November-2023"
     body:
       "AWS Distro for OpenTelemetry EKS Add-on v0.88.0-eksbuild.1 is now available."
     link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-eks-add-on-v0.88.0"
