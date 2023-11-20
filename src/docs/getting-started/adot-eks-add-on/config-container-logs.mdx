@@ -4,11 +4,11 @@ description:
     This page introduces Collector configuration for Container Logs for the ADOT Collector.
 path: '/docs/getting-started/adot-eks-add-on/config-container-logs'
 ---
-The Container Logs collector configuration launches a preconfigured OpenTelemetryCollector custom resource 
-to tail all Kubernetes pod logs with the `filelog` receiver. By opting into the 
+The Container Logs collector configuration launches a preconfigured OpenTelemetry Collector custom resource 
+to tail all Kubernetes pod logs with the [filelog](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/filelogreceiver) receiver. By opting into the 
 [available pipeline](/docs/getting-started/adot-eks-add-on/config-container-logs/#container-logs-pipelines)
 you can control where the collected logs are sent. In this preconfigured custom resource, 
-the collector will run as a daemonset in order to capture all logs on each node.
+the collector will run as a [DaemonSet](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/) in order to capture all logs on each node.
 
 ## Prerequisites
 
