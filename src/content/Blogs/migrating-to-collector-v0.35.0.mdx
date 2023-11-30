@@ -1,0 +1,118 @@
+---
+title: 'Migration guide for the ADOT collector v0.35.0 - Prometheus exporters'
+description:
+    This blog post describes the process of migrating to the ADOT collector v0.35.0. This guide is necessary due to upcoming breaking changes present in the
+    Prometheus exporter and Prometheus remote write exporter components.
+---
+
+## What is happening?
+
+Starting with version v0.85.0 of the upstream OpenTelemetry collector, the normalization of metrics when converting from OpenTelemetry metrics to Prometheus will be enabled by default.
+
+## When will this happen?
+
+The ADOT collector will start adopting the upstream behavior for name normalization of Prometheus metrics on version v0.35.0.
+
+## Who is affected and what to expect?
+
+You are affected if you are using one of the following components present in the ADOT collector: [prometheus exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/prometheusexporter#prometheus-exporter) and [prometheus remote write exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/prometheusremotewriteexporter#prometheus-remote-write-exporter).
+
+If you don’t do anything, the name of the metrics exported by the collector using these components will be normalized according to well defined rules [1,2]. These rules are applied so best practices are applied to the naming of metrics [3].
+
+Notably the following changes will enter in effect:
+
+* The unit of the metrics will be appended as suffix to the metrics exported by Prometheus.
+* Counters will have a `_total` suffix.
+
+Examples:
+
+|Type    |Name    |Unit    |Prometheus Metric exported|
+|---|---|---|---|
+|Gauge    |system.filesystem.usage    |By    |system_filesystem_usage_bytes    |
+|Gauge    |system.network.dropped    |packets    |system_network_dropped_packets    |
+|Counter    |system.network.dropped    |packets    |system_network_dropped_packets_total    |
+|Gauge    |system.cpu.utilization    |1    |system_cpu_utilization_ratio    |
+
+The feature gate `pkg.translator.prometheus.NormalizeName` is  used to control the normalization behavior. If the feature gate is disabled, there won’t be name normalization. Besides that, both components added a configuration option to control the normalization behaviour in the component level, the `add_metric_suffixes` property. This configuration option is only honoured if the feature gate is enabled.
+
+In the ADOT collector v0.34.0, the feature gate `pkg.translator.prometheus.NormalizeName` is disabled by default. In the collector v0.35.0, this feature gate will be enabled by default.
+
+* [1] https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/pkg/translator/prometheus
+* [2] https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/compatibility/prometheus_and_openmetrics.md#metric-metadata-1
+* [3] https://prometheus.io/docs/practices/naming/
+
+
+## What action items do I need to take?
+
+### If you want to upgrade to the ADOT collector v0.35.0 without name normalization
+
+This path is recommended for users who want to retain the metrics names unchanged after upgrading to the ADOT collector v0.35.0. This will guarantee that dashboards and alarms remain functional after the upgrade. 
+
+The following step by step guide is provided to guarantee a safe and gradual migration.
+
+Steps:
+
+1. Upgrade the ADOT collector to v0.34.0.
+2. Modify/review the collector configuration for the components Prometheus remote write exporter and Prometheus exporter. They **must** add the property `add_metric_suffixes: false`  to the configuration section of these components.
+Example:
+```yaml
+  prometheusremotewrite:
+    endpoint: http://example.com
+    add_metric_suffixes: false  # <-- Disable normalization
+    resource_to_telemetry_conversion:
+      enabled: true
+    auth:
+      authenticator: sigv4auth
+```
+```yaml
+exporters:
+  prometheus:
+    endpoint: "1.2.3.4:1234"
+    namespace: test-space
+    const_labels:
+      label1: value1
+      "another label": spaced value
+    send_timestamps: true
+    metric_expiration: 180m
+    enable_open_metrics: true
+    add_metric_suffixes: false  # <-- Disable normalization
+    resource_to_telemetry_conversion:
+      enabled: true
+```
+3. Upgrade the ADOT collector to v0.35.0.
+
+### If you recently upgraded to ADOT collector v0.35.0
+
+This path is recommended for users that are already using the ADOT collector v0.35.0. The following steps are recommended:
+
+* If you want to keep metric names as collected by the ADOT collector, e.g. untransformed, you should modify/review the collector configuration for the components Prometheus remote write exporter and Prometheus exporter. You **must** have the property `add_metric_suffixes: false`  in the configuration section of these components.
+
+Example:
+
+```yaml
+  prometheusremotewrite:
+    endpoint: http://example.com
+    add_metric_suffixes: false  # <-- Disable normalization
+    resource_to_telemetry_conversion:
+      enabled: true
+    auth:
+      authenticator: sigv4auth
+```
+
+```yaml
+exporters:
+  prometheus:
+    endpoint: "1.2.3.4:1234"
+    namespace: test-space
+    const_labels:
+      label1: value1
+      "another label": spaced value
+    send_timestamps: true
+    metric_expiration: 180m
+    enable_open_metrics: true
+    add_metric_suffixes: false  # <-- Disable normalization
+    resource_to_telemetry_conversion:
+      enabled: true
+```
+
+* If you want to use the name normalization of Prometheus metrics, you don’t need to do anything. We highly recommend that you verify that queries reference the normalized metric names.

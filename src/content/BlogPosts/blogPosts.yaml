@@ -6,6 +6,13 @@ description:
 path: /blog
 
 blogs:
+  - title: "Migration guide for the ADOT collector v0.35.0 - Prometheus exporters"
+    author: "Raphael Silva"
+    date: "30-November-2023"
+    body:
+      "Guide containing details about how to migrate to ADOT collector v0.35.0 if you are using the Prometheus exporter or Prometheus Remote Write exporter"
+    link: "/docs/migrating-to-collector-v0.35.0"
+
   - title: "AWS Distro for OpenTelemetry EKS Add-on v0.88.0-eksbuild.1 is now available"
     author: "Huy Vo"
     date: "20-November-2023"
