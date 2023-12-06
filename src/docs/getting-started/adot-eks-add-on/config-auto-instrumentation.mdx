@@ -73,12 +73,12 @@ spec:
   exporter:
     endpoint: http://adot-collector:4317
   java:
-    image: public.ecr.aws/aws-observability/adot-autoinstrumentation-java:v1.28.0
+    image: public.ecr.aws/aws-observability/adot-autoinstrumentation-java:v1.31.1
 ```
 
 In the example above, we are configuring the endpoint that will be used to submit the telemetry signals to `http://adot-collector:4317`. If the workload
 already has the `OTEL_EXPORTER_OTLP_ENDPOINT` environment defined, that will be used instead. In the example
-we are also configuring the version of the ADOT Java Agent that should be used to `public.ecr.aws/aws-observability/adot-autoinstrumentation-java:v1.28.0`.
+we are also configuring the version of the ADOT Java Agent that should be used to `public.ecr.aws/aws-observability/adot-autoinstrumentation-java:v1.31.1`.
 
 
 For detailed information on the `Instrumentation` CRD  please refer to the [OpenTelemetry Instrumentation Spec](https://github.com/open-telemetry/opentelemetry-operator/blob/main/docs/api.md#instrumentation).
