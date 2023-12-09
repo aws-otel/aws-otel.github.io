@@ -8,11 +8,27 @@ path: /blog
 blogs:
   - title: "AWS Distro for OpenTelemetry EKS Add-on v0.88.0-eksbuild.2 is now available"
     author: "Bryan Aguilar"
-    date: "06-December-2023"
+    date: "08-December-2023"
     body:
       "AWS Distro for OpenTelemetry EKS Add-on v0.88.0-eksbuild.2 is now available."
     link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-eks-add-on-v0.88.0-eksbuild-2"
     
+  - title: "AWS Distro for OpenTelemetry v0.36.0 is now available"
+    author: "Pavan Sai Vasireddy"
+    date: "08-December-2023"
+    body:
+      "AWS Distro for OpenTelemetry v0.36.0 is now available. You can download the latest AWS Distro for OpenTelemetry Collector image
+        from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-collector-v0.36.0"
+
+  - title: "AWS Distro for OpenTelemetry v0.35.1 is now available"
+    author: "Pavan Sai Vasireddy"
+    date: "06-December-2023"
+    body:
+      "AWS Distro for OpenTelemetry v0.35.1 is now available. You can download the latest AWS Distro for OpenTelemetry Collector image
+        from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-collector-v0.35.1"
+
   - title: "Migration guide for the ADOT collector v0.35.0 - Prometheus exporters"
     author: "Raphael Silva"
     date: "30-November-2023"
