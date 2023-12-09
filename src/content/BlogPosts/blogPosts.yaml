@@ -12,6 +12,7 @@ blogs:
     body:
       "AWS Distro for OpenTelemetry EKS Add-on v0.88.0-eksbuild.2 is now available."
     link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-eks-add-on-v0.88.0-eksbuild-2"
+    
   - title: "Migration guide for the ADOT collector v0.35.0 - Prometheus exporters"
     author: "Raphael Silva"
     date: "30-November-2023"
