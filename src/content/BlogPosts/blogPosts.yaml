@@ -6,6 +6,13 @@ description:
 path: /blog
 
 blogs:
+  - title: "ADOT Java Agent v1.31.1 - High Cardinality Metrics"
+    author: "Bryan Aguilar"
+    date: "12-December-2023"
+    body:
+      "ADOT Java Agent v1.31.1 high cardinality metrics notice"
+    link: "/docs/java-agent-1-31-1-notice"
+
   - title: "AWS Distro for OpenTelemetry EKS Add-on v0.88.0-eksbuild.2 is now available"
     author: "Bryan Aguilar"
     date: "08-December-2023"
