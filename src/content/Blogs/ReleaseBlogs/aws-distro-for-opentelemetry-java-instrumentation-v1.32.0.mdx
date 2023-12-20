@@ -13,23 +13,12 @@ import imgJIR1 from "assets/img/blogs/adot-java-instrumentation/Functional_Overv
 <SectionSeparator />
 
 **Release Highlights**
+Contains updates of the following upstream components:
+OpenTelemetry Java - 1.32.0
+OpenTelemetry Instrumentation for Java - 1.32.0
+OpenTelemetry Java Contrib - 1.32.0
 
-* backport 'Null check for nullable response object' to opentelemetry-java-instrumentation [#622]https://github.com/aws-observability/aws-otel-java-instrumentation/pull/622)
-
-
-- ADOT Java Auto-Instrumentation Docker Image
-
-ADOT has released a docker image for the ADOT Java Auto-Instrumentation jar that can be used with OpenTelemetry Operator. This enables OpenTelemetry Operator to auto instrument Java applications by injecting the ADOT Java Agent.
-
-[Opentelemetry Operator](https://github.com/open-telemetry/opentelemetry-operator) is an implementation of a Kubernetes Operator. The OpenTelemetry Operator is designed to provide auto-instrumentation to export telemetry data in applications without any code changes. The OpenTelemetry Operator can manage and automate the ADOT Collector deployment in multiple modes (Daemonset, Sidecar, Deployment) as well as auto-instrument workloads using OpenTelemetry libraries.
-
-The ADOT auto-instrumentation for Java is a redistribution of the [OpenTelemetry Agent for Java](https://github.com/open-telemetry/opentelemetry-java-instrumentation) that can be used to auto-instrument Java applications to gather telemetry data. ADOT auto-instrumentation is preconfigured for use with AWS services including support for X-Ray compatible trace IDs. With the release of ADOT Auto-Instrumentation Java Image, OpenTelemetry Operator through Custom Resources can be configured to manage the ADOT Collector and the auto-instrumentation of the workloads (as shown in figure below):
-
-<img src={imgJIR1} alt="Diagram" style="margin: 30px 0;" />
-
-The ADOT Java auto-instrumentation Docker image is available in the following url: https://gallery.ecr.aws/aws-observability/adot-autoinstrumentation-java.
-
-Detailed release notes are on [GitHub](https://github.com/aws-observability/aws-otel-java-instrumentation/releases).
+* Back-ported 'Null check for nullable response object [#10029](https://github.com/open-telemetry/opentelemetry-java-instrumentation/pull/10029)' to opentelemetry-java-instrumentation [#622]https://github.com/aws-observability/aws-otel-java-instrumentation/pull/622)
 
 **Download**
 
