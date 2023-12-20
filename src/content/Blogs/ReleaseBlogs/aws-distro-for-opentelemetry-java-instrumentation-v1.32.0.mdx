@@ -1,0 +1,39 @@
+---
+title: "AWS Distro for OpenTelemetry Java Instrumentation v1.32.0"
+description: This blog post is the release announcement for AWS Distro for OpenTelemetry - Instrumentation for Java v1.32.0
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx";
+import imgJIR1 from "assets/img/blogs/adot-java-instrumentation/Functional_Overview.png"
+
+<SectionSeparator />
+
+[AWS Distro for OpenTelemetry (ADOT)](https://aws-otel.github.io/) Agent for Java v1.32.0 is now available.
+
+<SectionSeparator />
+
+**Release Highlights**
+Contains updates of the following upstream components:
+OpenTelemetry Java - 1.32.0
+OpenTelemetry Instrumentation for Java - 1.32.0
+OpenTelemetry Java Contrib - 1.32.0
+
+* Back-ported 'Null check for nullable response object [#10029](https://github.com/open-telemetry/opentelemetry-java-instrumentation/pull/10029)' to opentelemetry-java-instrumentation [#622]https://github.com/aws-observability/aws-otel-java-instrumentation/pull/622)
+
+**Download**
+
+You can download the latest Docker image from [our public ECR repository](https://gallery.ecr.aws/aws-observability/adot-autoinstrumentation-java), and jar artifacts from the
+[GitHub](https://github.com/aws-observability/aws-otel-java-instrumentation/releases/tag/v1.32.0) and [Maven Central Repository](https://central.sonatype.com/artifact/software.amazon.opentelemetry/aws-opentelemetry-agent/1.32.0).
+
+To learn more about how to use AWS Distro for OpenTelemetry (ADOT) to collect data for your observability solution,
+check out the hands-on [AWS Observability workshop](https://observability.workshop.aws/en/adot.html).
+Please file an [issue](https://github.com/aws-observability/aws-otel-community/issues) if you have any
+questions about the distribution, features, or its components.
+
+We also welcome you to participate in the [OpenTelemetry project](https://github.com/open-telemetry).
+The project was [approved for incubation](https://www.cncf.io/blog/2021/08/26/opentelemetry-becomes-a-cncf-incubating-project/) status
+in August 2021 by the Cloud Native Computing Foundation Technical Oversight Committee (CNCF TOC). Learn more about
+[AWS Distro for OpenTelemetry](https://aws.amazon.com/blogs/opensource/category/management-tools/aws-distro-for-opentelemetry/) on the
+[AWS Open Source Blog](https://aws.amazon.com/blogs/opensource/category/management-tools/aws-distro-for-opentelemetry/), where we announced
+the distribution’s [general availability for tracing](https://aws.amazon.com/blogs/opensource/aws-distro-for-opentelemetry-is-now-ga-for-tracing/) in September 2021
+and the distribution's [general availability for metrics](https://aws.amazon.com/blogs/opensource/aws-distro-for-opentelemetry-is-now-generally-available-for-metrics/) in May 2022.
