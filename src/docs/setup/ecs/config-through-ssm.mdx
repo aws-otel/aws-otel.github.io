@@ -19,7 +19,7 @@ and use it with AWS Distro for OpenTelemetry Collector.
 <SectionSeparator />
 
 The AWS Distro for OpenTelemetry Collector can optionally be configured via an environment variable AOT_CONFIG_CONTENT. The value of this
-variable is expected to be a full Collector configuration file; it will override the config file used in the Collector 
+variable is expected to be a full Collector configuration file; it will override the config file used in the Collector
 entrypoint command. In ECS, the values of environment variables can be set from AWS Systems Manager Parameters.
 
 
@@ -28,14 +28,14 @@ entrypoint command. In ECS, the values of environment variables can be set from 
 
 **1.1. Select Task Defintion**
 
-Go to AWS Management Console and select Elastic Container Service. From the left side navigation, select [Task 
-definition](https://us-west-2.console.aws.amazon.com/ecs/home?region=us-west-2#/taskDefinitions). Select the 
+Go to AWS Management Console and select Elastic Container Service. From the left side navigation, select [Task
+definition](https://us-west-2.console.aws.amazon.com/ecs/home?region=us-west-2#/taskDefinitions). Select the
 TaskDefinition we created to run AWS Distro for OpenTelemetry Collector and click the `Create new revision` button on top.
 
 **1.2. Add Environment Variable**
 
 From the container definition section, click the **AWS Distro for OpenTelemetry Collector** container (image: `amazon/aws-otel-collector`) and go
-to the **Environment variables** section. Add a new environment variable- **AOT_CONFIG_CONTENT**. Select ValueFrom 
+to the **Environment variables** section. Add a new environment variable- **AOT_CONFIG_CONTENT**. Select ValueFrom
 which will tell ECS to get the value from SSM Parameter, and set **otel-collector-config** (SSM parameter name which
 we will create in the next section) as the value. Finish updating the task definition and create a new revision.
 
@@ -49,8 +49,8 @@ we will create in the next section) as the value. Finish updating the task defin
 
 **2.1. Go to Parameter Store**
 
-Let’s go to **System Manager** service from AWS Management Console and select 
-[Parameter Store](https://us-west-2.console.aws.amazon.com/systems-manager/home?region=us-west-2) from the left 
+Let’s go to **System Manager** service from AWS Management Console and select
+[Parameter Store](https://us-west-2.console.aws.amazon.com/systems-manager/home?region=us-west-2) from the left
 side navigation panel.
 
 <img src={ssm_01} alt="Diagram" style="margin: 10px 0;" />
@@ -58,8 +58,8 @@ side navigation panel.
 
 **2.2. Create New Parameter**
 
-From the top-right corner, click the **Create new parameter** button. Create a new parameter with the following 
-information. The parameter name should be the same as we used in the environment variable of our task-definition. 
+From the top-right corner, click the **Create new parameter** button. Create a new parameter with the following
+information. The parameter name should be the same as we used in the environment variable of our task-definition.
 
 - **Name:** otel-collector-config
 - **Tier:** Standard
@@ -67,6 +67,8 @@ information. The parameter name should be the same as we used in the environment
 - **Data type:** Text
 - **Value:** Copy and paste your custom OpenTelemetry configuration file.
 
+**NOTE** The collector configuration should not be used to store credentials in plain text. Instead, replacement instructions such as ${env:API_KEY}
+should be used to load values from an environment variable. These values can be populated either through a secrets manager (or) SSM parameter store on ECS (or) through Kubernetes secrets on EKS
 
 <SectionSeparator />
 

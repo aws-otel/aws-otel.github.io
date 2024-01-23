@@ -125,6 +125,24 @@ Regardless of the method of deployment, the ADOT Collector must have access to o
 extension depends on the AWS Go SDK and uses it to fetch credentials and authenticate. You must ensure that these credentials have remote writing 
 permissions to AMP (`aps:RemoteWrite`).
 
+### Name normalization
+
+Starting with ADOT collector v0.35.0, this component will normalize metric names to follow [Prometheus metric naming best practices](https://prometheus.io/docs/practices/naming/). You can control this behavior
+through the parameter `add_metric_suffixes`. If this parameter is set to false, no name normalization will happen.
+
+Example:
+```yaml lineNumbers=true
+  prometheusremotewrite:
+    endpoint: http://example.com
+    add_metric_suffixes: false  # <-- Disable normalization
+    resource_to_telemetry_conversion:
+      enabled: true
+    auth:
+      authenticator: sigv4auth
+```
+
+For more details, please refer to our [migration guide](/docs/migrating-to-collector-v0.35.0).
+
 <SectionSeparator />
 
 ## Conclusion 

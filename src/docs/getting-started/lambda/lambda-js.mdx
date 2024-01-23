@@ -19,17 +19,19 @@ The AWS managed Lambda layer for ADOT JavaScript provides a plug and play user e
 
 The Lambda layer supports Node.JS v14+ Lambda runtimes. For more information about supported JavaScript and Node.JS versions, see the [OpenTelemetry JavaScript documentation](https://github.com/open-telemetry/opentelemetry-js).
 
+For *TypeScript users*, if you are using `esbuild` (either directly or through tools such as the AWS CDK), you *must* export your handler function through `module.exports` rather than with the `export` keyword! The AWS mananaged layer for ADOT JavaScript needs to hot-patch your handler at runtime, but can't because `esbuild` makes your handler immutable when using the `export` keyword. 
+
 ### Add the ARN of the Lambda Layer
 
 In this section, we consume the Lambda layer for use with Node.JS Lambda Functions. This includes a reduced version of the [AWS Distro for OpenTelemetry Collector (ADOT Collector)](https://github.com/aws-observability/aws-otel-collector), which runs as a Lambda extension.
 
 Note: Lambda layers are a regionalized resource, meaning that they can only be used in the Region in which they are published. Make sure to use the layer in the same region as your Lambda functions.
 
-Find the supported regions and amd64(x86_64)/arm64 layer ARN in the table below for the ARNs to consume.
+Find the supported regions and amd64/arm64 layer ARN in the table below for the ARNs to consume. Use `amd64` as architecture [for x86-based processors](https://docs.aws.amazon.com/lambda/latest/dg/foundation-arch.html).
 
 |Supported   Regions  |Lambda layer ARN format  | Contents |
 |---------------------|-------------------------|----------|
-| ap-northeast-1<br/>ap-northeast-2<br/>ap-south-1<br/>ap-southeast-1<br/>ap-southeast-2<br/>ca-central-1<br/>eu-central-1<br/>eu-north-1<br/>eu-west-1<br/>eu-west-2<br/>eu-west-3<br/>sa-east-1<br/>us-east-1<br/>us-east-2<br/>us-west-1<br/>us-west-2 | arn:aws:lambda:<region\>:901920570463:layer:aws-otel-nodejs-<architecture\>-ver-1-9-1:2 |Contains [OpenTelemetry for JavaScript v1.9.1](https://github.com/open-telemetry/opentelemetry-js/releases/tag/v1.9.1) with [Lambda instrumentation v0.35.0](https://github.com/open-telemetry/opentelemetry-js-contrib/releases/tag/instrumentation-aws-lambda-v0.35.0) <br/><br/> Contains the [ADOT Collector for Lambda v0.27.0](https://github.com/aws-observability/aws-otel-lambda/releases/tag/adot%2Fcollector%2Flambdacomponents%2Fv0.27.0)|
+| ap-northeast-1<br/>ap-northeast-2<br/>ap-south-1<br/>ap-southeast-1<br/>ap-southeast-2<br/>ca-central-1<br/>eu-central-1<br/>eu-north-1<br/>eu-west-1<br/>eu-west-2<br/>eu-west-3<br/>sa-east-1<br/>us-east-1<br/>us-east-2<br/>us-west-1<br/>us-west-2 | arn:aws:lambda:<region\>:901920570463:layer:aws-otel-nodejs-<architecture\>-ver-1-18-1:1 |Contains [OpenTelemetry for JavaScript v1.18.1](https://github.com/open-telemetry/opentelemetry-js/releases/tag/v1.18.1) with [Lambda instrumentation v0.37.3](https://github.com/open-telemetry/opentelemetry-js-contrib/releases/tag/instrumentation-aws-lambda-v0.37.3) <br/><br/> Contains ADOT Collector v0.36.0 |
 
 ### Enable auto-instrumentation for your Lambda function
 To enable the AWS Distro for OpenTelemetry in your Lambda function, you need to add and configure the layer, and then enable tracing.
@@ -45,6 +47,9 @@ Tips:
 * By default, the layer is configured to export traces to AWS X-Ray.
  Make sure your Lambda role has the required AWS X-Ray permissions.
   For more on AWS X-Ray permissions for AWS Lambda, see the [AWS Lambda documentation](https://docs.aws.amazon.com/lambda/latest/dg/services-xray.html#services-xray-permissions).
+* Also note that, the `OTEL_EXPORTER_OTLP_ENDPOINT` environment variable
+ does not need to be set. The default value is `http://localhost:4318`,
+  as the ADOT Node.JS lambda layer only supports OTLP over HTTP.
 
 ### Remove OpenTelemetry from your Lambda function
 To disable OpenTelemetry for your Lambda function, remove the Lambda layer,
@@ -54,7 +59,7 @@ remove the environment variable `AWS_LAMBDA_EXEC_WRAPPER`, and disable active tr
 
 ## Configuration
 
-The ADOT Node.js layer combines both OpenTelemetry JavaScript and the ADOT Collector.
+The ADOT Node.JS layer combines both OpenTelemetry JavaScript and the ADOT Collector.
 The configuration of the ADOT Collector follows the OpenTelemetry standard.
 
 By default, the ADOT Lambda layer uses the [config.yaml](https://github.com/aws-observability/aws-otel-lambda/blob/main/adot/collector/config.yaml),

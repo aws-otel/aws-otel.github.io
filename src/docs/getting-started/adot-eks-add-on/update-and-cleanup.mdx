@@ -5,47 +5,66 @@ description:
 path: '/docs/getting-started/adot-eks-add-on/update-and-cleanup'
 ---
 
-## Updating ADOT using EKS add-ons and Updating the Collector Custom Resource
+## Update the AWS Distro for OpenTelemetry \(ADOT\) Operator
 
-The ADOT Operator and Collector Custom Resource are periodically updated with new versions. Check for an update of the ADOT Operator version EKS add-ons uses by executing the command
-```console
-aws eks describe-addon-versions —addon-name adot
-```
+Amazon EKS does not automatically update ADOT on your cluster\. You must initiate the update and then Amazon EKS updates the Amazon EKS add\-on for you\. 
 
-Refer [here](https://docs.aws.amazon.com/eks/latest/userguide/managing-kube-proxy.html) for more information. If a new version is found, update it in your cluster with the command 
-```console
-aws eks update-addon --addon-name adot --addon-version new-addon-version --cluster-name <your_cluster_name>
-```
+**To update the ADOT Amazon EKS add\-on using the AWS CLI**
 
-After updating the ADOT Operator using EKS add-ons, the Collector CR will also have been updated, as the default ADOT Collector image the ADOT Operator uses will have been updated as well. Reapply the Collector configurations with any changes from the last Collector Custom Resource Definition, if necessary.
+1. Check the current version of your ADOT add\-on\. Replace `my-cluster` with your cluster name\.
 
-### Updating ADOT using EKS add-ons advanced configuration feature
+   ```
+   aws eks describe-addon --cluster-name my-cluster --addon-name adot --query "addon.addonVersion" --output text
+   ```
 
-If you followed steps from [Add-on Advanced Configuration](/docs/getting-started/adot-eks-add-on/add-on-configuration), then you can update ADOT using EKS add-ons advanced configuration feature as well. You can execute the command
-```console
-aws eks update-addon --addon-name adot --addon-version new-addon-version --cluster-name <your_cluster_name> --configuration-values <your_configuration_values> 
-```
+1. Determine the ADOT versions are available that are supported by your cluster's version\.
 
-Updating the configuration values used by the add-on with a new JSON string will override previously set configuration values. If you would like to reset the configuration values used back to default values, you can use an empty JSON string (`--configuration-values "{}"`).
+   ```
+   aws eks describe-addon-versions --addon-name adot --kubernetes-version 1.23 \
+       --query "addons[].addonVersions[].[addonVersion, compatibilities[].defaultVersion]" --output text
+   ```
 
-ADOT can also be updated to a new add-on version alongside updates to configuration values. However, the configuration values must be compatible with the add-on version that ADOT is being updated to; the add-on will not update if those configuration values are not available in the new version.
+   An example output is as follows\.
 
-## Cleanup of ADOT using EKS Add-ons and Cleanup of Other Components
+   ```
+   v0.58.0-eksbuild.1
+   True
+   v0.56.0-eksbuild.2
+   False
+   ```
 
-### Delete the Collector resource
+   The version with `True` underneath is the default version deployed when the add\-on is created\. The version deployed when the add\-on is created might not be the latest available version\. In 
+   the previous output, the latest version is deployed when the add\-on is created\.
 
-You can delete individual services by specifying their YAML:
-```console
-kubectl delete -f collector-config-(amp|cloudwatch|xray|advanced).yaml
-```
+1. Update the ADOT version\. Replace `my-cluster` with the name of your cluster and `v0.58.0-eksbuild.1` with the desired version\. Optionally, the `--configuration-values` flag can 
+be added to deploy an ADOT Collector during add\-on installation\. You may also configure other available values with this flag\.
 
-### Uninstall ADOT using EKS Add-Ons
+   ```
+   aws eks update-addon --cluster-name my-cluster --addon-name adot --addon-version v0.58.0-eksbuild.1 --resolve-conflicts PRESERVE --configuration-values my-configuration-values
+   ```
 
-```console
-aws eks delete-addon --addon-name adot --cluster-name your-cluster-name
-```
+   The *PRESERVE* option preserves any custom settings that you've set for the add\-on\. For more information about other options for this setting, see [update\-addon](https://docs.aws.amazon.com/cli/latest/reference/eks/update-addon.html) in the 
+   Amazon EKS Command Line Reference\. For more information about Amazon EKS add\-on configuration management, see [Kubernetes field management](https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-field-management.html)\.
 
-After uninstalling ADOT, before reinstalling you must reinstall permissions first, see [this page](/docs/getting-started/adot-eks-add-on/requirements#adot-requirements).
+## Remove the AWS Distro for OpenTelemetry \(ADOT\) Operator
++ You must delete the ADOT Collector resource separately from the ADOT Collector\. In this command, specify the YAML file that you used to deploy the ADOT Collector:
+
+  ```
+  kubectl delete -f collector-config-(amp|cloudwatch|xray|advanced).yaml
+  ```
++ You can remove the ADOT Operator through either the AWS CLI or `eksctl`\. If you remove the ADOT Operator, you must follow the [installation instructions](/docs/getting-started/eks-add-on/installation) again to reinstall:
+
+  CLI
+
+  ```
+  aws eks delete-addon --addon-name adot --cluster-name my-cluster
+  ```
+
+  `eksctl`
+
+  ```
+  eksctl delete addon --cluster my-cluster --name adot
+  ```
 
 ### Uninstall cert-manager
 
@@ -60,12 +79,12 @@ To learn more about how you can use ADOT to collect data for your observability 
 
 ## Troubleshooting Guide
 
-The troubleshooting guide can be found [here](https://docs.aws.amazon.com/eks/latest/userguide/troubleshooting-adot.html).
+The troubleshooting guide can be found [here](/docs/getting-started/adot-eks-add-on/troubleshooting).
 
 ## Previous Topics:
 
 ### [Add-on Advanced Configuration](/docs/getting-started/adot-eks-add-on/add-on-configuration)
 
-### [Collector Configuration Introduction](/docs/getting-started/adot-eks-add-on/config-intro)
+### [Collector Configuration Introduction](/docs/getting-started/adot-eks-add-on/config-collector-intro)
 
 ## [Next Topic: Return to the Beginning of the Guide](/docs/getting-started/adot-eks-add-on)

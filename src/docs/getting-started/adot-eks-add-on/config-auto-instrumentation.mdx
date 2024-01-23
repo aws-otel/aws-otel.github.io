@@ -1,0 +1,88 @@
+---
+title: 'OpenTelemetry auto-instrumentation injection'
+description:
+    This page describes how to inject a auto-instrumentation image into your workload
+path: '/docs/getting-started/adot-eks-add-on/config-auto-instrumentation'
+---
+
+## OpenTelemetry auto-instrumentation injection
+
+The ADOT EKS Add-on can inject and configure OpenTelemetry auto-instrumentation libraries. To enable this feature, you have to
+annotate your workload with:
+
+```
+instrumentation.opentelemetry.io/inject-<language>: true
+```
+
+Languages that support injection are: java, nodejs, python and dotnet.
+
+The annotation can be added to a namespace, so that all pods within that namespace will get instrumentation, or by adding
+the annotation to individual PodSpec objects, available as part of Deployment, Statefulset, and other resources.
+
+Example:
+
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-deployment-with-multiple-containers
+spec:
+  selector:
+    matchLabels:
+      app: my-pod-with-multiple-containers
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: my-pod-with-multiple-containers
+      annotations:
+        instrumentation.opentelemetry.io/inject-java: "true"
+    spec:
+      containers:
+      - name: myapp
+        image: myImage1
+```
+
+## Configuring the auto-instrumentation
+
+The `Instrumentation` custom resource definition (CRD) can be used to select the auto-instrumentation version that will be injected into the workload. The `Instrumentation` CRD can also be used to configure auto-instrumentation agents. For more information on how to configure auto-instrumentation injection please refer to the [OpenTelemetry Documentation](https://github.com/open-telemetry/opentelemetry-operator/tree/main#opentelemetry-auto-instrumentation-injection).
+
+In the `Instrumentation` CRD you can define the collector endpoint used to submit the telemetry data and the images used
+for each language:
+
+```
+apiVersion: opentelemetry.io/v1alpha1
+kind: Instrumentation
+metadata:
+  name: my-instrumentation
+spec:
+  exporter:
+    endpoint: <endpoint>
+  java:
+    image: <image>
+```
+
+Below we can find an example with the `endpoint` and `image` fields populated:
+
+```
+apiVersion: opentelemetry.io/v1alpha1
+kind: Instrumentation
+metadata:
+  name: my-instrumentation
+spec:
+  exporter:
+    endpoint: http://adot-collector:4317
+  java:
+    image: public.ecr.aws/aws-observability/adot-autoinstrumentation-java:v1.31.1
+```
+
+In the example above, we are configuring the endpoint that will be used to submit the telemetry signals to `http://adot-collector:4317`. If the workload
+already has the `OTEL_EXPORTER_OTLP_ENDPOINT` environment defined, that will be used instead. In the example
+we are also configuring the version of the ADOT Java Agent that should be used to `public.ecr.aws/aws-observability/adot-autoinstrumentation-java:v1.31.1`.
+
+
+For detailed information on the `Instrumentation` CRD  please refer to the [OpenTelemetry Instrumentation Spec](https://github.com/open-telemetry/opentelemetry-operator/blob/main/docs/api.md#instrumentation).
+
+## [Previous Topic: Collector Configuration Introduction](/docs/getting-started/adot-eks-add-on/config-collector-intro)
+
+## [Next Topic: Kubernetes Attributes Processor](/docs/getting-started/adot-eks-add-on/k8s-attr-processor)

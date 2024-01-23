@@ -132,8 +132,8 @@ service:
 
 ## Dynatrace
 
-Dynatrace supports OpenTelemetry by ingesting OTLP directly, so users of the AWS Distro for OpenTelemetry (ADOT) can send tracing data directly to 
-Dynatrace without the need for additional plugins or non-OTLP exporters.
+[Dynatrace](https://www.dynatrace.com/integrations/opentelemetry) supports native OpenTelemetry protocol (OTLP) ingest, so users of the AWS Distro for OpenTelemetry (ADOT) 
+can send traces, metrics and logs directly to Dynatrace without the need for additional plugins or exporters.
 
 <SubSectionSeparator />
 
@@ -148,6 +148,14 @@ Dynatrace without the need for additional plugins or non-OTLP exporters.
 
 - Dynatrace 1.254 or later
 - An API token with the **Ingest metrics** scope
+- Delta metrics: Dynatrace only supports ingesting metrics with delta aggregation temporality. 
+  To learn more about aggregation temporality and how to configure your applications or collectors, please refer to the 
+  [Dynatrace documentation](https://www.dynatrace.com/support/help/shortlink/migrating-dynatrace-metrics-exporter-otlp-exporter#make-sure-metrics-have-delta-aggregation-temporality).
+
+#### OTLP Logs Ingest
+
+- Dynatrace 1.269 or later
+- An API token with the **Ingest logs** scope
 
 <SubSectionSeparator />
 
@@ -189,6 +197,10 @@ service:
       processors: []
       exporters: [otlphttp]
     metrics:
+      receivers: [otlp]
+      processors: []
+      exporters: [otlphttp]
+    logs:
       receivers: [otlp]
       processors: []
       exporters: [otlphttp]
@@ -395,7 +407,7 @@ service:
 
 ## Sumo Logic
 
-Sumo Logic supports tracing telemetry signal from OpenTelemetry natively via OTLP. If you’re already set up with AWS Distro for
+Sumo Logic supports tracing, metrics and logs telemetry signals from OpenTelemetry natively via OTLP. If you’re already set up with AWS Distro for
 OpenTelemetry, then exporting data into a SumoLogic backend is as simple as editing your YAML config file for the Collector
 and getting started.
 
@@ -406,7 +418,7 @@ and getting started.
 Before you can use the AWS Distro for OpenTelemetry with Sumo Logic you need:
 
 * A Sumo Logic account. If you don't already have one, you can create an account [here](https://www.sumologic.com/sign-up/).
-* A HTTP Traces endpoint URL. Instructions how to get one are available [here](https://help.sumologic.com/03Send-Data/Sources/02Sources-for-Hosted-Collectors/HTTP_Traces_Source).
+* An OTLP/HTTP endpoint URL. Instructions how to get one are available [here](https://help.sumologic.com/docs/send-data/hosted-collectors/http-source/otlp).
 
 <SubSectionSeparator />
 
@@ -421,23 +433,29 @@ The configuration will take place in the `batch processor` and `OTLP/HTTP export
 ```yaml lineNumbers=true
 # SumoLogic Collector configuration
 processors:
-  batch/traces:
+  batch:
     timeout: 5s
     send_batch_size: 512
     
 exporters:
   otlphttp:
-    traces_endpoint: https://YOUR_SUMOLOGIC_HTTP_TRACES_ENDPOINT_URL
+    endpoint: https://YOUR_SUMOLOGIC_OTLP_HTTP_ENDPOINT_URL
 
 service:
   pipelines:
     traces:
       exporters: [otlphttp]
-      processors: [batch/traces]
+      processors: [batch]
+    metrics:
+      exporters: [otlphttp]
+      processors: [batch]
+    logs:
+      exporters: [otlphttp]
+      processors: [batch]
 ```
 
 If you are instrumenting your application using OpenTelemetry JavaScript, Java, Python, Go,  Ruby, .NET you can use the SumoLogic
-[documentation](https://help.sumologic.com/Traces/Getting_Started_with_Transaction_Tracing/Instrument_your_application_with_OpenTelemetry)
+[documentation](https://help.sumologic.com/docs/apm/traces/get-started-transaction-tracing/opentelemetry-instrumentation)
 to set up your application and obtain telemetry data.
 
 <SubSectionSeparator />

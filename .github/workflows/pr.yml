@@ -16,8 +16,8 @@ jobs:
           - ubuntu-latest
           - windows-latest
     steps:
-      - uses: actions/checkout@v3.3.0
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4.1.1
+      - uses: actions/setup-node@v4
         with:
           node-version: '16'
           cache: 'npm'
@@ -29,7 +29,7 @@ jobs:
           GH_API_KEY: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload site as actions artifact
         if: ${{ runner.os == 'Linux' }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: site
           path: public
