@@ -4,10 +4,10 @@ env:
   DELTA_THRESHOLD: .90
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
     
-permissions:
-  contents: write
 
 jobs:
   publish-smoke-test:
@@ -18,7 +18,7 @@ jobs:
         env:
           GH_API_KEY: ${{ secrets.GITHUB_TOKEN }}
         with:
-          access-token: ${{ secrets.GITHUB_TOKEN }}
+          access-token: ${{ secrets.demo }}
           deploy-branch: smoke-test
   verify-smoke-test:
     runs-on: ubuntu-latest
