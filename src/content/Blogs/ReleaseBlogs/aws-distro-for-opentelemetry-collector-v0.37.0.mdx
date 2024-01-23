@@ -1,14 +1,14 @@
 ---
-title: 'AWS Distro for OpenTelemetry v0.36.0'
+title: 'AWS Distro for OpenTelemetry v0.37.0'
 description:
-    This blog post is the release announcement for ADOT Collector v0.36.0
+    This blog post is the release announcement for ADOT Collector v0.37.0
 ---
 
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
 
 <SectionSeparator />
 
-[AWS Distro for OpenTelemetry (ADOT)](https://aws-otel.github.io/) Collector v0.36.0 is now available.
+[AWS Distro for OpenTelemetry (ADOT)](https://aws-otel.github.io/) Collector v0.37.0 is now available.
 You can download the latest [ADOT Collector image](https://gallery.ecr.aws/aws-observability/aws-otel-collector) from the
 [Amazon Elastic Container Registry (Amazon ECR)](https://aws.amazon.com/ecr/) Public Gallery.
 
@@ -16,24 +16,23 @@ You can download the latest [ADOT Collector image](https://gallery.ecr.aws/aws-o
 
 **Upstream changelog**
 
-* [OpenTelemetry Collector v0.89.0](https://github.com/open-telemetry/opentelemetry-collector/releases/tag/v0.89.0)
-* [OpenTelemetry Collector v0.90.0](https://github.com/open-telemetry/opentelemetry-collector/releases/tag/v0.90.0)
-* [OpenTelemetry Collector Contrib v0.89.0](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v0.89.0)
-* [OpenTelemetry Collector Contrib v0.90.0](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v0.90.0)
+* [OpenTelemetry Collector v0.91.0](https://github.com/open-telemetry/opentelemetry-collector/releases/tag/v0.91.0)
+* [OpenTelemetry Collector v0.92.0](https://github.com/open-telemetry/opentelemetry-collector/releases/tag/v0.92.0)
+* [OpenTelemetry Collector Contrib v0.91.0](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v0.91.0)
+* [OpenTelemetry Collector Contrib v0.92.0](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v0.92.0)
 
-**New Components**
+**Release Notes**
+- **Patch** [opentelemetry-collector/exporterhelper] Cleanup logging for export failures [#9282](https://github.com/open-telemetry/opentelemetry-collector/pull/9282)
+- **Patch** [opentelemetry-collector-contrib/exporter/prometheusremotewrite] Fix: Validate context is canceled during retries [#30308](https://github.com/open-telemetry/opentelemetry-collector-contrib/pull/30308)
+- Bump `go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc` dependency to v0.47.0
+- Remove deprecated Dynatrace exporter [\#2568](https://github.com/aws-observability/aws-otel-collector/pull/2568) ([vasireddy99](https://github.com/vasireddy99))
 
-The following components filelog receiver, filestorage extension, and AWS CloudwatchLogs exporter are enabled by default and
-can be used with no command line changes.
-
-Detailed release notes are available via - [GitHub](https://github.com/aws-observability/aws-otel-collector/releases).
-All code changes are upstream in the respective OpenTelemetry project components.
 
 **Download**
 
 Detailed technical documentation is available on the [ADOT developer site](https://aws-otel.github.io/),
 and you can [download the distribution](https://aws-otel.github.io/download) from
-[GitHub](https://github.com/aws-observability/aws-otel-collector/releases/tag/v0.36.0).
+[GitHub](https://github.com/aws-observability/aws-otel-collector/releases/tag/v0.37.0).
 You can also download the latest [ADOT Collector image](https://gallery.ecr.aws/aws-observability/aws-otel-collector)
 from the [Amazon Elastic Container Registry (Amazon ECR)](https://aws.amazon.com/ecr/) Public Gallery.
 
