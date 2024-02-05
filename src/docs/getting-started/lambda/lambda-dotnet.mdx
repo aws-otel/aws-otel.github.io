@@ -1,7 +1,7 @@
 ---
 title: 'AWS Distro for OpenTelemetry Lambda Support For .NET'
 description:
-    The [AWS Distro for OpenTelemetry Lambda (ADOT Lambda) SDK for .NET](https://github.com/open-telemetry/opentelemetry-dotnet-contrib/tree/main/src/OpenTelemetry.Contrib.Instrumentation.AWSLambda)
+    The [AWS Distro for OpenTelemetry Lambda (ADOT Lambda) SDK for .NET](https://github.com/open-telemetry/opentelemetry-dotnet-contrib/tree/main/src/OpenTelemetry.Instrumentation.AWSLambda)
      provides extension and tracing APIs you can use to instrument your Lambda function.
      The ADOT Lambda layer provides a reduced version of the [AWS Distro for OpenTelemetry Collector](https://github.com/aws-observability/aws-otel-collector),
      which can further export OpenTelemetry spans to back-end servers.
@@ -12,7 +12,7 @@ path: '/docs/getting-started/lambda/lambda-dotnet'
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
 import img16 from "assets/img/docs/img16.png"
 
-The [OpenTelemetry Lambda instrumentation for .NET](https://github.com/open-telemetry/opentelemetry-dotnet-contrib/tree/main/src/OpenTelemetry.Contrib.Instrumentation.AWSLambda) provides extension and tracing APIs you can use to instrument your Lambda function. The ADOT Lambda layer provides a reduced version of the [AWS Distro for OpenTelemetry Collector](https://github.com/aws-observability/aws-otel-collector), which can further export OpenTelemetry spans to back-end servers.
+The [OpenTelemetry Lambda instrumentation for .NET](https://github.com/open-telemetry/opentelemetry-dotnet-contrib/tree/main/src/OpenTelemetry.Instrumentation.AWSLambda) provides extension and tracing APIs you can use to instrument your Lambda function. The ADOT Lambda layer provides a reduced version of the [AWS Distro for OpenTelemetry Collector](https://github.com/aws-observability/aws-otel-collector), which can further export OpenTelemetry spans to back-end servers.
 
 This chapter will walk you through the steps to manually instrument your Lambda function using the ADOT Lambda .NET SDK, and apply ADOT Lambda layer to enable end-to-end tracing.
 
@@ -27,10 +27,10 @@ The OpenTelemetry Lambda SDK for .NET supports both `dotnetcore3.1` and `dotnet6
 
 ### Code Instrumentation
 
-1. Install the [ADOT Lambda .NET SDK](https://www.nuget.org/packages/OpenTelemetry.Contrib.Instrumentation.AWSLambda/) package to your Lambda function.
+1. Install the [ADOT Lambda .NET SDK](https://www.nuget.org/packages/OpenTelemetry.Instrumentation.AWSLambda/) package to your Lambda function.
 
 ```shell
-dotnet add package OpenTelemetry.Contrib.Instrumentation.AWSLambda
+dotnet add package OpenTelemetry.Instrumentation.AWSLambda
 ```
 
 2. Add a call to `AddAWSLambdaConfigurations()` from `TracerProvider`.
