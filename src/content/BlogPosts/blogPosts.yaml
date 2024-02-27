@@ -6,6 +6,14 @@ description:
 path: /blog
 
 blogs:
+  - title: "AWS Distro for OpenTelemetry Java Instrumentation v1.32.1 is now available"
+    author: "Pavan Sai Vasireddy"
+    date: "27-Feb-2024"
+    body:
+      "AWS Distro for OpenTelemetry Java Instrumentation v1.32.1 is now available. You can download the latest ADOT Java auto-instrumentation Docker image
+        from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery and the jar artifacts from the Maven Central Repository."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-java-instrumentation-v1.32.1"
+
   - title: "AWS Distro for OpenTelemetry Collector v0.38.0 is now available"
     author: "Alexis Perez-Mendoza"
     date: "22-February-2024"
