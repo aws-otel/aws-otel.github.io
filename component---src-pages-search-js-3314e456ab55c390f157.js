@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkaws_otel_docs=self.webpackChunkaws_otel_docs||[]).push([[9996],{5068:function(t,e,l){l.r(e),l.d(e,{default:function(){return s}});l(67294);var u=l(70504),n=l(35414),r=l(23431);function s(){return(0,r.tZ)("div",null,(0,r.tZ)(n.q,null,(0,r.tZ)("meta",{charSet:"utf-8"}),(0,r.tZ)("title",null,"AWS Distro for OpenTelemetry")),(0,r.tZ)(u.default,null))}}}]);
+//# sourceMappingURL=component---src-pages-search-js-3314e456ab55c390f157.js.map
