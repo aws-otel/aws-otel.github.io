@@ -77,6 +77,12 @@ For example, to set the random sampling rate for creating traces, you can set th
 Another useful configuration that can be used during development is to log traces and metrics. This can be achieved by
 setting `OTEL_TRACES_EXPORTER=logging` and `OTEL_METRICS_EXPORTER=logging`.
 
+### Using CloudWatch Application Signals
+
+You can use CloudWatch Application Signals to automatically instrument your applications on AWS using ADOT java auto-instrumentation so that you can monitor current application health and track long-term application performance against your business objectives. Application Signals provides you with a unified, application-centric view of your applications, services, and dependencies, and helps you monitor and triage application health.
+
+[Get started with CloudWatch Application Signals](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Monitoring-Sections.html)
+
 ### Using X-Ray Remote Sampling
 
 The ADOT Java Auto-Instrumentation Agent can be configured to use [X-Ray remote sampling](https://docs.aws.amazon.com/xray/latest/devguide/xray-console-sampling.html)
