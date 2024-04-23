@@ -11,7 +11,7 @@ import SubSectionSeparator from "components/MdxSubSectionSeparator/subsectionSep
 
 ## Introduction
 
-OpenTelemetry Python supports automatic instrumentation. It automatically produces spans with telemetry data describing the values used by the python frameworks in your application without adding a single line of code. It is preconfigured for compatibility with X-Ray and propagates the trace context across AWS services, it can also be used with any other tracing backend.
+OpenTelemetry Python supports automatic instrumentation. It automatically produces spans with telemetry data describing the values used by the Python frameworks in your application without adding a single line of code. It is preconfigured for compatibility with AWS X-Ray and propagates the trace context across AWS services, it can also be used with any other tracing backend.
 
 In this guide, we walk through the steps needed to trace an application and produce metrics with auto-instrumentation.
 
@@ -67,9 +67,9 @@ You can use CloudWatch Application Signals to automatically instrument your appl
 
 [Get started with CloudWatch Application Signals](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Monitoring-Sections.html)
 
-### Using X-Ray Remote Sampling
+### Using AWS X-Ray Remote Sampling
 
-The ADOT Python Auto-Instrumentation can be configured to use X-Ray remote sampling by setting the environment variable `OTEL_TRACES_SAMPLER=xray`. You will also need to configure the OpenTelemetry collector to allow the application to fetch sampling configuration. By default the sampler sends requests to `http://localhost:2000`. By setting `OTEL_TRACES_SAMPLER_ARG` environment variable, you can change the endpoint the sampler talks with when getting sampling configuration from AWS X-Ray Console. For example setting `OTEL_TRACES_SAMPLER_ARG=endpoint=http://localhost:4000` would configure the sampler to communicate with `http://localhost:4000`.
+The ADOT Python auto-instrumentation can be configured to use AWS X-Ray remote sampling by setting the environment variable `OTEL_TRACES_SAMPLER=xray`. You will also need to configure the OpenTelemetry collector to allow the application to fetch sampling configuration. By default the sampler sends requests to `http://localhost:2000`. By setting `OTEL_TRACES_SAMPLER_ARG` environment variable, you can change the endpoint the sampler talks with when getting sampling configuration from AWS X-Ray Console. For example setting `OTEL_TRACES_SAMPLER_ARG=endpoint=http://localhost:4000` would configure the sampler to communicate with `http://localhost:4000`.
 
 <SectionSeparator />
 
