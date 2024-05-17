@@ -32,7 +32,7 @@ Find the supported regions and amd64/arm64 layer ARN in the table below for the 
 
 |Supported   Regions  |Lambda layer ARN format  | Contents |
 |---------------------|-------------------------|----------|
-| ap-northeast-1<br/>ap-northeast-2<br/>ap-south-1<br/>ap-southeast-1<br/>ap-southeast-2<br/>ca-central-1<br/>eu-central-1<br/>eu-north-1<br/>eu-west-1<br/>eu-west-2<br/>eu-west-3<br/>sa-east-1<br/>us-east-1<br/>us-east-2<br/>us-west-1<br/>us-west-2 | arn:aws:lambda:<region\>:901920570463:layer:aws-otel-python-<architecture\>-ver-1-21-0:1 | Contains [OpenTelemetry Python v1.21.0](https://github.com/open-telemetry/opentelemetry-python/releases/tag/v1.21.0) <br/><br/> Contains ADOT Collector v0.36.0 |
+| ap-northeast-1<br/>ap-northeast-2<br/>ap-south-1<br/>ap-southeast-1<br/>ap-southeast-2<br/>ca-central-1<br/>eu-central-1<br/>eu-north-1<br/>eu-west-1<br/>eu-west-2<br/>eu-west-3<br/>sa-east-1<br/>us-east-1<br/>us-east-2<br/>us-west-1<br/>us-west-2 | arn:aws:lambda:<region\>:901920570463:layer:aws-otel-python-<architecture\>-ver-1-24-0:1 | Contains [OpenTelemetry Python v1.24.0](https://github.com/open-telemetry/opentelemetry-python/releases/tag/v1.24.0) <br/><br/> Contains ADOT Collector v0.39.0 |
 
 ### Enable auto-instrumentation for your Lambda function
 To enable the AWS Distro for OpenTelemetry in your Lambda function, you need to add and configure the layer, and then enable tracing.
