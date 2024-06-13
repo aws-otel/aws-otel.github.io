@@ -229,6 +229,62 @@ const sdk = new opentelemetry.NodeSDK({
 
 <SubSectionSeparator />
 
+### Using X-Ray Remote Sampling 
+The `@opentelemetry/sampler-aws-xray` package provides `Sampler` implementation for use with [X-Ray remote sampling](https://docs.aws.amazon.com/xray/latest/devguide/xray-console-sampling.html).
+
+
+```shell
+npm install @opentelemetry/sampler-aws-xray
+```
+
+When initializing the `TracerProvider`, register the `AWSXRayRemoteSampler`. Moreover, you can configure the following attributes for the sampler.
+
+| **Attribute**        | **Type** | **Description**                                                      | **Default**             |
+|----------------------|----------|----------------------------------------------------------------------|-------------------------|
+| `pollingIntervalMS`  | number   | Duration between polling the GetSamplingRules API                    | 5 minutes               |
+| `endpoint`           | string   | Endpoint used to communicate with the `awsproxy` collector extension | `http://localhost:2000` |
+
+
+```js lineNumbers=true 
+const opentelemetry = require("@opentelemetry/sdk-node");
+const { AWSXRayRemoteSampler } = require('@opentelemetry/sampler-aws-xray');
+const { Resource } = require("@opentelemetry/resources");
+const { BatchSpanProcessor} = require('@opentelemetry/sdk-trace-base');
+const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-grpc');
+const { AWSXRayPropagator } = require("@opentelemetry/propagator-aws-xray");
+const { AWSXRayIdGenerator } = require("@opentelemetry/id-generator-aws-xray");
+
+
+// Initialize resource, trace exporter, span processor, and ID generator
+const _resource = Resource.default().merge(new Resource({
+        [SemanticResourceAttributes.SERVICE_NAME]: "remote-sampler-app",
+    }));
+const _traceExporter = new OTLPTraceExporter();
+const _spanProcessor = new BatchSpanProcessor(_traceExporter);
+const _tracerConfig = {
+    idGenerator: new AWSXRayIdGenerator(),
+}
+
+const sdk = new opentelemetry.NodeSDK({
+        textMapPropagator: new AWSXRayPropagator(),
+        instrumentations: [
+            new HttpInstrumentation(),
+            new AwsInstrumentation({
+                suppressInternalInstrumentation: true
+            }),
+        ],
+        resource: _resource,
+        spanProcessor: _spanProcessor,
+        traceExporter: _traceExporter,
+        // add remote sampler
+        sampler: new AWSXRayRemoteSampler(),
+    });
+
+    sdk.configureTracerProvider(_tracerConfig, _spanProcessor);
+```
+
+Please note that you will also need to [configure the OpenTelemetry collector](/docs/getting-started/remote-sampling) to allow the application to fetch sampling configuration for AWS X-Ray service.
+
 ## Custom Instrumentation
 
 ### Creating Custom Spans
