@@ -35,7 +35,7 @@ The ADOT Java Agent is also published in the following maven coordinates:
 
 ```kotlin lineNumbers=true
 dependencies {
-    implementation("software.amazon.opentelemetry:aws-opentelemetry-agent:1.32.1")
+    implementation("software.amazon.opentelemetry:aws-opentelemetry-agent:1.32.2")
 }
 ```
 
@@ -44,7 +44,7 @@ dependencies {
   <dependency>
       <groupId>software.amazon.opentelemetry</groupId>
       <artifactId>aws-opentelemetry-agent</artifactId>
-      <version>1.32.1</version>
+      <version>1.32.2</version>
   </dependency>
 </dependencies>
 ```
@@ -76,6 +76,12 @@ For example, to set the random sampling rate for creating traces, you can set th
 
 Another useful configuration that can be used during development is to log traces and metrics. This can be achieved by
 setting `OTEL_TRACES_EXPORTER=logging` and `OTEL_METRICS_EXPORTER=logging`.
+
+### Using CloudWatch Application Signals
+
+You can use CloudWatch Application Signals to automatically instrument your applications on AWS using ADOT Java auto-instrumentation so that you can monitor current application health and track long-term application performance against your business objectives. Application Signals provides you with a unified, application-centric view of your applications, services, and dependencies, and helps you monitor and triage application health.
+
+[Get started with CloudWatch Application Signals](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Monitoring-Sections.html)
 
 ### Using X-Ray Remote Sampling
 

@@ -15,7 +15,7 @@ The AWS managed Lambda layer for ADOT Java Auto-instumentation Agent provides a 
 
 ## Requirements
 
-The Lambda layer supports the Java 11 (Corretto) Lambda runtime. It _does not_ support the Java 8 Lambda runtimes. For more information about supported Java versions, see the [OpenTelemetry Java documentation](https://github.com/open-telemetry/opentelemetry-java#requirements).
+The Lambda layer supports Java 11 (Corretto) and Java 17 Lambda runtimes. It _does not_ support the Java 8 Lambda runtimes. For more information about supported Java versions, see the [OpenTelemetry Java documentation](https://github.com/open-telemetry/opentelemetry-java#requirements).
 
 Note: ADOT Lambda Layer for Java Auto-instrumentation Agent - Automatic instrumentation has a notable impact on startup time on AWS Lambda and you will generally need to use this along with provisioned concurrency and warmup requests to serve production requests without causing timeouts on initial requests while it initializes.
 
@@ -29,7 +29,7 @@ Find the supported regions and amd64/arm64 layer ARN in the table below for the 
 
 |Supported   Regions  |Lambda layer ARN format  | Contents |
 |---------------------|-------------------------|----------|
-| ap-northeast-1<br/>ap-northeast-2<br/>ap-south-1<br/>ap-southeast-1<br/>ap-southeast-2<br/>ca-central-1<br/>eu-central-1<br/>eu-north-1<br/>eu-west-1<br/>eu-west-2<br/>eu-west-3<br/>sa-east-1<br/>us-east-1<br/>us-east-2<br/>us-west-1<br/>us-west-2 | arn:aws:lambda:<region\>:901920570463:layer:aws-otel-java-agent-<architecture\>-ver-1-32-0:1 | Contains [ADOT Java Auto-Instrumentation Agent v1.32.0](https://github.com/aws-observability/aws-otel-java-instrumentation/releases/tag/v1.32.0) <br/><br/> Contains ADOT Collector v0.36.0 |
+| ap-northeast-1<br/>ap-northeast-2<br/>ap-south-1<br/>ap-southeast-1<br/>ap-southeast-2<br/>ca-central-1<br/>eu-central-1<br/>eu-north-1<br/>eu-west-1<br/>eu-west-2<br/>eu-west-3<br/>sa-east-1<br/>us-east-1<br/>us-east-2<br/>us-west-1<br/>us-west-2 | arn:aws:lambda:<region\>:901920570463:layer:aws-otel-java-agent-<architecture\>-ver-1-32-0:2 | Contains [ADOT Java Auto-Instrumentation Agent v1.32.0](https://github.com/aws-observability/aws-otel-java-instrumentation/releases/tag/v1.32.0) <br/><br/> Contains ADOT Collector v0.39.0 |
 
 ### Enable auto-instrumentation for your Lambda function
 

@@ -6,6 +6,45 @@ description:
 path: /blog
 
 blogs:
+  - title: "AWS Distro for OpenTelemetry Collector v0.39.1 is now available"
+    author: "Anthony Mirabella"
+    date: "10-June-2024"
+    body:
+      "AWS Distro for OpenTelemetry v0.39.1 is now available. You can download the latest AWS Distro for OpenTelemetry Collector image
+        from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-collector-v0.39.1"
+
+  - title: "AWS Distro for OpenTelemetry Java Instrumentation v1.32.2 is now available"
+    author: "Thomas Pierce"
+    date: "22-May-2024"
+    body:
+      "AWS Distro for OpenTelemetry Java Instrumentation v1.32.2 is now available. You can download the latest ADOT Java auto-instrumentation Docker image
+        from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery and the jar artifacts from the Maven Central Repository."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-java-instrumentation-v1.32.2"
+
+  - title: "AWS Distro for OpenTelemetry Lambda Layers are now available with ADOT Collector v0.39.0"
+    author: "Huy Vo"
+    date: "16-May-2024"
+    body:
+      "ADOT Lambda Layers now distribute ADOT Collector v0.39.0 with new layers supporting AMD64 and ARM64 Lambda functions"
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-lambda-layer-v0.39.0"
+
+  - title: "AWS Distro for OpenTelemetry Collector v0.39.0 is now available"
+    author: "Roy Chiang"
+    date: "09-May-2024"
+    body:
+      "AWS Distro for OpenTelemetry v0.39.0 is now available. You can download the latest AWS Distro for OpenTelemetry Collector image
+        from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-collector-v0.39.0"
+
+  - title: "AWS Distro for OpenTelemetry Collector v0.38.2 and v0.37.3 are now available"
+    author: "Huy Vo"
+    date: "24-April-2024"
+    body:
+      "AWS Distro for OpenTelemetry v0.38.2 and v0.37.3 are now available. You can download the latest AWS Distro for OpenTelemetry Collector images
+        from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-collector-v0.38.2-and-v0.37.3"
+
   - title: "AWS Distro for OpenTelemetry EKS Add-on v0.94.1-eksbuild.1 is now available"
     author: "Bryan Aguilar"
     date: "20-March-2024"
