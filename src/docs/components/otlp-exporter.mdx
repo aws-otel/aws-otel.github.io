@@ -130,6 +130,51 @@ service:
 
 <SubSectionSeparator />
 
+## Axiom
+
+[Axiom](https://axiom.co/docs/send-data/opentelemetry) supports native OpenTelemetry protocol (OTLP) ingest, so users of the AWS Distro for OpenTelemetry (ADOT) 
+can send traces and logs directly to Dynatrace without the need for additional plugins or exporters.
+
+<SubSectionSeparator />
+
+### Requirements
+
+- A dataset and an API token with ingest permission
+
+<SubSectionSeparator />
+
+### Example 
+
+```
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+exporters:
+  otlphttp:
+    endpoint: "https://api.axiom.co"
+    headers:
+      authorization: "Bearer <YOUR_API_TOKEN>"
+      x-axiom-dataset: <YOUR_DATASET>
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [otlphttp]
+    logs:
+      receivers: [otlp]
+      exporters: [otlphttp]
+```
+
+<SubSectionSeparator />
+
+
+### Configuration (Collector)
+
+The configuration takes place in the OTLP exporter in the Collector config YAML file.
+Configure the [OTLP HTTP Exporter](https://github.com/open-telemetry/opentelemetry-collector/tree/master/exporter/otlphttpexporter) with the following settings. For additional details see the [Axiom documentation for the Collector](https://axiom.co/docs/send-data/opentelemetry#opentelemetry-collector).
+
 ## Dynatrace
 
 [Dynatrace](https://www.dynatrace.com/integrations/opentelemetry) supports native OpenTelemetry protocol (OTLP) ingest, so users of the AWS Distro for OpenTelemetry (ADOT) 

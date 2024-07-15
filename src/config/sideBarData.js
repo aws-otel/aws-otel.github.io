@@ -125,6 +125,7 @@ export const sideBarData = [
       label: "Partners",
       items: [
         {label: "AppDynamics", link: "/docs/components/otlp-exporter#appdynamics"},
+        {label: "Axiom", link: "/docs/components/otlp-exporter#axiom"},
         {label: "Datadog", link: "/docs/partners/datadog"},
         {label: "Dynatrace", link: "/docs/partners/dynatrace"},
         {label: "Honeycomb", link: "/docs/components/otlp-exporter#honeycomb"},
