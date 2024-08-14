@@ -3,10 +3,10 @@
 * @aws-otel/webteam
 
 
-src/docs/getting-started/dotnet-sdk                        @aws-otel/webteam @aws-observability/aws-application-signals-maintainers
-src/docs/getting-started/go-sdk                            @aws-otel/webteam @aws-observability/aws-application-signals-maintainers
-src/docs/getting-started/java-sdk                          @aws-otel/webteam @aws-observability/aws-application-signals-maintainers
-src/docs/getting-started/js-sdk                            @aws-otel/webteam @aws-observability/aws-application-signals-maintainers
-src/docs/getting-started/python-sdk                        @aws-otel/webteam @aws-observability/aws-application-signals-maintainers
-src/docs/getting-started/ruby-sdk                          @aws-otel/webteam @aws-observability/aws-application-signals-maintainers
-src/docs/getting-started/php-sdk                           @aws-otel/webteam @aws-observability/aws-application-signals-maintainers
+src/docs/getting-started/dotnet-sdk                         @aws-observability/aws-application-signals-maintainers
+src/docs/getting-started/go-sdk                             @aws-observability/aws-application-signals-maintainers
+src/docs/getting-started/java-sdk                           @aws-observability/aws-application-signals-maintainers
+src/docs/getting-started/js-sdk                             @aws-observability/aws-application-signals-maintainers
+src/docs/getting-started/python-sdk                         @aws-observability/aws-application-signals-maintainers
+src/docs/getting-started/ruby-sdk                           @aws-observability/aws-application-signals-maintainers
+src/docs/getting-started/php-sdk                            @aws-observability/aws-application-signals-maintainers
