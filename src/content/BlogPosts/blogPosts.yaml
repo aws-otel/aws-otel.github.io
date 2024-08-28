@@ -8,7 +8,7 @@ path: /blog
 blogs:
   - title: "AWS Distro for OpenTelemetry Collector v0.40.1 is now available"
     author: "Hudson Humphries"
-    date: "27-August-2024"
+    date: "28-August-2024"
     body:
       "AWS Distro for OpenTelemetry v0.40.1 is now available. You can download the latest AWS Distro for OpenTelemetry Collector image
         from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery."
