@@ -214,6 +214,7 @@ By using OpenTelemetry SDK, we can add the customized attributes for each trace 
 attributes will be converted into `metadata` attributes in X-Ray raw data. If we need to convert some or all OpenTelemetry attributes
 into X-Ray `annotation`, we can follow the steps below for enabling annotation conversion.
 
+#### Enabling X-Ray annotations via the otel collector xray exporter config
 #### Step 1: create an attribute by using OpenTelemetry SDK
 For example:
 ```
@@ -232,6 +233,22 @@ For all attributes to be indexed:
 awsxray:
   index_all_attributes: true
 ```
+
+#### Enabling X-Ray annotations via an otel sdk span attribute
+We can direct X-ray to annotate customized attributes of a span via otel span attributes.  
+#### Step 1: create an attribute by using OpenTelemetry SDK
+For example:
+```
+setAttribute(“TransactionId”, <value>)
+setAttribute(“AccountId”, <value>)
+```
+*Note: More detailed instructions for adding attributes can be found in individual languages' guides*
+#### Step 2: direct xray to annotate these attributes
+For example:
+```
+setAttribute("aws.xray.annotations", List.of(“TransactionId”, “AccountId”))
+```
+*Note: More detailed instructions can be found here: https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/awsxrayexporter
 <SectionSeparator />
 
 ## Configuring the OpenTelemetry Collector for X-Ray remote Sampling
