@@ -1,0 +1,97 @@
+---
+title: 'Tracing and Metrics with the AWS Distro for OpenTelemetry JavaScript Auto-Instrumentation'
+description:
+    OpenTelemetry provides different language SDKs to instrument code for collecting telemetry data in the application.
+    In this tutorial, we will introduce how to use OpenTelemetry JavaScript SDK for traces and metrics instrumentation in the application...
+path: '/docs/getting-started/JavaScript-sdk/auto-instr'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import SubSectionSeparator from "components/MdxSubSectionSeparator/subsectionSeparator.jsx"
+
+## Introduction
+
+The AWS Distro for OpenTelemetry (ADOT) JavaScript SDK supports automatic instrumentation for NodeJS applications. It automatically produces spans with telemetry data describing the values used by the NodeJS frameworks in your application without adding a single line of code. It is preconfigured for compatibility with AWS X-Ray and propagates the trace context across AWS services, and it can also be used with any other tracing backend.
+
+In this guide, we walk through the steps needed to trace an application and produce metrics with auto-instrumentation.
+
+<SectionSeparator />
+
+## Requirements
+
+The current supported NodeJS versions to run an application using OpenTelemetry JavaScript are versions 14, 16, 18, 20, and 22.
+
+Note: You’ll also need to have the [ADOT Collector](https://aws-otel.github.io/docs/getting-started/collector) running to export traces and metrics.
+
+<SectionSeparator />
+
+## Installation
+
+The easiest way to download the packages needed for auto-instrumentation is by using NPM:
+
+```bash
+npm install @aws/aws-distro-opentelemetry-node-autoinstrumentation
+```
+
+The `@aws/aws-distro-opentelemetry-node-autoinstrumentation` package provides a register script that configures the OpenTelemetry SDK with some basic defaults. This script is used for starting the Auto Instrumentation. The `@opentelemetry/api`, `@opentelemetry/auto-instrumentations-node`, `@opentelemetry/core`, `@opentelemetry/sdk-node`, and several other required `@opentelemetry` dependency packages are installed by default along with `@aws/aws-distro-opentelemetry-node-autoinstrumentation`. `@opentelemetry/auto-instrumentations-node` provides the library instrumentations from [OpenTelemetry JS Contrib](https://github.com/open-telemetry/opentelemetry-js-contrib/tree/main/metapackages/auto-instrumentations-node#supported-instrumentations) that each enables the instrumentation functionality of their respective libraries. The `@opentelemetry/sdk-node` library provides the functionality to configure, detect, install, and initialize all instrumentation packages supported for your application’s dependencies. Check out the OpenTelemetry registry for a [full list of instrumentation packages provided by OpenTelemetry JavaScript](https://opentelemetry.io/ecosystem/registry/?s=&component=instrumentation&language=js).
+
+## Running an Application with Auto-Instrumentation
+
+Auto-instrumentation uses a `register` script that is `"required"` when the NodeJS application is started. This script will automatically load instrumentations for NodeJS built-in modules and common packages.
+
+The AWS Distro can be configured using the `NODE_OPTIONS` environment variable to run the `register` script.
+
+Start your application using auto-instrumentation can be as simple as the following:
+
+```bash
+export NODE_OPTIONS="--require @aws/aws-distro-opentelemetry-node-autoinstrumentation/register"
+node app.js
+```
+
+Alternatively, you can run:
+
+```bash
+node --require '@aws/aws-distro-opentelemetry-node-autoinstrumentation/register' app.js
+```
+
+### Configuring Auto-Instrumentation
+
+Environment variables are the primary way in which the OpenTelemetry SDK for JavaScript is configured. For example:
+
+* By default, `@aws/aws-distro-opentelemetry-node-autoinstrumentation` uses the OTLP exporter and is configured to send data to a OpenTelemetry collector at `http://localhost:4318` for both metrics and traces. The configuration of your SDK exporter depends on how you have configured your ADOT Collector. To learn more about how the ADOT Collector can be configured, refer to the [ADOT Collector Documentation](https://aws-otel.github.io/docs/getting-started/collector).
+
+* The random sampling rate for creating traces can be set through the environment variables `OTEL_TRACES_SAMPLER=parentbased_traceidratio` and `OTEL_TRACES_SAMPLER_ARG=0.3` to configure a sampling rate of 30%. Sampling related configuration can be found in [opentelemetry.sdk.trace.sampling submodule public doc](https://opentelemetry-JavaScript.readthedocs.io/en/latest/sdk/trace.sampling.html).
+
+More SDK configuration can be found in upstream [opentelemetry SDK config public doc](https://opentelemetry.io/docs/languages/sdk-configuration/).
+
+### Using CloudWatch Application Signals
+
+You can use CloudWatch Application Signals to automatically instrument your NodeJS applications on AWS using ADOT JavaScript auto-instrumentation so that you can monitor current application health and track long-term application performance against your business objectives. Application Signals provides you with a unified, application-centric view of your applications, services, and dependencies, and helps you monitor and triage application health.
+
+[Get started with CloudWatch Application Signals](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Monitoring-Sections.html)
+
+### Using AWS X-Ray Remote Sampling
+
+The ADOT JavaScript auto-instrumentation can be configured to use AWS X-Ray remote sampling by setting the environment variable `OTEL_TRACES_SAMPLER=xray`. You will also need to configure the OpenTelemetry collector to allow the application to fetch sampling configuration. By default the sampler sends requests to `http://localhost:2000`. By setting `OTEL_TRACES_SAMPLER_ARG` environment variable, you can change the endpoint the sampler talks with when getting sampling configuration from AWS X-Ray Console. For example setting `OTEL_TRACES_SAMPLER_ARG=endpoint=http://localhost:4000` would configure the sampler to communicate with `http://localhost:4000`.
+
+<SectionSeparator />
+
+## Using Manual Instrumentation
+
+While the register script for ADOT JavaScript provides automatic instrumentation for popular frameworks, you might find the need
+to perform manual instrumentation in your application, for example, to provide custom data or to instrument
+code within the application itself.
+
+To perform manual instrumentation alongside the automatic instrumentation, you will need to add `@opentelemetry/api` as a dependency. The
+version of this dependency is recommended to be the same version of the same dependency that is used by the ADOT JavaScript SDK.
+
+##### To add the `@opentelemetry/api` dependency via NPM:
+```bash
+npm install @opentelemetry/api
+```
+
+<SectionSeparator />
+
+## Sample Applications
+
+* [Simple Express.js Server Sample Application](https://github.com/aws-observability/aws-otel-js-instrumentation/tree/main/sample-applications/simple-express-server)
