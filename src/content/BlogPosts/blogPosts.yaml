@@ -6,6 +6,13 @@ description:
 path: /blog
 
 blogs:
+  - title: "AWS Distro for OpenTelemetry EKS Add-on v0.102.1-eksbuild.2 is now available"
+    author: "Pavan Sai Vasireddy"
+    date: "23-October-2024"
+    body:
+      "AWS Distro for OpenTelemetry EKS Add-on v0.102.1-eksbuild.2 is now available."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-eks-add-on-v0.102.1-eksbuild.2"
+
   - title: "AWS Distro for OpenTelemetry Java Instrumentation v1.32.4 is now available"
     author: "Michael He"
     date: "16-October-2024"
@@ -13,7 +20,7 @@ blogs:
       "AWS Distro for OpenTelemetry Java Instrumentation v1.32.4 is now available. You can download the latest ADOT Java auto-instrumentation Docker image
           from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery and the jar artifacts from the Maven Central Repository."
     link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-java-instrumentation-v1.32.4"
-    
+
   - title: "AWS Distro for OpenTelemetry Collector v0.41.1 is now available"
     author: "Roy Chiang"
     date: "16-October-2024"
@@ -1144,7 +1151,6 @@ blogs:
       "In this post, three AWS interns—Brandon Kimberly, Ankit Bhargava, and Hudson Humphries—describe their first
       engineering contributions to the popular open source observability project OpenTelemetry."
     link: "https://aws.amazon.com/blogs/opensource/aws-adds-observability-metrics-to-the-opentelemetry-c-library/"
-
 
 searchIndex:
   "
