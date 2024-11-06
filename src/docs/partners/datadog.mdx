@@ -1,12 +1,12 @@
 ---
 title: 'Datadog Exporter'
-description: Configure the AWS Distro for OpenTelemetry Collector to send metrics and traces to Datadog
+description: Configure the AWS Distro for OpenTelemetry Collector to send metrics, traces and logs to Datadog
 path: '/docs/partners/datadog'
 ---
 
 ## Overview
 
-Datadog provides monitoring and insights into infrastructure and application performance across your entire stack. The AWS Distro for Open Telemetry includes the [Datadog exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/master/exporter/datadogexporter), which takes OpenTelemetry data (metrics and traces) collected by the ADOT Collector and forwards it on to Datadog. From there, you can use Datadog tools and dashboards to analyze and solve performance problems in your distributed apps.
+Datadog provides monitoring and insights into infrastructure and application performance across your entire stack. The AWS Distro for OpenTelemetry includes the [Datadog exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/master/exporter/datadogexporter), which takes OpenTelemetry data (metrics, traces and logs) collected by the ADOT Collector and forwards it on to Datadog. From there, you can use Datadog tools and dashboards to analyze and solve performance problems in your distributed apps.
 
 ## Prerequisites
 
@@ -16,7 +16,7 @@ Datadog provides monitoring and insights into infrastructure and application per
 
 ## Configuring the exporter
 
-Configure the ADOT collector to send metrics and traces to Datadog by adding a `datadog` exporter to your [OpenTelemetry configuration YAML file](https://opentelemetry.io/docs/collector/configuration/) along with your Datadog API key:
+Configure the ADOT collector to send metrics, traces and logs to Datadog by adding a `datadog` exporter to your [OpenTelemetry configuration YAML file](https://opentelemetry.io/docs/collector/configuration/) along with your Datadog API key:
 
 ```yaml lineNumbers=true
 datadog:
@@ -42,7 +42,7 @@ processors:
 
 ## Specifying resource attributes
 
-On each OpenTelemetry-instrumented application, set the resource attributes `development.environment`, `service.name`, and `service.version` using [the language's SDK](https://opentelemetry.io/docs/). As a fall-back, you can also configure hostname (optionally) at the collector level for [unified service tagging](https://docs.datadoghq.com/getting_started/tagging/unified_service_tagging) by following the [example configuration file](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/master/exporter/datadogexporter/example/config.yaml). If you don't specify the hostname explicitly, the exporter attempts to get an automatic default by checking the following sources in order, falling back to the next one if the current one is unavailable or invalid:
+On each OpenTelemetry-instrumented application, set the resource attributes `development.environment.name`, `service.name`, and `service.version` using [the language's SDK](https://opentelemetry.io/docs/). As a fall-back, you can also configure hostname (optionally) at the collector level for [unified service tagging](https://docs.datadoghq.com/getting_started/tagging/unified_service_tagging) by following the [example configuration file](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/master/exporter/datadogexporter/example/config.yaml). If you don't specify the hostname explicitly, the exporter attempts to get an automatic default by checking the following sources in order, falling back to the next one if the current one is unavailable or invalid:
 
 <!--- 1. Hostname set by another OpenTelemetry component -->
 1. Manually set the hostname in configuration
@@ -102,6 +102,10 @@ Here is an example configuration for collecting metrics data:
 receivers:
   otlp:
 
+processors:
+  batch:
+    timeout: 10s
+
 exporters:
   datadog/api:
     hostname: i-0e123a456a123456a
@@ -118,6 +122,37 @@ service:
   pipelines:
     metrics:
       receivers: [otlp]
+      processors: [batch]
+      exporters: [datadog/api]
+```
+
+Here is an example configuration for collecting logs data:
+
+```yaml lineNumbers=true
+receivers:
+  otlp:
+
+processors:
+  batch:
+    timeout: 10s
+
+exporters:
+  datadog/api:
+    hostname: i-0e123a456a123456a
+
+    host_metadata:
+      tags:
+        - geo.country:fr
+
+    api:
+      key: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      site: datadoghq.eu
+
+service:
+  pipelines:
+    logs:
+      receivers: [otlp]
+      processors: [batch]
       exporters: [datadog/api]
 ```
 
