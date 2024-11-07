@@ -1,0 +1,89 @@
+---
+title: 'Tracing and Metrics with the AWS Distro for OpenTelemetry .NET Auto-Instrumentation'
+description:
+    OpenTelemetry provides different language SDKs to instrument code for collecting telemetry data in the application.
+    In this tutorial, we will introduce how to use AWS Distro for OpenTelemetry .NET Auto-Instrumentation for traces and metrics instrumentation in the application.
+path: '/docs/getting-started/dotnet-sdk/auto-instr'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+
+## Introduction
+
+The AWS Distro for OpenTelemetry (ADOT) .NET Auto-Instrumentation use [Host startup hook](https://github.com/dotnet/runtime/blob/main/docs/design/features/host-startup-hook.md)
+and [CLR Profiler](https://docs.microsoft.com/en-us/dotnet/framework/unmanaged-api/profiling/) to be injected into .NET application for gathering
+telemetry data from a diverse set of libraries and frameworks. The ADOT .NET auto-Instrumentation will automatically insturment application code at startup
+to collect tracing data. It is preconfigured for compatibility with X-Ray and AWS services but can also be used with any
+other tracing backend. Out of the box, it propagates traces using all of W3C Trace Context, B3, and X-Amzn-Trace-Id.
+
+<SectionSeparator />
+
+## Requirements
+
+The ADOT .NET auto-Instrumentation is compatible for all the officially supported versions of [.NET](https://dotnet.microsoft.com/en-us/download/dotnet) and [.NET Framework](https://dotnet.microsoft.com/en-us/download/dotnet-framework).
+
+Note: You’ll also need to have the [ADOT Collector](https://aws-otel.github.io/docs/getting-started/collector) running to export traces to X-Ray.
+
+## Installation
+
+Download the installation script of [latest version](https://github.com/aws-observability/aws-otel-dotnet-instrumentation/releases/latest/download/aws-otel-dotnet-install.sh).
+
+If you'd prefer to pin to a specific version, check out our [releases](https://github.com/aws-observability/aws-otel-dotnet-instrumentation/releases).
+
+The ADOT .NET NuGet package is also published in [NuGet repository](https://www.nuget.org/packages/AWS.Distro.OpenTelemetry.AutoInstrumentation).
+
+<SectionSeparator />
+
+## Running an Application with Auto-Instrumentation
+The ADOT .NET auto-Instrumentation could be installed by running installation script `aws-otel-dotnet-install.sh` or manually download packages from GitHub.
+To run your app with the ADOT .NET auto-Instrumentation, setup environment variables with script `instrument.sh` before starting up your application,
+pointing to the downloaded ADOT .NET auto-Instrumentation artifact. In addition, while not required by the ADOT .NET auto-Instrumentation itself,
+almost all tracing systems require a service name and service namespace defined to identify your application, which you can specify
+with the `OTEL_RESOURCE_ATTRIBUTES` environment variable and `service.name` / `service.namespace` attribute keys.
+```
+. $HOME/.otel-dotnet-auto/instrument.sh
+export OTEL_RESOURCE_ATTRIBUTES=service.name=MyApp,service.namespace=MyTeam 
+```
+
+The above command will setup your application with the ADOT .NET auto-Instrumentation activated, and instrumentation is then activated
+automatically when your applicaiton start. For many cases, this is all you need to use tracing.
+
+### Configuring Auto-Instrumentation
+
+By default ADOT .NET auto-Instrumentation uses the [OTLP exporter](https://github.com/open-telemetry/opentelemetry-dotnet/tree/main/src/OpenTelemetry.Exporter.OpenTelemetryProtocol)
+and is configured to send data to a [OpenTelemetry collector](https://github.com/open-telemetry/opentelemetry-collector/blob/master/receiver/otlpreceiver/README.md)
+at `http://localhost:4317` for both metrics and traces.
+
+The ADOT .NET auto-Instrumentation can be configured with environment variables as the primary way.
+For example, to set the random sampling rate for creating traces, you can set the environment variables
+`OTEL_TRACES_SAMPLER=parentbased_traceidratio` and `OTEL_TRACES_SAMPLER_ARG=0.3` to configure a sampling rate of 30%.
+
+More SDK configuration can be found in upstream [OpenTelemetry SDK Configuration](https://opentelemetry.io/docs/languages/sdk-configuration/)
+and [OpenTelemetry .NET SDK Configuraiton](https://github.com/open-telemetry/opentelemetry-dotnet-instrumentation/blob/main/docs/config.md).
+
+### Using CloudWatch Application Signals
+
+You can use CloudWatch Application Signals to automatically instrument your applications on AWS using ADOT .NET auto-instrumentation so that you can monitor current application health and track long-term application performance against your business objectives. Application Signals provides you with a unified, application-centric view of your applications, services, and dependencies, and helps you monitor and triage application health.
+
+[Get started with CloudWatch Application Signals](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Monitoring-Sections.html)
+
+### Using X-Ray Remote Sampling
+
+The ADOT .NET Auto-Instrumentation can be configured to use [X-Ray remote sampling](https://docs.aws.amazon.com/xray/latest/devguide/xray-console-sampling.html)
+by setting the environment variable `OTEL_TRACES_SAMPLER=xray`. You will also need to [configure the OpenTelemetry collector](/docs/getting-started/remote-sampling)
+to allow the application to fetch sampling configuration. By default the sampler sends requests to `http://localhost:2000`. By setting `OTEL_TRACES_SAMPLER_ARG` 
+environment variable you can change the endpoint the sampler talks with when getting sampling configuration from AWS X-Ray Console. For example setting 
+`OTEL_TRACES_SAMPLER_ARG=endpoint=http://localhost:4000` would configure the sampler to communicate with `http://localhost:4000`.
+
+## Using Manual Instrumentation
+
+Because there can only be one global `TracerProvider` and `MeterProvider`, manual instrumentation should not instantiate its own `TracerProvider` or `MeterProvider` if used together alongside auto-instrumentation. 
+Given that the same `TracerProvider` and `MeterProvider` is used, custom tracing and metrics works the same way when using automatic instrumentation or manual instrumentation.
+For information about custom trace instrumentation, see our [docs on manual instrumentation](/docs/getting-started/dotnet-sdk/manual-instr).
+
+
+<SectionSeparator />
+
+## Sample Applications
+
+* [Sample Application Using Traces and Metrics](https://github.com/aws-observability/aws-otel-dotnet-instrumentation/blob/main/sample-applications/integration-test-app).
