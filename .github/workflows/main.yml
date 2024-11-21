@@ -7,11 +7,11 @@ on:
   push:
     branches:
       - main
-    
+
 
 jobs:
   publish-smoke-test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4.1.1
       - uses: enriikke/gatsby-gh-pages-action@v2
@@ -21,7 +21,7 @@ jobs:
           access-token: ${{ secrets.demo }}
           deploy-branch: smoke-test
   verify-smoke-test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: publish-smoke-test
     steps:
       - name: Checkout Smoke Test Branch
@@ -56,7 +56,7 @@ jobs:
 
   publish-live:
     needs: verify-smoke-test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4.1.1
         with:
