@@ -67,9 +67,20 @@ You can use CloudWatch Application Signals to automatically instrument your appl
 
 [Get started with CloudWatch Application Signals](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Monitoring-Sections.html)
 
-### Using AWS X-Ray Remote Sampling
+### Using X-Ray Remote Sampling
 
-The ADOT Python auto-instrumentation can be configured to use AWS X-Ray remote sampling by setting the environment variable `OTEL_TRACES_SAMPLER=xray`. You will also need to configure the OpenTelemetry collector to allow the application to fetch sampling configuration. By default the sampler sends requests to `http://localhost:2000`. By setting `OTEL_TRACES_SAMPLER_ARG` environment variable, you can change the endpoint the sampler talks with when getting sampling configuration from AWS X-Ray Console. For example setting `OTEL_TRACES_SAMPLER_ARG=endpoint=http://localhost:4000` would configure the sampler to communicate with `http://localhost:4000`.
+The ADOT Python Auto-Instrumentation can be configured to use [X-Ray remote sampling](https://docs.aws.amazon.com/xray/latest/devguide/xray-console-sampling.html)
+by setting the environment variable `OTEL_TRACES_SAMPLER=xray`. You will also need to [configure the OpenTelemetry collector](/docs/getting-started/remote-sampling)
+to allow the application to fetch sampling configuration. 
+
+You can further configure the Sampler by setting the `OTEL_TRACES_SAMPLER_ARG` environment variable. You can update the endpoint and the polling rate as follows:
+```
+OTEL_TRACES_SAMPLER_ARG=endpoint=<ENDPOINT>,polling_interval=<INTERVAL_IN_SECS>
+``` 
+
+By default the sampler sends requests to `http://localhost:2000` and has a polling rate of `300 seconds`. By setting `OTEL_TRACES_SAMPLER_ARG` 
+environment variable you can change the endpoint the sampler talks with when getting sampling configuration from AWS X-Ray Console. For example setting 
+`OTEL_TRACES_SAMPLER_ARG=endpoint=http://localhost:4000,polling_interval=60` would configure the sampler to communicate with `http://localhost:4000` and poll the sampling rules every `60 seconds`.
 
 <SectionSeparator />
 
