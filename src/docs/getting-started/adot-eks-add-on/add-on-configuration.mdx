@@ -5,8 +5,6 @@ description:
 path: '/docs/getting-started/adot-eks-add-on/add-on-configuration'
 ---
 
-> **IMPORTANT**: This EKS add-on Advanced Configuration for ADOT is for version `v0.88.0-eksbuild.1` and on.
-
 EKS add-ons provides the ability to configure the installation of ADOT, during installation time. During add-on creation, or add-on updates, configurable values can be used to modify the add-on to your liking. Some examples include modifying resource requests or limits or adding tolerations to the deployed pod. 
 
 These configuration values are passed in as a JSON string to a `--configuration-values` option when creating or updating ADOT using EKS add-ons. you can either pass in a JSON string directly, or you can pass a file path to a JSON file as a parameter, see [these docs](https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters-file.html) for more information. For example, to set the cpu resource limit to 200m during add-on creation, the command would look like
