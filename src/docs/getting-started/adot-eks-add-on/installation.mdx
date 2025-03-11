@@ -32,8 +32,10 @@ Install the ADOT Amazon EKS add\-on to your Amazon EKS cluster using the followi
 
    1. The default version will be selected in the **Version** dropdown list\. Select the **Version** you'd like to use\.
 
-   1. \(Optional\) If deploying an ADOT Collector, expand **Optional configuration settings** and provide the **Configuration values** that match your use case for Collector deployment\. The **Add\-on configuration schema** provides the available options for your configuration values\.
+   1. In Add-on access, you can choose between EKS Pod Identity and IRSA. To use EKS Pod Identity, Amazon [EKS Pod Identity Agent add-on](https://docs.aws.amazon.com/eks/latest/userguide/pod-id-agent-setup.html) must be installed in advance. 
 
+   1. \(Optional\) If deploying a preconfigured ADOT Collector, expand **Optional configuration setings** and provide the **Configuration values** that match your use case for Collector deployment\. The **Add\-on configuration schema** provides the available options for your configuration values\. You can refer to example configuration values and IRSA setup guide [here](/docs/getting-started/adot-eks-add-on/src/docs/getting-started/adot-eks-add-on/add-on-configuration-collector-deployment).
+   
    1. If a service account is already created in the cluster without an IAM role, expand the **Optional configuration settings** and select **Override** for the **Conflict resolution method**\.
 
    1. Choose **Next**\.
@@ -63,11 +65,11 @@ Install the ADOT Amazon EKS add\-on to your Amazon EKS cluster using the followi
 
 ---
 
-### Please continue to the next links below to learn about deploying the ADOT Collector using the Advanced Configuration.
+### Please continue to the next links below to learn about deploying the preconfigured ADOT Collector using the Advanced Configuration. If you want to deploy a collector with your own custom configuration, you can follow the Collector Configuration.
 
 ## [Previous Topic: Requirements](/docs/getting-started/adot-eks-add-on/requirements)
 
 ## Next Topics:
 
 ### [Add-on Advanced Configuration](/docs/getting-started/adot-eks-add-on/add-on-configuration)
-
+### [AWS Distro for OpenTelemetry Collector Configuration](/docs/getting-started/adot-eks-add-on/config-collector-intro)
