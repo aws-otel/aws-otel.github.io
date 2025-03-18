@@ -42,14 +42,14 @@ Please find the list of available components supported for custom configuration 
 The ADOT Lambda Layers supports the following types of confmap providers: file, env, yaml, http, https and s3. To customize the ADOT collector configuration using different Confmap providers, Please refer to [Confmap providers](/docs/components/confmap-providers#confmap-providers-supported-by-the-adot-collector) section for more information.
 
 Once your collector configuration is set through a `confmap` providers.
-Create an environment variable on your Lambda function `OPENTELEMETRY_COLLECTOR_CONFIG_FILE` and set the path of configuration w.r.t to the confmap provider as its value. for e.g, if you are using a file configmap provider, set its value to `/var/task/*<path/<to>/<filename>*`.
+Create an environment variable on your Lambda function `OPENTELEMETRY_COLLECTOR_CONFIG_URI` and set the path of configuration w.r.t to the confmap provider as its value. for e.g, if you are using a file configmap provider, set its value to `/var/task/*<path/<to>/<filename>*`.
 This will tell the extension where to find the collector configuration.
 
 Here is a sample configuration file of collector.yaml in the root directory:
 
 ```yaml
 #collector.yaml in the root directory
-#Set an environment variable 'OPENTELEMETRY_COLLECTOR_CONFIG_FILE' to '/var/task/collector.yaml'
+#Set an environment variable 'OPENTELEMETRY_COLLECTOR_CONFIG_URI' to '/var/task/collector.yaml'
 
 receivers:
   otlp:
@@ -79,7 +79,7 @@ service:
 You can set this via the Lambda console, or via the AWS CLI.
 
 ```
-aws lambda update-function-configuration --function-name Function --environment Variables={OPENTELEMETRY_COLLECTOR_CONFIG_FILE=/var/task/collector.yaml}
+aws lambda update-function-configuration --function-name Function --environment Variables={OPENTELEMETRY_COLLECTOR_CONFIG_URI=/var/task/collector.yaml}
 ```
 
 You can configure environment variables via **CloudFormation** template as well:
@@ -91,7 +91,7 @@ Function:
     ...
     Environment:
       Variables:
-        OPENTELEMETRY_COLLECTOR_CONFIG_FILE: /var/task/collector.yaml
+        OPENTELEMETRY_COLLECTOR_CONFIG_URI: /var/task/collector.yaml
 ```
 Also, to load configuration from an S3 object
 
@@ -102,7 +102,7 @@ Also, to load configuration from an S3 object
       ...
       Environment:
         Variables:
-          OPENTELEMETRY_COLLECTOR_CONFIG_FILE: s3://<bucket_name>.s3.<region>.amazonaws.com/collector_config.yaml
+          OPENTELEMETRY_COLLECTOR_CONFIG_URI: s3://<bucket_name>.s3.<region>.amazonaws.com/collector_config.yaml
 ```
 
 Loading configuration from S3 will require that the IAM role attached to your function includes read access to the relevant bucket.
