@@ -103,8 +103,8 @@ receivers:
       aws_endpoint: ""
       local_mode: false
 exporters:
-  logging:
-    loglevel: debug
+  debug:
+    verbosity: detailed
   awsxray:
     region: "us-west-2"
 service:
@@ -112,7 +112,7 @@ service:
   pipelines:
     traces:
       receivers: [awsxray]
-      exporters: [logging, awsxray]
+      exporters: [debug, awsxray]
 ```
 
 <SectionSeparator />
