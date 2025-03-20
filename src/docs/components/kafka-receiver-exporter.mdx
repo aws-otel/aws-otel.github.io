@@ -126,14 +126,14 @@ receivers:
       - b-2.aocmskcluster281.test.c13.kafka.us-west-2.amazonaws.com:9094
 
 exporters:
-  logging:
-    loglevel: debug
+  debug:
+    verbosity: detailed
 
 service:
   pipelines:
     metrics:
       receivers: [kafka/receiver]
-      exporters: [logging]
+      exporters: [debug]
 ```
 
 In the ec2 instance of the collector A we execute the following command to send telemetry to the statsd receiver:
@@ -144,5 +144,5 @@ echo "kafka.test.example:1|c" | nc -w 1 -u localhost 4567
 
 The following output is obtained in the collector B.
 ```
-{"level":"info","timestamp":"2023-04-05T03:56:23.531Z","message":"ResourceMetrics #0\nResource SchemaURL: \nScopeMetrics #0\nScopeMetrics SchemaURL: \nInstrumentationScope  \nMetric #0\nDescriptor:\n     -> Name: kafka.test.example\n     -> Description: \n     -> Unit: \n     -> DataType: Sum\n     -> IsMonotonic: false\n     -> AggregationTemporality: Delta\nNumberDataPoints #0\nStartTimestamp: 2023-04-05 03:56:18.402491427 +0000 UTC\nTimestamp: 2023-04-05 03:56:23.401572412 +0000 UTC\nValue: 1\n","kind":"exporter","data_type":"metrics","name":"logging"}
+{"level":"info","timestamp":"2023-04-05T03:56:23.531Z","message":"ResourceMetrics #0\nResource SchemaURL: \nScopeMetrics #0\nScopeMetrics SchemaURL: \nInstrumentationScope  \nMetric #0\nDescriptor:\n     -> Name: kafka.test.example\n     -> Description: \n     -> Unit: \n     -> DataType: Sum\n     -> IsMonotonic: false\n     -> AggregationTemporality: Delta\nNumberDataPoints #0\nStartTimestamp: 2023-04-05 03:56:18.402491427 +0000 UTC\nTimestamp: 2023-04-05 03:56:23.401572412 +0000 UTC\nValue: 1\n","kind":"exporter","data_type":"metrics","name":"debug"}
 ```
