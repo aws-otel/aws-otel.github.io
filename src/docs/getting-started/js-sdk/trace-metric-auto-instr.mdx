@@ -56,6 +56,8 @@ node --require '@aws/aws-distro-opentelemetry-node-autoinstrumentation/register'
 
 ### Configuring Auto-Instrumentation
 
+**Note:** Skip this part if you are onboarding with CloudWatch Application Signals.
+
 Environment variables are the primary way in which the OpenTelemetry SDK for JavaScript is configured. For example:
 
 * By default, `@aws/aws-distro-opentelemetry-node-autoinstrumentation` uses the OTLP exporter and is configured to send data to a OpenTelemetry collector at `http://localhost:4318` for both metrics and traces. The configuration of your SDK exporter depends on how you have configured your ADOT Collector. To learn more about how the ADOT Collector can be configured, refer to the [ADOT Collector Documentation](https://aws-otel.github.io/docs/getting-started/collector).

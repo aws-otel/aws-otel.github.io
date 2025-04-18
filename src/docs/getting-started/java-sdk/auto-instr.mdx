@@ -66,6 +66,8 @@ automatically. For many cases, this is all you need to use tracing.
 
 ### Configuring Auto-Instrumentation
 
+**Note:** Skip this part if you are onboarding with CloudWatch Application Signals.
+
 By default OpenTelemetry Java agent uses the [OTLP exporter](https://github.com/open-telemetry/opentelemetry-java/tree/master/exporters/otlp)
 and is configured to send data to a [OpenTelemetry collector](https://github.com/open-telemetry/opentelemetry-collector/blob/master/receiver/otlpreceiver/README.md)
 at `http://localhost:4317` for both metrics and traces.
