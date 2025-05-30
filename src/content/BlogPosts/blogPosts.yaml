@@ -6,6 +6,13 @@ description:
 path: /blog
 
 blogs:
+  - title: "AWS Distro for OpenTelemetry Lambda Layers are now available with ADOT Collector v0.43.0"
+    author: "Pavan Sai Vasireddy"
+    date: "30-May-2025"
+    body:
+      "ADOT Lambda Layers now distribute ADOT Collector v0.43.0 with new layers supporting AMD64 and ARM64 Lambda functions"
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-lambda-layer-v0.43.0"
+
   - title: "AWS Distro for OpenTelemetry Java Instrumentation v2.11.0 is now available"
     author: "Jeel Mehta"
     date: "23-May-2025"
