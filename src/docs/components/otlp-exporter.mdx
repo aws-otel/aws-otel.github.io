@@ -480,7 +480,7 @@ Before you can use the AWS Distro for OpenTelemetry with Observe you need:
 
 * A Observe account. If you don't already have one, you can create an account [here](https://www.observeinc.com/).
 * An OTLP/HTTP endpoint URL. Replace <YOUR_OBSERVE_COLLECTION_ENDPOINT> with your [instance’s collection endpoint](https://docs.observeinc.com/en/latest/content/reference/Observasaurus/endpoints.html) (ex: https://123456789012.collect.observeinc.com/).
-* An ingest token you can create from Add Data for Linux page. Replace <YOUR_INGEST_TOKEN> with the ingest token (ex: a1b2c3d4e5f6g7h8i9k0:l1m2n3o4p5q6r7s8t9u0v1w2x3y4z5a6)
+* An ingest token you can create from **Add Data for Linux** page. Replace <YOUR_INGEST_TOKEN> with the ingest token (ex: a1b2c3d4e5f6g7h8i9k0:l1m2n3o4p5q6r7s8t9u0v1w2x3y4z5a6)
 
 <SubSectionSeparator />
 
@@ -493,7 +493,7 @@ Before you can use the AWS Distro for OpenTelemetry with Observe you need:
 ```yaml lineNumbers=true
 exporters:
   ...
-  otlphttp/observe:
+  otlphttp/observelogs:
     # (ex: https://123456789012.collect.observeinc.com/v2/otel)
     endpoint: "<YOUR_OBSERVE_COLLECTION_ENDPOINT>/v2/otel"
     headers:
@@ -534,7 +534,7 @@ service:
   pipelines:
     logs:
       ...
-      exporters: [otlphttp/observe]
+      exporters: [otlphttp/observelogs]
     metrics:
       ...
       exporters: [otlphttp/observemetrics]
