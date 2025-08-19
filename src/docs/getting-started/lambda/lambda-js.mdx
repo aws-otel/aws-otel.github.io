@@ -40,7 +40,9 @@ To enable the AWS Distro for OpenTelemetry in your Lambda function, you need to 
 2. In the *Layers in Designer* section, choose *Add a layer*.
 3. Under *specify an ARN*, paste the layer ARN, and then choose *Add*.
 4. Add the environment variable `AWS_LAMBDA_EXEC_WRAPPER` and set it to `/opt/otel-handler`.
-5. [Enable active tracing](https://docs.aws.amazon.com/lambda/latest/dg/services-xray.html) for your AWS Lambda function.
+5. Specify the `OTEL_NODE_ENABLED_INSTRUMENTATIONS` environment variable in the lambda to configure the instrumentations needed. By default the layer is set to `OTEL_NODE_ENABLED_INSTRUMENTATIONS="aws-sdk,aws-lambda,http"` and are loaded automatically by default.
+    - The environment variables should be set to a comma-separated list of the instrumentation package names without the @opentelemetry/instrumentation- prefix
+6. [Enable active tracing](https://docs.aws.amazon.com/lambda/latest/dg/services-xray.html) for your AWS Lambda function.
 
 Tips:
 
