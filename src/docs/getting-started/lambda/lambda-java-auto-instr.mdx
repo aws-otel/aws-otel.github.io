@@ -8,6 +8,13 @@ path: '/docs/getting-started/lambda/lambda-java-auto-instr'
 
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
 import SubSectionSeparator from "components/MdxSubSectionSeparator/subsectionSeparator.jsx"
+import WarningBox from "components/WarningBox/WarningBox.jsx"
+
+<WarningBox
+  warningText="This documentation describes the legacy approach to using ADOT with Lambda. For the latest recommended approach, please refer to the updated Python Lambda documentation."
+  buttonText="View Updated Docs →"
+  hyperlink="/docs/getting-started/lambda"
+/>
 
 The AWS managed Lambda layer for ADOT Java Auto-instumentation Agent provides a plug-and-play user experience by automatically instrumenting a Lambda function, by packaging the [ADOT Java Agent](https://aws-otel.github.io/docs/getting-started/java-sdk/trace-auto-instr) together with an out-of-the-box configuration for AWS Lambda and AWS X-Ray. Users can enable and disable OpenTelemetry for their Lambda function without changing code.
 
@@ -35,7 +42,7 @@ Find the supported regions and amd64/arm64 layer ARN in the table below for the 
 
 To enable the AWS Distro for OpenTelemetry in your Lambda function, you need to add and configure the layer, and then enable tracing.
 
-1. Open the Lambda function you intend to instrument in the AWS console. 
+1. Open the Lambda function you intend to instrument in the AWS console.
 2. In the *Layers in Designer* section, choose *Add a layer*.
 3. Under *specify an ARN*, paste the layer ARN, and then choose *Add*.
 4. Add the environment variable AWS_LAMBDA_EXEC_WRAPPER and set it to one of the following options:
@@ -87,14 +94,14 @@ LongUpDownCounter apiBytesSentCounter = meter
         .setDescription("API request payload sent in bytes")
         .setUnit("one")
         .build();
-        
+
 // creating a Histogram metric to record API latency in timeseries
 LongValueRecorder apiLatencyRecorder = meter
         .longValueRecorderBuilder("latency")
         .setDescription("API latency time")
         .setUnit("ms")
         .build();
-        
+
 // creating a Gauge metric to record memory usage at every collection interval
 LongValueObserver memoryObserver = meter
         .gaugeBuilder("jvm.memory.total")
@@ -128,12 +135,12 @@ By default, the ADOT Lambda layer uses the [config.yaml](https://github.com/aws-
 
 The layer is not configured by default to export Prometheus metrics, see Amazon Managed Service for Prometheus (AMP)[https://docs.aws.amazon.com/prometheus/latest/userguide/what-is-Amazon-Managed-Service-Prometheus.html]. To enable it:
 
-1. Upload a custom collector configuration file `collector.yaml` with your Lambda application, like the example shown below, with the `prometheusremotewriteexporter` and the `sigv4authextension` enabled. Set up the `endpoint` of your own AMP workspace, and `region` of the `sigv4authextension`. 
+1. Upload a custom collector configuration file `collector.yaml` with your Lambda application, like the example shown below, with the `prometheusremotewriteexporter` and the `sigv4authextension` enabled. Set up the `endpoint` of your own AMP workspace, and `region` of the `sigv4authextension`.
 ```
 # collector.yaml
 extensions:
   sigv4auth:
-    service: "aps" 
+    service: "aps"
     region: <workspace_region>
 
 receivers:
@@ -146,7 +153,7 @@ exporters:
   awsxray:
   prometheusremotewrite:
     endpoint: <workspace_remote_write_url>
-    auth: 
+    auth:
       authenticator: sigv4auth
 
 service:
@@ -177,6 +184,6 @@ For additional instrumentation, see the [OpenTelemetry Java documentation](https
 
 ## Appendix
 
-Keep up to date with the development of the ADOT Lambda layers [here](https://github.com/aws-observability/aws-otel-lambda). If you’re interested in building your own custom Lambda Layers, visit the upstream [opentelemetry-lambda](https://github.com/open-telemetry/opentelemetry-lambda) repository. 
+Keep up to date with the development of the ADOT Lambda layers [here](https://github.com/aws-observability/aws-otel-lambda). If you’re interested in building your own custom Lambda Layers, visit the upstream [opentelemetry-lambda](https://github.com/open-telemetry/opentelemetry-lambda) repository.
 
 To participate in the discussions to address compatibility gaps between OpenTelemetry and Prometheus, you can also join the [OpenTelemetry Prometheus workgroup](https://github.com/open-telemetry/wg-prometheus).
