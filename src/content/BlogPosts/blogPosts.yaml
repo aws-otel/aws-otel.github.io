@@ -14,6 +14,13 @@ blogs:
         For the latest updates and release notes, please refer to the official ADOT GitHub repository and the AWS Distro for OpenTelemetry documentation."
     link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-releases-no-longer-announced"
 
+  - title: "AWS Distro for OpenTelemetry EKS Add-on v0.131.0-eksbuild.1 is now available"
+    author: "Pavan Sai Vasireddy"
+    date: "02-October-2025"
+    body:
+      "AWS Distro for OpenTelemetry EKS Add-on v0.131.0-eksbuild.1 is now available."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-eks-add-on-v0.131.0-eksbuild.1"
+
   - title: "AWS Distro for OpenTelemetry Java Instrumentation v2.11.5 is now available"
     author: "Lei Wang"
     date: "17-September-2025"
