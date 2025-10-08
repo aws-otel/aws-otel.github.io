@@ -6,6 +6,14 @@ description:
 path: /blog
 
 blogs:
+  - title: "AWS Distro for OpenTelemetry Releases will no longer be announced in this blog"
+    author: "Eric Zhang"
+    date: "2-October-2025"
+    body: 
+      "Starting October 2, 2025, AWS Distro for OpenTelemetry (ADOT) Java releases will no longer be announced on this blog.
+        For the latest updates and release notes, please refer to the official ADOT GitHub repository and the AWS Distro for OpenTelemetry documentation."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-releases-no-longer-announced"
+
   - title: "AWS Distro for OpenTelemetry EKS Add-on v0.131.0-eksbuild.1 is now available"
     author: "Pavan Sai Vasireddy"
     date: "02-October-2025"
