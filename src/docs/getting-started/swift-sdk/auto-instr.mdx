@@ -1,0 +1,96 @@
+---
+title: 'Auto-Instrumentation for Traces and RUM Events with the Swift Agent'
+description:
+    Learn how to get started with Swift Auto-Instrumentation Agent. The agent automatically initializes the OpenTelemetry SDK at application startup to collect tracing and RUM event data.
+path: '/docs/getting-started/swift-sdk/auto-instr'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+
+## Introduction
+
+The AWS Distro for OpenTelemetry (ADOT) Swift Auto-Instrumentation Agent can be installed onto any iOS application running on iOS 16+ to gather real user monitoring (RUM) telemetry data. The agent will automatically initialize the OpenTelemetry (OTel) SDK at application startup to collect tracing and RUM event data. It is preconfigured for compatibility with [AWS CloudWatch RUM](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM.html) but can also be used with any other tracing backend. Out of the box, it propagates traces using W3C Trace Context.
+
+The agent is the recommended way to instrument your iOS application for Traces and RUM Events.
+
+<SectionSeparator />
+
+## Requirements
+
+Currently, the Swift Agent is only officially supported on applications running on **iOS 16 (or later)**. We do not have official out-of-the-box support for macOS, tvOS, watchOS, and visionOS at this time. **Swift 5.9 (or later)** is recommended to build the Agent into your application.
+
+<SectionSeparator />
+
+## Installation
+
+The ADOT Swift Agent is available to consume via Swift Package Manager (SPM). You should add the Swift SDK to your `Package.swift` :
+
+```swift lineNumbers=true
+dependencies: [
+    .package(url: "https://github.com/aws-observability/aws-otel-swift.git", .upToNextMajor(from: "1.0.0"))
+]
+```
+
+Then, to start using the Agent, you will need to add `AwsOpenTelemetryAgent` to target dependencies:
+
+```swift lineNumbers=true
+targets: [
+    .target(
+        name: "<your app target>",
+        dependencies: [
+            .product(name: "AwsOpenTelemetryAgent", package: "aws-otel-swift")
+        ]
+    )
+]
+```
+
+The `AwsOpenTelemetryAgent` dependency will automatically initialize the OTel SDK and instrument core vital signals out of the box in your application as Traces and RUM events. Next, you will need to configure the agent.
+
+<SectionSeparator />
+
+## Configuring the agent with AWS CloudWatch RUM
+
+ADOT Swift is pre-configured to work out of the box with AWS CloudWatch RUM. To export RUM telemetry to CloudWatch RUM, you will need to first [create an app monitor](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM-get-started-create-app-monitor.html), ideally with resource-based policies. Next, add `aws_config.json` to your application bundle:
+
+```json lineNumbers=true
+{
+  "aws": {
+    "region": "<your region>",
+    "rumAppMonitorId": "<your app monitor id>",
+    
+    // optional, if you have a resource-based policy with an alias
+    "rumAlias": "<your rum alias"
+  },
+  
+  // optional resource attributes, but recommended
+  "otelResourceAttributes": {
+    "service.name": "MyApplication",
+    "service.namespace": "MyTeam",
+    "service.version": "1.0.0",
+    "deployment.environment": "production"
+    // ... plus any additional custom resource attributes you care to define
+  }
+}
+```
+
+That's it! This is the minimum configuration to begin exporting RUM telemetry to CloudWatch RUM. From there, you can use CloudWatch RUM and CloudWatch Application Signals to monitor your application health and track long-term application performance against your business objectives.
+
+Application Signals provides you with a unified, application-centric view of your applications, services, and dependencies, and helps you monitor and triage application health.
+
+[Get started with CloudWatch Application Signals](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Monitoring-Sections.html)
+
+<SectionSeparator />
+
+## Telemetry you get out of the box
+
+You can expect Auto-Instrumentation on the following:
+
+* App launch (cold, warm and pre-warm) spans
+* SwiftUI View lifecycle and performance spans
+* UIKit View lifecycle and performance spans
+* HTTP / HTTPS client spans and end-to-end tracing for URLSession requests
+* Crash reporting via [KSCrash](https://github.com/kstenerud/KSCrash)
+* Application hang reporting
+* Session monitoring that will keep track of individual real user sessions
+
+For more information, refer to the [aws-otel-swift documentation](https://github.com/aws-observability/aws-otel-swift/blob/main/README.md#available-instrumentations).

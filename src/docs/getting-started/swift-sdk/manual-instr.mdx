@@ -1,0 +1,234 @@
+---
+title: 'Manual Instrumentation for Traces and RUM Events with the Swift Agent'
+description:
+    Learn how to manually instrument your iOS application using the ADOT Swift SDK to gather real user monitoring (RUM) telemetry data.
+path: '/docs/getting-started/swift-sdk/manual-instr'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+
+## Introduction
+
+The AWS Distro for OpenTelemetry (ADOT) Swift SDK can be installed onto any iOS application running on iOS 16+ to gather real user monitoring (RUM) telemetry data. The Swift SDK acts as a wrapper atop the OpenTelemetry (OTel) SDK to simplify the process of instrumenting applications. It is pre-configured for compatibility with [AWS CloudWatch RUM](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM.html) but can also be used with any other tracing backend. Out of the box, it propagates traces using W3C Trace Context.
+
+The Swift Agent is the recommended way to instrument most iOS applications for Traces and RUM events. For more information, [refer to the documentation on auto-instrumentation](/docs/getting-started/swift-sdk/auto-instr).
+
+<SectionSeparator />
+
+## Requirements
+
+Currently, the Swift SDK is only officially supported on applications running on **iOS 16 (or later)**. We do not have official out-of-the-box support for macOS, tvOS, watchOS, and visionOS at this time. **Swift 5.9 (or later)** is recommended to build the Agent into your application.
+
+<SectionSeparator />
+
+## Installation
+
+The ADOT Swift SDK is available to consume via Swift Package Manager (SPM). You should add the Swift SDK to your `Package.swift` :
+
+```swift lineNumbers=true
+dependencies: [
+    .package(url: "https://github.com/aws-observability/aws-otel-swift.git", .upToNextMajor(from: "1.0.0"))
+]
+```
+
+Then, to start using the SDK, you will need to add `AwsOpenTelemetryCore` to target dependencies:
+
+```swift lineNumbers=true
+targets: [
+    .target(
+        name: "<your app target>",
+        dependencies: [
+            .product(name: "AwsOpenTelemetryCore", package: "aws-otel-swift")
+        ]
+    )
+]
+```
+
+The `AwsOpenTelemetryAgent` dependency requires you to manually initialize the SDK in your application code. Next, we'll discuss how to initialize and configure the SDK.
+
+<SectionSeparator />
+
+## Initializing the SDK in your application
+
+In your `AppDelegate` , you must initialize the OTel SDK using the `AwsOpenTelemetryRumBuilder`:
+
+```swift lineNumbers=true
+import AwsOpenTelemetryCore
+
+class AppDelegate: UIResponder, UIApplicationDelegate {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        AwsOpenTelemetryRumBuilder.create(
+            // Incomplete configuration - the SDK can't export anywhere
+            config: AwsOpenTelemetryConfig()
+        )?.build()
+        return true
+    }
+}
+```
+
+This will initialize the OTel SDKs with the pre-configured suite of default instrumentations on your application. Next, you will configure the SDK to point the telemetry somewhere.
+
+<SectionSeparator />
+
+## Configuring the SDK with AWS CloudWatch RUM (with resource-based policies)
+
+ADOT Swift is pre-configured to work with AWS CloudWatch RUM. To export RUM telemetry to CloudWatch RUM, you will need to first create an app monitor with resource-based policies. Next, modify your code with the following:
+
+```swift lineNumbers=true
+import AwsOpenTelemetryCore
+
+class AppDelegate: UIResponder, UIApplicationDelegate {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        AwsOpenTelemetryRumBuilder.create(
+            config: AwsOpenTelemetryConfig(
+            
+                // point telemetry to AWS RUM
+                aws: AwsConfig(
+                    rumAppMonitorId: "<your app monitor id>",
+                    region: "<your app monitor region>",
+                    
+                    // optional, if you have a resource-based policy with an alias
+                    alias: "<your rum alias>"
+                ),
+                
+                // customize your OTel Resource
+                otelResourceAttributes: [
+                    "service.name": "MyApplication",
+                    "service.namespace": "MyTeam",
+                    "service.version": "1.0.0",
+                    "deployment.environment": "production"
+                ]
+            )
+        )?.build()
+        return true
+    }
+}
+```
+
+That's it! This is the minimum configuration to begin exporting RUM telemetry to CloudWatch RUM. From there, you can use CloudWatch RUM and CloudWatch Application Signals to monitor your application health and track long-term application performance against your business objectives.
+
+Application Signals provides you with a unified, application-centric view of your applications, services, and dependencies, and helps you monitor and triage application health.
+
+[Get started with CloudWatch Application Signals](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Monitoring-Sections.html)
+
+<SectionSeparator />
+
+## Configuring the SDK with other OTLP endpoints
+
+To export to a third-party OTLP endpoint that is not yet supported in the Swift SDK out of the box, you can use the `exportOverride` field to provide custom logs and traces endpoints:
+
+```swift lineNumbers=true
+AwsOpenTelemetryRumBuilder.create(
+    config: AwsOpenTelemetryConfig(
+        aws: AwsConfig(
+            rumAppMonitorId: "<your app monitor id>",
+            region: "<your region>"
+        ),
+        exportOverride: AwsExportOverride(
+            logs: "http://localhost:4318/v1/logs",
+            traces: "http://localhost:4318/v1/traces"
+        ),
+    )
+)?.build()
+```
+
+<SectionSeparator />
+
+## Exporting with Sigv4 headers
+
+To simplify the process of exporting telemetry via OTLP with Sigv4 signed requests, the Swift SDK ships with an optional `AwsOpenTelemetryAuth` library. You are responsible for sourcing your own credentials in a secure manner. An example implementation could look like:
+
+```swift lineNumbers=true
+import AwsOpenTelemetryAuth
+import AwsOpenTelemetryCore
+
+class AppDelegate: UIResponder, UIApplicationDelegate {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        // Create your own credentials provider
+        let customCredentialsProvider = YourCustomCredentialsProvider()
+        
+        AwsOpenTelemetryRumBuilder.create(
+            config: AwsOpenTelemetryConfig(
+            
+                // point telemetry to AWS RUM
+                aws: AwsConfig(
+                    rumAppMonitorId: "<your app monitor id>",
+                    region: "<your app monitor region>",
+                    
+                    // optional, if you have a resource-based policy with an alias
+                    alias: "<your rum alias>"
+                ),
+                
+                // customize your OTel Resource
+                otelResourceAttributes: [
+                    "service.name": "MyApplication",
+                    "service.namespace": "MyTeam",
+                    "service.version": "1.0.0",
+                    "deployment.environment": "production"
+                ]
+            )
+        )?
+        .addSpanExporterCustomizer { defaultExporter in
+            try! AwsSigV4SpanExporterBuilder()
+                .setEndpoint("https://dataplane.rum.us-east-1.amazonaws.com/v1/rum")
+                .setRegion("us-east-1")
+                .setServiceName("rum")
+                .setCredentialsProvider(customCredentialsProvider)
+                .setParentExporter(defaultExporter)
+                .build()
+        }
+        .addLogRecordExporterCustomizer { defaultExporter in
+            try! AwsSigV4LogRecordExporterBuilder()
+                .setEndpoint("https://dataplane.rum.us-east-1.amazonaws.com/v1/rum")
+                .setRegion("us-east-1")
+                .setServiceName("rum")
+                .setCredentialsProvider(customCredentialsProvider)
+                .setParentExporter(defaultExporter)
+                .build()
+        }
+        .build()
+        return true
+    }
+}
+```
+
+NOTE: Vending your application with static credentials in a production environment carries inherent risk. One possible solution is to source your credentials from Amazon Cognito using the [AWS SDK for Kotlin.](https://aws.amazon.com/sdk-for-kotlin/)
+
+<SectionSeparator />
+
+## Advanced customization of the SDK
+
+By default, the SDK enables all available telemetry types. You can selectively enable or disable specific telemetry types to control what RUM data is collected from your application.
+
+```swift lineNumbers=true
+import AwsOpenTelemetryCore
+
+class AppDelegate: UIResponder, UIApplicationDelegate {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+
+        AwsOpenTelemetryRumBuilder.create(
+            config: AwsOpenTelemetryConfig(
+                aws: AwsConfig(
+                    rumAppMonitorId: "your-app-monitor-id",
+                    region: "us-east-1"
+                ),
+                otelResourceAttributes: [
+                    "service.name": "MyApplication"
+                ],
+                telemetry: AwsTelemetryConfig(
+                    startup: AwsTelemetryConfig.Feature(enabled: true),       // App startup monitoring
+                    sessionEvents: AwsTelemetryConfig.Feature(enabled: true), // Session start/end events
+                    crash: AwsTelemetryConfig.Feature(enabled: true),         // Crash reporting
+                    hang: AwsTelemetryConfig.Feature(enabled: true),          // ANR/hang detection
+                    network: AwsTelemetryConfig.Feature(enabled: true),       // Network instrumentation
+                    view: AwsTelemetryConfig.Feature(enabled: true)           // UIKit/SwiftUI view spans
+                )
+            )
+        )?.build()
+
+        return true
+    }
+}
+```
+
+For more advanced configuration options, refer to the [ADOT Swift GitHub repository](https://github.com/aws-observability/aws-otel-swift).

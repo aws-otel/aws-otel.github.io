@@ -55,11 +55,13 @@ export const sideBarData = [
       label: "Getting started",
       items: [
         {label: "Collector", link: "/docs/getting-started/collector"},
+        {label: "Android", link: "/docs/getting-started/android-sdk"},
         {label: "Go", link: "/docs/getting-started/go-sdk"},
         {label: "Java", link: "/docs/getting-started/java-sdk"},
         {label: "JavaScript", link: "/docs/getting-started/javascript-sdk"},
         {label: "Python", link: "/docs/getting-started/python-sdk"},
         {label: "Ruby", link: "/docs/getting-started/ruby-sdk"},
+        {label: "Swift", link: "/docs/getting-started/swift-sdk"},
         {label: ".NET", link: "/docs/getting-started/dotnet-sdk"},
         {label: "PHP", link: "/docs/getting-started/php-sdk"},
         {label: "EKS add-on", link: "/docs/getting-started/adot-eks-add-on"},
