@@ -222,7 +222,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     hang: AwsTelemetryConfig.Feature(enabled: true),          // ANR/hang detection
                     network: AwsTelemetryConfig.Feature(enabled: true),       // Network instrumentation
                     view: AwsTelemetryConfig.Feature(enabled: true)           // UIKit/SwiftUI view spans
-                )
+                ),
+                sessionSampleRate: 0.1 // sample 10% of sessions
             )
         )?.build()
 

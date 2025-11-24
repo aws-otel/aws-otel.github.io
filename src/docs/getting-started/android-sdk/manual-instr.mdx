@@ -241,6 +241,7 @@ By default, the SDK enables all available telemetry types. You can selectively e
 
 ```kotlin lineNumbers=true
 import io.opentelemetry.sdk.resources.Resource
+import io.opentelemetry.sdk.trace.samplers.Sampler
 import software.amazon.opentelemetry.android.OpenTelemetryRumClient
 import software.amazon.opentelemetry.android.TelemetryConfig
 
@@ -274,6 +275,8 @@ class MyApplication : Application() {
             otelResource = Resource.builder()
                 .put("service.name", "MyApplication")
                 .build()
+
+            tracerSampler = Sampler.create(0.1) // sample 10% of traces
         }
     }
 }
