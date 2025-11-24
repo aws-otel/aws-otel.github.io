@@ -84,6 +84,22 @@ By default the sampler sends requests to `http://localhost:2000` and has a polli
 environment variable you can change the endpoint the sampler talks with when getting sampling configuration from AWS X-Ray Console. For example setting 
 `OTEL_TRACES_SAMPLER_ARG=endpoint=http://localhost:4000,polling_interval=60` would configure the sampler to communicate with `http://localhost:4000` and poll the sampling rules every `60 seconds`.
 
+### Using Code Attributes
+
+Code attributes is an experimental feature that automatically captures source code context information when trace data is generated. This feature enhances observability by providing precise code-level details that help developers quickly identify and debug issues.
+
+Code attributes capture:
+* **Source file path** - The exact file where the telemetry originated
+* **Function name** - The method or function fully-qualified name, including class/namespace context when applicable (e.g., `com.example.MyService.processRequest`, `MyClass.my_method`)
+* **Line numbers** - Precise code location for pinpoint debugging
+
+To enable code attributes, set the following environment variable:
+```bash
+export OTEL_AWS_EXPERIMENTAL_CODE_ATTRIBUTES=true
+```
+
+**⚠️ Note: This is an experimental feature and its behavior may change in future releases.**
+
 <SectionSeparator />
 
 ## Using Manual Instrumentation
