@@ -6,6 +6,37 @@ description:
 path: /blog
 
 blogs:
+  - title: "AWS Distro for OpenTelemetry Collector v0.45.1 is now available"
+    author: "Pavan Sai Vasireddy"
+    date: "08-October-2025"
+    body:
+      "AWS Distro for OpenTelemetry Collector v0.45.1 is now available. You can download the latest AWS Distro for OpenTelemetry Collector image
+        from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-collector-v0.45.1"
+
+  - title: "AWS Distro for OpenTelemetry Releases will no longer be announced in this blog"
+    author: "Eric Zhang"
+    date: "2-October-2025"
+    body: 
+      "Starting October 2, 2025, AWS Distro for OpenTelemetry (ADOT) Java releases will no longer be announced on this blog.
+        For the latest updates and release notes, please refer to the official ADOT GitHub repository and the AWS Distro for OpenTelemetry documentation."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-releases-no-longer-announced"
+
+  - title: "AWS Distro for OpenTelemetry EKS Add-on v0.131.0-eksbuild.1 is now available"
+    author: "Pavan Sai Vasireddy"
+    date: "02-October-2025"
+    body:
+      "AWS Distro for OpenTelemetry EKS Add-on v0.131.0-eksbuild.1 is now available."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-eks-add-on-v0.131.0-eksbuild.1"
+
+  - title: "AWS Distro for OpenTelemetry Java Instrumentation v2.11.5 is now available"
+    author: "Lei Wang"
+    date: "17-September-2025"
+    body:
+      "AWS Distro for OpenTelemetry Java Instrumentation v2.11.5 is now available. You can download the latest ADOT Java auto-instrumentation Docker image
+            from the Amazon Elastic Container Registry (Amazon ECR) Public Gallery and the jar artifacts from the Maven Central Repository."
+    link: "/docs/ReleaseBlogs/aws-distro-for-opentelemetry-java-instrumentation-v2.11.5"
+
   - title: "AWS Distro for OpenTelemetry Java Instrumentation v2.11.4 is now available"
     author: "Eric Zhang"
     date: "29-August-2025"
