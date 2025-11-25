@@ -49,7 +49,7 @@ There are various methods for enabling AWS Distro for OpenTelemetry (ADOT) auto-
 - By manually adding the ADOT Lambda Layers
 
 <InfoBox
-  textContent="Following steps will also enable AWS Application Signals along with tracing in your Lambda function. If you want to disable AWS Application Signals and retain only tracing functionality, set the environment variable
+  textContent="Following steps will also enable AWS Application Signals along with tracing in your Lambda function. If you want to disable AWS Application Signals and retain only OpenTelemetry functionality, set the environment variable
   ```
   OTEL_AWS_APPLICATION_SIGNALS_ENABLED = false
   ```
@@ -67,8 +67,8 @@ Use these steps to enable AWS Distro for OpenTelemetry (ADOT) auto-instrumentati
 3. Choose the **Configuration** tab, and then choose **Monitoring and operations tools**
 4. Choose **Edit**
 5. In the **CloudWatch Application Signals and X-Ray** section, select both:
-   - **Automatically collect application traces and standard application metrics with Application Signals**
-   - **Automatically collect Lambda service traces for end to end visibility with X-Ray**
+   - **Application Signals**
+   - **Lambda service traces**
 6. Choose **Save**
 
 <SectionSeparator />
@@ -117,7 +117,11 @@ Replace `$AWS_LAMBDA_LAYER_FOR_OTEL_ARN` with the actual [AWS Lambda Layer for O
 
 ### (Optional) Enable Application Signals Discovery
 
-If you have enabled Application Signals (recommended), you must grant Application Signals the permissions it needs to discover your services. For more information, see [Enable Application Signals in your account](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Signals-Enable.html).
+<InfoBox
+  textContent="Note: This configuration only needs to be performed once per account and region"
+/>
+
+If you enabled Application Signals (recommended), grant the required permissions to discover your RUM, Synthetics or uninstrumented services. For more information, see [Enable Application Signals in your account](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Signals-Enable.html)
 
 ```typescript
 import { aws_applicationsignals as applicationsignals } from 'aws-cdk-lib';
@@ -125,22 +129,10 @@ import { aws_applicationsignals as applicationsignals } from 'aws-cdk-lib';
 const cfnDiscovery = new applicationsignals.CfnDiscovery(this,
   'ApplicationSignalsServiceRole', { } );
 ```
-The Discovery CloudFormation resource grants Application Signals the following permissions:
-
-```
-xray:GetServiceGraph
-logs:StartQuery
-logs:GetQueryResults
-cloudwatch:GetMetricData
-cloudwatch:ListMetrics
-tag:GetResources
-```
-
-For more information about this role, see [Service-linked role permissions for CloudWatch Application Signals](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/using-service-linked-roles.html#service-linked-role-signals).
 
 <SectionSeparator />
 
-## Manually add ADOT Lambda Layers
+## Manually Add AWS Distro for OpenTelemetry (ADOT) Lambda Layers
 
 1. **Add the ADOT Lambda Layer** to your Lambda runtime. Find the layer ARN for your region in the [Lambda Layer ARNs section](#adot-lambda-layer-arns) below.
 
@@ -156,7 +148,9 @@ For more information about this role, see [Service-linked role permissions for C
 <SectionSeparator />
 
 ## Manually Remove AWS Distro for OpenTelemetry (ADOT) Lambda Layer
-To manually disable Application Signals for a Lambda function, remove the AWS Lambda Layer for OpenTelemetry from your Lambda runtime, and remove the `AWS_LAMBDA_EXEC_WRAPPER=/opt/otel-instrument` environment variable.
+
+1. **Remove the ADOT Lambda Layer** from your Lambda runtime.
+2. Remove the `AWS_LAMBDA_EXEC_WRAPPER=/opt/otel-instrument` environment variable.
 
 <SectionSeparator />
 
