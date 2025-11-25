@@ -170,22 +170,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 ]
             )
         )?
-        .addSpanExporterCustomizer { defaultExporter in
-            try! AwsSigV4SpanExporterBuilder()
-                .setEndpoint("https://dataplane.rum.us-east-1.amazonaws.com/v1/rum")
+        .addSpanExporterCustomizer { _ in
+            try AwsSigV4SpanExporterBuilder()
                 .setRegion("us-east-1")
-                .setServiceName("rum")
                 .setCredentialsProvider(customCredentialsProvider)
-                .setParentExporter(defaultExporter)
                 .build()
         }
-        .addLogRecordExporterCustomizer { defaultExporter in
-            try! AwsSigV4LogRecordExporterBuilder()
-                .setEndpoint("https://dataplane.rum.us-east-1.amazonaws.com/v1/rum")
+        .addLogRecordExporterCustomizer { _ in
+            try AwsSigV4LogRecordExporterBuilder()
                 .setRegion("us-east-1")
-                .setServiceName("rum")
                 .setCredentialsProvider(customCredentialsProvider)
-                .setParentExporter(defaultExporter)
                 .build()
         }
         .build()
