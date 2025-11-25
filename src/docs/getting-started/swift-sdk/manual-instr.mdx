@@ -72,7 +72,7 @@ This will initialize the OTel SDKs with the pre-configured suite of default inst
 
 ## Configuring the SDK with AWS CloudWatch RUM (with resource-based policies)
 
-ADOT Swift is pre-configured to work with AWS CloudWatch RUM. To export RUM telemetry to CloudWatch RUM, you will need to first create an app monitor with resource-based policies. Next, modify your code with the following:
+ADOT Swift is pre-configured to work with AWS CloudWatch RUM. To export RUM telemetry to CloudWatch RUM, you will need to first [create an app monitor](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM-web-mobile.html#mobile-platform-app-monitor) with resource-based policies. Next, modify your code with the following:
 
 ```swift lineNumbers=true
 import AwsOpenTelemetryCore

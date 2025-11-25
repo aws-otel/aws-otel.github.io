@@ -85,7 +85,7 @@ NOTE: If you don't already have an `Application` class defined, you will need to
 
 ## Configuring the SDK with AWS CloudWatch RUM (with resource-based policies)
 
-ADOT Android is pre-configured to work with AWS CloudWatch RUM. To export RUM telemetry to CloudWatch RUM, you will need to first create an app monitor with resource-based policies. Next, modify your code with the following:
+ADOT Android is pre-configured to work with AWS CloudWatch RUM. To export RUM telemetry to CloudWatch RUM, you will need to first [create an app monitor](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM-web-mobile.html#mobile-platform-app-monitor) with resource-based policies. Next, modify your code with the following:
 
 ```kotlin lineNumbers=true
 import io.opentelemetry.sdk.resources.Resource
