@@ -11,6 +11,13 @@ path: '/docs/getting-started/lambda/lambda-go'
 
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
 import img16 from "assets/img/docs/img16.png"
+import WarningBox from "components/WarningBox/WarningBox.jsx"
+
+<WarningBox
+  warningText="This documentation describes the legacy approach to using ADOT with Lambda. For the latest recommended approach, please refer to the updated Python Lambda documentation."
+  buttonText="View Updated Docs →"
+  hyperlink="/docs/getting-started/lambda"
+/>
 
 The [AWS Distro for OpenTelemetry Lambda (ADOT Lambda) SDK for Go](https://github.com/open-telemetry/opentelemetry-go-contrib/tree/main/instrumentation/github.com/aws/aws-lambda-go/otellambda) provides extension and tracing APIs you can use to instrument your Lambda function. The ADOT Lambda layer provides a reduced version of the [AWS Distro for OpenTelemetry Collector](https://github.com/aws-observability/aws-otel-collector), which can further export OpenTelemetry spans to back-end servers.
 
@@ -92,7 +99,7 @@ Find the supported regions and amd64/arm64 layer ARN in the table below for the 
 ### Enable Tracing
 Once you’ve instrumented the Lambda function code and deployed to Lambda service, you can follow the instructions below to apply Lambda layer.
 
-1. Open the Lambda function you intend to trace in the in AWS console. 
+1. Open the Lambda function you intend to trace in the in AWS console.
 2. In the **Layers** section, choose **Add a layer**.
 3. Under **Specify an ARN**, paste the layer ARN, and then choose **Add**.
 

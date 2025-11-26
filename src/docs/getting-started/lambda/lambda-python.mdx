@@ -11,6 +11,13 @@ path: '/docs/getting-started/lambda/lambda-python'
 
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
 import SubSectionSeparator from "components/MdxSubSectionSeparator/subsectionSeparator.jsx"
+import WarningBox from "components/WarningBox/WarningBox.jsx"
+
+<WarningBox
+  warningText="This documentation describes the legacy approach to using ADOT with Lambda. For the latest recommended approach, please refer to the updated Python Lambda documentation."
+  buttonText="View Updated Docs →"
+  hyperlink="/docs/getting-started/lambda"
+/>
 
 The AWS managed Lambda layer for ADOT Python provides a plug and play user experience by automatically instrumenting a Lambda function, by packaging [OpenTelemetry Python](https://aws-otel.github.io/docs/getting-started/python-sdk) together with an out-of-the-box configuration for AWS Lambda and AWS X-Ray. Users can enable and disable OpenTelemetry for their Lambda function without changing code.
 
@@ -65,7 +72,7 @@ By default, the ADOT Lambda layer uses the [config.yaml](https://github.com/aws-
  which exports telemetry data to AWS X-Ray. To customize the Collector config,
  see the [main Lambda section for custom configuration instructions](/docs/getting-started/lambda#custom-configuration-for-the-adot-collector-on-lambda)
 
-The ADOT Python Lambda Layer can also be configured to set a Meter Provider with an appropriate reader and exporter if the `OTEL_METRICS_EXPORTER` environment variable is set to the values noted [here](https://opentelemetry.io/docs/reference/specification/sdk-environment-variables/#exporter-selection).  
+The ADOT Python Lambda Layer can also be configured to set a Meter Provider with an appropriate reader and exporter if the `OTEL_METRICS_EXPORTER` environment variable is set to the values noted [here](https://opentelemetry.io/docs/reference/specification/sdk-environment-variables/#exporter-selection).
 The `OTEL_EXPORTER_OTLP_PROTOCOL` environment variable should also be set in correlation to the metrics exporter with [these supported values](https://opentelemetry.io/docs/reference/specification/protocol/exporter/#specify-protocol).
 If these environment variables are not set, then a default Meter Provider with no readers will be set and cannot be overriden.
 
