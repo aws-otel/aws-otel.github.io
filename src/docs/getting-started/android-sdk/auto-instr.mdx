@@ -1,0 +1,117 @@
+---
+title: 'Auto-Instrumentation for Traces and RUM Events with the Android agent'
+description:
+    Learn how to get started with Android Auto-Instrumentation Agent. The agent automatically initializes the OpenTelemetry SDK at application startup to collect tracing and RUM event data.
+path: '/docs/getting-started/android-sdk/auto-instr'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+
+## Introduction
+
+The AWS Distro for OpenTelemetry (ADOT) Android Auto-Instrumentation Agent can be installed onto any Android application running on Android OS 8+ (API level 26+) to gather real user monitoring (RUM) telemetry data. The agent will automatically initialize the OpenTelemetry (OTel) SDK at application startup to collect tracing and RUM event data. It is preconfigured for compatibility with [AWS CloudWatch RUM](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM.html) but can also be used with any other tracing backend. Out of the box, it propagates traces using W3C Trace Context.
+
+The agent is the recommended way to instrument your Android application for Traces and RUM Events.
+
+<SectionSeparator />
+
+## Requirements
+
+Currently, the Android Agent is only officially supported on applications running on **Android 8.0 Oreo (API version 26)** or greater. **Java 8 (or later)** and Kotlin **1.8.0 (or later)** is required to build the library.
+
+<SectionSeparator />
+
+## Installation
+
+The ADOT Android Agent is published to Maven Central as the `agent` artifact. You should add the dependency to your application's `build.gradle` . For example (using Kotlin DSL):
+
+```kotlin lineNumbers=true
+plugins {
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+}
+
+dependencies {
+    // ADOT Android Agent - includes automatic instrumentation
+    implementation("software.amazon.opentelemetry.android:agent:1.0.0")
+
+    // Automated HTTP client instrumentation with ByteBuddy (optional but recommended)
+    byteBuddy("io.opentelemetry.android.instrumentation:okhttp3-agent:0.15.0-alpha")
+    byteBuddy("io.opentelemetry.android.instrumentation:httpurlconnection-agent:0.15.0-alpha")
+}
+```
+
+Adding the `agent` as a dependency to your application will automatically initialize the OTel SDK and instrument core vital signals out of the box in your application as Traces and RUM events. Next, you will need to configure the agent.
+
+<SectionSeparator />
+
+## Configuring the agent with AWS CloudWatch RUM
+
+ADOT Android is pre-configured to work with AWS CloudWatch RUM. To export RUM telemetry to CloudWatch RUM, you will need to first [create an app monitor](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM-web-mobile.html#mobile-platform-app-monitor), ideally with resource-based policies. Next, create a `res/raw/aws_config.json` file to distribute along with your Android application:
+
+```json lineNumbers=true
+{
+  "aws": {
+    "region": "<your region>",
+    "rumAppMonitorId": "<your app monitor id>",
+    
+    // optional, if you have a resource-based policy with an alias
+    "rumAlias": "<your rum alias"
+  },
+  
+  // optional resource attributes, but recommended
+  "otelResourceAttributes": {
+    "service.name": "MyApplication",
+    "service.namespace": "MyTeam",
+    "service.version": "1.0.0",
+    "deployment.environment": "production"
+    // ... plus any additional custom resource attributes you want to define
+  }
+}
+```
+
+That's it! This is the minimum configuration to begin exporting RUM telemetry to CloudWatch RUM. From there, you can use CloudWatch RUM and CloudWatch Application Signals to monitor your application health and track long-term application performance against your business objectives.
+
+Application Signals provides you with a unified, application-centric view of your applications, services, and dependencies, and helps you monitor and triage application health.
+
+[Get started with CloudWatch Application Signals](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Monitoring-Sections.html)
+
+[Use resource-based policies with CloudWatch RUM](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM-resource-policies.html)
+
+### Configuring session sampling
+
+The agent can be configured to use a custom session id ratio sampler strategy for Traces. For example, to configure a session sampling rate of 30%:
+
+```json lineNumbers=true
+{
+  "aws": {
+    "region": "<your region>",
+    "rumAppMonitorId": "<your app monitor id>",
+  },
+  "otelResourceAttributes": {
+    "service.name": "MyApplication",
+    "service.version": "1.0.0"
+  },
+  "sessionSampleRate": 0.3
+}
+```
+
+### Advanced configuration
+
+For more advanced configuration options, refer to the [ADOT Android GitHub repository](https://github.com/aws-observability/aws-otel-android).
+
+<SectionSeparator />
+
+## Telemetry you get out of the box
+
+You can expect Auto-Instrumentation on the following:
+
+* App launch (cold, warm and hot) spans
+* Activity and Fragment lifecycle spans
+* HTTP / HTTPS client spans and end-to-end tracing with support for URLConnection and OkHttp3
+* Crash reporting for unhandled exceptions and system crashes
+* ANR (App Not Responding) events
+* UI performance monitoring including time to initial draw and "jank" monitoring
+* Session monitoring that will keep track of individual real user sessions
+
+Note: HTTP instrumentation is powered by ByteBuddy code transformation. You will need the ByteBuddy dependency as mentioned above in order to get automated HTTP tracing out of the box.
