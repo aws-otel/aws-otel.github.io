@@ -72,6 +72,8 @@ export const sideBarData = [
         {label: "ECS Configurations", link: "/docs/getting-started/using-ecs-console-for-ecs-adot-observability"},
         {label: "App Runner", link: "/docs/getting-started/apprunner"},
         {label: "Advanced Sampling", link: "/docs/getting-started/advanced-sampling"},
+        {label: "Android", link: "/docs/getting-started/android-sdk"},
+        {label: "Swift", link: "/docs/getting-started/swift-sdk"},
 
       ],
       link: "/docs/null"
