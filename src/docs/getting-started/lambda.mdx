@@ -182,6 +182,139 @@ To reduce Lambda cold starts, by default only AWS SDK and HTTP instrumentations 
 
 Set the `OTEL_SERVICE_NAME` environment variable to group multiple Lambda functions into one service. This name will be displayed in Application Signals dashboards. Functions with the same service name will be merged into a single service.
 
+### Traces Exporter
+
+By default, traces are exported in OTLP format through the Lambda embedded agent to CloudWatch X-Ray.
+No additional configuration is required, and this setup provides the best performance.
+
+If you need to export traces to a custom OTLP endpoint, configure the OTLP exporter settings as described in the [OpenTelemetry documentation](https://opentelemetry.io/docs/languages/sdk-configuration/otlp-exporter/#otel_exporter_otlp_traces_endpoint).
+
+### Metrics Exporter
+
+By default, metrics exporting is disabled.
+
+To send OpenTelemetry metrics to CloudWatch, ADOT Lambda provides two options:
+
+#### Option 1. Send EMF to the Lambda Application Log Group
+
+Enable OpenTelemetry metrics export using EMF (Embedded Metric Format) by setting:
+
+```bash
+OTEL_METRICS_EXPORTER=awsemf
+```
+
+With this setting:
+
+- Metrics are exported with the best performance
+- EMF logs are published to the default Lambda application log group
+
+#### Option 2. Send EMF to a Custom Log Group
+
+To publish EMF logs to a custom CloudWatch Log Group and Log Stream, set:
+
+```bash
+OTEL_METRICS_EXPORTER=awsemf
+OTEL_EXPORTER_OTLP_LOGS_HEADERS=x-aws-log-group=<LOG_GROUP>,x-aws-log-stream=<LOG_STREAM>
+```
+*Replace the placeholders:*
+
+- *`<LOG_GROUP>`*: the name of your target CloudWatch Log Group
+- *`<LOG_STREAM>`*: the name of your target Log Stream
+
+With this setting:
+
+- EMF logs are published to a custom CloudWatch Log Group, allowing you to fully separate EMF metrics data from Lambda application logs
+- The Lambda execution role must have `logs:CreateLogGroup`, `logs:CreateLogStream`, and `logs:PutLogEvents` permissions for the target log resource
+- `x-aws-log-group` and `x-aws-log-stream` must be specified together
+
+#### (Optional) Customize the Metrics Namespace
+
+By default, metrics are published to CloudWatch using the namespace **default**. To customize the CloudWatch metrics namespace for your Lambda function, include:
+
+```bash
+OTEL_EXPORTER_OTLP_LOGS_HEADERS=x-aws-metric-namespace=<NAMESPACE>
+```
+
+- *`<NAMESPACE>`*: your desired CloudWatch metrics namespace
+
+### Logs Exporter
+
+By default, logs exporting is disabled.
+
+To export OpenTelemetry logs to CloudWatch, ADOT Lambda provides two options:
+
+#### Option 1. Export Logs to the Lambda Application Log Group
+
+To export OpenTelemetry logs via the Lambda embedded agent to the Lambda application log group, set:
+
+```bash
+OTEL_LOGS_EXPORTER=console
+```
+
+With this setting:
+
+- Logs are exported with the best performance
+- **Note:** OpenTelemetry logs will be mixed together with Lambda application logs in the same log group and log stream
+
+
+#### Option 2. Export Logs to a Custom Log Group
+
+To export OpenTelemetry logs to a custom CloudWatch Log Group and Log Stream, set:
+
+```bash
+OTEL_LOGS_EXPORTER=otlp
+OTEL_EXPORTER_OTLP_LOGS_HEADERS=x-aws-log-group=<LOG_GROUP>,x-aws-log-stream=<LOG_STREAM>
+OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=https://logs.<AWS_REGION>.amazonaws.com/v1/logs
+```
+*Replace the placeholders:*
+
+- *`<LOG_GROUP>`*: the name of your target CloudWatch Log Group
+- *`<LOG_STREAM>`*: the name of your target Log Stream
+- *`<AWS_REGION>`*: the AWS region where your logs should be sent
+
+With this setting:
+
+- OpenTelemetry logs are published to a custom CloudWatch Log Group, allowing you to fully separate OpenTelemetry logs from Lambda application logs
+- The Lambda execution role must have `logs:CreateLogGroup`, `logs:CreateLogStream`, and `logs:PutLogEvents` permissions for the target log resource
+- `x-aws-log-group` and `x-aws-log-stream` must be specified together
+
+#### Logging Library Configuration
+
+If you do not see any OpenTelemetry logs, ensure that the logging library instrumentation is enabled and configured correctly:
+
+- **Python**
+  ```bash
+  OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED=true
+  ```
+
+- **Node.js**
+
+  Example: Instrumenting Winston logging library
+  1. Enable winston instrumentation (and other desired instrumentations) by setting:
+
+  ```bash
+  OTEL_NODE_ENABLED_INSTRUMENTATIONS="aws-sdk,aws-lambda,http,winston"
+  ```
+  2. Configure winston to use OpenTelemetry transport:
+  ```javascript
+  const winston = require('winston');
+  const { OpenTelemetryTransportV3 } = require('@opentelemetry/winston-transport');
+
+  const logger = winston.createLogger({
+    level: 'info',
+    transports: [
+      new OpenTelemetryTransportV3()
+    ]
+  });
+
+  ```
+
+  For other node.js logging libraries, please refer to the corresponding OpenTelemetry documentation. For example:
+
+  - **pino** – [@opentelemetry/instrumentation-pino](https://www.npmjs.com/package/@opentelemetry/instrumentation-pino)
+  - **bunyan** – [@opentelemetry/instrumentation-bunyan](https://www.npmjs.com/package/@opentelemetry/instrumentation-bunyan)
+
+
 <SectionSeparator />
 
 ## Supported Runtimes
@@ -239,6 +372,3 @@ For more information, see [Monitor the operational health of your applications w
 ### Advanced Configurations
 * [Manual Steps for Private Lambda Layers](/docs/getting-started/lambda/lambda-manual-steps) - Instructions for building and deploying custom Lambda layers
 * [Custom Configuration for ADOT Collector on Lambda](/docs/getting-started/lambda/lambda-custom-configuration) - Detailed guide for customizing the ADOT Collector configuration
-
-
-
