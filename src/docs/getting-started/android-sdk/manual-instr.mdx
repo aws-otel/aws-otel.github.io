@@ -1,0 +1,287 @@
+---
+title: 'Manual Instrumentation for Traces and RUM Events with the Android SDK'
+description:
+    Learn how to manually instrument your Android application using the ADOT Android SDK to gather real user monitoring (RUM) telemetry data.
+path: '/docs/getting-started/android-sdk/manual-instr'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+
+## Introduction
+
+The AWS Distro for OpenTelemetry (ADOT) Android SDK can used with any Android application running on Android OS 8+ (API level 26+) to gather real user monitoring (RUM) telemetry data. The Android SDK acts as a wrapper atop the OpenTelemetry (OTel) SDK to simplify the process of instrumenting applications. It is pre-configured for compatibility with [AWS CloudWatch RUM](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM.html) but can also be used with any other tracing backend. Out of the box, it propagates traces using W3C Trace Context.
+
+The Android agent is the recommended way to instrument most Android applications for Traces and RUM Events. For more information, [refer to the documentation on auto-instrumentation](/docs/getting-started/android-sdk/auto-instr).
+
+<SectionSeparator />
+
+## Requirements
+
+Currently, the Android SDK is only officially supported on applications running on **Android 8.0 Oreo (API version 26)** or greater. **Java 8 (or later)** and Kotlin **1.8.0 (or later)** is required to build the library.
+
+<SectionSeparator />
+
+## Installation
+
+The ADOT Android SDK is published to Maven Central as the `core` artifact. You should add the dependency to your application's `build.gradle` . For example (using Kotlin DSL):
+
+```kotlin lineNumbers=true
+plugins {
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+}
+
+dependencies {
+    // ADOT Android Core - for manual instrumentation
+    implementation("software.amazon.opentelemetry.android:core:1.0.0")
+    
+    // Optional: Auth module for Sigv4 authentication
+    implementation("software.amazon.opentelemetry.android:kotlin-sdk-auth:1.0.0")
+
+    // Automated HTTP client instrumentation with ByteBuddy (optional but recommended)
+    byteBuddy("io.opentelemetry.android.instrumentation:okhttp3-agent:0.15.0-alpha")
+    byteBuddy("io.opentelemetry.android.instrumentation:httpurlconnection-agent:0.15.0-alpha")
+}
+```
+
+Adding the `core` module as a dependency requires you to manually initialize the SDK in your application code. Next, we'll discuss how to initialize and configure the SDK.
+
+<SectionSeparator />
+
+## Initializing the SDK in your application
+
+In your application, preferably in `Application.onCreate()`, you will need to initialize the SDK. At minimum, this requires the following:
+
+```kotlin lineNumbers=true
+import software.amazon.opentelemetry.android.OpenTelemetryRumClient
+
+class MyApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+
+        OpenTelemetryRumClient {
+            androidApplication = this@MyApplication
+        }
+    }
+}
+```
+
+This will initialize the OTel SDKs with the pre-enabled suite of default instrumentations on your provided `androidApplication`. Next, you will configure the SDK to point the telemetry somewhere.
+
+NOTE: If you don't already have an `Application` class defined, you will need to register this new `MyApplication` class in your Android manifest. You can find that in your `AndroidManifest.xml` file. For example:
+
+```xml lineNumbers=true
+<application>
+    android:name="com.example.MyApplication"
+
+    <!-- All other attributes, activities, etc -->
+    
+    android:label="MyApplication"
+
+</application>
+```
+
+<SectionSeparator />
+
+## Configuring the SDK with AWS CloudWatch RUM (with resource-based policies)
+
+ADOT Android is pre-configured to work with AWS CloudWatch RUM. To export RUM telemetry to CloudWatch RUM, you will need to first [create an app monitor](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM-web-mobile.html#mobile-platform-app-monitor) with resource-based policies. Next, modify your code with the following:
+
+```kotlin lineNumbers=true
+import io.opentelemetry.sdk.resources.Resource
+import software.amazon.opentelemetry.android.OpenTelemetryRumClient
+
+class MyApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+
+        OpenTelemetryRumClient {
+            androidApplication = this@MyApplication  
+            
+            // point telemetry to AWS RUM
+            awsRum {
+                region = "<your region>"
+                appMonitorId = "<your app monitor id>"
+                
+                // optional, if you have a resource-based policy with an alias
+                alias = "<your rum alias>"
+            }
+                   
+            // customize your OTel Resource
+            otelResource = Resource.builder()
+                .put("service.name", "MyApplication")
+                .put("service.namespace", "MyTeam")
+                .put("service.version", "1.0.0")
+                .put("deployment.environment", "production")
+                .build()
+        }
+    }
+}
+```
+
+That's it! This is the minimum configuration to begin exporting RUM telemetry to CloudWatch RUM. From there, you can use CloudWatch RUM and CloudWatch Application Signals to monitor your application health and track long-term application performance against your business objectives.
+
+Application Signals provides you with a unified, application-centric view of your applications, services, and dependencies, and helps you monitor and triage application health.
+
+[Get started with CloudWatch Application Signals](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Monitoring-Sections.html)
+
+[Use resource-based policies with CloudWatch RUM](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM-resource-policies.html)
+
+<SectionSeparator />
+
+## Configuring the SDK with other OTLP endpoints
+
+To export to a third-party OTLP endpoint that is not yet supported in the Android SDK out of the box, you can configure custom Span and LogRecord exporters:
+
+```kotlin lineNumbers=true
+import io.opentelemetry.exporter.otlp.http.trace.OtlpHttpSpanExporter
+import io.opentelemetry.exporter.otlp.http.logs.OtlpHttpLogRecordExporter
+import io.opentelemetry.sdk.resources.Resource
+
+class MyApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+
+        OpenTelemetryRumClient {
+            androidApplication = this@MyApplication
+            
+            // Configure custom OTLP endpoints
+            spanExporter = OtlpHttpSpanExporter.builder()
+                .setEndpoint("https://your-collector.example.com/v1/traces")
+                .build()
+                
+            logRecordExporter = OtlpHttpLogRecordExporter.builder()
+                .setEndpoint("https://your-collector.example.com/v1/logs")
+                .build()
+            
+            otelResource = Resource.builder()
+                .put("service.name", "MyApplication")
+                .put("service.version", "1.0.0")
+                .build()
+        }
+    }
+}
+```
+
+<SectionSeparator />
+
+## Adding custom headers
+
+If your OTLP endpoint requires authentication or custom headers, you can supply those yourself. For example:
+
+```kotlin lineNumbers=true
+spanExporter = OtlpHttpSpanExporter.builder()
+    .setEndpoint("https://your-collector.example.com/v1/traces")
+    .setHeaders(mapOf(
+        "Authorization" to "Bearer your-token",
+        "X-Custom-Header" to "value"
+    ))
+    .build()
+```
+
+<SectionSeparator />
+
+## Exporting with Sigv4 headers
+
+To simplify the process of exporting telemetry via OTLP with Sigv4 signed requests, the Android SDK ships with an optional `kotlin-sdk-auth` library. You are responsible for sourcing your own credentials in a secure manner. An example implementation could look like:
+
+```kotlin lineNumbers=true
+import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
+import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsProvider
+import io.opentelemetry.sdk.resources.Resource
+import software.amazon.opentelemetry.android.OpenTelemetryRumClient
+import software.amazon.opentelemetry.android.auth.AwsSigV4SpanExporter
+import software.amazon.opentelemetry.android.auth.AwsSigV4LogRecordExporter
+
+class MyApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+
+        // Configure your AWS credentials provider
+        val credentialsProvider = CredentialsProvider {
+            Credentials(
+                accessKeyId = "your-access-key-id",
+                secretAccessKey = "your-secret-access-key"
+                sessionToken = "your-session-token"
+            )
+        }
+
+        OpenTelemetryRumClient {
+            androidApplication = this@MyApplication
+            
+            // Configure SigV4-signed exporters for RUM data plane
+            spanExporter = AwsSigV4SpanExporter.builder()
+                .setEndpoint("https://dataplane.rum.us-east-1.amazonaws.com/v1/rum")
+                .setRegion("us-east-1")
+                .setServiceName("rum")
+                .setCredentialsProvider(credentialsProvider)
+                .build()
+                
+            logRecordExporter = AwsSigV4LogRecordExporter.builder()
+                .setEndpoint("https://dataplane.rum.us-east-1.amazonaws.com/v1/rum")
+                .setRegion("us-east-1")
+                .setServiceName("rum")
+                .setCredentialsProvider(credentialsProvider)
+                .build()
+            
+            otelResource = Resource.builder()
+                .put("service.name", "MyApplication")
+                .put("service.version", "1.0.0")
+                .build()
+        }
+    }
+}
+```
+
+NOTE: Vending your application with static credentials in a production environment carries inherent risk. One possible solution is to source your credentials from Amazon Cognito using the [AWS SDK for Kotlin.](https://aws.amazon.com/sdk-for-kotlin/)
+
+<SectionSeparator />
+
+## Advanced customization of the SDK
+
+By default, the SDK enables all available telemetry types. You can selectively enable or disable specific telemetry types to control what RUM data is collected from your application.
+
+```kotlin lineNumbers=true
+import io.opentelemetry.sdk.resources.Resource
+import io.opentelemetry.sdk.trace.samplers.Sampler
+import software.amazon.opentelemetry.android.OpenTelemetryRumClient
+import software.amazon.opentelemetry.android.TelemetryConfig
+
+class MyApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+
+        OpenTelemetryRumClient {
+            androidApplication = this@MyApplication
+            
+            awsRum {
+                region = "us-east-1"
+                appMonitorId = "your-app-monitor-id"
+            }
+            
+            // Customize telemetry types
+            telemetry = listOf(
+                TelemetryConfig.ACTIVITY,           // Activity lifecycle spans
+                TelemetryConfig.FRAGMENT,           // Fragment lifecycle spans
+                TelemetryConfig.ANR,                // ANR detection
+                TelemetryConfig.CRASH,              // Crash reporting
+                TelemetryConfig.NETWORK,            // Network state monitoring
+                TelemetryConfig.SLOW_RENDERING,     // Slow rendering detection
+                TelemetryConfig.STARTUP,            // App startup monitoring
+                TelemetryConfig.HTTP_URLCONNECTION, // HttpURLConnection instrumentation
+                TelemetryConfig.OKHTTP_3,           // OkHttp3 instrumentation
+                TelemetryConfig.UI_LOADING,         // UI load time (TTFD)
+                TelemetryConfig.SESSION_EVENTS      // Session start/end events
+            )
+            
+            otelResource = Resource.builder()
+                .put("service.name", "MyApplication")
+                .build()
+
+            tracerSampler = Sampler.create(0.1) // sample 10% of traces
+        }
+    }
+}
+```
+
+For more advanced configuration options, refer to the [ADOT Android GitHub repository](http://github.com/aws-observability/aws-otel-android).

@@ -10,6 +10,13 @@ path: '/docs/getting-started/lambda/lambda-js'
 ---
 
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import WarningBox from "components/WarningBox/WarningBox.jsx"
+
+<WarningBox
+  warningText="This documentation describes the legacy approach to using ADOT with Lambda. For the latest recommended approach, please refer to the updated Python Lambda documentation."
+  buttonText="View Updated Docs →"
+  hyperlink="/docs/getting-started/lambda"
+/>
 
 The AWS managed Lambda layer for ADOT JavaScript provides a plug and play user experience by automatically instrumenting a Lambda function, by packaging [OpenTelemetry JavaScript](https://aws-otel.github.io/docs/getting-started/javascript-sdk) together with an out-of-the-box configuration for AWS Lambda and AWS X-Ray. Users can enable and disable OpenTelemetry for their Lambda function without changing code.
 
@@ -19,7 +26,7 @@ The AWS managed Lambda layer for ADOT JavaScript provides a plug and play user e
 
 The Lambda layer supports Node.JS v18+ Lambda runtimes. For more information about supported JavaScript and Node.JS versions, see the [OpenTelemetry JavaScript documentation](https://github.com/open-telemetry/opentelemetry-js).
 
-For *TypeScript users*, if you are using `esbuild` (either directly or through tools such as the AWS CDK), you *must* export your handler function through `module.exports` rather than with the `export` keyword! The AWS mananaged layer for ADOT JavaScript needs to hot-patch your handler at runtime, but can't because `esbuild` makes your handler immutable when using the `export` keyword. 
+For *TypeScript users*, if you are using `esbuild` (either directly or through tools such as the AWS CDK), you *must* export your handler function through `module.exports` rather than with the `export` keyword! The AWS mananaged layer for ADOT JavaScript needs to hot-patch your handler at runtime, but can't because `esbuild` makes your handler immutable when using the `export` keyword.
 
 ### Add the ARN of the Lambda Layer
 

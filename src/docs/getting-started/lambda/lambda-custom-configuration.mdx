@@ -1,0 +1,115 @@
+---
+title: 'Custom Configuration for ADOT Collector on Lambda'
+description:
+    Learn how to customize the ADOT Collector configuration for Lambda functions using different confmap providers and configuration options.
+path: '/docs/getting-started/lambda/lambda-custom-configuration'
+---
+
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+
+## Custom configuration for the ADOT Collector on Lambda
+
+The ADOT Lambda layers combines both OpenTelemetry SDK and the ADOT Collector components.
+The configuration of the ADOT Collector follows the OpenTelemetry standard.
+By default, the ADOT Lambda layer uses [config.yaml](https://github.com/aws-observability/aws-otel-lambda/blob/main/adot/collector/config.yaml),
+which exports telemetry data to AWS X-Ray.
+
+Please find the list of available components supported for custom configuration [here](https://github.com/aws-observability/aws-otel-lambda/blob/main/README.md#adot-lambda-layer-available-components). To enable debugging, you can use the configuration file to set log level to debug. See the example below.
+
+<SectionSeparator />
+
+## Confmap Providers
+
+The ADOT Lambda Layers supports the following types of confmap providers: file, env, yaml, http, https and s3. To customize the ADOT collector configuration using different Confmap providers, Please refer to [Confmap providers](/docs/components/confmap-providers#confmap-providers-supported-by-the-adot-collector) section for more information.
+
+Once your collector configuration is set through a `confmap` providers.
+Create an environment variable on your Lambda function `OPENTELEMETRY_COLLECTOR_CONFIG_URI` and set the path of configuration w.r.t to the confmap provider as its value. for e.g, if you are using a file configmap provider, set its value to `/var/task/*<path/<to>/<filename>*`.
+This will tell the extension where to find the collector configuration.
+
+<SectionSeparator />
+
+## Sample Configuration
+
+Here is a sample configuration file of collector.yaml in the root directory:
+
+```yaml
+#collector.yaml in the root directory
+#Set an environment variable 'OPENTELEMETRY_COLLECTOR_CONFIG_URI' to '/var/task/collector.yaml'
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: "localhost:4317"
+      http:
+        endpoint: "localhost:4318"
+
+exporters:
+  debug:
+  awsxray:
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [awsxray]
+    metrics:
+      receivers: [otlp]
+      exporters: [debug]
+  telemetry:
+    metrics:
+      address: localhost:8888
+
+```
+
+<SectionSeparator />
+
+## Setting Configuration via Lambda Console
+
+You can set this via the Lambda console, or via the AWS CLI.
+
+```
+aws lambda update-function-configuration --function-name Function --environment Variables={OPENTELEMETRY_COLLECTOR_CONFIG_URI=/var/task/collector.yaml}
+```
+
+<SectionSeparator />
+
+## CloudFormation Configuration
+
+You can configure environment variables via **CloudFormation** template as well:
+
+```yaml
+Function:
+  Type: AWS::Serverless::Function
+  Properties:
+    ...
+    Environment:
+      Variables:
+        OPENTELEMETRY_COLLECTOR_CONFIG_URI: /var/task/collector.yaml
+```
+
+<SectionSeparator />
+
+## S3 Configuration
+
+Also, to load configuration from an S3 object
+
+```yaml
+  Function:
+    Type: AWS::Serverless::Function
+    Properties:
+      ...
+      Environment:
+        Variables:
+          OPENTELEMETRY_COLLECTOR_CONFIG_URI: s3://<bucket_name>.s3.<region>.amazonaws.com/collector_config.yaml
+```
+
+Loading configuration from S3 will require that the IAM role attached to your function includes read access to the relevant bucket.
+
+<SectionSeparator />
+
+## Additional Resources
+
+For more information about ADOT Collector configuration, such as adding ca/cert/key files, see the Github [README.md](https://github.com/aws-observability/aws-otel-lambda/blob/main/README.md).
+
+Here is a [blogpost](https://aws.amazon.com/blogs/opensource/auto-instrumenting-a-python-application-with-an-aws-distro-for-opentelemetry-lambda-layer/) which provides more context about the setup with an example for adding the AWS Distro for OpenTelemetry Lambda layer to the Lambda function.
