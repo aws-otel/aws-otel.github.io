@@ -11,7 +11,11 @@ import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.js
 import InfoBox from "components/InfoBox/InfoBox.jsx"
 import NavPills from "components/NavPills/NavPills.jsx"
 
-You can use ADOT SDKs auto-instrumentation to export telemetry data directly to CloudWatch without collector.
+You can use ADOT SDKs auto-instrumentation to export telemetry data directly to CloudWatch without ADOT Collector.
+
+## When to Use This Approach
+
+This collector-free export approach is ideal for applications that prefer a simpler setup without deploying and managing a separate ADOT Collector component, such as lightweight microservices with straightforward telemetry requirements, development and testing environments where simplified configuration is preferred, or scenarios where eliminating collector infrastructure reduces operational overhead. For more complex scenarios requiring data processing, filtering, or sending telemetry to multiple destinations, consider using the [ADOT Collector](/docs/getting-started/collector).
 
 <SectionSeparator />
 
@@ -199,9 +203,7 @@ export OTEL_EXPORTER_OTLP_LOGS_PROTOCOL=http/protobuf
 export OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED=true
 ```
 
-<SectionSeparator />
-
-## Complete Example
+### Complete Example
 
 Here are complete examples showing how to configure applications to export traces, metrics, and logs directly to CloudWatch:
 
