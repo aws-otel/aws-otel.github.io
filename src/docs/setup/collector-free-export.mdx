@@ -1,0 +1,262 @@
+---
+title: 'Collector-free Export to CloudWatch'
+description:
+    Learn how to use ADOT SDKs to export telemetry data directly to Amazon CloudWatch without using the ADOT Collector.
+    This guide covers IAM configuration, credential setup, and SDK configuration for traces, metrics, and logs.
+path: '/docs/setup/collector-free-export'
+---
+
+import { Link } from "gatsby"
+import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import InfoBox from "components/InfoBox/InfoBox.jsx"
+import NavPills from "components/NavPills/NavPills.jsx"
+
+You can use ADOT SDKs auto-instrumentation to export telemetry data directly to CloudWatch without collector.
+
+<SectionSeparator />
+
+## Setting Up AWS IAM Role and Credential
+
+When exporting data to CloudWatch without a Collector, ADOT SDKs use the AWS Signature Version 4 (SigV4) protocol to send data to CloudWatch. This process uses credentials to dynamically generate a digital signature for the request. The AWS SDK within ADOT SDKs automatically handles this process. What you need to do is:
+
+1. Ensure the IAM role has the necessary permissions to access CloudWatch
+2. Configure credentials in your runtime environment
+
+### Configuring IAM Role
+
+Attach the `CloudWatchAgentServerPolicy` policy to your IAM role. This policy provides the necessary permissions for exporting telemetry data to CloudWatch.
+
+You can attach this managed policy to your IAM role through the AWS Console, AWS CLI, or Infrastructure as Code tools.
+
+### Configuring Credentials
+
+ADOT uses the AWS SDKs to automatically discover valid credentials required to export your telemetry data. In most AWS environments, credentials are pre-configured and no additional setup is required.
+
+However, on on-premise hosts, you need to manually configure credentials by entering the following command. Replace `ACCESS_KEY_ID` and `SECRET_ACCESS_KEY` with the credentials for your configured IAM role or user, replace `AWS_REGION` with the region of AWS CloudWatch you want:
+
+```bash
+$ aws configure
+AWS Access Key ID [None]: ACCESS_KEY_ID
+AWS Secret Access Key [None]: SECRET_ACCESS_KEY
+Default region name [None]: AWS_REGION
+Default output format [None]: json
+```
+
+For more configuration options, refer to the [AWS SDK credential configuration guide](https://docs.aws.amazon.com/sdkref/latest/guide/standardized-credentials.html).
+
+<SectionSeparator />
+
+## Configuring ADOT SDKs for Export
+
+### Traces
+
+**Prerequisite:** Enabling Transaction Search is required for using CloudWatch Trace OTLP Endpoint. 
+
+Refer to the [Transaction Search documentation](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Enable-TransactionSearch.html) for instructions on how to enable it.
+
+<NavPills
+  color="primary"
+  tabs={[
+    {
+      tabButton: "General",
+      tabContent: (
+        <div>
+          <h4>For General SDKs (Python, Java, JavaScript, etc.)</h4>
+          <p><strong>Configuration:</strong></p>
+          <p>1. Set <code>OTEL_EXPORTER_OTLP_TRACES_ENDPOINT</code> to specify the X-Ray OTLP traces endpoint:</p>
+          <pre><code>{'https://xray.[AWSRegion].amazonaws.com/v1/traces'}</code></pre>
+          <p>Replace <code>[AWSRegion]</code> with your AWS region (e.g., <code>us-west-2</code>, <code>us-east-1</code>, <code>eu-west-1</code>).</p>
+          <p>2. Set <code>OTEL_TRACES_EXPORTER</code> to <code>otlp</code>:</p>
+          <pre><code>{'OTEL_TRACES_EXPORTER=otlp'}</code></pre>
+          <p>3. Set <code>OTEL_EXPORTER_OTLP_TRACES_PROTOCOL</code> to <code>http/protobuf</code>:</p>
+          <pre><code>{'OTEL_EXPORTER_OTLP_TRACES_PROTOCOL=http/protobuf'}</code></pre>
+          <p><strong>Example:</strong></p>
+          <pre><code>{'# Set the X-Ray OTLP traces endpoint\nexport OTEL_EXPORTER_OTLP_TRACES_ENDPOINT="https://xray.us-west-2.amazonaws.com/v1/traces"\n\n# Set the traces exporter\nexport OTEL_TRACES_EXPORTER=otlp\n\n# Set the protocol\nexport OTEL_EXPORTER_OTLP_TRACES_PROTOCOL=http/protobuf'}</code></pre>
+        </div>
+      )
+    },
+    {
+      tabButton: ".NET",
+      tabContent: (
+        <div>
+          <h4>For .NET SDK</h4>
+          <p><strong>Configuration:</strong></p>
+          <p>For .NET applications, you MUST use different configuration:</p>
+          <p>1. Set <code>OTEL_EXPORTER_OTLP_TRACES_ENDPOINT</code> to specify the X-Ray OTLP traces endpoint:</p>
+          <pre><code>{'https://xray.[AWSRegion].amazonaws.com/v1/traces'}</code></pre>
+          <p>Replace <code>[AWSRegion]</code> with your AWS region (e.g., <code>us-west-2</code>, <code>us-east-1</code>, <code>eu-west-1</code>).</p>
+          <p>2. Set <code>OTEL_TRACES_EXPORTER</code> to <code>none</code> (NOT <code>otlp</code>):</p>
+          <pre><code>{'OTEL_TRACES_EXPORTER=none'}</code></pre>
+          <p>3. Set <code>OTEL_AWS_SIG_V4_ENABLED</code> to <code>true</code>:</p>
+          <pre><code>{'OTEL_AWS_SIG_V4_ENABLED=true'}</code></pre>
+          <p><strong>Example:</strong></p>
+          <pre><code>{'# Set the X-Ray OTLP traces endpoint\nexport OTEL_EXPORTER_OTLP_TRACES_ENDPOINT="https://xray.us-west-2.amazonaws.com/v1/traces"\n\n# For .NET: Set the traces exporter to none (NOT otlp)\nexport OTEL_TRACES_EXPORTER=none\n\n# For .NET: Enable AWS SigV4 authentication\nexport OTEL_AWS_SIG_V4_ENABLED=true'}</code></pre>
+        </div>
+      )
+    }
+  ]}
+/>
+
+<SectionSeparator />
+
+### Metrics
+
+**Configuration:**
+
+1. Set `OTEL_METRICS_EXPORTER` to `awsemf`:
+
+This configures the OpenTelemetry SDK to use the AWS EMF (Embedded Metric Format) exporter for metrics.
+
+```
+OTEL_METRICS_EXPORTER=awsemf
+```
+
+2. Set `OTEL_EXPORTER_OTLP_LOGS_HEADERS` to specify the log group, log stream, and optionally the metrics namespace:
+
+**Important:** The log group and log stream must be created before running ADOT.
+
+```
+OTEL_EXPORTER_OTLP_LOGS_HEADERS=x-aws-log-group=<LOG_GROUP>,x-aws-log-stream=<LOG_STREAM>,x-aws-metric-namespace=<NAMESPACE>
+```
+
+Replace:
+- `<LOG_GROUP>` with your CloudWatch log group name
+- `<LOG_STREAM>` with your log stream name
+- `<NAMESPACE>` with your desired CloudWatch metrics namespace (optional, defaults to a standard namespace if not specified)
+
+**Example:**
+
+```bash
+# Set the metrics exporter to AWS EMF
+export OTEL_METRICS_EXPORTER=awsemf
+
+# Set the log group and log stream for metrics and Customize the metrics namespace
+export OTEL_EXPORTER_OTLP_LOGS_HEADERS="x-aws-log-group=MyMetricsLogGroup,x-aws-log-stream=MyMetricsLogStream,x-aws-metric-namespace=MyApplicationMetricsNamespace"
+```
+
+<SectionSeparator />
+
+### Logs
+
+<InfoBox
+  textContent="Note: .NET SDK does not support direct log export to CloudWatch."
+/>
+
+**Configuration:**
+
+1. Set `OTEL_EXPORTER_OTLP_LOGS_ENDPOINT` to specify the CloudWatch OTLP logs endpoint:
+
+```
+https://logs.[AWSRegion].amazonaws.com/v1/logs
+```
+
+Replace `[AWSRegion]` with your AWS region (e.g., `us-west-2`, `us-east-1`, `eu-west-1`).
+
+2. Set `OTEL_EXPORTER_OTLP_LOGS_HEADERS` to specify the log group and log stream:
+
+**Important:** The log group and log stream must be created before running ADOT.
+
+```
+OTEL_EXPORTER_OTLP_LOGS_HEADERS=x-aws-log-group=[CW-LOG-GROUP-NAME],x-aws-log-stream=[CW-LOG-STREAM-NAME]
+```
+
+Replace `[CW-LOG-GROUP-NAME]` with your CloudWatch log group name and `[CW-LOG-STREAM-NAME]` with your log stream name.
+
+3. Set `OTEL_LOGS_EXPORTER` to `otlp`:
+
+```
+OTEL_LOGS_EXPORTER=otlp
+```
+
+4. Set `OTEL_EXPORTER_OTLP_LOGS_PROTOCOL` to `http/protobuf`:
+
+```
+OTEL_EXPORTER_OTLP_LOGS_PROTOCOL=http/protobuf
+```
+
+5. **For Python applications only**: Enable automatic logging instrumentation:
+
+```
+OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED=true
+```
+
+**Example:**
+
+```bash
+# Set the CloudWatch OTLP logs endpoint
+export OTEL_EXPORTER_OTLP_LOGS_ENDPOINT="https://logs.us-west-2.amazonaws.com/v1/logs"
+
+# Set the log group and log stream
+export OTEL_EXPORTER_OTLP_LOGS_HEADERS="x-aws-log-group=MyApplicationLogs,x-aws-log-stream=MyApplicationLogStream"
+
+# Set the logs exporter
+export OTEL_LOGS_EXPORTER=otlp
+
+# Set the protocol
+export OTEL_EXPORTER_OTLP_LOGS_PROTOCOL=http/protobuf
+
+# For Python only: Enable automatic logging instrumentation
+export OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED=true
+```
+
+<SectionSeparator />
+
+## Complete Example
+
+Here are complete examples showing how to configure applications to export traces, metrics, and logs directly to CloudWatch:
+
+<NavPills
+  color="primary"
+  tabs={[
+    {
+      tabButton: "Python",
+      tabContent: (
+        <div>
+          <pre><code>{'# Configure trace export to X-Ray\nexport OTEL_EXPORTER_OTLP_TRACES_ENDPOINT="https://xray.us-west-2.amazonaws.com/v1/traces"\nexport OTEL_TRACES_EXPORTER=otlp\nexport OTEL_EXPORTER_OTLP_TRACES_PROTOCOL=http/protobuf\n\n# Configure metrics export using AWS EMF\nexport OTEL_METRICS_EXPORTER=awsemf\n\n# Configure log export to CloudWatch Logs\nexport OTEL_EXPORTER_OTLP_LOGS_ENDPOINT="https://logs.us-west-2.amazonaws.com/v1/logs"\nexport OTEL_LOGS_EXPORTER=otlp\nexport OTEL_EXPORTER_OTLP_LOGS_PROTOCOL=http/protobuf\n\n# Set log group and log stream (shared by both metrics and logs)\nexport OTEL_EXPORTER_OTLP_LOGS_HEADERS="x-aws-log-group=MyApplicationLogGroup,x-aws-log-stream=MyApplicationLogStream,x-aws-metric-namespace=MyApplicationMetricsNamespace"\n\n# For Python: Enable automatic logging instrumentation\nexport OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED=true'}</code></pre>
+          <p><strong>Note:</strong> Make sure to create the CloudWatch log group and log stream before running your application:</p>
+          <ul>
+            <li><code>MyApplicationLogGroup</code> and <code>MyApplicationLogStream</code> (shared by both metrics and logs)</li>
+          </ul>
+        </div>
+      )
+    },
+    {
+      tabButton: "Java",
+      tabContent: (
+        <div>
+          <pre><code>{'# Configure trace export to X-Ray\nexport OTEL_EXPORTER_OTLP_TRACES_ENDPOINT="https://xray.us-west-2.amazonaws.com/v1/traces"\nexport OTEL_TRACES_EXPORTER=otlp\nexport OTEL_EXPORTER_OTLP_TRACES_PROTOCOL=http/protobuf\n\n# Configure metrics export using AWS EMF\nexport OTEL_METRICS_EXPORTER=awsemf\n\n# Configure log export to CloudWatch Logs\nexport OTEL_EXPORTER_OTLP_LOGS_ENDPOINT="https://logs.us-west-2.amazonaws.com/v1/logs"\nexport OTEL_LOGS_EXPORTER=otlp\nexport OTEL_EXPORTER_OTLP_LOGS_PROTOCOL=http/protobuf\n\n# Set log group and log stream (shared by both metrics and logs)\nexport OTEL_EXPORTER_OTLP_LOGS_HEADERS="x-aws-log-group=MyApplicationLogGroup,x-aws-log-stream=MyApplicationLogStream,x-aws-metric-namespace=MyApplicationMetricsNamespace"'}</code></pre>
+          <p><strong>Note:</strong> Make sure to create the CloudWatch log group and log stream before running your application:</p>
+          <ul>
+            <li><code>MyApplicationLogGroup</code> and <code>MyApplicationLogStream</code> (shared by both metrics and logs)</li>
+          </ul>
+        </div>
+      )
+    },
+    {
+      tabButton: "JavaScript",
+      tabContent: (
+        <div>
+          <pre><code>{'# Configure trace export to X-Ray\nexport OTEL_EXPORTER_OTLP_TRACES_ENDPOINT="https://xray.us-west-2.amazonaws.com/v1/traces"\nexport OTEL_TRACES_EXPORTER=otlp\nexport OTEL_EXPORTER_OTLP_TRACES_PROTOCOL=http/protobuf\n\n# Configure metrics export using AWS EMF\nexport OTEL_METRICS_EXPORTER=awsemf\n\n# Configure log export to CloudWatch Logs\nexport OTEL_EXPORTER_OTLP_LOGS_ENDPOINT="https://logs.us-west-2.amazonaws.com/v1/logs"\nexport OTEL_LOGS_EXPORTER=otlp\nexport OTEL_EXPORTER_OTLP_LOGS_PROTOCOL=http/protobuf\n\n# Set log group and log stream (shared by both metrics and logs)\nexport OTEL_EXPORTER_OTLP_LOGS_HEADERS="x-aws-log-group=MyApplicationLogGroup,x-aws-log-stream=MyApplicationLogStream,x-aws-metric-namespace=MyApplicationMetricsNamespace"'}</code></pre>
+          <p><strong>Note:</strong> Make sure to create the CloudWatch log group and log stream before running your application:</p>
+          <ul>
+            <li><code>MyApplicationLogGroup</code> and <code>MyApplicationLogStream</code> (shared by both metrics and logs)</li>
+          </ul>
+        </div>
+      )
+    },
+    {
+      tabButton: ".NET",
+      tabContent: (
+        <div>
+          <pre><code>{'# Configure trace export to X-Ray (.NET uses different configuration)\nexport OTEL_EXPORTER_OTLP_TRACES_ENDPOINT="https://xray.us-west-2.amazonaws.com/v1/traces"\nexport OTEL_TRACES_EXPORTER=none\nexport OTEL_AWS_SIG_V4_ENABLED=true\n\n# Configure metrics export using AWS EMF\nexport OTEL_METRICS_EXPORTER=awsemf\n\n# Set log group and log stream for metrics\nexport OTEL_EXPORTER_OTLP_LOGS_HEADERS="x-aws-log-group=MyApplicationLogGroup,x-aws-log-stream=MyApplicationLogStream,x-aws-metric-namespace=MyApplicationMetricsNamespace"'}</code></pre>
+          <p><strong>Note:</strong></p>
+          <ul>
+            <li>.NET SDK does not support direct log export to CloudWatch</li>
+            <li>.NET requires <code>OTEL_TRACES_EXPORTER=none</code> and <code>OTEL_AWS_SIG_V4_ENABLED=true</code> for trace export</li>
+            <li>Make sure to create the CloudWatch log group and log stream: <code>MyApplicationLogGroup</code> and <code>MyApplicationLogStream</code></li>
+          </ul>
+        </div>
+      )
+    }
+  ]}
+/>
