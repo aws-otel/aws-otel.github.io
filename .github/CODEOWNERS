@@ -1,20 +1,3 @@
 # https://help.github.com/articles/about-codeowners/
 
-* @aws-otel/webteam
-
-src/docs/getting-started/dotnet-sdk/                        @aws-otel/aws-application-signals-maintainers
-src/docs/getting-started/go-sdk/                            @aws-otel/aws-application-signals-maintainers
-src/docs/getting-started/java-sdk/                          @aws-otel/aws-application-signals-maintainers
-src/docs/getting-started/js-sdk/                            @aws-otel/aws-application-signals-maintainers
-src/docs/getting-started/python-sdk/                        @aws-otel/aws-application-signals-maintainers
-src/docs/getting-started/ruby-sdk/                          @aws-otel/aws-application-signals-maintainers
-src/docs/getting-started/php-sdk/                           @aws-otel/aws-application-signals-maintainers
-src/docs/getting-started/dotnet-sdk.mdx                     @aws-otel/aws-application-signals-maintainers
-src/docs/getting-started/go-sdk.mdx                         @aws-otel/aws-application-signals-maintainers
-src/docs/getting-started/java-sdk.mdx                       @aws-otel/aws-application-signals-maintainers
-src/docs/getting-started/javascript-sdk.mdx                 @aws-otel/aws-application-signals-maintainers
-src/docs/getting-started/php-sdk.mdx                        @aws-otel/aws-application-signals-maintainers
-src/docs/getting-started/python-sdk.mdx                     @aws-otel/aws-application-signals-maintainers
-src/docs/getting-started/ruby-sdk.mdx                       @aws-otel/aws-application-signals-maintainers
-src/docs/getting-started/x-ray.mdx                          @aws-otel/aws-application-signals-maintainers
-src/content/Blogs/ReleaseBlogs/                             @aws-otel/aws-application-signals-maintainers @aws-otel/webteam
+* @aws-otel/webteam @aws-otel/aws-application-signals-maintainers
