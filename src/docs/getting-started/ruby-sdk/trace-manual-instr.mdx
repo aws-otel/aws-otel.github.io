@@ -105,16 +105,16 @@ OpenTelemetry::SDK.configure do |c|
   # Set the service name to identify your application in the X-Ray backend service map
   c.service_name = 'aws-otel-manual-rails-sample'
 
-  c.span_processors = [
+  c.add_span_processor(
       # Use the BatchSpanProcessor to send traces in groups instead of one at a time
       Trace::Export::BatchSpanProcessor.new(
           # Use the default OLTP Exporter to send traces to the ADOT Collector
           OpenTelemetry::Exporter::OTLP::Exporter.new(
             # The ADOT Collector is running as a sidecar and listening on port 4318
-            endpoint="http://localhost:4318"
+            endpoint: "http://localhost:4318"
           )
       )
-    ]
+    )
 
   # The X-Ray ID Generator generates spans with X-Ray backend compliant IDs
   c.id_generator = OpenTelemetry::Propagator::XRay::IDGenerator
