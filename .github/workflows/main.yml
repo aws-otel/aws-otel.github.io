@@ -9,6 +9,9 @@ on:
       - main
 
 
+permissions:
+  contents: write
+
 jobs:
   publish-smoke-test:
     runs-on: ubuntu-22.04
