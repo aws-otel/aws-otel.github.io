@@ -6,10 +6,12 @@ const regionDisplayNames = {
   "us-west-2": "US West (Oregon)",
   "af-south-1": "Africa (Cape Town)",
   "ap-east-1": "Asia Pacific (Hong Kong)",
+  "ap-east-2": "Asia Pacific (Taipei)",
   "ap-south-2": "Asia Pacific (Hyderabad)",
   "ap-southeast-3": "Asia Pacific (Jakarta)",
   "ap-southeast-4": "Asia Pacific (Melbourne)",
   "ap-southeast-5": "Asia Pacific (Malaysia)",
+  "ap-southeast-6": "Asia Pacific (New Zealand)",
   "ap-southeast-7": "Asia Pacific (Thailand)",
   "ap-south-1": "Asia Pacific (Mumbai)",
   "ap-northeast-3": "Asia Pacific (Osaka)",
@@ -31,7 +33,9 @@ const regionDisplayNames = {
   "me-south-1": "Middle East (Bahrain)",
   "me-central-1": "Middle East (UAE)",
   "sa-east-1": "South America (São Paulo)",
-  "mx-central-1": "Mexico (Central)"
+  "mx-central-1": "Mexico (Central)",
+  "cn-north-1": "China (Beijing)",
+  "cn-northwest-1": "China (Ningxia)"
 };
 
 export const lambdaLayerArnsConfig = {
