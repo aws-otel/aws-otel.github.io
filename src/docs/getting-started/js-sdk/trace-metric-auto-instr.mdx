@@ -22,7 +22,7 @@ In this guide, we walk through the steps needed to trace an application and prod
 
 The current supported NodeJS versions to run an application using OpenTelemetry JavaScript are versions 18, 20, 22, and 24.
 
-A collector is not required to send telemetry to AWS. ADOT JavaScript 0.7.0 and later can export traces and logs directly to the CloudWatch OTLP endpoints, or you can export through the CloudWatch agent or any OpenTelemetry Collector.
+A collector is not required to send traces and logs to AWS; metrics still need the CloudWatch agent or a collector. ADOT JavaScript 0.7.0 and later can export traces and logs directly to the CloudWatch OTLP endpoints, or you can export through the CloudWatch agent or any OpenTelemetry Collector.
 
 <TipBox
   textContent="For application performance monitoring on AWS, use CloudWatch Application Signals, which uses ADOT JavaScript auto-instrumentation with the CloudWatch agent. To send traces and logs without running a collector, configure ADOT JavaScript (0.7.0 or later) to export directly to the CloudWatch OTLP endpoints."

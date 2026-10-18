@@ -23,7 +23,7 @@ other tracing backend. Out of the box, it propagates traces using all of W3C Tra
 
 The ADOT .NET auto-Instrumentation is compatible for all the officially supported versions of [.NET](https://dotnet.microsoft.com/en-us/download/dotnet) and [.NET Framework](https://dotnet.microsoft.com/en-us/download/dotnet-framework).
 
-A collector is not required to send telemetry to AWS. ADOT .NET 1.8.0 and later can export traces directly to the CloudWatch OTLP endpoints (this requires setting `OTEL_AWS_SIG_V4_ENABLED=true`), or you can export through the CloudWatch agent or any OpenTelemetry Collector.
+A collector is not required to send traces to AWS. ADOT .NET 1.8.0 and later can export traces directly to the CloudWatch OTLP endpoints (this requires setting `OTEL_AWS_SIG_V4_ENABLED=true`), or you can export through the CloudWatch agent or any OpenTelemetry Collector.
 
 <TipBox
   textContent="For application performance monitoring on AWS, use CloudWatch Application Signals, which uses ADOT .NET auto-instrumentation with the CloudWatch agent. To send traces without running a collector, configure ADOT .NET (1.8.0 or later, with OTEL_AWS_SIG_V4_ENABLED=true) to export directly to the CloudWatch OTLP endpoints."
