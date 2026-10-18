@@ -33,9 +33,9 @@ ECS tasks with Prometheus endpoints are discovered using extension [ecsobserver]
 
 Follow these steps to run the ADOT Collector and Prometheus workload on ECS. You can skip some of them if you already have clusters or tasks running.
 
-- Create an ECS cluster based on <Link to="/docs/setup/ecs/create-cluster">tutorial</Link> or follow Appendix to [Create ECS cluster with EC2 instances using ecs-cli](#create-ecs-cluster-with-ec2-instances)
-- Create <Link to="/docs/setup/ecs/create-iam-role">IAM role</Link> and configure [IAM policy](#iam-policy). Discovery tasks requires extra ECS policies.
-- Create [Configuration](#configuration) as an <Link to="/docs/setup/ecs/config-through-ssm">SSM parameter</Link>
+- Create an ECS cluster based on [tutorial](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-ec2-cluster-console-v2.html) or follow Appendix to [Create ECS cluster with EC2 instances using ecs-cli](#create-ecs-cluster-with-ec2-instances)
+- Create [task IAM role](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-iam-roles.html) and configure [IAM policy](#iam-policy). Discovery tasks requires extra ECS policies.
+- Create [Configuration](#configuration) as an [SSM parameter](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/secrets-envvar-ssm-paramstore.html)
 - Create [ECS Task Definition](#ecs-task-definition)
 - Deploy [ADOT Collector](#deploy-collector) as a replica service with 1 replica
 - Deploy [sample workloads](#sample-workloads)
@@ -50,7 +50,7 @@ For discovering ECS tasks, you need to [config IAM policy](#iam-policy). For scr
 ### IAM Policy
 
 Extra IAM policies are required to discover ECS tasks with Prometheus metrics.
-The full document with  <Link to="/docs/setup/ecs/create-iam-policy">existing polices</Link> is included in the appendix [IAM Policy Document](#iam-policy-document).
+The full document, including the [policies needed to send traces and metrics](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/trace-data.html), is included in the appendix [IAM Policy Document](#iam-policy-document).
 NOTE: The `EC2` policy is required if you use ECS EC2 with `bridge` network mode. You can remove it if all your tasks are fargate or uses `awsvpc` network mode.
 
 ```text
@@ -284,7 +284,7 @@ aws ec2 describe-security-groups --group-ids ${SG}
 
 ### IAM Policy Document
 
-Policy document merged from <Link to="/docs/setup/ecs/create-iam-policy">ECS setup guide</Link> and [Extra IAM Policy](#iam-policy).
+Policy document merged from the [ECS trace data permissions](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/trace-data.html) and [Extra IAM Policy](#iam-policy).
 
 ```json
 {
@@ -329,7 +329,7 @@ NOTE: You need to replace placeholder values with actual value
 - The account id in the example is `123456` and is used in ARN for taskRole and executionRole, replace it with your own AWS account id.
 - `amazon/aws-otel-collector:v0.11.0` is using dockerhub (potential throttle) and you can use `latest` tag if you don't want to lock version.
 - Collecting infrastructure metrics requires running ADOT Collector with root access and this can be configured through `user` in the container definition.
-- `/aoc/ecs-prometheus` is the name of <Link to="/docs/setup/ecs/config-through-ssm">SSM parameter</Link>.
+- `/aoc/ecs-prometheus` is the name of [SSM parameter](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/secrets-envvar-ssm-paramstore.html).
 - `networkMode` can be `bridge`, `host`, `awsvpc`. For fargate, it has to be `awsvpc`.
 - `logConfiguration` is for log from ADOT Collector itself. Log groups for metrics/log collected by collector is configured using `AOT_CONFIG_CONTENT`.
 - `requiresCompatibilities` includes both EC2 and Fargate because ADOT Collector is scraping metrics via HTTP and does not need special host level access.

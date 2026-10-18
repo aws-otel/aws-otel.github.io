@@ -1,123 +1,24 @@
 ---
 title: 'Create IAM Role'
 description:
-    To run a task in ECS with AWS Distro for OpenTelemetry Collector, we need two different roles-
-    **TaskRole** and **TaskExecutionRole**. 
-    In this section, we will create these two roles with proper IAM policies.
+    This page is deprecated. This tutorial set up the ADOT Collector on Amazon ECS with an AWS X-Ray SDK sample application. The X-Ray SDKs and daemon are in maintenance mode in favor of OpenTelemetry. To collect traces and metrics from ECS, use Application Signals with the CloudWatch agent, or run the CloudWatch agent or an OpenTelemetry Collector as a sidecar using the task definitions in the X-Ray migration guide.
 path: '/docs/setup/ecs'
 ---
 
-import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
-import { Link } from "gatsby"
-import iam_role_01 from "assets/img/docs/setup/ecs/iam_role/iam_role_01.png"
-import iam_role_02 from "assets/img/docs/setup/ecs/iam_role/iam_role_02.png"
-import iam_role_03 from "assets/img/docs/setup/ecs/iam_role/iam_role_03.png"
-import iam_role_04 from "assets/img/docs/setup/ecs/iam_role/iam_role_04.png"
-import iam_role_05 from "assets/img/docs/setup/ecs/iam_role/iam_role_05.png"
-import iam_role_06 from "assets/img/docs/setup/ecs/iam_role/iam_role_06.png"
-import iam_role_07 from "assets/img/docs/setup/ecs/iam_role/iam_role_07.png"
-import iam_role_08 from "assets/img/docs/setup/ecs/iam_role/iam_role_08.png"
-import iam_role_09 from "assets/img/docs/setup/ecs/iam_role/iam_role_09.png"
 import WarningBox from "components/WarningBox/WarningBox.jsx"
 
-<WarningBox warningText="This is a legacy tutorial. It deploys the ADOT Collector with X-Ray SDK sample applications and exports data with the awsemf and awsxray exporters. For new setups on Amazon ECS, use CloudWatch Application Signals, or Container Insights and the CloudWatch OTLP endpoints." buttonText="Application Signals on Amazon ECS" hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Signals-Enable-ECSMain.html" />
+<WarningBox
+  warningText="This page is deprecated and is no longer maintained."
+  buttonText="View current documentation →"
+  hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Signals-Enable-ECSMain.html"
+/>
 
-To run a task in ECS with ADOT Collector, we need two different roles-
-**TaskRole** and **TaskExecutionRole**. 
-In this section, we will create these two roles with proper IAM policies.
+This tutorial set up the ADOT Collector on Amazon ECS with an AWS X-Ray SDK sample application. The X-Ray SDKs and daemon are in maintenance mode in favor of OpenTelemetry. To collect traces and metrics from ECS, use Application Signals with the CloudWatch agent, or run the CloudWatch agent or an OpenTelemetry Collector as a sidecar using the task definitions in the X-Ray migration guide.
 
-<SectionSeparator />
+## Use these resources instead
 
-## 1. Create TaskRole 
-
-The **TaskRole** is the IAM role used by the task itself. For example, if your container wants to call other 
-AWS services like Amazon CloudWatch, AWS X-Ray, etc then those permissions would need to be covered by the TaskRole.
-
-**1.1. Go to AWS Management Console**
-
-Go to AWS Management Console and open the [IAM Roles](https://console.aws.amazon.com/iam/home#/roles) page.
-
-
-**1.2. Create Role**
-
-Click the **Create Role** button on top-left corner.
-<img src={iam_role_01} alt="Diagram" style="margin: 10px 0;" />
-<div style="height: 40px" />
-
-**1.3. Select `Elastic Container Service`**
-
-<img src={iam_role_02} alt="Diagram" style="margin: 10px 0;" />
-<div style="height: 80px" />
-
-**1.4. Select Use Case** 
-
-In the bottom of the same page, click the **Elastic Container Service Task** and click **Next: permissions** 
-button to go to the next page. 
-
-<img src={iam_role_03} alt="Diagram" style="margin: 10px 0;" />
-<div style="height: 40px" />
-
-**1.5. Attach Policy to the Role**
-
-Search for and select the policy (**AWSDistroOpenTelemetryPolicy**) we created in our previous [Create IAM Policy](create-iam-policy) tutorial. 
-Click **Next: Tags** button to go to the next page.
-
-<img src={iam_role_04} alt="Diagram" style="margin: 10px 0;" />
-<div style="height: 40px" />
-
-**1.6. Add Role Name and Description**
-
-Put a role name (i.e. **AWSOTTaskRole**) and role description. Click the **Create Role** button and finish the process.
-
-<img src={iam_role_05} alt="Diagram" style="margin: 10px 0;" />
-<div style="height: 40px" />
-
-<SectionSeparator />
-
-## 2. Create TaskExecutionRole
-
-The **TaskExecutionRole** grants Amazon ECS permissionS to make AWS API calls on your behalf.
-
-**2.1. Repeat steps from previous section**
-
-Repeat the following steps (1.1 to 1.4) from **Create TaskRole** section-
-
-- 1.1 Go to AWS Management Console
-- 1.2 Create Role
-- 1.3 Select **Elastic Container Service**
-- 1.4 Select Use Case
-- 1.5 Attach Plolicy to the Role
-
-**2.2 Attach `AmazonECSTaskExecutionRolePolicy` Policy**
-
-Search for and Select the **AmazonECSTaskExecutionRolePolicy** Policy.
-
-<img src={iam_role_06} alt="Diagram" style="margin: 10px 0;" />
-<div style="height: 40px" />
-
-**2.3 Attach `CloudWatchLogsFullAccess` Policy**
-
-Search for and Select the **CloudWatchLogsFullAccess** Policy. 
-
-**Note:** `CloudWatchLogsFullAccess` grants broad permissions and is used here only to keep the tutorial simple.
-Following [IAM security best practices](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html), grant
-least privilege instead, for example a policy scoped to the CloudWatch Logs actions and log groups that your tasks use.
-
-<img src={iam_role_07} alt="Diagram" style="margin: 10px 0;" />
-<div style="height: 40px" />
-
-**2.3 Attach `AmazonSSMReadOnlyAccess` Policy**
-
-Search for and Select the **AmazonSSMReadOnlyAccess** Policy. Click **Next: Tags** button to go to the next page.
-
-<img src={iam_role_08} alt="Diagram" style="margin: 10px 0;" />
-<div style="height: 40px" />
-
-
-**2.4 Add Role Name and Description**
-
-Click **Next: Review** button to go to the next page, put a role name (i.e. **AWSOTTaskExcutionRole**) and 
-description. Click the **Create Role** button and finish the process.
-
-<img src={iam_role_09} alt="Diagram" style="margin: 10px 0;" />
-<div style="height: 40px" />
+- [Enable Application Signals on Amazon ECS](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Signals-Enable-ECSMain.html)
+- [Migrating to OpenTelemetry on Amazon ECS (X-Ray Developer Guide)](https://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-migration.html#ecs-migration)
+- [Container Insights for Amazon ECS](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cloudwatch-container-insights.html)
+- [Sending OpenTelemetry data to CloudWatch OTLP endpoints](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPSimplesetup.html)
+- [X-Ray SDK and daemon support timeline](https://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-daemon-timeline.html)

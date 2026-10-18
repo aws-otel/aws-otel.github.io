@@ -68,7 +68,6 @@ export const sideBarData = [
       id: nextId(),
       label: "Setup",
       items: [
-        {label: "ECS", link: "/docs/setup/ecs"},
         {label: "EC2", link: "/docs/setup/ec2"},
         {label: "EKS", link: "/docs/getting-started/adot-eks-add-on"},
         {label: "On-Premises", link: "/docs/setup/on-premises"},

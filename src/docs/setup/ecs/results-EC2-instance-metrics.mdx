@@ -1,39 +1,24 @@
 ---
 title: 'Results: Check ECS instance metrics in Amazon CloudWatch'
 description:
-    In this section, we will check the metrics in Amazon CloudWatch collected using AWS ECS Container insights receiver.
+    This page is deprecated. This tutorial set up the ADOT Collector on Amazon ECS with an AWS X-Ray SDK sample application. The X-Ray SDKs and daemon are in maintenance mode in favor of OpenTelemetry. To collect traces and metrics from ECS, use Application Signals with the CloudWatch agent, or run the CloudWatch agent or an OpenTelemetry Collector as a sidecar using the task definitions in the X-Ray migration guide.
 path: '/docs/setup/ecs/results-EC2-instance-metrics'
 ---
 
-import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
-import { Link } from "gatsby"
-import instancemetrics01 from "assets/img/docs/setup/ecs/results/instance-metrics-01.png"
-import instancemetrics02 from "assets/img/docs/setup/ecs/results/instance-metrics-02.png"
 import WarningBox from "components/WarningBox/WarningBox.jsx"
 
-<WarningBox warningText="This is a legacy tutorial. It deploys the ADOT Collector with X-Ray SDK sample applications and exports data with the awsemf and awsxray exporters. For new setups on Amazon ECS, use CloudWatch Application Signals, or Container Insights and the CloudWatch OTLP endpoints." buttonText="Application Signals on Amazon ECS" hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Signals-Enable-ECSMain.html" />
+<WarningBox
+  warningText="This page is deprecated and is no longer maintained."
+  buttonText="View current documentation →"
+  hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Signals-Enable-ECSMain.html"
+/>
 
-In this section, we will check the metrics in Amazon CloudWatch collected using AWS ECS Container metrics receiver.
+This tutorial set up the ADOT Collector on Amazon ECS with an AWS X-Ray SDK sample application. The X-Ray SDKs and daemon are in maintenance mode in favor of OpenTelemetry. To collect traces and metrics from ECS, use Application Signals with the CloudWatch agent, or run the CloudWatch agent or an OpenTelemetry Collector as a sidecar using the task definitions in the X-Ray migration guide.
 
+## Use these resources instead
 
-<SectionSeparator />
-
-1. **Check CloudWatch Logs**
-
-Let’s go to CloudWatch console and select Log groups from the left side navigation. Search for our log group
-name `/aws/ecs/containerinsights/{ClusterName}/performance`  and then click the log stream name which is your `NodeTelemetry-{containerInstanceId}`.
-We should see our expected (following) metrics. These logs use the CloudWatch [Embedded Metric
-Format](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Embedded_Metric_Format.html) (EMF)
-to generate CloudWatch Metrics. Following is an example for received logs in the CloudWatch console.
-
-<img src={instancemetrics01} alt="Diagram" style="margin: 10px 0;" />
-<div style="height: 40px" />
-
-
-2. **Check CloudWatch metrics**
-
-In the CloudWatch Console, from the left side panel, select Metrics. You should be able to see ECS/ContainerInsights namespace.
-Click it and you will see the expected metrics.
-
-<img src={instancemetrics02} alt="Diagram" style="margin: 10px 0;" />
-<div style="height: 40px" />
+- [Enable Application Signals on Amazon ECS](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Signals-Enable-ECSMain.html)
+- [Migrating to OpenTelemetry on Amazon ECS (X-Ray Developer Guide)](https://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-migration.html#ecs-migration)
+- [Container Insights for Amazon ECS](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cloudwatch-container-insights.html)
+- [Sending OpenTelemetry data to CloudWatch OTLP endpoints](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPSimplesetup.html)
+- [X-Ray SDK and daemon support timeline](https://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-daemon-timeline.html)

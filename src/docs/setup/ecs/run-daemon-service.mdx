@@ -1,44 +1,24 @@
 ---
 title: 'Run your task on the Amazon Elastic Container Service (Amazon ECS) using daemon service'
 description:
-    In this tutorial, we will demonstrate how to run OpenTelemetry Collector (ADOT Collector) using a daemon service on the
-    Amazon Elastic Container Service (Amazon ECS) in Amazon Elastic Compute Cloud (Amazon EC2).
+    This page is deprecated. This tutorial set up the ADOT Collector on Amazon ECS with an AWS X-Ray SDK sample application. The X-Ray SDKs and daemon are in maintenance mode in favor of OpenTelemetry. To collect traces and metrics from ECS, use Application Signals with the CloudWatch agent, or run the CloudWatch agent or an OpenTelemetry Collector as a sidecar using the task definitions in the X-Ray migration guide.
 path: '/docs/setup/ecs/run-daemon-service'
 ---
 
-import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
-import { Link } from "gatsby"
-import runservice1 from "assets/img/docs/setup/ecs/run-task/runservice1.png"
-import runservice2 from "assets/img/docs/setup/ecs/run-task/runservice2.png"
-import runservice3 from "assets/img/docs/setup/ecs/run-task/runservice3.png"
-import runservice4 from "assets/img/docs/setup/ecs/run-task/runservice4.png"
 import WarningBox from "components/WarningBox/WarningBox.jsx"
 
-<WarningBox warningText="This is a legacy tutorial. It deploys the ADOT Collector with X-Ray SDK sample applications and exports data with the awsemf and awsxray exporters. For new setups on Amazon ECS, use CloudWatch Application Signals, or Container Insights and the CloudWatch OTLP endpoints." buttonText="Application Signals on Amazon ECS" hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Signals-Enable-ECSMain.html" />
+<WarningBox
+  warningText="This page is deprecated and is no longer maintained."
+  buttonText="View current documentation →"
+  hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Signals-Enable-ECSMain.html"
+/>
 
-In this tutorial, we will demonstrate how to run your task on the Amazon Elastic Container Service (Amazon ECS).
+This tutorial set up the ADOT Collector on Amazon ECS with an AWS X-Ray SDK sample application. The X-Ray SDKs and daemon are in maintenance mode in favor of OpenTelemetry. To collect traces and metrics from ECS, use Application Signals with the CloudWatch agent, or run the CloudWatch agent or an OpenTelemetry Collector as a sidecar using the task definitions in the X-Ray migration guide.
 
-<SectionSeparator />
+## Use these resources instead
 
-### Deploy the task as a daemon service
-
-1. Go to the <Link to="https://us-west-2.console.aws.amazon.com/ecs/home?/taskDefinitions#/taskDefinitions">Task Definitions</Link> ,
-and select the task you created, and click actions. Click Create service.
-
-<img src={runservice1} alt="Diagram" style="margin: 30px 0;" />
-
-2. Select EC2 as the Launch type and select the Cluster you created or any old one you use. Type your Service name and select
-DAEMON as the Service type.  Click the Next step:
-
-<img src={runservice2} alt="Diagram" style="margin: 30px 0;" />
-
-3. Continue click the Next step until this page, and click Create Service:
-
-<img src={runservice3} alt="Diagram" style="margin: 30px 0;" />
-
-4. The service will be created:
-
-<img src={runservice4} alt="Diagram" style="margin: 30px 0;" />
-
-
-5. You can go to the cluster to see the service is running, also with the tasks. Visit the <Link to="/docs/setup/ecs#4-results">Results</Link>  section to check the collected metrics.
+- [Enable Application Signals on Amazon ECS](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Signals-Enable-ECSMain.html)
+- [Migrating to OpenTelemetry on Amazon ECS (X-Ray Developer Guide)](https://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-migration.html#ecs-migration)
+- [Container Insights for Amazon ECS](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cloudwatch-container-insights.html)
+- [Sending OpenTelemetry data to CloudWatch OTLP endpoints](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPSimplesetup.html)
+- [X-Ray SDK and daemon support timeline](https://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-daemon-timeline.html)

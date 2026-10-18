@@ -1,49 +1,24 @@
 ---
 title: 'Cloudformation Template for collecting ECS EC2 instance metrics'
 description:
-    In this tutorial, we will demonstrate how to run OpenTelemetry Collector (ADOT Collector) as a daemon on the
-    Amazon Elastic Container Service (Amazon ECS) in Amazon Elastic Compute Cloud (Amazon EC2).
+    This page is deprecated. This tutorial set up the ADOT Collector on Amazon ECS with an AWS X-Ray SDK sample application. The X-Ray SDKs and daemon are in maintenance mode in favor of OpenTelemetry. To collect traces and metrics from ECS, use Application Signals with the CloudWatch agent, or run the CloudWatch agent or an OpenTelemetry Collector as a sidecar using the task definitions in the X-Ray migration guide.
 path: '/docs/setup/ecs/cfn-for-ecs-ec2-instance'
 ---
 
-import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
-import { Link } from "gatsby"
 import WarningBox from "components/WarningBox/WarningBox.jsx"
 
-<WarningBox warningText="This is a legacy tutorial. It deploys the ADOT Collector with X-Ray SDK sample applications and exports data with the awsemf and awsxray exporters. For new setups on Amazon ECS, use CloudWatch Application Signals, or Container Insights and the CloudWatch OTLP endpoints." buttonText="Application Signals on Amazon ECS" hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Signals-Enable-ECSMain.html" />
+<WarningBox
+  warningText="This page is deprecated and is no longer maintained."
+  buttonText="View current documentation →"
+  hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Signals-Enable-ECSMain.html"
+/>
 
-In this tutorial, we will demonstrate how to run OpenTelemetry Collector (ADOT Collector) as a daemon on the
-Amazon Elastic Container Service (Amazon ECS) in Amazon Elastic Compute Cloud (Amazon EC2) mode.
+This tutorial set up the ADOT Collector on Amazon ECS with an AWS X-Ray SDK sample application. The X-Ray SDKs and daemon are in maintenance mode in favor of OpenTelemetry. To collect traces and metrics from ECS, use Application Signals with the CloudWatch agent, or run the CloudWatch agent or an OpenTelemetry Collector as a sidecar using the task definitions in the X-Ray migration guide.
 
-<SectionSeparator />
+## Use these resources instead
 
-To Install ADOT Collector by using CloudFormation, you have to have a cluster.
-If you are not familiar with how to create a cluster, you can check this <Link to="/docs/setup/ecs/create-cluster">create-cluster</Link>
-section.
-
-### Setup for ECS EC2 to get instance metrics
-1. Download the CloudFormation template file for installing ADOT Collector for ECS EC2. Run the following curl command.
-```
-curl -O https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/deployment-template/ecs/aws-otel-ec2-instance-metrics-daemon-deployment-cfn.yaml
-```
-2. Replace the <PATH_TO_CloudFormation_TEMPLATE> with the path where your template saved in the command, and export the
-   following parameters, and then run CloudFormation command.
-    * `Cluster_Name` - ECS Cluster name setup in Prerequisite step
-    * `AWS_Region` - Region the data will be sent
-    * `PATH_TO_CloudFormation_TEMPLATE` - CFN template path downloaded in Step 1
-    * `command` -  Assign value to the command variable to select the config file path; the ADOT Collector
-                   `--config=/etc/ecs/otel-instance-metrics-config.yaml` - To consume ECS EC2 instance metrics
-```console lineNumbers=true
-ClusterName=<Cluster_Name>
-Region=<AWS_Region>
-command=<command>
-aws cloudformation create-stack --stack-name AOCECS-${ClusterName}-${Region} \
-    --template-body file://<PATH_TO_CloudFormation_TEMPLATE> \
-    --parameters ParameterKey=ClusterName,ParameterValue=${ClusterName} \
-                 ParameterKey=CreateIAMRoles,ParameterValue=True \
-                 ParameterKey=command,ParameterValue=${command} \
-    --capabilities CAPABILITY_NAMED_IAM \
-    --region ${Region}
-```
-3. Go to you ECS Console and see if the task is running.
-4. Go to the <Link to="/docs/setup/ecs/results-EC2-instance-metrics">Results</Link> section to learn how to check the collected metrics and traces.
+- [Enable Application Signals on Amazon ECS](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Signals-Enable-ECSMain.html)
+- [Migrating to OpenTelemetry on Amazon ECS (X-Ray Developer Guide)](https://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-migration.html#ecs-migration)
+- [Container Insights for Amazon ECS](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cloudwatch-container-insights.html)
+- [Sending OpenTelemetry data to CloudWatch OTLP endpoints](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPSimplesetup.html)
+- [X-Ray SDK and daemon support timeline](https://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-daemon-timeline.html)

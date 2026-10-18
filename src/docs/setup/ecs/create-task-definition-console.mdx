@@ -1,137 +1,24 @@
 ---
 title: 'Install ADOT Collector By Creating Task Definition Through AWS Console '
 description:
-    In this tutorial, we will demonstrate how to install ADOT Collector using Task Definition on the Amazon
-    Elastic Container Service (Amazon ECS) through AWS console.
+    This page is deprecated. This tutorial set up the ADOT Collector on Amazon ECS with an AWS X-Ray SDK sample application. The X-Ray SDKs and daemon are in maintenance mode in favor of OpenTelemetry. To collect traces and metrics from ECS, use Application Signals with the CloudWatch agent, or run the CloudWatch agent or an OpenTelemetry Collector as a sidecar using the task definitions in the X-Ray migration guide.
 path: '/docs/setup/ecs/create-task-definition-console'
 ---
 
-import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
-import { Link } from "gatsby"
-import task_01 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition_01.png"
-import task2 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition2.png"
-import task3 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition3.png"
-import task4 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition4.png"
-import task5 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition5.png"
-import task6 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition6.png"
-import task_06 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition_06.png"
-import task7 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition7.png"
-import task8 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition8.png"
-import task9 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition9.png"
-import task10 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition10.png"
-import task11 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition11.png"
-import task12 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition12.png"
-import task13 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition13.png"
-import task14 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition14.png"
-import task15 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition15.png"
-import task16 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition16.png"
-import task17 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition17.png"
-import task18 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition18.png"
-import task19 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition19.png"
-import task20 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition20.png"
-import task21 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition21.png"
-import task22 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition22.png"
-import task23 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition23.png"
-import task24 from "assets/img/docs/setup/ecs/create-task-definition/taskdefinition24.png"
 import WarningBox from "components/WarningBox/WarningBox.jsx"
 
-<WarningBox warningText="This is a legacy tutorial. It deploys the ADOT Collector with X-Ray SDK sample applications and exports data with the awsemf and awsxray exporters. For new setups on Amazon ECS, use CloudWatch Application Signals, or Container Insights and the CloudWatch OTLP endpoints." buttonText="Application Signals on Amazon ECS" hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Signals-Enable-ECSMain.html" />
+<WarningBox
+  warningText="This page is deprecated and is no longer maintained."
+  buttonText="View current documentation →"
+  hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Signals-Enable-ECSMain.html"
+/>
 
+This tutorial set up the ADOT Collector on Amazon ECS with an AWS X-Ray SDK sample application. The X-Ray SDKs and daemon are in maintenance mode in favor of OpenTelemetry. To collect traces and metrics from ECS, use Application Signals with the CloudWatch agent, or run the CloudWatch agent or an OpenTelemetry Collector as a sidecar using the task definitions in the X-Ray migration guide.
 
-In this tutorial, we will demonstrate how to install ADOT Collector using Task Definition on the Amazon Elastic
-Container Service (Amazon ECS) through AWS console.
+## Use these resources instead
 
-<SectionSeparator />
-
-1. Go to AWS Management Console and select Elastic Container Service. From the left side navigation,
-select <Link to="https://us-west-2.console.aws.amazon.com/ecs/home?/taskDefinitions#/taskDefinitions">Task Definitions</Link>
-and click the Create new Task Definition button.
-
-2. Select FARGATE or EC2 as the Launch type and move forward.
-
-<img src={task_01} alt="Diagram" style="margin: 30px 0;" />
-
-3. Put a task-definition name (i.e.aws-otel). And select the role you create in pre section from Taskrole drop-down menu.
-<img src={task2} alt="Diagram" style="margin: 30px 0;" />
-4. For the task execution role, select the role name you created by clicking Task execution role drop-down menu.
-<img src={task3} alt="Diagram" style="margin: 30px 0;" />
-Select Network Mode to `awsvpc`
-<img src={task24} alt="Diagram" style="margin: 30px 0;" />
-5. Select the Task size:
-  * For ECS FARGATE launch type (slected in step 2), Mention task memory and cpu for your task-definition (This example uses 1GB, 0.5 vCPU).
-    <img src={task4} alt="Diagram" style="margin: 30px 0;" />
-  * For ECS EC2 launch type (slected in step 2),  Mention task memory and task cpu  for your task-definition like use 2048 for memory, 1024 for CPU
-    <img src={task5} alt="Diagram" style="margin: 30px 0;" />
-6. In the container definitions section, click the Add Container button. Let’s add the AWS Observability Collector container first.
-Put a container name (i.e. *aws-otel-collector*) and use the *amazon/aws-otel-collector* container image.
-We can keep everything else default
-<img src={task6} alt="Diagram" style="margin: 30px 0;" />
-   [Optional] In the 'Advanced container configuration' section, let's setup the HealthCheck instructions for aws-otel-collector.
-   Provide the '/healthcheck' command and enter 5s as interval, 6s as Timeout, 1s as Start period, and 5 as Retries.
-<img src={task_06} alt="Diagram" style="margin: 30px 0;" />
-7. Set up the OpenTelemetry configuration file for AWS Observability Toolkit (AOT)
-In this section we will set the OpenTelemetry configuration file for our Collector container (ADOT Collector).  All the functionality
-of AOC is passive, if your application doesn’t emit the data to the port (X-ray use UDP 2000, OTLP use TCP 4317 and 4318, StatsD use UDP 8125) then there will be no effect.
-   *  Collect Application Metrics and Traces:
-
-      In the  Environment Command section add `--config=/etc/ecs/ecs-default-config.yaml` to select the ECS default configuration
-      file for AWS Observability Collector (AOC). This will collect Application Metrics and Traces and send them to
-      Amazon CloudWatch Metrics and AWS X-Ray. Specifically, this configuration file can collect metrics and traces from
-      the OpenTelemetry SDKs (OTLP), X-Ray traces from the X-Ray SDKs and StatsD metrics from your app.
-      <img src={task7} alt="Diagram" style="margin: 30px 0;" />
-   *  Collect Application Metrics & Traces and Container Resource Metrics
-
-      In the container definition section for   Environment Command section add `--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml`,
-      which is  already included as part of ADOT collector, select the ECS default configuration for Container Insights experience.
-      This will collect Application Metrics, Traces  and task-level Container Resource Metrics, and send them to Amazon CloudWatch Metrics
-      and AWS X-Ray. This configuration file can collect metrics and traces from the OpenTelemetry SDKs (OTLP)
-      , X-Ray traces from the X-Ray SDKs and StatsD metrics from your app.
-      <img src={task8} alt="Diagram" style="margin: 30px 0;" />
-8. Port mapping setup
-
-    **Note:** For ECS Fargate launch type (slected in step 2), you can just skip this step.
-
-    For ECS EC2 launch type, add port mappings, map 2000 for udp (used by AWS X-ray for traces), 4317 for tcp (used by the collector) and 8125 for udp (used by StatsD).
-    <img src={task9} alt="Diagram" style="margin: 30px 0;" />
-9. In the STORAGE and LOGGING section, let’s enable Auto-configure CloudWatch logs.
-   <img src={task10} alt="Diagram" style="margin: 30px 0;" />
-   We are done here. Keep other config options as they are. Finish adding the container.
-
-**_Attention: 10, 11 and 12 will add three example applications to show how everything works. Normally, these images should be your business applications. Feel free to skip these steps._**
-
-10. Let’s add a sample application container in similar way (you can configure your application like this)
-    * 10.1  You can select the container name you want (i.e. webapp ), but we use another image
-    (Image: 611364707713.dkr.ecr.us-west-2.amazonaws.com/amazon/aws-otel-goxray-sample-app:v0.0.1). This image will
-    create a sample web application using Xray SDK to generate the trace data and send it to AWS Observability Collector (AOC).
-    <img src={task11} alt="Diagram" style="margin: 30px 0;" />
-    * 10.2  In the STARTUP DEPENDENCY ORDERING  select the Container name aws-otel-collector you used in step 6 and in the Condition, select START.
-    <img src={task20} alt="Diagram" style="margin: 30px 0;" />
-    * 10.3 **If you selected FARGATE as your launch Type in step 2, you can just skip this step.  If you are using ECS EC2, do the following:**
-       1.  Add Port mappings, map port **8000** for **tcp**.
-       <img src={task12} alt="Diagram" style="margin: 30px 0;" />
-       2.  In Environment Section, add Environment variable: **AWS_XRAY_DAEMON_ADDRESS** with **aws-otel-collector:2000**
-       <img src={task13} alt="Diagram" style="margin: 30px 0;" />
-       3.  In the NETWORK SETTINGS Links, put the container name aws-otel-collector you used in step 6 as ADOT collector.
-       <img src={task14} alt="Diagram" style="margin: 30px 0;" />
-       4.  Keep the rest information as default and click add.
-       <img src={task15} alt="Diagram" style="margin: 30px 0;" />
-11. Let’s add another application container in similar way.
-    1.  For this example, we use the nginx (Image: nginx:latest).
-        <img src={task16} alt="Diagram" style="margin: 30px 0;" />
-    2.  In the STARTUP DEPENDENCY ORDERING  select the Container name aws-otel-collector you used in step 6 and in the Condition, select START.
-        <img src={task17} alt="Diagram" style="margin: 30px 0;" />
-    3.  Keep the rest information as default and click add.
-        <img src={task18} alt="Diagram" style="margin: 30px 0;" />
-12. Let's add another application to send StatsD metrics (you can change this app with yours and send to port 8125).
-    1.  For this example, we use this alpine/socat:latest (Image: alpine/socat:latest).
-        <img src={task21} alt="Diagram" style="margin: 30px 0;" />
-    2.  Add this part to `Entry point` in `ENVIRONMENT` to send some StatsD metrics:
-        `/bin/sh,-c,while true; do echo 'statsdTestMetric:1|c' | socat -v -t 0 - UDP:127.0.0.1:8125; sleep 1; done`
-        Here is the output
-        <img src={task22} alt="Diagram" style="margin: 30px 0;" />
-    3.  In the STARTUP DEPENDENCY ORDERING  select the Container name aws-otel-collector you used in step 6 and in the Condition, select START.
-        <img src={task17} alt="Diagram" style="margin: 30px 0;" />
-    4.  Keep the rest information as default and click add. Now you can see four containers
-        <img src={task23} alt="Diagram" style="margin: 30px 0;" />
-13. Click the Create button in the bottom to finish the process. If everything works fine, you will see something like the following.
-    <img src={task19} alt="Diagram" style="margin: 30px 0;" />
+- [Enable Application Signals on Amazon ECS](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Signals-Enable-ECSMain.html)
+- [Migrating to OpenTelemetry on Amazon ECS (X-Ray Developer Guide)](https://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-migration.html#ecs-migration)
+- [Container Insights for Amazon ECS](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cloudwatch-container-insights.html)
+- [Sending OpenTelemetry data to CloudWatch OTLP endpoints](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPSimplesetup.html)
+- [X-Ray SDK and daemon support timeline](https://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-daemon-timeline.html)
