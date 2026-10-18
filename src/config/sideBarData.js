@@ -110,7 +110,6 @@ export const sideBarData = [
         {label: "Jaeger Receiver", link: "/docs/components/jaeger-zipkin-receiver#jaeger-receiver"},
         {label: "Kafka Receiver/Exporter", link: "/docs/components/kafka-receiver-exporter"},
         {label: "Logging Exporter", link: "/docs/components/misc-exporters#logging-exporter"},
-        {label: "OTLP Exporters", link: "/docs/components/otlp-exporter"},
         {label: "Processors", link: "/docs/components/processors"},
         {label: "Prometheus Exporters", link: "/docs/components/prometheus-exporters"},
         {label: "StatsD Receiver", link: "/docs/components/statsd-receiver"},
