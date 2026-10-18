@@ -15,7 +15,6 @@ function Footer({ ...props }) {
           <h3>About</h3>
           <div className={classes.verticalSpacing}> <Link to="/about" className={classes.link}> AWS Distro for OpenTelemetry </Link></div>
           {/*<div> <Link to="/coming-soon" className={classes.link}> Components </Link></div>*/}
-          <div className={classes.verticalSpacing}> <Link to="https://github.com/orgs/aws-observability/projects/4" target={"_blank"} className={classes.link} rel="noopener noreferrer"> Roadmap </Link></div>
           <div className={classes.verticalSpacing}> <Link to="https://opentelemetry.io/" target={"_blank"} className={classes.link} rel="noopener noreferrer"> About OpenTelemetry </Link></div>
         </div>
         <div className={classes.col}>

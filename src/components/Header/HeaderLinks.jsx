@@ -41,9 +41,6 @@ function HeaderLinks({ ...props }) {
             <Link to="/about" className={classes.dropdownLink}>
               AWS Distro for OpenTelemetry
             </Link>,
-            <Link to="https://github.com/orgs/aws-observability/projects/4" target="_blank" rel="noopener noreferrer" className={classes.dropdownLink}>
-              Roadmap
-            </Link>,
             <Link to="https://opentelemetry.io/" target="_blank" rel="noopener noreferrer" className={classes.dropdownLink}>
               About OpenTelemetry
             </Link>,
@@ -77,9 +74,6 @@ function HeaderLinks({ ...props }) {
             </Link>,
             <Link to="/announcements" className={classes.dropdownLink}>
               Announcements
-            </Link>,
-            <Link to="/videos" className={classes.dropdownLink}>
-              Videos
             </Link>,
             <Link
                 to="https://aws.amazon.com/otel/faqs/"
