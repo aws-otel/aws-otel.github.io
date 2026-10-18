@@ -20,27 +20,27 @@ Amazon EKS does not automatically update ADOT on your cluster\. You must initiat
 1. Determine the ADOT versions are available that are supported by your cluster's version\.
 
    ```
-   aws eks describe-addon-versions --addon-name adot --kubernetes-version 1.23 \
+   aws eks describe-addon-versions --addon-name adot --kubernetes-version 1.33 \
        --query "addons[].addonVersions[].[addonVersion, compatibilities[].defaultVersion]" --output text
    ```
 
    An example output is as follows\.
 
    ```
-   v0.58.0-eksbuild.1
+   v0.158.0-eksbuild.1
    True
-   v0.56.0-eksbuild.2
+   v0.156.0-eksbuild.1
    False
    ```
 
    The version with `True` underneath is the default version deployed when the add\-on is created\. The version deployed when the add\-on is created might not be the latest available version\. In 
    the previous output, the latest version is deployed when the add\-on is created\.
 
-1. Update the ADOT version\. Replace `my-cluster` with the name of your cluster and `v0.58.0-eksbuild.1` with the desired version\. Optionally, the `--configuration-values` flag can 
+1. Update the ADOT version\. Replace `my-cluster` with the name of your cluster and `v0.158.0-eksbuild.1` with the desired version\. Optionally, the `--configuration-values` flag can 
 be added to deploy an ADOT Collector during add\-on installation\. You may also configure other available values with this flag\.
 
    ```
-   aws eks update-addon --cluster-name my-cluster --addon-name adot --addon-version v0.58.0-eksbuild.1 --resolve-conflicts PRESERVE --configuration-values my-configuration-values
+   aws eks update-addon --cluster-name my-cluster --addon-name adot --addon-version v0.158.0-eksbuild.1 --resolve-conflicts PRESERVE --configuration-values my-configuration-values
    ```
 
    The *PRESERVE* option preserves any custom settings that you've set for the add\-on\. For more information about other options for this setting, see [update\-addon](https://docs.aws.amazon.com/cli/latest/reference/eks/update-addon.html) in the 
