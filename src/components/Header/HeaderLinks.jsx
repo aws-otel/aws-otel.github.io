@@ -4,7 +4,7 @@ import { Link } from "gatsby"
 import withStyles from "@material-ui/core/styles/withStyles"
 import List from "@material-ui/core/List"
 import ListItem from "@material-ui/core/ListItem"
-import { Apps, CloudDownload } from "@material-ui/icons"
+import { CloudDownload } from "@material-ui/icons"
 import GroupIcon from '@material-ui/icons/Group'
 import DescriptionIcon from '@material-ui/icons/Description'
 import CodeIcon from '@material-ui/icons/Code'
@@ -27,25 +27,6 @@ function HeaderLinks({ ...props }) {
             <HomeIcon className={classes.icons} /> Home
           </Button>
         </Link>
-      </ListItem>
-      <ListItem className={classes.listItem}>
-        <CustomDropdown
-          noLiPadding
-          buttonText="About"
-          buttonProps={{
-            className: classes.navLink,
-            color: "transparent"
-          }}
-          buttonIcon={Apps}
-          dropdownList={[
-            <Link to="/about" className={classes.dropdownLink}>
-              AWS Distro for OpenTelemetry
-            </Link>,
-            <Link to="https://opentelemetry.io/" target="_blank" rel="noopener noreferrer" className={classes.dropdownLink}>
-              About OpenTelemetry
-            </Link>,
-          ]}
-        />
       </ListItem>
       <ListItem className={classes.listItem}>
         <CustomDropdown
