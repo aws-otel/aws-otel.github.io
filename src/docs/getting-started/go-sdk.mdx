@@ -1,24 +1,23 @@
 ---
 title: 'Getting Started with the OpenTelemetry Go SDK on Traces and Metrics Instrumentation'
 description:
-    OpenTelemetry provides different language SDKs to instrument customer's application for collecting telemetry data.
-    In this tutorial, we will introduce how to use OpenTelemetry Go SDK for manual instrumentation
+    This page is deprecated. There is no ADOT SDK for Go. Use the upstream OpenTelemetry Go SDK and send traces to the CloudWatch OTLP endpoint. The X-Ray ID generator is no longer required; X-Ray accepts W3C trace IDs.
 path: '/docs/getting-started/go-sdk'
 ---
 
-import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import WarningBox from "components/WarningBox/WarningBox.jsx"
 
-OpenTelemetry provides different language SDKs to instrument customer's application for collecting telemetry data.
+<WarningBox
+  warningText="This page is deprecated and is no longer maintained."
+  buttonText="View current documentation →"
+  hyperlink="https://docs.aws.amazon.com/xray/latest/devguide/manual-instrumentation-go.html"
+/>
 
-In this tutorial, we will introduce how to use OpenTelemetry Go SDK for manual instrumentation.
+There is no ADOT SDK for Go. Use the upstream OpenTelemetry Go SDK and send traces to the CloudWatch OTLP endpoint. The X-Ray ID generator is no longer required; X-Ray accepts W3C trace IDs.
 
-<SectionSeparator />
+## Use these resources instead
 
-## Getting Started
-
-* [Manual Instrumentation for Traces and Metrics with OpenTelemetry Go SDK](/docs/getting-started/go-sdk/manual-instr)
-
-
-## Sample Code
-
-* [AWS Distro for OpenTelemetry Sample Code with Go SDK](https://github.com/aws-observability/aws-otel-community/tree/master/sample-apps/go-sample-app)
+- [Migrate to OpenTelemetry Go (X-Ray Developer Guide)](https://docs.aws.amazon.com/xray/latest/devguide/manual-instrumentation-go.html)
+- [OpenTelemetry Go getting started](https://opentelemetry.io/docs/languages/go/getting-started/)
+- [Sending OpenTelemetry data to CloudWatch OTLP endpoints](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPSimplesetup.html)
+- [CloudWatch OTLP endpoints reference](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPEndpoint.html)

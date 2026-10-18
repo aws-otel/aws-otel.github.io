@@ -1,20 +1,20 @@
 ---
 title: 'Getting Started with AWS X-Ray tracing for App Runner using AWS Distro for OpenTelemetry'
 description:
-    'In this tutorial we will provide a step-by-step walk-through of X-Ray tracing for App Runner using AWS Distro for OpenTelemetry.'
+    This page is deprecated. Tracing for App Runner is documented in the App Runner Developer Guide.
 path: '/docs/getting-started/apprunner'
 ---
 
-import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import WarningBox from "components/WarningBox/WarningBox.jsx"
 
-<SectionSeparator />
+<WarningBox
+  warningText="This page is deprecated and is no longer maintained."
+  buttonText="View current documentation →"
+  hyperlink="https://docs.aws.amazon.com/apprunner/latest/dg/monitor-xray.html"
+/>
 
-## What is App Runner?
+Tracing for App Runner is documented in the App Runner Developer Guide.
 
-AWS App Runner is a fully managed service that makes it easy for developers to quickly deploy containerized web applications and APIs at scale and with little to no infrastructure experience. You can start with your source code or a container image, and App Runner will fully manage all infrastructure including servers, networking, and load balancing for your application. App Runner provides you with a service URL that receives HTTPS requests to your application. As an option, App Runner can also configure a continuous deployment pipeline for you.
+## Use these resources instead
 
-<SectionSeparator />
-
-## Getting started with X-Ray tracing for App Runner using AWS Distro for OpenTelemetry
-
-App Runner now supports sending traces to X-Ray using the AWS Distro for OpenTelemetry (ADOT). Use ADOT SDKs to collect trace data for your containerized applications, and use X-Ray to analyze and gain insights into your instrumented application. For more information, see [Tracing for your App Runner application with X-Ray](https://docs.aws.amazon.com/apprunner/latest/dg/monitor-xray.html).
+- [Tracing for your App Runner application with X-Ray](https://docs.aws.amazon.com/apprunner/latest/dg/monitor-xray.html)

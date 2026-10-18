@@ -1,47 +1,21 @@
 ---
 title: 'Configuring Permissions'
 description:
-    The AWS Distro for OpenTelemetry Collector requires permissions for Amazon CloudWatch Logs for metric publishing,
-    and for AWS X-Ray for sending traces. Learn how to set up permissions by creating an IAM policy.
+    This page is deprecated. IAM permissions for sending telemetry are documented with each destination. Use the CloudWatchAgentServerPolicy managed policy for the CloudWatch OTLP endpoints.
 path: '/docs/setup/permissions'
 ---
 
-import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import WarningBox from "components/WarningBox/WarningBox.jsx"
 
-The AWS Distro for OpenTelemetry Collector requires permissions for Amazon CloudWatch Logs for metric publishing, and for
-AWS X-Ray for sending traces.
+<WarningBox
+  warningText="This page is deprecated and is no longer maintained."
+  buttonText="View current documentation →"
+  hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPSimplesetup.html"
+/>
 
-<SectionSeparator />
+IAM permissions for sending telemetry are documented with each destination. Use the CloudWatchAgentServerPolicy managed policy for the CloudWatch OTLP endpoints.
 
-## Create IAM policy
-1. Open the [IAM console](https://console.aws.amazon.com/iam/).
-2. In the navigation pane, choose **Policies**.
-3. Choose **Create policy**, and then choose **JSON**.
-4. Type the following policy.
-```json lineNumbers=true
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "logs:PutLogEvents",
-                "logs:CreateLogGroup",
-                "logs:CreateLogStream",
-                "logs:DescribeLogStreams",
-                "logs:DescribeLogGroups",
-                "logs:PutRetentionPolicy",
-                "xray:PutTraceSegments",
-                "xray:PutTelemetryRecords",
-                "xray:GetSamplingRules",
-                "xray:GetSamplingTargets",
-                "xray:GetSamplingStatisticSummaries",
-                "ssm:GetParameters"
-            ],
-            "Resource": "*"
-        }
-    ]
-}
-```
-5. Choose **Review policy**.
-6. On the Review policy page, type `AWSDistroOpenTelemetryPolicy` for the Name, and then choose **Create policy**.
+## Use these resources instead
+
+- [CloudWatch OTLP setup and permissions](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPSimplesetup.html)
+- [ECS application trace data (IAM)](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/trace-data.html)
