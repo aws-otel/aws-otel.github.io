@@ -495,10 +495,10 @@ you will need to provide the `auth` configuration with the `sigv4auth` authentic
 extensions:
   sigv4auth:
     service: "aps"
-    region: "user-region"
+    region: "<region>"
 exporters:
   prometheusremotewrite:
-    endpoint: "https://aws-managed-prometheus-endpoint/v1/api/remote_write"
+    endpoint: "https://aps-workspaces.<region>.amazonaws.com/workspaces/<workspace-id>/api/v1/remote_write"
     auth:
       authenticator: sigv4auth
 ```
@@ -510,10 +510,10 @@ settings. An example of these configurations is provided below.
 extensions:
   sigv4auth:
     service: "aps"
-    region: "us-east-1"
+    region: "<region>"
 exporters:
   prometheusremotewrite:
-    endpoint: "https://aps-workspaces-gamma.us-east-1.amazonaws.com/workspaces/ws-7cd45747-2381-4a2a-847f-fa61a3694a74/api/v1/remote_write"
+    endpoint: "https://aps-workspaces.<region>.amazonaws.com/workspaces/<workspace-id>/api/v1/remote_write"
     namespace: test
     auth:
       authenticator: sigv4auth
@@ -521,12 +521,12 @@ exporters:
       enabled: true
       initial_interval: 5s
       max_interval: 10s
-      max_elabsed_time: 30s
+      max_elapsed_time: 30s
     timeout: 15s
 ```
 
 More information on the possible retry, sending queue, and timeout configurations can be found 
-[here](https://github.com/open-telemetry/opentelemetry-collector/tree/master/exporter/exporterhelper#configuration). 
+[here](https://github.com/open-telemetry/opentelemetry-collector/tree/main/exporter/exporterhelper#configuration). 
 
 <SectionSeparator />
 

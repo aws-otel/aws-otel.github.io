@@ -13,6 +13,13 @@ import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.js
 import { Link } from "gatsby"
 import img8 from "assets/img/docs/img8.png"
 import img9 from "assets/img/docs/img9.png"
+import WarningBox from "components/WarningBox/WarningBox.jsx"
+
+<WarningBox warningText="This is a legacy tutorial. It deploys the ADOT Collector with X-Ray SDK sample applications and exports data with the awsemf and awsxray exporters. For new setups on Amazon ECS, use CloudWatch Application Signals, or Container Insights and the CloudWatch OTLP endpoints." buttonText="Application Signals on Amazon ECS" hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Signals-Enable-ECSMain.html" />
+
+For new setups, see also [Amazon ECS Container Insights](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cloudwatch-container-insights.html)
+for container and instance metrics, and [Getting started with OpenTelemetry in CloudWatch](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPGettingStarted.html)
+for sending OTLP data to CloudWatch endpoints.
 
 In this tutorial, we will demonstrate how to run AWS Distro for OpenTelemetry Collector (ADOT Collector) as a
 sidecar on the Amazon Elastic Container Service (Amazon ECS) in Fargate and in Amazon Elastic Compute Cloud

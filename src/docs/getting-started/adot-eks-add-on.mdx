@@ -7,6 +7,7 @@ path: '/docs/getting-started/adot-eks-add-on'
 
 import operatorImg1 from "assets/img/docs/gettingStarted/operator/img1.png"
 import operatorImg2 from "assets/img/docs/gettingStarted/operator/img2.png"
+import TipBox from "components/TipBox/TipBox.jsx"
 
 ## Table of Contents
 
@@ -16,13 +17,21 @@ import operatorImg2 from "assets/img/docs/gettingStarted/operator/img2.png"
 ### [Add-on Advanced Configuration](/docs/getting-started/adot-eks-add-on/add-on-configuration)
 ### [Collector Configuration Introduction](/docs/getting-started/adot-eks-add-on/config-collector-intro)
 ### [Injecting Auto-instrumentation](/docs/getting-started/adot-eks-add-on/config-auto-instrumentation)
-### [Kubernetes Attributes Processor](/docs/getting-started/adot-eks-add-on/k8s-attr-processor)
-### [Target Allocator](/docs/getting-started/adot-eks-add-on/target-allocator)
+### [Kubernetes Attributes Processor (OpenTelemetry docs)](https://opentelemetry.io/docs/platforms/kubernetes/collector/components/)
+### [Target Allocator (OpenTelemetry docs)](https://opentelemetry.io/docs/platforms/kubernetes/operator/target-allocator/)
 ### [Update and Cleanup](/docs/getting-started/adot-eks-add-on/update-and-cleanup)
 ### [Troubleshooting](/docs/getting-started/adot-eks-add-on/troubleshooting)
 
 
 ## Introduction
+
+<TipBox
+  textContent="For CloudWatch metrics, logs, Container Insights, and Application Signals on Amazon EKS, AWS recommends the Amazon CloudWatch Observability EKS add-on. To send OpenTelemetry traces, metrics, and logs to CloudWatch from your own collector, use the CloudWatch OTLP endpoints instead of the awsemf and awsxray exporters."
+  buttonText="Install the CloudWatch Observability EKS add-on"
+  hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/install-CloudWatch-Observability-EKS-addon.html"
+/>
+
+For OTLP endpoint setup, see [Sending OpenTelemetry data to CloudWatch OTLP endpoints](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPSimplesetup.html).
 
 Welcome to the getting started guide for AWS Distro for OpenTelemetry (ADOT) using Elastic Kubernetes Service (EKS) add-ons. This guide shows you how to leverage Amazon EKS add-ons to install and manage ADOT within your Amazon EKS cluster. [ADOT](https://aws-otel.github.io/) is generally available (GA) for tracing and can also be used for metrics. Amazon EKS add-ons support for ADOT enables a simplified experience through EKS APIs to install one component of ADOT, the [ADOT Operator](/docs/getting-started/adot-eks-add-on#the-adot-operator-and-adot-collector), in your Amazon EKS cluster for your metrics and/or trace collection pipeline. Amazon EKS add-ons support reduces the amount of configuration, setup, and deployment that would be required otherwise. For more information, see [Amazon EKS add-ons](https://docs.aws.amazon.com/eks/latest/userguide/eks-add-ons.html).
 

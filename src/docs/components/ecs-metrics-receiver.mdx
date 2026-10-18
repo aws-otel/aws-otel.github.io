@@ -10,6 +10,11 @@ path: '/docs/components/ecs-metrics-receiver'
 ---
 
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import WarningBox from "components/WarningBox/WarningBox.jsx"
+
+<WarningBox warningText="For ECS container, task, and service metrics in CloudWatch, use Amazon ECS Container Insights with enhanced observability, which requires no collector. Use this receiver only if you need to collect ECS task metadata metrics with your own collector pipeline." buttonText="Container Insights with enhanced observability for Amazon ECS" hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/deploy-container-insights-ECS-cluster.html" />
+
+The receiver is also documented upstream in the [awsecscontainermetricsreceiver README](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/awsecscontainermetricsreceiver).
 
 The Amazon ECS container agent provides a method for customers to retrieve various task metadata and
 [Docker stats](https://docs.docker.com/engine/api/v1.30/#operation/ContainerStats) by using

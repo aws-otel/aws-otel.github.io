@@ -8,13 +8,16 @@ path: '/docs/setup/ecs/task-definition-for-ecs-fargate'
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
 import { Link } from "gatsby"
 import task1 from "assets/img/docs/setup/ecs/task-definition/task-definition-ec2.png"
+import WarningBox from "components/WarningBox/WarningBox.jsx"
+
+<WarningBox warningText="This is a legacy tutorial. It deploys the ADOT Collector with X-Ray SDK sample applications and exports data with the awsemf and awsxray exporters. For new setups on Amazon ECS, use CloudWatch Application Signals, or Container Insights and the CloudWatch OTLP endpoints." buttonText="Application Signals on Amazon ECS" hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Signals-Enable-ECSMain.html" />
 
 In this tutorial, we will demonstrate how to create an ECS Task Definition for Fargate with ADOT Collector.
 
 <SectionSeparator />
 
 ### Setup for ECS Fargate
-1. [Download the ECS Fargate task definition template](https://github.com/aws-observability/aws-otel-collector/blob/master/examples/ecs/aws-cloudwatch/ecs-fargate-sidecar.json) from Github.
+1. [Download the ECS Fargate task definition template](https://github.com/aws-observability/aws-otel-collector/blob/main/examples/ecs/aws-cloudwatch/ecs-fargate-sidecar.json) from Github.
 2. Fill the following parameters in the task definition templates:
     * `{{region}}` - the region the data will be sent to
     * `{{ecsTaskRoleArn}}` - **AWSOTTaskRole** ARN created in the previous section

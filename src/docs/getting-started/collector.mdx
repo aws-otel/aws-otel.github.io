@@ -5,6 +5,10 @@ description:
 path: '/docs/getting-started/collector'
 ---
 
+import TipBox from "components/TipBox/TipBox.jsx"
+
+<TipBox textContent="For sending telemetry to AWS destinations such as CloudWatch and X-Ray, AWS recommends the CloudWatch agent, which receives OpenTelemetry (OTLP) data and sends it to the CloudWatch OTLP endpoints. The ADOT Collector remains available, for example when you need to export to non-AWS backends." buttonText="Getting started with OpenTelemetry in CloudWatch" hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPGettingStarted.html" />
+
 ## Getting Started
 ### Prerequisites
 To build ADOT Collector locally, you will need to have Golang installed. You can download and install Golang [here](https://golang.org/doc/install).
@@ -12,14 +16,14 @@ To build ADOT Collector locally, you will need to have Golang installed. You can
 ### Try out ADOT Collector 
 ADOT Collector supports all AWS computing platforms and docker/kubernetes. Here are some examples on how to run ADOT Collector to send telemetry data:
 * [Run it with Docker](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/docker-demo.md)
-* [Run it with ECS](/docs/setup/ecs)
+* [Run it with ECS](/docs/setup/ecs) (legacy tutorial)
 * [Run it with EKS](/docs/getting-started/adot-eks-add-on)
 * [Run it on AWS Linux EC2](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/linux-rpm-demo.md)
 * [Run it on AWS Windows EC2](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/windows-other-demo.md)
 * [Run it on AWS Debian EC2](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/debian-deb-demo.md)
 
 When setting up the collector, you will need to decide between sidecar and service deployment and can find more
-information about these two patterns [here](/docs/getting-started/collector/sidecar-vs-service).
+information about these two patterns in the [OpenTelemetry Collector deployment documentation](https://opentelemetry.io/docs/collector/deploy/).
 
 ### Build Your Own Artifacts
 Use the following instruction to build your own ADOT Collector artifacts:

@@ -8,6 +8,9 @@ path: '/docs/setup/on-premises'
 
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
 import img14 from "assets/img/docs/img14.png"
+import TipBox from "components/TipBox/TipBox.jsx"
+
+<TipBox textContent="For new on-premises setups that send telemetry to AWS, AWS recommends the CloudWatch agent, which can receive OpenTelemetry (OTLP) data and send it to CloudWatch. The IAM Roles Anywhere section below also applies to obtaining temporary AWS credentials on on-premises hosts." buttonText="Install the CloudWatch agent on on-premises servers" hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/install-CloudWatch-Agent-on-premise.html" />
 
 In this tutorial, we will demonstrate installing  AWS Distro for OpenTelemetry Collector (ADOT Collector) binaries
 for on-premises hosts. For supported platforms, see the [ADOT Collector README](https://github.com/aws-observability/aws-otel-collector) on GitHub.
@@ -32,7 +35,7 @@ following folder layout.
 
 5. After  ADOT Collector is installed on the host, the following commands can be used to start, stop, and check the running status.
     a) Start  ADOT Collector with CTL script. The config.yaml is optional; if it’s not provided, the default
-    [config](https://github.com/mxiamxia/aws-opentelemetry-collector/blob/master/config.yaml) is applied.
+    [config](https://github.com/aws-observability/aws-otel-collector/blob/main/config.yaml) is applied.
     ```
     sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -c </path/config.yaml> -a start
     ```

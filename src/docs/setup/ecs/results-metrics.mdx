@@ -9,6 +9,9 @@ import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.js
 import { Link } from "gatsby"
 import metrics_01 from "assets/img/docs/setup/ecs/results/metrics_01.png"
 import metrics_02 from "assets/img/docs/setup/ecs/results/metrics_02.png"
+import WarningBox from "components/WarningBox/WarningBox.jsx"
+
+<WarningBox warningText="This is a legacy tutorial. It deploys the ADOT Collector with X-Ray SDK sample applications and exports data with the awsemf and awsxray exporters. For new setups on Amazon ECS, use CloudWatch Application Signals, or Container Insights and the CloudWatch OTLP endpoints." buttonText="Application Signals on Amazon ECS" hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Signals-Enable-ECSMain.html" />
 
 In this section, we will check the metrics in Amazon CloudWatch collected using AWS ECS Container metrics receiver.
 

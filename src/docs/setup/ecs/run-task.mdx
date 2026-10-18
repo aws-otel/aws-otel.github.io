@@ -9,6 +9,9 @@ import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.js
 import { Link } from "gatsby"
 import runtask1 from "assets/img/docs/setup/ecs/run-task/runtask1.png"
 import runtask2 from "assets/img/docs/setup/ecs/run-task/runtask2.png"
+import WarningBox from "components/WarningBox/WarningBox.jsx"
+
+<WarningBox warningText="This is a legacy tutorial. It deploys the ADOT Collector with X-Ray SDK sample applications and exports data with the awsemf and awsxray exporters. For new setups on Amazon ECS, use CloudWatch Application Signals, or Container Insights and the CloudWatch OTLP endpoints." buttonText="Application Signals on Amazon ECS" hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Signals-Enable-ECSMain.html" />
 
 In this tutorial, we will demonstrate how to run your task on the Amazon Elastic Container Service (Amazon ECS).
 
@@ -29,4 +32,4 @@ Also select all the subnets. Click the run task:
 If you selected the EC2 as your launch Type when you created your task definition, you can just select 
 EC2 as your Launch type. Select the cluster you want to use and click the **Run Task** button.
 
-3. You can go to the cluster to see the task running. Visit the <Link to="/docs/setup/ecs#3-results">Results</Link>  section to check the collected metrics and traces. 
+3. You can go to the cluster to see the task running. Visit the <Link to="/docs/setup/ecs#4-results">Results</Link>  section to check the collected metrics and traces. 

@@ -19,6 +19,11 @@ import imgSSM5 from "assets/img/docs/setup/ec2/ssm/imgSSM5.png"
 import imgSSM6 from "assets/img/docs/setup/ec2/ssm/imgSSM6.png"
 import imgSSM7 from "assets/img/docs/setup/ec2/ssm/imgSSM7.png"
 import imgSSM8 from "assets/img/docs/setup/ec2/ssm/imgSSM8.png"
+import WarningBox from "components/WarningBox/WarningBox.jsx"
+
+<WarningBox warningText="This is a legacy tutorial for the ADOT Collector on Amazon EC2. For new setups, AWS recommends installing the CloudWatch agent on EC2 and sending OpenTelemetry (OTLP) data to the CloudWatch OTLP endpoints." buttonText="Install the CloudWatch agent on EC2" hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/install-CloudWatch-Agent-on-EC2-Instance.html" />
+
+For OTLP options, see [Getting started with OpenTelemetry in CloudWatch](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPGettingStarted.html).
 
 In this tutorial, we will demonstrate how to set up  AWS Distro for OpenTelemetry Collector (ADOT Collector) on
 Amazon Elastic Computer Cloud(EC2) to collect application metrics.
@@ -30,7 +35,10 @@ template. if you want to run the example in the other AWS regions, please replac
 <SectionSeparator />
 
 ## Create IAM Policy
-See the <Link to="/docs/setup/permissions">Permissions</Link> section for the permissions required and IAM policy setup steps.
+Create an IAM policy named `AWSDistroOpenTelemetryPolicy` that grants the permissions required by the exporters in your
+ADOT Collector configuration (for example, CloudWatch Logs and X-Ray write permissions for the `awsemf` and `awsxray` exporters).
+If you send data to the CloudWatch OTLP endpoints, see [CloudWatch OTLP setup](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPSimplesetup.html)
+for the required permissions, such as the `CloudWatchAgentServerPolicy` managed policy.
 
 <SectionSeparator />
 
@@ -67,7 +75,7 @@ aws cloudformation create-stack --stack-name AOCEC2-Test \
 3. Go to Amazon EC2 Console and verify there is a new EC2 instance that has been launched.
 4. Select the instance, and then choose *Connect. *You can login to the EC2 host with the example command below.
 ```
-ssh -i "<ec2-ssh-key-name>.pem" ec2-user@ec2-<instance_id>.us-west-2.compute.amazonaws.com (mailto:ec2-user@ec2-34-221-1-180.us-west-2.compute.amazonaws.com)
+ssh -i "<ec2-ssh-key-name>.pem" ec2-user@ec2-<instance_id>.us-west-2.compute.amazonaws.com
 ```
 5. Check if  ADOT Collector is set up and running on the new EC2 instance. If it is, you’ll see the following status.
 ```

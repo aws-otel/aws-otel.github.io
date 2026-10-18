@@ -8,6 +8,7 @@ path: '/docs/getting-started/python-sdk/auto-instr'
 
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
 import SubSectionSeparator from "components/MdxSubSectionSeparator/subsectionSeparator.jsx"
+import TipBox from "components/TipBox/TipBox.jsx"
 
 ## Introduction
 
@@ -21,7 +22,13 @@ In this guide, we walk through the steps needed to trace an application and prod
 
 Python versions 3.9 to 3.14 are required to run an application using OpenTelemetry.
 
-Note: You’ll also need to have the [ADOT Collector](https://aws-otel.github.io/docs/getting-started/collector) running to export traces and metrics.
+A collector is not required to send telemetry to AWS. ADOT Python 0.10.0 and later can export traces and logs directly to the CloudWatch OTLP endpoints, or you can export through the CloudWatch agent or any OpenTelemetry Collector.
+
+<TipBox
+  textContent="For application performance monitoring on AWS, use CloudWatch Application Signals, which uses ADOT Python auto-instrumentation with the CloudWatch agent. To send traces and logs without running a collector, configure ADOT Python (0.10.0 or later, with botocore installed) to export directly to the CloudWatch OTLP endpoints."
+  buttonText="Export directly to CloudWatch OTLP endpoints"
+  hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLP-UsingADOT.html"
+/>
 
 <SectionSeparator />
 
@@ -33,7 +40,7 @@ The easiest way to download the packages needed for auto-instrumentation is usin
 $ pip install aws-opentelemetry-distro
 ```
 
-The `aws-opentelemetry-distro` package provides methods which configure the OpenTelemetry SDK with some basic defaults. These methods are used by Auto Instrumentation. The `Instrumentors` , `opentelemetry-api`, `opentelemetry-sdk`, and `opentelemetry-instrumentation` dependency packages are installed by default along with `aws-opentelemetry-distro`. And `opentelemetry-instrumentation` provides commands to detect, install, and initialize all instrumentation packages supported for your application’s dependencies. Notably, it installs the `opentelemetry-instrument` executables on your system. Check out the OpenTelemetry registry for a [full list of instrumentation packages provided by OpenTelemetry Python](https://opentelemetry.io/registry/?s=&component=instrumentation&language=python).
+The `aws-opentelemetry-distro` package provides methods which configure the OpenTelemetry SDK with some basic defaults. These methods are used by Auto Instrumentation. The `Instrumentors` , `opentelemetry-api`, `opentelemetry-sdk`, and `opentelemetry-instrumentation` dependency packages are installed by default along with `aws-opentelemetry-distro`. And `opentelemetry-instrumentation` provides commands to detect, install, and initialize all instrumentation packages supported for your application’s dependencies. Notably, it installs the `opentelemetry-instrument` executables on your system. Check out the OpenTelemetry registry for a [full list of instrumentation packages provided by OpenTelemetry Python](https://opentelemetry.io/ecosystem/registry/?s=&component=instrumentation&language=python).
 
 ## Running an Application with Auto-Instrumentation
 
@@ -55,7 +62,7 @@ opentelemetry-instrument python3 ./path/to/your/app.py
 
 Environment variables are the primary way in which the OpenTelemetry SDK for Python is configured. For example:
 
-* By default, `aws-opentelemetry-distro` uses the OTLP exporter and is configured to send data to a OpenTelemetry collector at `http://localhost:4317` for both metrics and traces. The configuration of your SDK exporter depends on how you have configured your ADOT Collector. To learn more about how the ADOT Collector can be configured, refer to the [ADOT Collector Documentation](https://aws-otel.github.io/docs/getting-started/collector).
+* By default, `aws-opentelemetry-distro` uses the OTLP exporter and is configured to send data to an OTLP endpoint, such as the CloudWatch agent or an OpenTelemetry collector, at `http://localhost:4317` for both metrics and traces. To export directly to AWS without a collector, see [Exporting to CloudWatch OTLP endpoints with ADOT SDKs](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLP-UsingADOT.html).
 
 * If the Collector the application will connect to is running with TLS configured, the `OTEL_EXPORTER_OTLP_CERTIFICATE=/path/to/my-cert.crt` environment variable is used to provide a path to credentials to be used to establish a secure connection for the app’s exporter. The credentials at this path should be the public certificate of the collector, or one of its root certificates. If no certificate is found, the gRPC method `ssl_channel_credentials()` will attempt to “retrieve the PEM-encoded root certificates from a default location chosen by gRPC runtime” as explained in the [gRPC Python Documentation](https://grpc.github.io/grpc/python/grpc.html?highlight=ssl_channel_credentials).
 
@@ -72,8 +79,8 @@ You can use CloudWatch Application Signals to automatically instrument your appl
 ### Using X-Ray Remote Sampling
 
 The ADOT Python Auto-Instrumentation can be configured to use [X-Ray remote sampling](https://docs.aws.amazon.com/xray/latest/devguide/xray-console-sampling.html)
-by setting the environment variable `OTEL_TRACES_SAMPLER=xray`. You will also need to [configure the OpenTelemetry collector](/docs/getting-started/remote-sampling)
-to allow the application to fetch sampling configuration. 
+by setting the environment variable `OTEL_TRACES_SAMPLER=xray`. You will also need an agent or collector that proxies sampling requests to X-Ray, such as the
+CloudWatch agent or an [OpenTelemetry collector configured for remote sampling](/docs/getting-started/remote-sampling), to allow the application to fetch sampling configuration.
 
 You can further configure the Sampler by setting the `OTEL_TRACES_SAMPLER_ARG` environment variable. You can update the endpoint and the polling rate as follows:
 ```
@@ -104,7 +111,7 @@ export OTEL_AWS_EXPERIMENTAL_CODE_ATTRIBUTES=true
 
 ## Using Manual Instrumentation
 
-Because there can only be one global `TracerProvider` and `MeterProvider`, manual instrumentation should not instantiate its own `TracerProvider` or `MeterProvider` if used together alongside auto-instrumentation. Given that the same `TracerProvider` and `MeterProvider` is used, custom tracing and metrics works the same way when using automatic instrumentation or manual instrumentation. For information about custom trace instrumentation, see our [docs on manual instrumentation](/docs/getting-started/python-sdk/manual-instr).
+Because there can only be one global `TracerProvider` and `MeterProvider`, manual instrumentation should not instantiate its own `TracerProvider` or `MeterProvider` if used together alongside auto-instrumentation. Given that the same `TracerProvider` and `MeterProvider` is used, custom tracing and metrics works the same way when using automatic instrumentation or manual instrumentation. For information about custom trace instrumentation, see the upstream [OpenTelemetry Python instrumentation documentation](https://opentelemetry.io/docs/languages/python/instrumentation/) and the [X-Ray guide to migrating to OpenTelemetry Python](https://docs.aws.amazon.com/xray/latest/devguide/migrate-xray-to-opentelemetry-python.html).
 
 <SectionSeparator />
 

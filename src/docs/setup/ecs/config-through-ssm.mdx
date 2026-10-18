@@ -10,6 +10,9 @@ import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.js
 import { Link } from "gatsby"
 import custom_config_01 from "assets/img/docs/setup/ecs/custom_config/custom_config_01.png"
 import ssm_01 from "assets/img/docs/setup/ecs/custom_config/ssm_01.png"
+import WarningBox from "components/WarningBox/WarningBox.jsx"
+
+<WarningBox warningText="This is a legacy tutorial. It deploys the ADOT Collector with X-Ray SDK sample applications and exports data with the awsemf and awsxray exporters. For new setups on Amazon ECS, use CloudWatch Application Signals, or Container Insights and the CloudWatch OTLP endpoints." buttonText="Application Signals on Amazon ECS" hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Signals-Enable-ECSMain.html" />
 
 
 Learn how to upload custom OpenTelemetry configuration file to SSM Parameter store

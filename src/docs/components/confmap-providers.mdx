@@ -64,7 +64,7 @@ The ADOT collector support the following types of confmap providers: file, env, 
 ### S3 provider
 
 * scheme: `s3`
-* description: Retrieves configuration from AWS s3. This component uses the [default credentials chain](https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/configuring-sdk.html#specifying-credentials) to authenticate in s3 in order to fetch the configuration.
+* description: Retrieves configuration from AWS s3. This component uses the [default credentials chain](https://docs.aws.amazon.com/sdk-for-go/v2/developer-guide/configure-gosdk.html#specifying-credentials) to authenticate in s3 in order to fetch the configuration.
 * examples:
   * `s3://<bucket_name>.s3.<region>.amazonaws.com/path/to/config.yaml`
 
@@ -82,7 +82,7 @@ the following confmap providers: file, http, https and s3.
 On Linux, to use any of the supported confmap providers, you can use the `-c` parameter of the the `aws-otel-collector-ctl` control script.
 
 ```
-sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -c <configuration uri> -a start"
+sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -c <configuration uri> -a start
 ```
 
 Here are some examples:
@@ -104,7 +104,7 @@ On Windows you can use the `-ConfigLocation` command line parameter of the `aws-
 
 Assuming you are in a Powershell session:
 ```
-. C:\\Program Files\\Amazon\\AwsOtelCollector\\aws-otel-collector-ctl.ps1' -ConfigLocation "<uri>" -Action start
+. 'C:\Program Files\Amazon\AwsOtelCollector\aws-otel-collector-ctl.ps1' -ConfigLocation "<uri>" -Action start
 ```
 
 Here are some examples:
@@ -122,8 +122,8 @@ Here are some examples:
 
 ### Container environments
 
-In container environments, you can override the Docker [CMD instruction](https://docs.docker.com/engine/reference/builder/#cmd) to use the configuration from the URI that you want. This can be done
-because all the parameters passed in the CMD instruction are passed to the ADOT collector since the [entrypoint for the ADOT collector image](https://github.com/aws-observability/aws-otel-collector/blob/main/cmd/awscollector/Dockerfile#L79) is the
+In container environments, you can override the Docker [CMD instruction](https://docs.docker.com/reference/dockerfile/#cmd) to use the configuration from the URI that you want. This can be done
+because all the parameters passed in the CMD instruction are passed to the ADOT collector since the [entrypoint for the ADOT collector image](https://github.com/aws-observability/aws-otel-collector/blob/main/cmd/awscollector/Dockerfile#L102) is the
 Collector executable itself.
 
 
@@ -237,7 +237,7 @@ service:
 
   extensions: [health_check]
 ```
-In the example presented above, we are embeeding three different URIs. These embedded URIs will be expanded when the collector load the configuration.
+In the example presented above, we are embedding three different URIs. These embedded URIs will be expanded when the collector load the configuration.
 
 The following is the content of each URI:
 
@@ -312,4 +312,8 @@ service:
       exporters: [awsemf]
 
   extensions: [health_check]
-  ```
+```
+
+**Note:** This example uses the `awsxray` and `awsemf` exporters. To send traces and metrics to AWS with OTLP instead, you can
+configure `otlphttp` exporters with the `sigv4auth` extension that point to the [CloudWatch OTLP endpoints](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPEndpoint.html).
+Embedded URIs work the same way regardless of which exporters you use.

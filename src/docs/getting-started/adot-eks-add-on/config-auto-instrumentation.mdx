@@ -5,7 +5,15 @@ description:
 path: '/docs/getting-started/adot-eks-add-on/config-auto-instrumentation'
 ---
 
+import TipBox from "components/TipBox/TipBox.jsx"
+
 ## OpenTelemetry auto-instrumentation injection
+
+<TipBox
+  textContent="If you want auto-instrumented application telemetry in CloudWatch, AWS recommends enabling CloudWatch Application Signals on Amazon EKS with the Amazon CloudWatch Observability EKS add-on, which injects the ADOT auto-instrumentation agents for you."
+  buttonText="Enable Application Signals on Amazon EKS"
+  hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Signals-Enable-EKS.html"
+/>
 
 The ADOT EKS Add-on can inject and configure OpenTelemetry auto-instrumentation libraries. To enable this feature, you have to
 annotate your workload with:
@@ -85,4 +93,4 @@ For detailed information on the `Instrumentation` CRD  please refer to the [Open
 
 ## [Previous Topic: Collector Configuration Introduction](/docs/getting-started/adot-eks-add-on/config-collector-intro)
 
-## [Next Topic: Kubernetes Attributes Processor](/docs/getting-started/adot-eks-add-on/k8s-attr-processor)
+## [Next Topic: Updating and Cleanup](/docs/getting-started/adot-eks-add-on/update-and-cleanup)

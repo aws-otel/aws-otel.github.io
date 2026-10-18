@@ -9,12 +9,19 @@ path: '/docs/getting-started/container-insights/ecs-prometheus'
 import {Link} from "gatsby"
 import ecssdviewlog from "assets/img/docs/gettingStarted/container-insights/ecssd-view-log.png"
 import ecssdviewmertric from "assets/img/docs/gettingStarted/container-insights/ecssd-view-metric.png"
+import TipBox from "components/TipBox/TipBox.jsx"
 
 <p>
-    GettingStarted / <Link to="/docs/getting-started/container-insights">Container Insights</Link> / <Link to="/docs/getting-started/container-insights#collecting-prometheus-metrics">Container Insights for Prometheus Support</Link>
+    GettingStarted / <Link to="/docs/getting-started/container-insights">Container Insights</Link> / <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights-Prometheus.html">Container Insights for Prometheus Support</a>
 </p>
 
 ## Overview
+
+<TipBox
+  textContent="You can also collect Prometheus metrics from Amazon ECS for Container Insights with the CloudWatch agent instead of the ADOT Collector. The CloudWatch User Guide documents this setup, including the pre-built dashboards."
+  buttonText="Set up Prometheus metrics collection on Amazon ECS with the CloudWatch agent"
+  hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights-Prometheus-Setup-ECS.html"
+/>
 
 To collect Prometheus metrics from tasks running on ECS and send it to CloudWatch using AWS Distro for OpenTelemetry Collector (ADOT).
 You can either run the collector as a sidecar or deploy the collector as its own ECS service for entire cluster.

@@ -5,8 +5,15 @@ path: '/docs/introduction'
 ---
 
 import adotColConcept from "assets/img/docs/img18.png"
+import TipBox from "components/TipBox/TipBox.jsx"
 
 Welcome to the AWS Distro for OpenTelemetry (ADOT) technical docs. 
+
+<TipBox
+  textContent="To send OpenTelemetry data to Amazon CloudWatch and AWS X-Ray, AWS now recommends the CloudWatch agent or any OpenTelemetry Collector exporting to the CloudWatch OTLP endpoints. CloudWatch Application Signals provides the application performance monitoring (APM) experience. ADOT SDKs and auto-instrumentation remain supported."
+  buttonText="OpenTelemetry in CloudWatch"
+  hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OpenTelemetry-Sections.html"
+/>
 
 ### About
 
@@ -23,6 +30,12 @@ compliant backend, as well as Amazon Managed Streaming for Apache Kafka (MSK):
 
 <img src={adotColConcept} alt="ADOT collector concept" style="margin: 30px 0;" />
 <p style="text-align: center;"><i>The ADOT collector</i></p>
+
+The ADOT Collector is one way to route this telemetry. For CloudWatch and X-Ray, you can instead use the
+CloudWatch agent or any OpenTelemetry Collector with the
+[CloudWatch OTLP endpoints](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPEndpoint.html),
+or export directly from the ADOT SDKs
+([collector-less telemetry](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLP-UsingADOT.html)).
 
 Further, you can use auto-instrumentation to generate traces without changing
 your code. ADOT also collects metadata from your AWS resources and

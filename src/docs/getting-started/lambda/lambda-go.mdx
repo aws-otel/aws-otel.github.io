@@ -14,8 +14,8 @@ import img16 from "assets/img/docs/img16.png"
 import WarningBox from "components/WarningBox/WarningBox.jsx"
 
 <WarningBox
-  warningText="This documentation describes the legacy approach to using ADOT with Lambda. For the latest recommended approach, please refer to the updated Python Lambda documentation."
-  buttonText="View Updated Docs →"
+  warningText="This documentation describes the legacy approach to using ADOT with Lambda: a collector-based Lambda layer combined with manual instrumentation. There is no ADOT Lambda layer with Application Signals support for Go, so this approach (or the upstream OpenTelemetry Lambda project) remains the option for Go functions. For Java, JavaScript, Python, and .NET, use the ADOT Lambda layers with Application Signals."
+  buttonText="View ADOT Lambda layers →"
   hyperlink="/docs/getting-started/lambda"
 />
 
@@ -80,7 +80,7 @@ import (
 lambda.Start(otellambda.InstrumentHandler(lambda_handler(ctx), xrayconfig.WithRecommendedOptions(tp)... ))
 ```
 
-4. At last, use [instrumenting an application](https://aws-otel.github.io/docs/getting-started/go-sdk/trace-manual-instr#instrumenting-an-application) guide to instrument downstream requests inside lambda function.
+4. At last, use the [OpenTelemetry Go instrumentation](https://opentelemetry.io/docs/languages/go/instrumentation/) guide (see also [Migrate to OpenTelemetry Go](https://docs.aws.amazon.com/xray/latest/devguide/manual-instrumentation-go.html)) to instrument downstream requests inside lambda function.
 
 ### Lambda Layer
 
@@ -120,7 +120,7 @@ The ADOT layer contains the ADOT Collector. The configuration of the ADOT Collec
 
 By default, the ADOT Lambda layer uses the [config.yaml](https://github.com/aws-observability/aws-otel-lambda/blob/main/adot/collector/config.yaml),
  which exports telemetry data to AWS X-Ray. To customize the Collector config,
- see the [main Lambda section for custom configuration instructions](/docs/getting-started/lambda#custom-configuration-for-the-adot-collector-on-lambda)
+ see the [OpenTelemetry Lambda Collector configuration documentation](https://opentelemetry.io/docs/platforms/faas/lambda-collector/).
 
 
 <SectionSeparator />

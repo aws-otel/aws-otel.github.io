@@ -7,6 +7,9 @@ path: '/docs/components/processors'
 ---
 
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import TipBox from "components/TipBox/TipBox.jsx"
+
+<TipBox textContent="Each processor is documented in detail in its upstream README in the opentelemetry-collector and opentelemetry-collector-contrib repositories, linked below. In the tail sampling example, the `awsxray` exporter can be replaced by an OTLP HTTP exporter that sends traces to the X-Ray OTLP endpoint (for example, `https://xray.us-west-2.amazonaws.com/v1/traces`)." buttonText="CloudWatch OTLP endpoints" hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPEndpoint.html" />
 
 Processors are used in several stages of an OpenTelemetry collector pipeline. They are used to pre-process the data being passed in the pipeline. In a processor the data can be modified, batched, filtered or sampled. The
 ADOT collector supports a selected list of processors.

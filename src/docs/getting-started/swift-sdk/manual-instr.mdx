@@ -44,7 +44,7 @@ targets: [
 ]
 ```
 
-The `AwsOpenTelemetryAgent` dependency requires you to manually initialize the SDK in your application code. Next, we'll discuss how to initialize and configure the SDK.
+The `AwsOpenTelemetryCore` dependency requires you to manually initialize the SDK in your application code. Next, we'll discuss how to initialize and configure the SDK.
 
 <SectionSeparator />
 
@@ -129,7 +129,7 @@ AwsOpenTelemetryRumBuilder.create(
         exportOverride: AwsExportOverride(
             logs: "http://localhost:4318/v1/logs",
             traces: "http://localhost:4318/v1/traces"
-        ),
+        )
     )
 )?.build()
 ```
@@ -188,7 +188,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 }
 ```
 
-NOTE: Vending your application with static credentials in a production environment carries inherent risk. One possible solution is to source your credentials from Amazon Cognito using the [AWS SDK for Kotlin.](https://aws.amazon.com/sdk-for-kotlin/)
+NOTE: Vending your application with static credentials in a production environment carries inherent risk. One possible solution is to source your credentials from Amazon Cognito using the [AWS SDK for Swift](https://aws.amazon.com/sdk-for-swift/). See the [AwsOpenTelemetryAuth README](https://github.com/aws-observability/aws-otel-swift/blob/main/Sources/AwsOpenTelemetryAuth/README.md) for a Cognito credentials provider example.
 
 <SectionSeparator />
 

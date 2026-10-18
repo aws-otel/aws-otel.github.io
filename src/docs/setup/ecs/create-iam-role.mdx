@@ -18,6 +18,9 @@ import iam_role_06 from "assets/img/docs/setup/ecs/iam_role/iam_role_06.png"
 import iam_role_07 from "assets/img/docs/setup/ecs/iam_role/iam_role_07.png"
 import iam_role_08 from "assets/img/docs/setup/ecs/iam_role/iam_role_08.png"
 import iam_role_09 from "assets/img/docs/setup/ecs/iam_role/iam_role_09.png"
+import WarningBox from "components/WarningBox/WarningBox.jsx"
+
+<WarningBox warningText="This is a legacy tutorial. It deploys the ADOT Collector with X-Ray SDK sample applications and exports data with the awsemf and awsxray exporters. For new setups on Amazon ECS, use CloudWatch Application Signals, or Container Insights and the CloudWatch OTLP endpoints." buttonText="Application Signals on Amazon ECS" hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Signals-Enable-ECSMain.html" />
 
 To run a task in ECS with ADOT Collector, we need two different roles-
 **TaskRole** and **TaskExecutionRole**. 
@@ -95,6 +98,10 @@ Search for and Select the **AmazonECSTaskExecutionRolePolicy** Policy.
 **2.3 Attach `CloudWatchLogsFullAccess` Policy**
 
 Search for and Select the **CloudWatchLogsFullAccess** Policy. 
+
+**Note:** `CloudWatchLogsFullAccess` grants broad permissions and is used here only to keep the tutorial simple.
+Following [IAM security best practices](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html), grant
+least privilege instead, for example a policy scoped to the CloudWatch Logs actions and log groups that your tasks use.
 
 <img src={iam_role_07} alt="Diagram" style="margin: 10px 0;" />
 <div style="height: 40px" />

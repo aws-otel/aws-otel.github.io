@@ -359,16 +359,12 @@ For more information, see [Monitor the operational health of your applications w
 ## (Not Recommended) Using the legacy ADOT Lambda Layers with embedded collector
 
 <WarningBox
-  warningText="The links below describes the legacy approach of using non-optimized ADOT Lambda Layer with an added overhead of a collector. Unless you want to export the telemetry data to a non CloudWatch endpoint, the approach below is not recommended"
+  warningText="The links below describe the legacy approach of using non-optimized ADOT Lambda Layer with an added overhead of a collector. Unless you want to export the telemetry data to a non CloudWatch endpoint, the approach below is not recommended"
 />
 
-* [[Not Recommended] AWS managed Lambda layer for ADOT Java SDK and ADOT Collector](/docs/getting-started/lambda/lambda-java)
-* [[Not Recommended] AWS managed Lambda Layer for ADOT Java Auto-instrumentation Agent and ADOT Collector](/docs/getting-started/lambda/lambda-java-auto-instr)
-* [[Not Recommended] AWS managed Lambda Layer for ADOT JavaScript SDK and ADOT Collector](/docs/getting-started/lambda/lambda-js)
-* [[Not Recommended] AWS managed Lambda Layer for ADOT Python SDK and ADOT Collector](/docs/getting-started/lambda/lambda-python)
-* [[Not Recommended] AWS managed Lambda Layer for ADOT Collector and ADOT Lambda .NET SDK (Manual Instrumentation)](/docs/getting-started/lambda/lambda-dotnet)
-* [[Not Recommended] AWS managed Lambda Layer for ADOT Collector and ADOT Lambda Go SDK (Manual Instrumentation)](/docs/getting-started/lambda/lambda-go)
+* [[Not Recommended] AWS managed Lambda Layer for ADOT Collector and ADOT Lambda Go SDK (Manual Instrumentation)](/docs/getting-started/lambda/lambda-go) - There is no Application Signals layer for Go
+* The legacy collector-based layers for Java, JavaScript, Python, and .NET are no longer documented on this site. Use the Application Signals layers above, or see the upstream [OpenTelemetry Lambda](https://github.com/open-telemetry/opentelemetry-lambda) repository.
 
 ### Advanced Configurations
-* [Manual Steps for Private Lambda Layers](/docs/getting-started/lambda/lambda-manual-steps) - Instructions for building and deploying custom Lambda layers
-* [Custom Configuration for ADOT Collector on Lambda](/docs/getting-started/lambda/lambda-custom-configuration) - Detailed guide for customizing the ADOT Collector configuration
+* [Building your own Lambda layers](https://github.com/open-telemetry/opentelemetry-lambda) - The upstream OpenTelemetry Lambda repository has instructions for building and deploying custom Lambda layers
+* [Lambda Collector configuration](https://opentelemetry.io/docs/platforms/faas/lambda-collector/) - Customizing the collector configuration in collector-based Lambda layers

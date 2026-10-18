@@ -5,7 +5,15 @@ description:
 path: '/docs/getting-started/adot-eks-add-on/config-collector-intro'
 ---
 
+import TipBox from "components/TipBox/TipBox.jsx"
+
 ## Collector Configuration Introduction
+
+<TipBox
+  textContent="The CloudWatch and X-Ray examples in this guide use the awsemf and awsxray exporters. AWS now recommends sending OpenTelemetry metrics, traces, and logs to the CloudWatch OTLP endpoints (otlphttp exporter with sigv4auth), or using the Amazon CloudWatch Observability EKS add-on for Container Insights and Application Signals."
+  buttonText="Send OpenTelemetry data to CloudWatch OTLP endpoints"
+  hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPSimplesetup.html"
+/>
 
 After the ADOT Operator is running in your cluster, you can deploy the ADOT Collector as a custom resource.
 In these instructions, we will deploy a Collector in Deployment mode to perform the following:
@@ -37,9 +45,9 @@ Below, we have our three Collector configurations, one for Amazon Managed Promet
 
 ### [Collector Configuration for Amazon Managed Prometheus](/docs/getting-started/adot-eks-add-on/config-amp)
 
-### [Collector Configuration for Amazon CloudWatch](/docs/getting-started/adot-eks-add-on/config-cloudwatch)
+### [Sending OpenTelemetry data to CloudWatch OTLP endpoints](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPSimplesetup.html)
 
-### [Collector Configuration for AWS X-Ray](/docs/getting-started/adot-eks-add-on/config-xray)
+### [X-Ray and OpenTelemetry](https://docs.aws.amazon.com/xray/latest/devguide/xray-opentelemetry.html)
 
 ### [Advanced Collector Configuration for Amazon Managed Prometheus](/docs/getting-started/adot-eks-add-on/config-advanced)
 

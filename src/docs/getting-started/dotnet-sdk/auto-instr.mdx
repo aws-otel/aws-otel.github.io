@@ -7,11 +7,12 @@ path: '/docs/getting-started/dotnet-sdk/auto-instr'
 ---
 
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import TipBox from "components/TipBox/TipBox.jsx"
 
 ## Introduction
 
 The AWS Distro for OpenTelemetry (ADOT) .NET Auto-Instrumentation use [Host startup hook](https://github.com/dotnet/runtime/blob/main/docs/design/features/host-startup-hook.md)
-and [CLR Profiler](https://docs.microsoft.com/en-us/dotnet/framework/unmanaged-api/profiling/) to be injected into .NET application for gathering
+and [CLR Profiler](https://learn.microsoft.com/en-us/dotnet/framework/unmanaged-api/profiling/) to be injected into .NET application for gathering
 telemetry data from a diverse set of libraries and frameworks. The ADOT .NET auto-Instrumentation will automatically insturment application code at startup
 to collect tracing data. It is preconfigured for compatibility with X-Ray and AWS services but can also be used with any
 other tracing backend. Out of the box, it propagates traces using all of W3C Trace Context, B3, and X-Amzn-Trace-Id.
@@ -22,7 +23,13 @@ other tracing backend. Out of the box, it propagates traces using all of W3C Tra
 
 The ADOT .NET auto-Instrumentation is compatible for all the officially supported versions of [.NET](https://dotnet.microsoft.com/en-us/download/dotnet) and [.NET Framework](https://dotnet.microsoft.com/en-us/download/dotnet-framework).
 
-Note: You’ll also need to have the [ADOT Collector](https://aws-otel.github.io/docs/getting-started/collector) running to export traces to X-Ray.
+A collector is not required to send telemetry to AWS. ADOT .NET 1.8.0 and later can export traces directly to the CloudWatch OTLP endpoints (this requires setting `OTEL_AWS_SIG_V4_ENABLED=true`), or you can export through the CloudWatch agent or any OpenTelemetry Collector.
+
+<TipBox
+  textContent="For application performance monitoring on AWS, use CloudWatch Application Signals, which uses ADOT .NET auto-instrumentation with the CloudWatch agent. To send traces without running a collector, configure ADOT .NET (1.8.0 or later, with OTEL_AWS_SIG_V4_ENABLED=true) to export directly to the CloudWatch OTLP endpoints."
+  buttonText="Export directly to CloudWatch OTLP endpoints"
+  hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLP-UsingADOT.html"
+/>
 
 ## Installation
 
@@ -53,8 +60,9 @@ automatically when your applicaiton start. For many cases, this is all you need 
 **Note:** Skip this part if you are onboarding with CloudWatch Application Signals.
 
 By default ADOT .NET auto-Instrumentation uses the [OTLP exporter](https://github.com/open-telemetry/opentelemetry-dotnet/tree/main/src/OpenTelemetry.Exporter.OpenTelemetryProtocol)
-and is configured to send data to a [OpenTelemetry collector](https://github.com/open-telemetry/opentelemetry-collector/blob/master/receiver/otlpreceiver/README.md)
-at `http://localhost:4317` for both metrics and traces.
+and is configured to send data to an OTLP endpoint, such as the CloudWatch agent or an [OpenTelemetry collector](https://github.com/open-telemetry/opentelemetry-collector/blob/main/receiver/otlpreceiver/README.md),
+at `http://localhost:4317` for both metrics and traces. To export directly to AWS without a collector, see
+[Exporting to CloudWatch OTLP endpoints with ADOT SDKs](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLP-UsingADOT.html).
 
 The ADOT .NET auto-Instrumentation can be configured with environment variables as the primary way.
 For example, to set the random sampling rate for creating traces, you can set the environment variables
@@ -72,8 +80,8 @@ You can use CloudWatch Application Signals to automatically instrument your appl
 ### Using X-Ray Remote Sampling
 
 The ADOT .NET Auto-Instrumentation can be configured to use [X-Ray remote sampling](https://docs.aws.amazon.com/xray/latest/devguide/xray-console-sampling.html)
-by setting the environment variable `OTEL_TRACES_SAMPLER=xray`. You will also need to [configure the OpenTelemetry collector](/docs/getting-started/remote-sampling)
-to allow the application to fetch sampling configuration. 
+by setting the environment variable `OTEL_TRACES_SAMPLER=xray`. You will also need an agent or collector that proxies sampling requests to X-Ray, such as the
+CloudWatch agent or an [OpenTelemetry collector configured for remote sampling](/docs/getting-started/remote-sampling), to allow the application to fetch sampling configuration.
 
 You can further configure the Sampler by setting the `OTEL_TRACES_SAMPLER_ARG` environment variable. You can update the endpoint and the polling rate as follows:
 ```
@@ -88,7 +96,7 @@ environment variable you can change the endpoint the sampler talks with when get
 
 Because there can only be one global `TracerProvider` and `MeterProvider`, manual instrumentation should not instantiate its own `TracerProvider` or `MeterProvider` if used together alongside auto-instrumentation. 
 Given that the same `TracerProvider` and `MeterProvider` is used, custom tracing and metrics works the same way when using automatic instrumentation or manual instrumentation.
-For information about custom trace instrumentation, see our [docs on manual instrumentation](/docs/getting-started/dotnet-sdk/manual-instr).
+For information about custom trace instrumentation, see the upstream [OpenTelemetry .NET instrumentation documentation](https://opentelemetry.io/docs/languages/dotnet/instrumentation/) and the [X-Ray guide to migrating to OpenTelemetry .NET](https://docs.aws.amazon.com/xray/latest/devguide/introduction-dotnet.html).
 
 
 <SectionSeparator />

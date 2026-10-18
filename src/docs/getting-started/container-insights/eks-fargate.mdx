@@ -9,6 +9,13 @@ import clusterImg from "assets/img/docs/gettingStarted/container-insights/ADOT-c
 import logEventImg from "assets/img/docs/gettingStarted/container-insights/ADOT-log-event.png"
 import ADOTMetricsImg from "assets/img/docs/gettingStarted/container-insights/ADOT-metrics.png"
 import performanceImg from "assets/img/docs/gettingStarted/container-insights/ADOT-performance.png"
+import TipBox from "components/TipBox/TipBox.jsx"
+
+<TipBox
+  textContent="This page describes an ADOT Collector-specific way to collect Container Insights metrics from EKS Fargate. It uses the awsemf exporter. For Amazon EKS clusters with EC2 nodes, AWS recommends the Amazon CloudWatch Observability EKS add-on for Container Insights."
+  buttonText="Container Insights documentation"
+  hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights.html"
+/>
 
 This section shows the design of components in an ADOT Collector pipeline that enables the collection of Container Insights metrics from EKS Fargate workloads and explains how to configure and deploy an ADOT Collector to collect system metrics from workloads deployed to an EKS Fargate cluster and send them to CloudWatch.
 

@@ -12,6 +12,9 @@ import { Link } from "gatsby"
 import iam_policy_01 from "assets/img/docs/setup/ecs/iam_policy/iam_policy_01.png"
 import iam_policy_02 from "assets/img/docs/setup/ecs/iam_policy/iam_policy_02.png"
 import iam_policy_03 from "assets/img/docs/setup/ecs/iam_policy/iam_policy_03.png"
+import WarningBox from "components/WarningBox/WarningBox.jsx"
+
+<WarningBox warningText="This is a legacy tutorial. It deploys the ADOT Collector with X-Ray SDK sample applications and exports data with the awsemf and awsxray exporters. For new setups on Amazon ECS, use CloudWatch Application Signals, or Container Insights and the CloudWatch OTLP endpoints." buttonText="Application Signals on Amazon ECS" hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Signals-Enable-ECSMain.html" />
 
 The AWS Distro for OpenTelemetry Collector requires permissions to publish app metrics and container
 metrics to AWS CloudWatch and sending app traces to AWS X-Ray. Metrics are sent to CloudWatch 

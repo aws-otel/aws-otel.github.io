@@ -10,10 +10,21 @@ path: '/docs/getting-started/x-ray'
 
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
 import img7 from "assets/img/docs/img7.png"
+import TipBox from "components/TipBox/TipBox.jsx"
+
+<TipBox
+  textContent="AWS now recommends sending traces to the X-Ray OTLP endpoint (`https://xray.REGION.amazonaws.com/v1/traces`, OTLP over HTTP with SigV4) with Transaction Search enabled, using the CloudWatch agent or any OpenTelemetry Collector. The X-Ray ID generator is no longer required: X-Ray accepts W3C trace IDs. The X-Ray SDKs and daemon entered maintenance mode on February 25, 2026."
+  buttonText="Send traces to the OTLP endpoint"
+  hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPSimplesetup.html"
+/>
+
+See also [Transaction Search](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Transaction-Search.html)
+and [Migrating from X-Ray instrumentation to OpenTelemetry](https://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-migration.html).
+The `awsxray` exporter and the OTel to X-Ray translation tables below remain a reference for collectors that still use the exporter.
 
 The OpenTelemetry Collector has three key components: the receiver, exporter, and processor. The receiver in the OpenTelemetry Collector 
 is responsible for receiving data via gRPC or HTTP using the 
-[OpenTelemetry protocol (OTLP)](https://github.com/open-telemetry/opentelemetry-specification/blob/master/specification/protocol/otlp.md). 
+[OpenTelemetry protocol (OTLP)](https://opentelemetry.io/docs/specs/otlp/). 
 The AWS X-Ray exporter available in the OpenTelemetry Collector converts OTLP formatted trace data to the AWS X-Ray format and then exports 
 this data to the AWS X-Ray service.
 
@@ -25,9 +36,10 @@ To learn more about AWS X-Ray, see the [X-Ray Developer Guide](https://docs.aws.
 ## Prerequisites
 
 To get started using the ADOT Collector to connect with AWS X-Ray to analyze distributed traces, you have to first install AWS 
-Distro for the OpenTelemetry [Collector](https://aws-otel.github.io/docs/getting-started/collector). Make sure you have your access key ID 
-and secret access key properly configured in the docker file. You can generate access key ID and secret access key with the information 
-[here](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html).
+Distro for the OpenTelemetry [Collector](https://aws-otel.github.io/docs/getting-started/collector). The collector needs AWS credentials
+with permission to write to X-Ray (for example `xray:PutTraceSegments`). Use temporary credentials from an IAM role (such as an EC2 instance
+profile, ECS task role, or EKS IAM roles for service accounts) rather than long-lived access keys; do not put access keys in a docker file.
+See [Security best practices in IAM](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html).
 
 In order to set up the ADOT Collector on a particular platform such as EKS, ECS, EC2 or on-premises, please see the Getting Started guide for
 
@@ -36,7 +48,7 @@ In order to set up the ADOT Collector on a particular platform such as EKS, ECS,
 * [EKS](https://aws-otel.github.io/docs/getting-started/adot-eks-add-on)
 * [On-Premises](https://aws-otel.github.io/docs/setup/on-premises)
 
-ADOT also includes fully managed AWS Lambda Layers, which include an OpenTelemetry SDK and the ADOT Collector to auto-instrument your function for tracing with X-Ray.
+ADOT also includes fully managed AWS Lambda Layers that auto-instrument your function and send traces to X-Ray without a separate collector.
 See [AWS Distro for OpenTelemetry Lambda](/docs/getting-started/lambda) to get started.
 
 <SectionSeparator />
@@ -67,7 +79,7 @@ receivers:
 By default, the AWS Distribution for the OpenTelemetry Collector has enabled exporting to AWS X-Ray without any additional 
 configurations - converting the AWS X-Ray OTLP formatted trace data to the AWS X-Ray format and then exports this data to the AWS X-Ray 
 service. For additional configuration options of the AWS X-Ray exporter in the Collector, you can find the comprehensive list 
-[here](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/master/exporter/awsxrayexporter#exporter-configuration).
+[here](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/awsxrayexporter#exporter-configuration).
 
 #### Example: 
 
@@ -295,9 +307,10 @@ service:
 
 ## Using the ADOT SDKs
 
-AWS Distro for OpenTelemetry currently supports applications written in Go, Java, JavaScript, .NET, and Python. Check out the Getting Started guides for the respective languages. 
+AWS Distro for OpenTelemetry currently supports applications written in Java, JavaScript, .NET, and Python. For Go, use the upstream
+OpenTelemetry Go SDK. Check out the Getting Started guides for the respective languages. 
 
-* [Go](/docs/getting-started/go-sdk)
+* [Go (X-Ray Developer Guide)](https://docs.aws.amazon.com/xray/latest/devguide/manual-instrumentation-go.html)
 * [Java](/docs/getting-started/java-sdk)
 * [JavaScript](/docs/getting-started/javascript-sdk)
 * [.NET](/docs/getting-started/dotnet-sdk)
