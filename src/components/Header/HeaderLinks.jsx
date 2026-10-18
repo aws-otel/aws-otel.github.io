@@ -40,9 +40,6 @@ function HeaderLinks({ ...props }) {
             <Link to="/contributing" className={classes.dropdownLink}>
               Contributing
             </Link>,
-            <Link to="/contributors" className={classes.dropdownLink}>
-              Contributors
-            </Link>,
             <Link to="/code-of-conduct" className={classes.dropdownLink}>
               Code of Conduct
             </Link>,
@@ -56,9 +53,6 @@ function HeaderLinks({ ...props }) {
                 rel="noopener noreferrer"
             >
               FAQ
-            </Link>,
-            <Link to="/resources" className={classes.dropdownLink}>
-              Resources
             </Link>,
           ]}
         />

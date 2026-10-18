@@ -19,21 +19,6 @@ module.exports = {
   },
   plugins: [
     {
-      resolve: require.resolve(`./src/plugins/contributorsPlugin`),
-      options: {
-        repos: [
-          "aws-observability/aws-otel-collector",
-          "aws-observability/aws-otel-java-instrumentation",
-          "aws-observability/aws-otel-js",
-          "aws-observability/aws-otel-community",
-          "aws-observability/aws-otel-playground",
-          "aws-observability/aws-otel-test-framework"
-        ],
-        token: process.env.GH_API_KEY,
-        useMockData: process.env.NO_GH_API_KEY,
-      },
-    },
-    {
       resolve: require.resolve(`./src/plugins/websiteAnalyticsPlugin`),
       options: {
         // https://github.com/aws-observability/aws-rum-web/blob/main/docs/configuration.md
