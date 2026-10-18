@@ -196,7 +196,7 @@ exporters:
 
 ##### OTel span CW Logs metadata translation
 
-The attributes in this section are translated into the AWS resource field `cloudwatch_logs`. This resource field is used to correlate Cloudwatch Log Groups with the segments associated with it. This correlation can be explored when analyzing individual traces in the X-Ray console.
+The attributes in this section are translated into the AWS resource field `cloudwatch_logs`. This resource field is used to correlate CloudWatch Log Groups with the segments associated with it. This correlation can be explored when analyzing individual traces in the X-Ray console.
 
 If an attribute is not specified, then the exporter's aws_log_groups field will be used if available.
 
@@ -205,7 +205,7 @@ If an attribute is not specified, then the exporter's aws_log_groups field will 
 | aws.log.group.arns      | cloudwatch_logs.arn       |                                                                                                                                                                                                                                                                                                                                             |
 | aws.log.group.names     | cloudwatch_logs.log_group | Precedence is given in the order of `aws.log.group.arns`, `aws.log.group.names`, then the exporter config's `aws_log_groups`.|
 
-##### Using Config to set Cloud Watch Log Group Names
+##### Using Config to set CloudWatch Log Group Names
 
 ```yaml lineNumbers=true 
 awsxray:

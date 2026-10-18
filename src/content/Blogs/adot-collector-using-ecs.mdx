@@ -16,9 +16,9 @@ import vasivasireddy from "assets/img/blogs/adot-testFramework/vasivasireddy.png
 import richardto from "assets/img/blogs/adot-testFramework/richardto.png"
 
 
-This blog post discusses a technical solution for customers to be able to collect metrics and traces from their ECS console using the ADOT Collector under the hood and sending this observability data to the AWS monitoring destination service of their choice. AWS monitoring services in this case include Amazon Cloudwatch, Amazon Managed Services for Prometheus (AMP) and AWS X-Ray.
+This blog post discusses a technical solution for customers to be able to collect metrics and traces from their ECS console using the ADOT Collector under the hood and sending this observability data to the AWS monitoring destination service of their choice. AWS monitoring services in this case include Amazon CloudWatch, Amazon Managed Services for Prometheus (AMP) and AWS X-Ray.
 
-The end-to-end data path that we will be using can be seen in the diagram below where the user will be using the ECS console to configure the collection of observability data (metrics and traces in this case) and use the ADOT Collector to collect, process and export this data to the monitoring backend (AMP, Amazon Cloudwatch or AWS X-Ray).
+The end-to-end data path that we will be using can be seen in the diagram below where the user will be using the ECS console to configure the collection of observability data (metrics and traces in this case) and use the ADOT Collector to collect, process and export this data to the monitoring backend (AMP, Amazon CloudWatch or AWS X-Ray).
 
 <img src={ecsdatapath} alt="Diagram" style="margin: 30px 0;" />
 
