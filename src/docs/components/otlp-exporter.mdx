@@ -467,6 +467,94 @@ or directly to the [Sumo Logic support page](https://support.sumologic.com).
 
 <SectionSeparator />
 
+## Observe
+
+Observe offers an [OTLP endpoint](https://docs.observeinc.com/en/latest/content/data-ingestion/endpoints/otel.html) that ingests OpenTelemetry data over HTTP/protobuf. 
+If you’re already running AWS Distro for OpenTelemetry, you can start exporting to Observe by simply updating the Collector’s YAML configuration.
+
+<SubSectionSeparator />
+
+### Requirements
+
+Before you can use the AWS Distro for OpenTelemetry with Observe you need:
+
+* A Observe account. If you don't already have one, you can create an account [here](https://www.observeinc.com/).
+* An OTLP/HTTP endpoint URL. Replace <YOUR_OBSERVE_COLLECTION_ENDPOINT> with your [instance’s collection endpoint](https://docs.observeinc.com/en/latest/content/reference/Observasaurus/endpoints.html) (ex: https://123456789012.collect.observeinc.com/).
+* An ingest token you can create from **Add Data for Linux** page. Replace <YOUR_INGEST_TOKEN> with the ingest token (ex: a1b2c3d4e5f6g7h8i9k0:l1m2n3o4p5q6r7s8t9u0v1w2x3y4z5a6)
+
+<SubSectionSeparator />
+
+### Configuration (Collector)
+
+<SubSectionSeparator />
+
+### Example
+
+```yaml lineNumbers=true
+exporters:
+  ...
+  otlphttp/observelogs:
+    # (ex: https://123456789012.collect.observeinc.com/v2/otel)
+    endpoint: "<YOUR_OBSERVE_COLLECTION_ENDPOINT>/v2/otel"
+    headers:
+      # (ex: Bearer a1b2c3d4e5f6g7h8i9k0:l1m2n3o4p5q6r7s8t9u0v1w2x3y4z5a6)
+      authorization: "Bearer <YOUR_INGEST_TOKEN>"
+      x-observe-target-package: "Host Explorer"
+    sending_queue:
+      num_consumers: 4
+      queue_size: 100
+    retry_on_failure:
+      enabled: true
+    compression: zstd
+  otlphttp/observemetrics:
+    endpoint: "<YOUR_OBSERVE_COLLECTION_ENDPOINT>/v2/otel"
+    headers:
+      authorization: "Bearer <YOUR_INGEST_TOKEN>"
+      x-observe-target-package: "Metrics"
+    sending_queue:
+      num_consumers: 4
+      queue_size: 100
+    retry_on_failure:
+      enabled: true
+    compression: zstd
+  otlphttp/observetracing:
+    endpoint: "<YOUR_OBSERVE_COLLECTION_ENDPOINT>/v2/otel"
+    headers:
+      authorization: "Bearer <YOUR_INGEST_TOKEN>"
+      x-observe-target-package: "Tracing"
+    sending_queue:
+      num_consumers: 4
+      queue_size: 100
+    retry_on_failure:
+      enabled: true
+    compression: zstd
+
+service:
+  ...
+  pipelines:
+    logs:
+      ...
+      exporters: [otlphttp/observelogs]
+    metrics:
+      ...
+      exporters: [otlphttp/observemetrics]
+    traces:
+      ...
+      exporters: [otlphttp/observetracing]
+```
+
+If you are instrumenting your application using OpenTelemetry instrumentation libraries for Java, .NET, Node.js, Python, or Ruby, you can use the Observe
+[documentation](https://docs.observeinc.com/en/latest/content/send-data/app-instrumentation/index.html) to set up your application and obtain telemetry data.
+
+<SubSectionSeparator />
+
+### Support
+
+If you have any trouble using the AWS Distro for OpenTelemetry with Observe, you can reach out to the [Observe support](https://customer.support.observeinc.com/).
+
+<SectionSeparator />
+
+
 ## Questions, Feedback?
 
 We would love to hear more common configuration scenarios or improvements to this documentation from you! Please submit an issue
