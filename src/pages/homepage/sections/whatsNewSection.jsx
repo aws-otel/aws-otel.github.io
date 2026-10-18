@@ -3,7 +3,6 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import GridContainer from "components/Grid/GridContainer.jsx";
 import GridItem from "components/Grid/GridItem.jsx";
 import whatsNewSectionStyle from "assets/jss/material-kit-react/views/homePageSections/whatsNewStyle.jsx";
-import Announcements from "./announcements";
 import BlogWidgets from "./blogWidgets";
 import {Button} from "@material-ui/core";
 import {Link} from "gatsby";
@@ -20,14 +19,7 @@ class WhatsNewSection extends React.Component {
           </GridContainer>
           <div style={{height: "30px"}} />
           <div>
-            <GridContainer>
-              <GridItem xs={12} sm={12} md={6}>
-                <Link to="/announcements" className={classes.linkStyle}>
-                  <Button variant="outlined" color="primary" className={classes.buttonStyle}> See all Announcements</Button>
-                </Link>
-                <h3> Latest Announcements </h3>
-                <Announcements />
-              </GridItem>
+            <GridContainer justify="center">
               <GridItem xs={12} sm={12} md={6}>
                 <Link to="/blog" className={classes.linkStyle}>
                   <Button variant="outlined" color="primary" className={classes.buttonStyle}> See all Blog Posts</Button>

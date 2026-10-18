@@ -53,12 +53,6 @@ module.exports = {
     {
       resolve: `gatsby-source-filesystem`,
       options: {
-        path: `./src/content/Announcements`,
-      },
-    },
-    {
-      resolve: `gatsby-source-filesystem`,
-      options: {
         path: `./src/content/BlogPosts`,
       },
     },
@@ -107,12 +101,6 @@ module.exports = {
             searchIndex: node => node.searchIndex,
           },
           BlogPostsYaml: {
-            title: node => node.title,
-            description: node => node.description,
-            path: node => node.path,
-            searchIndex: node => node.searchIndex,
-          },
-          AnnouncementsYaml: {
             title: node => node.title,
             description: node => node.description,
             path: node => node.path,
