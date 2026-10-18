@@ -7,9 +7,11 @@ infoSection:
   heading: Introduction
   introduction:
     AWS Distro for OpenTelemetry (ADOT) is an AWS-supported distribution of the OpenTelemetry project, including
-    language SDKs with auto-instrumentation and a collector. Use the ADOT SDKs to instrument your applications and send
-    traces, metrics, and logs to Amazon CloudWatch through its OpenTelemetry (OTLP) endpoints, and use CloudWatch
-    Application Signals for application performance monitoring.
+    language SDKs with auto-instrumentation and a collector.
+  callout:
+    To send OpenTelemetry data to Amazon CloudWatch and AWS X-Ray, AWS now recommends the CloudWatch agent or any
+    OpenTelemetry Collector exporting to the CloudWatch OTLP endpoints. CloudWatch Application Signals provides the
+    application performance monitoring (APM) experience. ADOT SDKs and auto-instrumentation remain supported.
   learnMoreText: OpenTelemetry in CloudWatch
   learnMoreLink: https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OpenTelemetry-Sections.html
 

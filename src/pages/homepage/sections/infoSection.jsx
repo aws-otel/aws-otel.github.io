@@ -2,7 +2,7 @@ import React from "react"
 import withStyles from "@material-ui/core/styles/withStyles"
 import GridContainer from "components/Grid/GridContainer.jsx"
 import GridItem from "components/Grid/GridItem.jsx"
-import Button from "@material-ui/core/Button"
+import TipBox from "components/TipBox/TipBox.jsx"
 import infoSectionStyle from "assets/jss/material-kit-react/views/homePageSections/infoStyle.jsx"
 import YAMLData from "../../../content/SiteContent/home-page.yaml"
 
@@ -17,15 +17,13 @@ class InfoSection extends React.Component {
               <p className={classes.description}> {YAMLData.infoSection.introduction} </p>
             </GridItem>
           </GridContainer>
-          <Button
-              variant="outlined"
-              color="primary"
-              href={YAMLData.infoSection.learnMoreLink}
-              target="_blank"
-              rel="noopener noreferrer"
-          >
-            {YAMLData.infoSection.learnMoreText}
-          </Button>
+          <div style={{textAlign: "left"}}>
+            <TipBox
+                textContent={YAMLData.infoSection.callout}
+                buttonText={YAMLData.infoSection.learnMoreText}
+                hyperlink={YAMLData.infoSection.learnMoreLink}
+            />
+          </div>
         </div>
     )
   }
