@@ -13,7 +13,6 @@ function Footer({ ...props }) {
       <section className={classes.sectionTop}>
         <div className={classes.col}>
           <h3>Community</h3>
-          <div className={classes.verticalSpacing}> <Link to="/get-involved" className={classes.link}> Get Involved </Link></div>
           <div className={classes.verticalSpacing}> <Link to="/contributing" className={classes.link}> Contributing </Link></div>
           <div className={classes.verticalSpacing}> <Link to="/contributors" className={classes.link}> Contributors </Link></div>
           <div className={classes.verticalSpacing}> <Link to="/code-of-conduct" className={classes.link}> Code of Conduct </Link></div>

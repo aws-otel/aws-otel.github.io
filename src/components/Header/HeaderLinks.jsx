@@ -37,9 +37,6 @@ function HeaderLinks({ ...props }) {
           }}
           buttonIcon={GroupIcon}
           dropdownList={[
-            <Link to="/get-involved" className={classes.dropdownLink}>
-              Get Involved
-            </Link>,
             <Link to="/contributing" className={classes.dropdownLink}>
               Contributing
             </Link>,

@@ -20,14 +20,7 @@ class GetInvolvedSection extends React.Component {
           </GridContainer>
           <div>
             <GridContainer>
-              <GridItem xs={12} sm={12} md={3} />
-              <GridItem xs={12} sm={12} md={2} className={classes.gridItem}>
-                <Link to="/get-involved" className={classes.linkStyle}>
-                  <Button variant="outlined" color="primary" className={classes.buttonStyle}>
-                    Join
-                  </Button>
-                </Link>
-              </GridItem>
+              <GridItem xs={12} sm={12} md={5} />
               <GridItem xs={12} sm={12} md={2} className={classes.gridItem}>
                 <Link to="/download" className={classes.linkStyle}>
                   <Button variant="outlined" color="primary" className={classes.buttonStyle}>
@@ -35,7 +28,7 @@ class GetInvolvedSection extends React.Component {
                   </Button>
                 </Link>
               </GridItem>
-              <GridItem xs={12} sm={12} md={3} />
+              <GridItem xs={12} sm={12} md={5} />
             </GridContainer>
           </div>
         </div>
