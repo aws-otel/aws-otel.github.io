@@ -115,7 +115,10 @@ spec:
     spec:
       containers:
         - name: go
-          image: public.ecr.aws/awsvijisarathy/prometheus-webapp:latest
+          image: public.ecr.aws/aws-otel-test/prometheus-sample-app:latest
+          command: ["/bin/main", "-listen_address=0.0.0.0:3000"]
+          ports:
+            - containerPort: 3000
           imagePullPolicy: Always
           resources:
             requests:
