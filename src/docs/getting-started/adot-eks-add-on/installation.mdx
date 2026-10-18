@@ -32,7 +32,12 @@ Install the ADOT Amazon EKS add\-on to your Amazon EKS cluster using the followi
 
    1. The default version will be selected in the **Version** dropdown list\. Select the **Version** you'd like to use\.
 
-   1. \(Optional\) If deploying an ADOT Collector, expand **Optional configuration settings** and provide the **Configuration values** that match your use case for Collector deployment\. The **Add\-on configuration schema** provides the available options for your configuration values\.
+   1. \(Optional\) If deploying a preconfigured ADOT Collector, under **Add\-on access** choose how the collector gets AWS permissions: [EKS Pod Identity](https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html) or [IAM roles for service accounts (IRSA)](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html)\. EKS Pod Identity requires the [Amazon EKS Pod Identity Agent add\-on](https://docs.aws.amazon.com/eks/latest/userguide/pod-id-agent-setup.html)\. The add\-on uses these service accounts and recommended managed policies:
+      * `adot-col-prom-metrics`: `AmazonPrometheusRemoteWriteAccess`, `CloudWatchAgentServerPolicy`
+      * `adot-col-otlp-ingest`: `AWSXrayWriteOnlyAccess`
+      * `adot-col-container-logs`: `CloudWatchAgentServerPolicy`
+
+   1. \(Optional\) If deploying a preconfigured ADOT Collector, expand **Optional configuration settings** and provide the **Configuration values** that match your use case for Collector deployment\. The **Add\-on configuration schema** provides the available options for your configuration values\.
 
    1. If a service account is already created in the cluster without an IAM role, expand the **Optional configuration settings** and select **Override** for the **Conflict resolution method**\.
 
@@ -63,7 +68,7 @@ Install the ADOT Amazon EKS add\-on to your Amazon EKS cluster using the followi
 
 ---
 
-### Please continue to the next links below to learn about deploying the ADOT Collector using the Advanced Configuration.
+### Please continue to the next links below to learn about deploying the preconfigured ADOT Collector using the Advanced Configuration. To deploy a collector with your own configuration, see [Collector Configuration](/docs/getting-started/adot-eks-add-on/config-collector-intro).
 
 ## [Previous Topic: Requirements](/docs/getting-started/adot-eks-add-on/requirements)
 

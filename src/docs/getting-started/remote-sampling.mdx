@@ -16,7 +16,7 @@ Note that in order to use X-Ray remote sampling, your application's tracer must 
 * [ADOT Python auto-instrumentation agent](/docs/getting-started/python-sdk/auto-instr#using-x-ray-remote-sampling)
 * [ADOT .NET auto-instrumentation](/docs/getting-started/dotnet-sdk/auto-instr#using-x-ray-remote-sampling)
 * [ADOT JavaScript (Node.js) auto-instrumentation](https://docs.aws.amazon.com/xray/latest/devguide/migrate-xray-to-opentelemetry-nodejs.html), by setting `OTEL_TRACES_SAMPLER=xray`
-* Upstream OpenTelemetry Java, .NET, and Go SDKs. For Go, see [Migrate to OpenTelemetry Go](https://docs.aws.amazon.com/xray/latest/devguide/manual-instrumentation-go.html).
+* Upstream OpenTelemetry Java, .NET, JavaScript ([`@opentelemetry/sampler-aws-xray`](https://github.com/open-telemetry/opentelemetry-js-contrib/tree/main/packages/sampler-aws-xray)), and Go SDKs. For Go, see [Migrate to OpenTelemetry Go](https://docs.aws.amazon.com/xray/latest/devguide/manual-instrumentation-go.html).
 
 Instead of the OpenTelemetry Collector `awsproxy` extension described below, you can use the CloudWatch agent as the sampling proxy.
 The agent's `traces_collected.xray.tcp_proxy` setting configures a proxy used to support X-Ray remote sampling, listening on `127.0.0.1:2000` by default.

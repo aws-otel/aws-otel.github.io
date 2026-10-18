@@ -3,6 +3,9 @@ name: Gatsby Publish
 env:
   DELTA_THRESHOLD: .90
 
+permissions:
+  contents: write
+
 on:
   push:
     branches:
