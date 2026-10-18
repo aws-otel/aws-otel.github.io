@@ -120,29 +120,5 @@ export const sideBarData = [
       ],
       link: "/docs/null"
     }
-  },
-  {
-    node: {
-      id: nextId(),
-      label: "Know Your Data",
-      items: [
-        {label: "Traces", link: "https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/overview.md#tracing-signal"},
-        {label: "Metrics", link: "https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/overview.md#metric-signal"},
-        {label: "Logs", link: "https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/overview.md#log-signal"}
-      ],
-      link: "/docs/null"
-    }
-  },
-  {
-    node: {
-      id: nextId(),
-      label: "Other",
-      items: [
-        {label: "FAQ", link: "https://aws.amazon.com/otel/faqs/"},
-        {label: "Glossary", link: "https://github.com/open-telemetry/opentelemetry-specification/blob/master/specification/glossary.md"},
-        {label: "Resources", link: "/resources"},
-      ],
-      link: "/docs/null"
-    }
   }
 ]
