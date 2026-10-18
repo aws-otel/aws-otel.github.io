@@ -12,7 +12,6 @@ import homepageStyle from "assets/jss/material-kit-react/views/homePage.jsx"
 import InfoSection from "./sections/infoSection"
 import GetInvolvedSection from "./sections/getInvolvedSection"
 import WhatsNewSection from "./sections/whatsNewSection"
-import HowItWorksSection from "./sections/howItWorksSection"
 import {Link} from "gatsby";
 import BackgroundImage from "assets/img/adot_bg.jpg";
 import LogoImage from "assets/img/adot-logo.png";
@@ -63,7 +62,6 @@ class HomePage extends React.Component {
                     <div className={classes.container}>
                       <div style={{height: "40px"}} />
                       <InfoSection />
-                      <HowItWorksSection />
                       <WhatsNewSection />
                       <GetInvolvedSection />
                       <div style={{height: "80px"}} />
