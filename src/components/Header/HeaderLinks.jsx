@@ -9,7 +9,6 @@ import GroupIcon from '@material-ui/icons/Group'
 import DescriptionIcon from '@material-ui/icons/Description'
 import CodeIcon from '@material-ui/icons/Code'
 import HomeIcon from '@material-ui/icons/Home'
-import SearchIcon from '@material-ui/icons/Search'
 import CustomDropdown from "components/CustomDropdown/CustomDropdown.jsx"
 import Button from "components/CustomButtons/Button.jsx"
 import headerLinksStyle from "assets/jss/material-kit-react/components/headerLinksStyle.jsx"
@@ -85,17 +84,6 @@ function HeaderLinks({ ...props }) {
             className={classes.navLink}
           >
             <CodeIcon className={classes.icons} /> Code on GitHub
-          </Button>
-        </Link>
-      </ListItem>
-      <ListItem className={classes.listItem} style={{marginRight: "20px"}}>
-        <Link to="/search" className={classes.buttonLink}>
-          <Button
-              href=""
-              color="transparent"
-              className={classes.navLink}
-          >
-            <SearchIcon className={classes.icons} /> Search
           </Button>
         </Link>
       </ListItem>
