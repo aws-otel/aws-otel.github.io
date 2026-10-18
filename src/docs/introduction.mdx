@@ -34,7 +34,7 @@ compliant backend, as well as Amazon Managed Streaming for Apache Kafka (MSK):
 The ADOT Collector is one way to route this telemetry. For CloudWatch and X-Ray, you can instead use the
 CloudWatch agent or any OpenTelemetry Collector with the
 [CloudWatch OTLP endpoints](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPEndpoint.html),
-or export directly from the ADOT SDKs
+or export traces and logs directly from the ADOT SDKs
 ([collector-less telemetry](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLP-UsingADOT.html)).
 
 Further, you can use auto-instrumentation to generate traces without changing
