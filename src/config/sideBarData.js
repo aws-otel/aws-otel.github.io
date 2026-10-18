@@ -124,24 +124,6 @@ export const sideBarData = [
   {
     node: {
       id: nextId(),
-      label: "Partners",
-      items: [
-        {label: "AppDynamics", link: "/docs/components/otlp-exporter#appdynamics"},
-        {label: "Datadog", link: "/docs/partners/datadog"},
-        {label: "Dynatrace", link: "/docs/partners/dynatrace"},
-        {label: "Honeycomb", link: "/docs/components/otlp-exporter#honeycomb"},
-        {label: "Lightstep", link: "/docs/components/otlp-exporter#lightstep"},
-        {label: "Logz.io", link: "/docs/partners/logzio"},
-        {label: "New Relic", link: "/docs/components/otlp-exporter#new-relic"},
-        {label: "Splunk", link: "/docs/partners/splunk"},
-        {label: "Sumo Logic", link: "/docs/components/otlp-exporter#sumo-logic"},
-      ],
-     link: "/docs/null"
-   }
- },
-  {
-    node: {
-      id: nextId(),
       label: "Know Your Data",
       items: [
         {label: "Traces", link: "https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/overview.md#tracing-signal"},
