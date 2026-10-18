@@ -12,17 +12,12 @@ function Footer({ ...props }) {
     <footer className={classes.footer}>
       <section className={classes.sectionTop}>
         <div className={classes.col}>
-          <h3>Community</h3>
-          <div className={classes.verticalSpacing}> <Link to="/contributing" className={classes.link}> Contributing </Link></div>
-          <div className={classes.verticalSpacing}> <Link to="/code-of-conduct" className={classes.link}> Code of Conduct </Link></div>
-          <div className={classes.verticalSpacing}> <Link to="/blog" className={classes.link}> Blog Posts </Link></div>
-          <div className={classes.verticalSpacing}> <Link to="https://aws.amazon.com/otel/faqs/" className={classes.link} target="_blank" rel="noopener noreferrer"> FAQ </Link></div>
-        </div>
-        <div className={classes.col}>
           <h3>Discover</h3>
           <div className={classes.verticalSpacing}> <Link to="/docs/introduction" className={classes.link}> Documentation </Link></div>
           <div className={classes.verticalSpacing}> <Link to="https://github.com/aws-observability" className={classes.link} target="_blank" rel="noopener noreferrer"> Code on GitHub </Link></div>
           <div className={classes.verticalSpacing}> <Link to="/download" className={classes.link}> Download </Link></div>
+          <div className={classes.verticalSpacing}> <Link to="/blog" className={classes.link}> Blog Posts </Link></div>
+          <div className={classes.verticalSpacing}> <Link to="https://aws.amazon.com/otel/faqs/" className={classes.link} target="_blank" rel="noopener noreferrer"> FAQ </Link></div>
         </div>
         <div className={classes.col}>
           <h3>Stay Connected</h3>
