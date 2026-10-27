@@ -1,7 +1,7 @@
 ---
 title: 'Understanding your Configurations'
 description:
-    This page is deprecated. Collecting application metrics and traces from ECS is documented in the ECS Developer Guide and in Application Signals. To send OpenTelemetry data to CloudWatch, use the CloudWatch OTLP endpoints.
+    This page is deprecated. It described an earlier ADOT Collector setup on Amazon ECS that used an AWS X-Ray SDK sample application and sent metrics as CloudWatch embedded metric format (EMF). The current guide runs the ADOT Collector as a sidecar that sends traces and metrics to the CloudWatch OTLP endpoints.
 path: '/docs/getting-started/ecs-configurations/ecs-config-section'
 ---
 
@@ -10,14 +10,14 @@ import WarningBox from "components/WarningBox/WarningBox.jsx"
 <WarningBox
   warningText="This page is deprecated and is no longer maintained."
   buttonText="View current documentation →"
-  hyperlink="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/application-metrics-cloudwatch.html"
+  hyperlink="/docs/setup/ecs"
 />
 
-Collecting application metrics and traces from ECS is documented in the ECS Developer Guide and in Application Signals. To send OpenTelemetry data to CloudWatch, use the CloudWatch OTLP endpoints.
+This page is deprecated. It described an earlier ADOT Collector setup on Amazon ECS that used an AWS X-Ray SDK sample application and sent metrics as CloudWatch embedded metric format (EMF). The current guide runs the ADOT Collector as a sidecar that sends traces and metrics to the CloudWatch OTLP endpoints.
 
 ## Use these resources instead
 
-- [Collect application metrics in ECS](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/application-metrics-cloudwatch.html)
-- [Enable Application Signals on Amazon ECS](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Signals-Enable-ECSMain.html)
-- [Sending OpenTelemetry data to CloudWatch OTLP endpoints](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPSimplesetup.html)
-- [CloudWatch OTLP endpoints reference](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPEndpoint.html)
+- [Setting up the ADOT Collector on Amazon ECS](/docs/setup/ecs)
+- [Container Insights for Amazon ECS](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cloudwatch-container-insights.html)
+- [CloudWatch OTLP endpoints](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPEndpoint.html)
+- [X-Ray SDK and daemon support timeline](https://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-daemon-timeline.html)

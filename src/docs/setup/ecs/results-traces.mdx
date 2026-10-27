@@ -1,7 +1,7 @@
 ---
 title: 'Results: Check Traces in AWS X-Ray'
 description:
-    This page is deprecated. This tutorial set up the ADOT Collector on Amazon ECS with an AWS X-Ray SDK sample application. The X-Ray SDKs and daemon are in maintenance mode in favor of OpenTelemetry. To collect traces and metrics from ECS, use Application Signals with the CloudWatch agent, or run the CloudWatch agent or an OpenTelemetry Collector as a sidecar using the task definitions in the X-Ray migration guide.
+    This page is deprecated. It described an earlier ADOT Collector setup on Amazon ECS that used an AWS X-Ray SDK sample application and sent metrics as CloudWatch embedded metric format (EMF). The current guide runs the ADOT Collector as a sidecar that sends traces and metrics to the CloudWatch OTLP endpoints.
 path: '/docs/setup/ecs'
 ---
 
@@ -10,15 +10,14 @@ import WarningBox from "components/WarningBox/WarningBox.jsx"
 <WarningBox
   warningText="This page is deprecated and is no longer maintained."
   buttonText="View current documentation →"
-  hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Signals-Enable-ECSMain.html"
+  hyperlink="/docs/setup/ecs"
 />
 
-This tutorial set up the ADOT Collector on Amazon ECS with an AWS X-Ray SDK sample application. The X-Ray SDKs and daemon are in maintenance mode in favor of OpenTelemetry. To collect traces and metrics from ECS, use Application Signals with the CloudWatch agent, or run the CloudWatch agent or an OpenTelemetry Collector as a sidecar using the task definitions in the X-Ray migration guide.
+This page is deprecated. It described an earlier ADOT Collector setup on Amazon ECS that used an AWS X-Ray SDK sample application and sent metrics as CloudWatch embedded metric format (EMF). The current guide runs the ADOT Collector as a sidecar that sends traces and metrics to the CloudWatch OTLP endpoints.
 
 ## Use these resources instead
 
-- [Enable Application Signals on Amazon ECS](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Signals-Enable-ECSMain.html)
-- [Migrating to OpenTelemetry on Amazon ECS (X-Ray Developer Guide)](https://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-migration.html#ecs-migration)
+- [Setting up the ADOT Collector on Amazon ECS](/docs/setup/ecs)
 - [Container Insights for Amazon ECS](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cloudwatch-container-insights.html)
-- [Sending OpenTelemetry data to CloudWatch OTLP endpoints](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPSimplesetup.html)
+- [CloudWatch OTLP endpoints](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPEndpoint.html)
 - [X-Ray SDK and daemon support timeline](https://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-daemon-timeline.html)
