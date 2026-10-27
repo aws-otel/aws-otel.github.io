@@ -1,139 +1,188 @@
 ---
 title: 'AWS Distro for OpenTelemetry Lambda Support For Go'
 description:
-    The [AWS Distro for OpenTelemetry Lambda (ADOT Lambda) SDK for Go](https://github.com/open-telemetry/opentelemetry-go-contrib/tree/main/instrumentation/github.com/aws/aws-lambda-go/otellambda)
-     provides extension and tracing APIs you can use to instrument your Lambda function.
-     The ADOT Lambda layer provides a reduced version of the [AWS Distro for OpenTelemetry Collector](https://github.com/aws-observability/aws-otel-collector),
-     which can further export OpenTelemetry spans to back-end servers.
-
+    Instrument a Go Lambda function with the OpenTelemetry Go SDK and use the ADOT Collector Lambda layer to send
+    traces to the AWS X-Ray OTLP endpoint.
 path: '/docs/getting-started/lambda/lambda-go'
 ---
 
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
-import img16 from "assets/img/docs/img16.png"
-import WarningBox from "components/WarningBox/WarningBox.jsx"
+import InfoBox from "components/InfoBox/InfoBox.jsx"
 
-<WarningBox
-  warningText="This documentation describes the legacy approach to using ADOT with Lambda. For the latest recommended approach, please refer to the updated Python Lambda documentation."
-  buttonText="View Updated Docs →"
-  hyperlink="/docs/getting-started/lambda"
+There is no ADOT Lambda layer with Application Signals support for Go. To trace a Go function, instrument it with the
+[OpenTelemetry Go SDK](https://opentelemetry.io/docs/languages/go/) and the
+[`otellambda`](https://pkg.go.dev/go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda)
+instrumentation, and add the ADOT Collector Lambda layer. The function sends spans to the collector, which runs as a
+Lambda extension and forwards them to the AWS X-Ray OTLP endpoint.
+
+<InfoBox
+  textContent="Application Signals lists Go functions that are set up this way as services in the lambda:default environment, with latency, error, fault, and throttle metrics."
 />
 
-The [AWS Distro for OpenTelemetry Lambda (ADOT Lambda) SDK for Go](https://github.com/open-telemetry/opentelemetry-go-contrib/tree/main/instrumentation/github.com/aws/aws-lambda-go/otellambda) provides extension and tracing APIs you can use to instrument your Lambda function. The ADOT Lambda layer provides a reduced version of the [AWS Distro for OpenTelemetry Collector](https://github.com/aws-observability/aws-otel-collector), which can further export OpenTelemetry spans to back-end servers.
+<SectionSeparator />
 
-This chapter will walk you through the steps to manually instrument your Lambda function using the ADOT Lambda Go SDK, and apply ADOT Lambda layer to enable end-to-end tracing.
+## Prerequisites
 
+* [Transaction Search](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Transaction-Search.html)
+  enabled in CloudWatch. The X-Ray OTLP endpoint requires it.
+* A function that uses the `provided.al2023` runtime, on `x86_64` or `arm64`. Go functions on the `provided.al2` and
+  `go1.x` runtimes need to move to `provided.al2023`; for how to build and package the `bootstrap` binary, see
+  [Deploy Go Lambda functions with .zip file archives](https://docs.aws.amazon.com/lambda/latest/dg/golang-package.html).
+* An execution role with the `CloudWatchLambdaApplicationSignalsExecutionRolePolicy` managed policy, which allows
+  `xray:PutTraceSegments`.
 
 <SectionSeparator />
 
-## Requirements
+## 1. Instrument the function
 
-The ADOT Lambda Go SDK supports the `provided.al2` Lambda runtime.
+Add the OpenTelemetry Go SDK and the Lambda instrumentation to your module:
 
-### Converting from `go1.x` runtime to `provided.al2`
-Change Lambda Runtime from go1.x → provided.al2 via AWS Console or AWS CLI command:
-```shell
-aws lambda update-function-configuration --function-name <FUNCTION> --runtime provided.al2
+```console
+go get github.com/aws/aws-lambda-go/lambda \
+    go.opentelemetry.io/otel \
+    go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda \
+    go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda/xrayconfig \
+    go.opentelemetry.io/contrib/propagators/aws/xray \
+    go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp
 ```
 
-Re-upload source zip with function executable renamed to `bootstrap`
+Create the tracer provider in `main()`, outside the handler, and wrap the handler with `otellambda.InstrumentHandler`.
+`xrayconfig` exports spans over OTLP to the collector extension and flushes them at the end of each invocation. To trace
+outgoing HTTP requests, use an `otelhttp` transport and pass the request context:
 
+```go lineNumbers=true
+package main
 
-## Instrumentation
-
-### Code Instrumentation
-
-1. Add dependencies for the [ADOT Lambda Go SDK](https://pkg.go.dev/go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda) and the [recommended SDK configuration options for AWS X-Ray](https://pkg.go.dev/go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda/xrayconfig).
-
-```go
 import (
-    "context"
-    "github.com/aws/aws-lambda-go/lambda"
-    "go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda"
-    "go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda/xrayconfig"
-    "go.opentelemetry.io/contrib/propagators/aws/xray"
-    "go.opentelemetry.io/otel"
+	"context"
+	"fmt"
+	"net/http"
+
+	"github.com/aws/aws-lambda-go/lambda"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda/xrayconfig"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+	"go.opentelemetry.io/contrib/propagators/aws/xray"
+	"go.opentelemetry.io/otel"
 )
+
+var client = http.Client{Transport: otelhttp.NewTransport(http.DefaultTransport)}
+
+func handler(ctx context.Context) (map[string]int, error) {
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, "https://aws.amazon.com", nil)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	return map[string]int{"statusCode": 200, "http_status": resp.StatusCode}, nil
+}
+
+func main() {
+	ctx := context.Background()
+	tp, err := xrayconfig.NewTracerProvider(ctx)
+	if err != nil {
+		fmt.Printf("error creating tracer provider: %v\n", err)
+	}
+	defer func(ctx context.Context) {
+		if err := tp.Shutdown(ctx); err != nil {
+			fmt.Printf("error shutting down tracer provider: %v\n", err)
+		}
+	}(ctx)
+	otel.SetTracerProvider(tp)
+	otel.SetTextMapPropagator(xray.Propagator{})
+
+	lambda.Start(otellambda.InstrumentHandler(handler, xrayconfig.WithRecommendedOptions(tp)...))
+}
 ```
-2. Add below code which is using configured tracer provider and shutting down the tracer provider in `main()` function outside of lambda handler. Customer can configure their own custom tracer provider as well and pass it on to the Go Lambda instrumentation wrapper.
-```go
-   	ctx := context.Background()
 
-   	tp, err := xrayconfig.NewTracerProvider(ctx)
-   	if err != nil {
-   		fmt.Printf("error creating tracer provider: %v", err)
-   	}
-
-   	defer func(ctx context.Context) {
-   		err := tp.Shutdown(ctx)
-   		if err != nil {
-   			fmt.Printf("error shutting down tracer provider: %v", err)
-   		}
-   	}(ctx)
-
-   	otel.SetTracerProvider(tp)
-   	otel.SetTextMapPropagator(xray.Propagator{})
-```
-
-3. Wrap handler in call to `lambda.Start()` or `lambda.StartHandler()` in `main()` function using the recommended X-Ray configuration options.
-```go
-lambda.Start(otellambda.InstrumentHandler(lambda_handler(ctx), xrayconfig.WithRecommendedOptions(tp)... ))
-```
-
-4. At last, use [instrumenting an application](https://aws-otel.github.io/docs/getting-started/go-sdk/trace-manual-instr#instrumenting-an-application) guide to instrument downstream requests inside lambda function.
-
-### Lambda Layer
-
-This layer includes a reduced version of the [AWS Distro for OpenTelemetry Collector (ADOT Collector)](https://github.com/aws-observability/aws-otel-collector),
-  which runs as a Lambda extension.
-
-Note: Lambda layers are a regionalized resource, meaning that they can only be used in the Region in which they are published.
- Make sure to use the layer in the same region as your Lambda functions.
-
-Find the supported regions and amd64/arm64 layer ARN in the table below for the ARNs to consume. Use `amd64` as architecture [for x86-based processors](https://docs.aws.amazon.com/lambda/latest/dg/foundation-arch.html).
-
-|Supported   Regions  |Lambda layer ARN format  | Contents |
-|---------------------|-------------------------|----------|
-| ap-northeast-1<br/>ap-northeast-2<br/>ap-south-1<br/>ap-southeast-1<br/>ap-southeast-2<br/>ca-central-1<br/>eu-central-1<br/>eu-north-1<br/>eu-west-1<br/>eu-west-2<br/>eu-west-3<br/>sa-east-1<br/>us-east-1<br/>us-east-2<br/>us-west-1<br/>us-west-2 | arn:aws:lambda:<region\>:901920570463:layer:aws-otel-collector-<architecture\>-ver-0-156-0:4 | Contains ADOT Collector v0.49.0 |
-
-### Enable Tracing
-Once you’ve instrumented the Lambda function code and deployed to Lambda service, you can follow the instructions below to apply Lambda layer.
-
-1. Open the Lambda function you intend to trace in the in AWS console.
-2. In the **Layers** section, choose **Add a layer**.
-3. Under **Specify an ARN**, paste the layer ARN, and then choose **Add**.
-
-Also, remember to turn on [active tracing](https://docs.aws.amazon.com/lambda/latest/dg/services-xray.html) on Lambda console so as to enable end-to-end tracing.
-
-Tips:
-
-* By default, the layer is configured to export traces to AWS X-Ray.
- Make sure your Lambda role has the required AWS X-Ray permissions.
-  See more on [AWS X-Ray permissions](https://docs.aws.amazon.com/lambda/latest/dg/services-xray.html#services-xray-permissions) for AWS Lambda.
-* To disable tracing, you’ll need to remove ADOT Lambda layer from your Lambda function and disable active tracing as described above.
+For other libraries, such as the AWS SDK for Go and gRPC, see
+[OpenTelemetry Go instrumentation](https://opentelemetry.io/docs/languages/go/instrumentation/).
 
 <SectionSeparator />
 
-## Configuration
+## 2. Configure the collector
 
-The ADOT layer contains the ADOT Collector. The configuration of the ADOT Collector follows the OpenTelemetry standard.
+By default, the ADOT Collector Lambda layer exports traces with the `awsxray` exporter. To send them to the X-Ray OTLP
+endpoint instead, add this `collector.yaml` to your deployment package:
 
-By default, the ADOT Lambda layer uses the [config.yaml](https://github.com/aws-observability/aws-otel-lambda/blob/main/adot/collector/config.yaml),
- which exports telemetry data to AWS X-Ray. To customize the Collector config,
- see the [main Lambda section for custom configuration instructions](/docs/getting-started/lambda#custom-configuration-for-the-adot-collector-on-lambda)
+```yaml lineNumbers=true
+extensions:
+  sigv4auth:
+    region: ${env:AWS_REGION}
+    service: xray
 
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: localhost:4317
+      http:
+        endpoint: localhost:4318
+
+exporters:
+  otlp_http:
+    compression: gzip
+    traces_endpoint: https://xray.${env:AWS_REGION}.amazonaws.com/v1/traces
+    auth:
+      authenticator: sigv4auth
+
+service:
+  extensions: [sigv4auth]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [otlp_http]
+```
+
+For other collector options, see the
+[OpenTelemetry Lambda Collector configuration](https://opentelemetry.io/docs/platforms/faas/lambda-collector/).
 
 <SectionSeparator />
 
-## Additional Instrumentation
+## 3. Build and deploy
 
-For additional instrumentation, see the [OpenTelemetry Go documentation](https://github.com/open-telemetry/opentelemetry-go).
+Build the function as `bootstrap` and package it with the collector configuration. For `arm64`, set `GOARCH=arm64`.
+
+```console
+GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -tags lambda.norpc -o bootstrap .
+zip function.zip bootstrap collector.yaml
+```
+
+Create the function with the collector layer, the `OPENTELEMETRY_COLLECTOR_CONFIG_URI` environment variable, and a
+service name:
+
+```console lineNumbers=true
+aws lambda create-function --function-name <function-name> \
+    --runtime provided.al2023 --handler bootstrap --architectures x86_64 \
+    --zip-file fileb://function.zip --role <execution-role-arn> \
+    --layers arn:aws:lambda:<region>:901920570463:layer:aws-otel-collector-amd64-ver-0-156-0:4 \
+    --tracing-config Mode=Active \
+    --environment 'Variables={OPENTELEMETRY_COLLECTOR_CONFIG_URI=/var/task/collector.yaml,OTEL_SERVICE_NAME=<service-name>}' \
+    --region <region>
+```
+
+Set `OTEL_SERVICE_NAME`. Without it, the spans from the Go SDK have no `service.name`.
+
+### Collector layer ARNs
+
+Lambda layers are Regional, so use the layer in the same Region as your function. Use `amd64` for `x86_64` functions
+and `arm64` for `arm64` functions.
+
+| Supported Regions | Lambda layer ARN format | Contents |
+|---|---|---|
+| ap-northeast-1<br/>ap-northeast-2<br/>ap-south-1<br/>ap-southeast-1<br/>ap-southeast-2<br/>ca-central-1<br/>eu-central-1<br/>eu-north-1<br/>eu-west-1<br/>eu-west-2<br/>eu-west-3<br/>sa-east-1<br/>us-east-1<br/>us-east-2<br/>us-west-1<br/>us-west-2 | arn:aws:lambda:\<region\>:901920570463:layer:aws-otel-collector-\<architecture\>-ver-0-156-0:4 | Contains ADOT Collector v0.49.0 |
 
 <SectionSeparator />
 
-## Service Graph
+## 4. View your traces
 
-Below is a sample X-Ray service graph showing an instrumented Lambda handler (**SampleLambdaHandler**) firing a request to AWS S3. Note that there are three **SampleLambdaHandler** nodes in the service graph.
-The first two are X-Ray segments created by Lambda runtime, which denotes Lambda service and Lambda function respectively. The third one is created by ADOT Lambda Go SDK, which will be eventually merged with Lambda function segment in the service graph in the future.
+Invoke the function, and then use Transaction Search in the CloudWatch console to find its spans. Each invocation has
+a server span from `otellambda` and a client span for each outgoing request made through `otelhttp`, along with the
+segments that Lambda creates when active tracing is on. Spans are stored in the `aws/spans` log group.
 
-<img src={img16} alt="Diagram" style="margin: 30px 0;" />
+To remove tracing, remove the layer, the `OPENTELEMETRY_COLLECTOR_CONFIG_URI` variable, and the instrumentation code,
+and turn off active tracing.

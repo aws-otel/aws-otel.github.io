@@ -323,6 +323,14 @@ The AWS Distro for OpenTelemetry (ADOT) Lambda Layer supports following runtimes
 
 <TabbedTable config={supportedRuntimesConfig} />
 
+* **Java:** the layer instruments handlers that implement `RequestHandler` or `RequestStreamHandler` from
+  `aws-lambda-java-core`. A handler method on a class that implements neither interface runs normally but produces no
+  OpenTelemetry spans.
+* **.NET:** the layer supports the `x86_64` architecture only.
+* **Go, Rust, and other OS-only runtimes (`provided.al2023`), and Ruby:** there is no ADOT Lambda layer with
+  Application Signals support. For Go, instrument the function with the OpenTelemetry Go SDK and use the ADOT Collector
+  Lambda layer; see [ADOT Lambda for Go](/docs/getting-started/lambda/lambda-go).
+
 <SectionSeparator />
 
 ## ADOT Lambda Layer ARNs
