@@ -10,7 +10,7 @@ import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.js
 import TipBox from "components/TipBox/TipBox.jsx"
 
 Run the AWS Distro for OpenTelemetry (ADOT) Collector as a sidecar container in your Amazon ECS tasks, on AWS Fargate or
-Amazon EC2. Your applications send telemetry to the collector over OTLP, StatsD, or the X-Ray daemon protocol. The
+Amazon EC2. Your applications send telemetry to the collector over OTLP. The
 collector adds ECS and EC2 resource attributes and sends traces to the AWS X-Ray OTLP endpoint and metrics to the
 Amazon CloudWatch OTLP endpoint, where you can query them with PromQL.
 
@@ -55,7 +55,7 @@ Amazon CloudWatch OTLP endpoint, where you can query them with PromQL.
 ## Option 1: Deploy with AWS CloudFormation
 
 The CloudFormation templates create a task definition and service that run the ADOT Collector next to a sample Java
-application, which is instrumented with the ADOT Java agent, plus a StatsD emitter and a traffic generator. With
+application, which is instrumented with the ADOT Java agent, and a traffic generator. With
 `CreateIAMRoles=True`, the templates also create the task role and task execution role.
 
 ### Amazon ECS on AWS Fargate
@@ -126,13 +126,6 @@ receivers:
         endpoint: 0.0.0.0:4317
       http:
         endpoint: 0.0.0.0:4318
-  # Accepts segments from applications that still use the X-Ray SDK.
-  awsxray:
-    endpoint: 0.0.0.0:2000
-    transport: udp
-  statsd:
-    endpoint: 0.0.0.0:8125
-    aggregation_interval: 60s
 
 processors:
   # Adds aws.ecs.*, cloud.*, and, on EC2, host.* resource attributes.
@@ -160,11 +153,11 @@ service:
   extensions: [health_check, sigv4auth/traces, sigv4auth/metrics]
   pipelines:
     traces:
-      receivers: [otlp, awsxray]
+      receivers: [otlp]
       processors: [resource_detection, batch/traces]
       exporters: [otlp_http/traces]
     metrics:
-      receivers: [otlp, statsd]
+      receivers: [otlp]
       processors: [resource_detection, batch/metrics]
       exporters: [otlp_http/metrics]
 ```
@@ -223,8 +216,6 @@ To start your application after the collector, add a `dependsOn` entry with `"co
 |---|---|---|
 | OTLP/HTTP | 4318 | OpenTelemetry and ADOT SDKs |
 | OTLP/gRPC | 4317 | OpenTelemetry and ADOT SDKs |
-| StatsD (UDP) | 8125 | StatsD clients |
-| X-Ray daemon protocol (UDP) | 2000 | Applications that still use the X-Ray SDK |
 
 Point your SDK at the collector with `OTEL_EXPORTER_OTLP_ENDPOINT`:
 
@@ -247,12 +238,6 @@ reports errors when it tries to export logs.
 
   ```
   {"jvm.memory.used", "@resource.service.name"="ecs-otel-sample-app"}
-  ```
-
-  The StatsD metric from the templates:
-
-  ```
-  {statsdTestMetric}
   ```
 
   Resource attributes that the collector adds, such as `aws.ecs.cluster.arn` and `aws.ecs.task.family`, are available as
@@ -280,7 +265,7 @@ receivers:
 service:
   pipelines:
     metrics:
-      receivers: [otlp, statsd, awsecscontainermetrics]
+      receivers: [otlp, awsecscontainermetrics]
 ```
 
 <SectionSeparator />
@@ -292,6 +277,10 @@ metrics as CloudWatch embedded metric format (EMF) to the `ECS/AWSOTel/Applicati
 `awsxray` exporter. With the configuration in this guide, metrics go to the CloudWatch OTLP endpoint instead, so
 alarms and dashboards on the `ECS/AWSOTel/Application` metrics stop receiving data. Move them to PromQL queries, or keep
 the EMF configuration by setting the template's `command` parameter to `--config=/etc/ecs/ecs-default-config.yaml`.
+
+The configuration in this guide receives OTLP only. If your applications send StatsD metrics or use the X-Ray SDK, keep
+`--config=/etc/ecs/ecs-default-config.yaml`, which also receives StatsD on UDP port 8125 and X-Ray segments on UDP
+port 2000, or move them to an OpenTelemetry SDK.
 
 <SectionSeparator />
 
