@@ -204,7 +204,7 @@ spec:
 
 It is possible to embed configuration URIs in a configuration of the OpenTelemetry collector. These URIs will be expanded and replaced by the
 content of the URI that they point to. To use this feature, you need to add the placeholders in the collector configuration with the
-the following format: `${uri}`. You can provided URIs with any of the supported schemes.
+the following format: `${uri}`, as the value of a key. You can provided URIs with any of the supported schemes.
 
 
 The following pieces will demonstrate how this feature works. Supposed you have the following configuration that is passed to the
@@ -213,29 +213,31 @@ collector through the command line parameter.
 ```yaml
 extensions:
   health_check:
+  sigv4auth/traces:
+    region: us-west-2
+    service: xray
+  sigv4auth/metrics:
+    region: us-west-2
+    service: monitoring
 
-receivers:
-${s3://example-bucket.s3.us-west-2.amazonaws.com/receivers.yaml}
+receivers: ${s3://example-bucket.s3.us-west-2.amazonaws.com/receivers.yaml}
 
-processors:
-${s3://example-bucket.s3.us-west-2.amazonaws.com/processors.yaml}
+processors: ${s3://example-bucket.s3.us-west-2.amazonaws.com/processors.yaml}
 
-exporters:
-${s3://example-bucket.s3.us-west-2.amazonaws.com/exporters.yaml}
-
+exporters: ${s3://example-bucket.s3.us-west-2.amazonaws.com/exporters.yaml}
 
 service:
   pipelines:
     traces:
-      receivers: [otlp,awsxray]
+      receivers: [otlp]
       processors: [batch/traces]
-      exporters: [awsxray]
+      exporters: [otlp_http/traces]
     metrics:
       receivers: [otlp]
       processors: [batch/metrics]
-      exporters: [awsemf]
+      exporters: [otlp_http/metrics]
 
-  extensions: [health_check]
+  extensions: [health_check, sigv4auth/traces, sigv4auth/metrics]
 ```
 In the example presented above, we are embedding three different URIs. These embedded URIs will be expanded when the collector load the configuration.
 
@@ -244,32 +246,37 @@ The following is the content of each URI:
 `s3://example-bucket.s3.us-west-2.amazonaws.com/receivers.yaml`
 
 ```
-  otlp:
-    protocols:
-      grpc:
-        endpoint: 0.0.0.0:4317
-      http:
-        endpoint: 0.0.0.0:4318
-  awsxray:
-    endpoint: 0.0.0.0:2000
-    transport: udp
+otlp:
+  protocols:
+    grpc:
+      endpoint: 0.0.0.0:4317
+    http:
+      endpoint: 0.0.0.0:4318
 ```
 
 `s3://example-bucket.s3.us-west-2.amazonaws.com/processors.yaml`
 
 ```
-  batch/traces:
-    timeout: 1s
-    send_batch_size: 50
-  batch/metrics:
-    timeout: 60s
+batch/traces:
+  timeout: 1s
+  send_batch_size: 50
+batch/metrics:
+  timeout: 60s
 ```
 
 `s3://example-bucket.s3.us-west-2.amazonaws.com/exporters.yaml`
 
 ```
-  awsxray:
-  awsemf:
+otlp_http/traces:
+  compression: gzip
+  traces_endpoint: https://xray.us-west-2.amazonaws.com/v1/traces
+  auth:
+    authenticator: sigv4auth/traces
+otlp_http/metrics:
+  compression: gzip
+  metrics_endpoint: https://monitoring.us-west-2.amazonaws.com/v1/metrics
+  auth:
+    authenticator: sigv4auth/metrics
 ```
 
 The final configuration would look like:
@@ -277,6 +284,12 @@ The final configuration would look like:
 ```
 extensions:
   health_check:
+  sigv4auth/traces:
+    region: us-west-2
+    service: xray
+  sigv4auth/metrics:
+    region: us-west-2
+    service: monitoring
 
 receivers:
   otlp:
@@ -285,9 +298,6 @@ receivers:
         endpoint: 0.0.0.0:4317
       http:
         endpoint: 0.0.0.0:4318
-  awsxray:
-    endpoint: 0.0.0.0:2000
-    transport: udp
 
 processors:
   batch/traces:
@@ -297,23 +307,31 @@ processors:
     timeout: 60s
 
 exporters:
-  awsxray:
-  awsemf:
+  otlp_http/traces:
+    compression: gzip
+    traces_endpoint: https://xray.us-west-2.amazonaws.com/v1/traces
+    auth:
+      authenticator: sigv4auth/traces
+  otlp_http/metrics:
+    compression: gzip
+    metrics_endpoint: https://monitoring.us-west-2.amazonaws.com/v1/metrics
+    auth:
+      authenticator: sigv4auth/metrics
 
 service:
   pipelines:
     traces:
-      receivers: [otlp,awsxray]
+      receivers: [otlp]
       processors: [batch/traces]
-      exporters: [awsxray]
+      exporters: [otlp_http/traces]
     metrics:
       receivers: [otlp]
       processors: [batch/metrics]
-      exporters: [awsemf]
+      exporters: [otlp_http/metrics]
 
-  extensions: [health_check]
+  extensions: [health_check, sigv4auth/traces, sigv4auth/metrics]
 ```
 
-**Note:** This example uses the `awsxray` and `awsemf` exporters. To send traces and metrics to AWS with OTLP instead, you can
-configure `otlphttp` exporters with the `sigv4auth` extension that point to the [CloudWatch OTLP endpoints](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPEndpoint.html).
-Embedded URIs work the same way regardless of which exporters you use.
+This configuration sends traces and metrics to the [CloudWatch OTLP endpoints](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPEndpoint.html).
+Before sending traces, enable [Transaction Search](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Transaction-Search.html).
+The collector's IAM role needs the `CloudWatchAgentServerPolicy` managed policy.
