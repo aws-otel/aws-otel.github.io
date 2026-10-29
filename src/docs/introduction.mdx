@@ -9,7 +9,7 @@ import TipBox from "components/TipBox/TipBox.jsx"
 Welcome to the AWS Distro for OpenTelemetry (ADOT) technical docs. 
 
 <TipBox
-  textContent="To send OpenTelemetry data to Amazon CloudWatch, AWS now recommends the CloudWatch agent or any OpenTelemetry Collector exporting to the CloudWatch OTLP endpoints. CloudWatch Application Signals provides the application performance monitoring (APM) experience. ADOT SDKs and auto-instrumentation remain supported."
+  textContent="To send OpenTelemetry data to Amazon CloudWatch, AWS now recommends the CloudWatch agent or any OpenTelemetry Collector exporting to the CloudWatch OTLP endpoints. For application performance monitoring (APM), instrument your applications with the ADOT SDKs and turn on CloudWatch Application Signals, which uses their traces and metrics to show service health, latency, and errors. On Lambda, the ADOT Lambda layers turn on Application Signals."
   buttonText="OpenTelemetry in CloudWatch"
   hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OpenTelemetry-Sections.html"
 />
