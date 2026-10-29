@@ -6,7 +6,6 @@ path: '/docs/getting-started/adot-eks-add-on'
 ---
 
 import operatorImg1 from "assets/img/docs/gettingStarted/operator/img1.png"
-import operatorImg2 from "assets/img/docs/gettingStarted/operator/img2.png"
 import TipBox from "components/TipBox/TipBox.jsx"
 
 ## Table of Contents
@@ -45,14 +44,12 @@ This guide contains:
 * How to configure an ADOT Collector to collect and send application traces from workloads running on Amazon EKS to Amazon CloudWatch.
 * How to update the ADOT EKS add-on
 
-This diagram shows an end-to-end pipeline utilizing the ADOT EKS add-on. It breaks down the different components of the pipeline, as well as splits it up into three smaller pipelines; those three pipelines are configured for:
+The configuration guides cover three pipelines:
 
 * Discovering and collecting Prometheus metrics and sending to Amazon Managed Service for Prometheus (AMP)
 * Receiving OTLP metrics, and sending to Amazon Managed Service for Prometheus (AMP) and Amazon CloudWatch
 * Receiving distributed application traces, and sending them to Amazon CloudWatch
 
-<img src={operatorImg2} alt="Diagram" style="margin: 30px 0;" />
-<p style="text-align: center;"><i>Diagram: EKS ADOT Operator end to end pipeline</i></p>
 
 
 ## The ADOT Operator and ADOT Collector
