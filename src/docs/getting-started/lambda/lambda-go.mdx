@@ -2,7 +2,7 @@
 title: 'AWS Distro for OpenTelemetry Lambda Support For Go'
 description:
     Instrument a Go Lambda function with the OpenTelemetry Go SDK and use the ADOT Collector Lambda layer to send
-    traces to the AWS X-Ray OTLP endpoint.
+    traces to the Amazon CloudWatch OTLP traces endpoint.
 path: '/docs/getting-started/lambda/lambda-go'
 ---
 
@@ -13,7 +13,7 @@ There is no ADOT Lambda layer with Application Signals support for Go. To trace 
 [OpenTelemetry Go SDK](https://opentelemetry.io/docs/languages/go/) and the
 [`otellambda`](https://pkg.go.dev/go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-lambda-go/otellambda)
 instrumentation, and add the ADOT Collector Lambda layer. The function sends spans to the collector, which runs as a
-Lambda extension and forwards them to the AWS X-Ray OTLP endpoint.
+Lambda extension and forwards them to the Amazon CloudWatch OTLP traces endpoint.
 
 <InfoBox
   textContent="Application Signals lists Go functions that are set up this way as services in the lambda:default environment, with latency, error, fault, and throttle metrics."
@@ -24,7 +24,7 @@ Lambda extension and forwards them to the AWS X-Ray OTLP endpoint.
 ## Prerequisites
 
 * [Transaction Search](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Transaction-Search.html)
-  enabled in CloudWatch. The X-Ray OTLP endpoint requires it.
+  enabled in CloudWatch. The OTLP traces endpoint requires it.
 * A function that uses the `provided.al2023` runtime, on `x86_64` or `arm64`. Go functions on the `provided.al2` and
   `go1.x` runtimes need to move to `provided.al2023`; for how to build and package the `bootstrap` binary, see
   [Deploy Go Lambda functions with .zip file archives](https://docs.aws.amazon.com/lambda/latest/dg/golang-package.html).
@@ -106,8 +106,8 @@ For other libraries, such as the AWS SDK for Go and gRPC, see
 
 ## 2. Configure the collector
 
-By default, the ADOT Collector Lambda layer exports traces with the `awsxray` exporter. To send them to the X-Ray OTLP
-endpoint instead, add this `collector.yaml` to your deployment package:
+By default, the ADOT Collector Lambda layer exports traces with the `awsxray` exporter. To send them to the CloudWatch OTLP
+traces endpoint instead, add this `collector.yaml` to your deployment package:
 
 ```yaml lineNumbers=true
 extensions:
