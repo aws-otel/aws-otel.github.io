@@ -8,20 +8,6 @@ path: '/docs/getting-started/adot-eks-add-on'
 import operatorImg1 from "assets/img/docs/gettingStarted/operator/img1.png"
 import TipBox from "components/TipBox/TipBox.jsx"
 
-## Table of Contents
-
-### [Introduction](/docs/getting-started/adot-eks-add-on#introduction-1)
-### [Requirements](/docs/getting-started/adot-eks-add-on/requirements)
-### [Installation](/docs/getting-started/adot-eks-add-on/installation)
-### [Add-on Advanced Configuration](/docs/getting-started/adot-eks-add-on/add-on-configuration)
-### [Collector Configuration Introduction](/docs/getting-started/adot-eks-add-on/config-collector-intro)
-### [Injecting Auto-instrumentation](/docs/getting-started/adot-eks-add-on/config-auto-instrumentation)
-### [Kubernetes Attributes Processor (OpenTelemetry docs)](https://opentelemetry.io/docs/platforms/kubernetes/collector/components/)
-### [Target Allocator (OpenTelemetry docs)](https://opentelemetry.io/docs/platforms/kubernetes/operator/target-allocator/)
-### [Update and Cleanup](/docs/getting-started/adot-eks-add-on/update-and-cleanup)
-### [Troubleshooting](/docs/getting-started/adot-eks-add-on/troubleshooting)
-
-
 ## Introduction
 
 <TipBox
@@ -36,13 +22,17 @@ Welcome to the getting started guide for AWS Distro for OpenTelemetry (ADOT) usi
 
 This guide contains:
 
-* Requirements to install ADOT
-* How to install the ADOT using Amazon EKS add-ons.
-* How to set up the ADOT Operator and Collector.
-* How to instrument your applications on Amazon EKS.
-* How to configure the ADOT Collector to collect, and send infrastructure and application metrics from Amazon EKS clusters and applications to either Amazon Managed Service for Prometheus or CloudWatch.
-* How to configure an ADOT Collector to collect and send application traces from workloads running on Amazon EKS to Amazon CloudWatch.
-* How to update the ADOT EKS add-on
+* [Requirements](/docs/getting-started/adot-eks-add-on/requirements) to install ADOT
+* [Installation](/docs/getting-started/adot-eks-add-on/installation) of ADOT using Amazon EKS add-ons
+* [Add-on Advanced Configuration](/docs/getting-started/adot-eks-add-on/add-on-configuration) of the ADOT Operator and Collector
+* [Collector Configuration](/docs/getting-started/adot-eks-add-on/config-collector-intro) to collect and send infrastructure and application metrics to Amazon Managed Service for Prometheus or CloudWatch, and application traces to Amazon CloudWatch
+* [Injecting Auto-instrumentation](/docs/getting-started/adot-eks-add-on/config-auto-instrumentation) into your applications on Amazon EKS
+* [Update and Cleanup](/docs/getting-started/adot-eks-add-on/update-and-cleanup) of the ADOT EKS add-on
+* [Troubleshooting](/docs/getting-started/adot-eks-add-on/troubleshooting)
+
+For the Kubernetes Attributes Processor and the Target Allocator, see the OpenTelemetry docs:
+[Kubernetes components](https://opentelemetry.io/docs/platforms/kubernetes/collector/components/) and
+[Target Allocator](https://opentelemetry.io/docs/platforms/kubernetes/operator/target-allocator/).
 
 The configuration guides cover three pipelines:
 
