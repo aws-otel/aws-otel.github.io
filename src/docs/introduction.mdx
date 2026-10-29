@@ -4,7 +4,6 @@ description: Welcome to the AWS Distro for OpenTelemetry docs
 path: '/docs/introduction'
 ---
 
-import adotColConcept from "assets/img/docs/img18.png"
 import TipBox from "components/TipBox/TipBox.jsx"
 
 Welcome to the AWS Distro for OpenTelemetry (ADOT) technical docs. 
@@ -25,11 +24,8 @@ provides open source APIs, libraries, and agents to collect logs, metrics, and t
 With ADOT, you can instrument your applications once and send
 correlated logs, metrics, and traces to one or more observability backends
 such as Amazon Managed Service for Prometheus, Amazon CloudWatch,
-Amazon Open Search, any [OpenTelemetry Protocol (OTLP)](https://opentelemetry.io/docs/specs/otlp/)
-compliant backend, as well as Amazon Managed Streaming for Apache Kafka (MSK):
-
-<img src={adotColConcept} alt="ADOT collector concept" style="margin: 30px 0;" />
-<p style="text-align: center;"><i>The ADOT collector</i></p>
+Amazon OpenSearch Service, any [OpenTelemetry Protocol (OTLP)](https://opentelemetry.io/docs/specs/otlp/)
+compliant backend, as well as Amazon Managed Streaming for Apache Kafka (MSK).
 
 The ADOT Collector is one way to route this telemetry. For Amazon CloudWatch, you can instead use the
 CloudWatch agent or any OpenTelemetry Collector with the
