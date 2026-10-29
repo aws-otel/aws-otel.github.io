@@ -16,9 +16,3 @@ infoSection:
     application performance monitoring (APM) experience. ADOT SDKs and auto-instrumentation remain supported.
   learnMoreText: OpenTelemetry in CloudWatch
   learnMoreLink: https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OpenTelemetry-Sections.html
-
-getInvolvedSection:
-  heading: Get Involved
-  subtitle:
-    AWS Distro for OpenTelemetry is committed to being an open, collaborative, community-driven project.
-    Join the community to participate and contribute.
