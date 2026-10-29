@@ -55,7 +55,8 @@ following folder layout.
 
 AWS Introduced [IAM Roles Anywhere](https://docs.aws.amazon.com/rolesanywhere/latest/userguide/introduction.html) to allow 
 workloads to obtain temporary security credentials in IAM. ADOT can leverage this service to obtain the credentials needed for
-the exporters that target AWS (CloudWatch EMF, X-Ray, Amazon Managed Service for Prometheus).
+the exporters that send to AWS, such as the `otlp_http` exporter for the CloudWatch OTLP endpoints and the Prometheus
+remote write exporter for Amazon Managed Service for Prometheus.
 
 In order to leverage IAM Roles Anywhere on your on-premises environment you'll need to create:
 

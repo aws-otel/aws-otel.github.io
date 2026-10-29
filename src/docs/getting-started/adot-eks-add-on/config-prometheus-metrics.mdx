@@ -65,10 +65,10 @@ Pipelines can be enabled by setting their `enabled` field to `true`.
 Metrics scraped by a prometheus receiver are routed to a configured AMP workspace. 
 
 - #### emf
-Metrics scraped by a prometheus receiver are sent to Amazon CloudWatch in [Embedded Metric Format (EMF)](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Embedded_Metric_Format_Specification.html). 
+Metrics scraped by a prometheus receiver are sent to Amazon CloudWatch Logs, which extracts them as CloudWatch metrics.
 
 <TipBox
-  textContent="The emf pipeline uses the awsemf exporter. For Prometheus and Container Insights metrics in CloudWatch, AWS recommends the Amazon CloudWatch Observability EKS add-on. To send OpenTelemetry metrics to CloudWatch from your own collector, use the CloudWatch OTLP metrics endpoint instead of awsemf."
+  textContent="The preconfigured resource has no pipeline for the CloudWatch OTLP metrics endpoint. To send Prometheus metrics to it, deploy your own OpenTelemetryCollector resource with the otlp_http exporter and the sigv4auth extension, or use the Amazon CloudWatch Observability EKS add-on."
   buttonText="Send OpenTelemetry data to CloudWatch OTLP endpoints"
   hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPSimplesetup.html"
 />

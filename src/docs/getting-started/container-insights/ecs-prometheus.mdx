@@ -145,7 +145,7 @@ receivers:
               action: replace
               target_label: container_name
             - action: labelmap # Convert docker labels on container to metric labels
-              regex: ^__meta_ecs_container_labels_(.+)$ # Capture the key using regex, e.g. __meta_ecs_container_labels_Java_EMF_Metrics -> Java_EMF_Metrics
+              regex: ^__meta_ecs_container_labels_(.+)$ # Capture the key using regex, e.g. __meta_ecs_container_labels_app -> app
               replacement: '$$1'
 
 processors:
