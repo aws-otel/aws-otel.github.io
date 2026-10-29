@@ -42,6 +42,11 @@ them to the [CloudWatch OTLP metrics endpoint](https://docs.aws.amazon.com/Amazo
 with the `otlp_http` exporter. The `sigv4auth` extension signs the requests with the task role's credentials, so the task
 role needs the `cloudwatch:PutMetricData` permission. Replace `us-west-2` with your Region.
 
+The CloudWatch OTLP metrics endpoint requires a start time on cumulative datapoints. The receiver reports its CPU usage
+time, network I/O, and storage metrics as cumulative sums without a start time, so the endpoint rejects them and the
+collector logs a `Partial success response` warning. The `filter/cloudwatch` processor drops these metrics; the other
+metrics are gauges, which the endpoint accepts. For the full list, see [Available Metrics](#available-metrics).
+
 ```yaml lineNumbers=true
 extensions:
   sigv4auth:
@@ -50,6 +55,16 @@ extensions:
 
 receivers:
   awsecscontainermetrics:
+
+processors:
+  filter/cloudwatch: # drop the cumulative sums, which the CloudWatch OTLP endpoint rejects
+    metrics:
+      exclude:
+        match_type: regexp
+        metric_names:
+          - .*\.cpu\.usage\.(total|kernelmode|usermode|system)$
+          - .*\.network\.io\.usage\..*
+          - .*\.storage\.(read|write)_bytes$
 
 exporters:
   otlp_http:
@@ -63,6 +78,7 @@ service:
   pipelines:
     metrics:
       receivers: [awsecscontainermetrics]
+      processors: [filter/cloudwatch]
       exporters: [otlp_http]
 ```
 
@@ -94,6 +110,16 @@ receivers:
   awsecscontainermetrics:
     collection_interval: 40s
 
+processors:
+  filter/cloudwatch: # drop the cumulative sums, which the CloudWatch OTLP endpoint rejects
+    metrics:
+      exclude:
+        match_type: regexp
+        metric_names:
+          - .*\.cpu\.usage\.(total|kernelmode|usermode|system)$
+          - .*\.network\.io\.usage\..*
+          - .*\.storage\.(read|write)_bytes$
+
 exporters:
   otlp_http:
     compression: gzip
@@ -106,6 +132,7 @@ service:
   pipelines:
     metrics:
       receivers: [awsecscontainermetrics]
+      processors: [filter/cloudwatch]
       exporters: [otlp_http]
 ```
 
@@ -114,7 +141,7 @@ service:
 ## Collect specific metrics and update metric names
 
 The previous configuration collects all the metrics and sends them to Amazon CloudWatch using default names. Customers
-can use `filter` and `metricstransform` processors to send specific metrics and rename them respectively.
+can use `filter` and `metrics_transform` processors to send specific metrics and rename them respectively.
 
 The following configuration example collects only the `ecs.task.memory.utilized` metric and renames it
 to `MemoryUtilized` before sending to CloudWatch.
@@ -135,7 +162,7 @@ processors:
         match_type: strict
         metric_names:
           - ecs.task.memory.utilized
-  metricstransform:
+  metrics_transform:
     transforms:
       - include: ecs.task.memory.utilized
         action: update
@@ -153,7 +180,7 @@ service:
   pipelines:
     metrics:
       receivers: [awsecscontainermetrics]
-      processors: [filter, metricstransform]
+      processors: [filter, metrics_transform]
       exporters: [otlp_http]
 ```
 
@@ -195,6 +222,10 @@ The following table lists all metrics emitted by AWS ECS container metrics recei
 | ecs.task.storage.read\_bytes          | container.storage.read\_bytes          | Bytes        |
 | ecs.task.storage.write\_bytes         | container.storage.write\_bytes         | Bytes        |
 
+The `cpu.usage.total`, `cpu.usage.kernelmode`, `cpu.usage.usermode`, `cpu.usage.system`, `network.io.usage.*`, and
+`storage.*` metrics are cumulative sums without a start time, which the CloudWatch OTLP metrics endpoint rejects. The
+other metrics are gauges.
+
 <SectionSeparator />
 
 ## Resource Attributes and Metrics Labels
@@ -233,7 +264,7 @@ container-level metrics. Container-level metrics have seven more attributes than
 
 The following example shows a full configuration to get the most useful task-level metrics. It uses the
 `awsecscontainermetrics` receiver to collect all the resource usage metrics from the ECS task metadata endpoint, applies
-the `filter` processor to select only 8 task-level metrics, batches them, and sends them to the CloudWatch OTLP metrics
+the `filter` processor to select only 6 task-level gauges, batches them, and sends them to the CloudWatch OTLP metrics
 endpoint. The resource attributes, such as `aws.ecs.cluster.name` and `aws.ecs.task.family`, stay on the metrics, so you
 don't need to rename them to use them in PromQL queries.
 
@@ -251,15 +282,13 @@ processors:
     metrics:
       include:
         match_type: strict
-        metric_names: # select only 8 task level metrics out of 52
+        metric_names: # select only 6 task level gauges
           - ecs.task.memory.reserved
           - ecs.task.memory.utilized
           - ecs.task.cpu.reserved
           - ecs.task.cpu.utilized
           - ecs.task.network.rate.rx
           - ecs.task.network.rate.tx
-          - ecs.task.storage.read_bytes
-          - ecs.task.storage.write_bytes
   batch:
 
 exporters:
@@ -282,7 +311,7 @@ service:
 
 ## Full configuration for task- and container-level metrics
 
-The following example collects the same 8 metrics at both the task level and the container level. The `filter`
+The following example collects the same 6 metrics at both the task level and the container level. The `filter`
 processor matches the metric names with regular expressions, so it selects both the `ecs.task.*` and the `container.*`
 metrics. Container-level metrics also carry the `container.name` resource attribute.
 
@@ -307,8 +336,6 @@ processors:
           - .*cpu.utilized
           - .*network.rate.rx
           - .*network.rate.tx
-          - .*storage.read_bytes
-          - .*storage.write_bytes
   batch:
 
 exporters:

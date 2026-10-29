@@ -85,7 +85,7 @@ aws ec2 authorize-security-group-ingress --group-id ${SG} --protocol tcp --port 
 
 Configuring Container Insight Prometheus is similar to normal Prometheus pipeline.The overall flow of pipeline is:
 
-- Extension `ecsobserver` call AWS API and write discovered targets to a file in a [folder that already exists](https://github.com/aws-observability/aws-otel-collector/blob/0134db77f6b4f1c8263e7423179a715cb233b485/cmd/awscollector/Dockerfile#L44) such as `/etc/ecs_sd_targets.yaml`.
+- Extension `ecsobserver` call AWS API and write discovered targets to a file in a folder that the collector can write to. The ADOT Collector image runs as the `aoc` user, so use its home folder, such as `/home/aoc/ecs_sd_targets.yaml`.
 A detailed explanation for `ecsobserver` config is in [its source](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/observer/ecsobserver).
 - The Prometheus receiver includes the output file from `ecsobserver` using `file_sd`.
 - Prometheus relabeling copies the ECS metadata, such as the cluster, service, and task definition family, into metric labels.
@@ -106,7 +106,7 @@ extensions:
   ecs_observer: # extension type is ecs_observer
     cluster_name: 'my-ecs-cluster' # cluster name need to configured manually
     cluster_region: 'us-west-2' # region can be configured directly or use AWS_REGION env var
-    result_file: '/etc/ecs_sd_targets.yaml' # the directory for file must already exists
+    result_file: '/home/aoc/ecs_sd_targets.yaml' # the directory for file must already exists
     refresh_interval: 60s # format is https://golang.org/pkg/time/#ParseDuration
     # custom name for 'job' so we can rename it back to 'job' using metricstransform processor
     job_label_name: prometheus_job
@@ -127,7 +127,7 @@ receivers:
         - job_name: "ecssd"
           file_sd_configs:
             - files:
-                - '/etc/ecs_sd_targets.yaml' # MUST match the file name in ecs_observer.result_file
+                - '/home/aoc/ecs_sd_targets.yaml' # MUST match the file name in ecs_observer.result_file
           relabel_configs: # Relabel here because label with __ prefix will be dropped by receiver.
             - source_labels: [ __meta_ecs_cluster_name ] # ClusterName
               action: replace
@@ -149,7 +149,7 @@ receivers:
               replacement: '$$1'
 
 processors:
-  metricstransform:
+  metrics_transform:
     transforms:
       - include: ".*" # Rename customized job label back to job
         match_type: regexp
@@ -158,6 +158,11 @@ processors:
           - label: prometheus_job # must match the value configured in ecs_observer
             new_label: job
             action: update_label
+  filter/cloudwatch: # The CloudWatch OTLP endpoint doesn't accept Prometheus summaries
+    metrics:
+      metric:
+        - type == METRIC_DATA_TYPE_SUMMARY
+  cumulative_to_delta: # Prometheus counters have no start time, which the CloudWatch OTLP endpoint requires
   batch:
 
 exporters:
@@ -172,7 +177,7 @@ service:
   pipelines:
     metrics:
       receivers: [ prometheus ]
-      processors: [ metricstransform, batch ]
+      processors: [ metrics_transform, filter/cloudwatch, cumulative_to_delta, batch ]
       exporters: [ otlp_http ]
 ```
 
@@ -219,15 +224,16 @@ Be aware it's not easy to set up Mesh. All the metrics (used in dashboard) are c
 
 ## View metrics in the CloudWatch console
 
-In the CloudWatch console, open **Query Studio** and query the metrics with PromQL. For example, the JVM heap memory of
-the JMX sample workload:
+In the CloudWatch console, open **Query Studio** and query the metrics with PromQL. For example, the active connections
+of the NGINX sample workload:
 
 ```
-{"jvm_memory_bytes_used", "ClusterName"="my-ecs-cluster", "area"="heap"}
+{"nginx_connections_active", "ClusterName"="my-ecs-cluster", "ServiceName"="nginx-service"}
 ```
 
 The labels from the relabel rules, such as `ClusterName`, `ServiceName`, and `TaskDefinitionFamily`, are available as
-datapoint labels. For details, see [Query metrics with PromQL](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-PromQL.html).
+datapoint labels. Because of the `cumulative_to_delta` processor, counters such as `nginx_http_requests_total` are stored
+as deltas, so each datapoint is the increase since the previous scrape. For details, see [Query metrics with PromQL](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-PromQL.html).
 
 ## Appendix
 
@@ -291,8 +297,9 @@ to discover ECS tasks:
 ```
 
 The task execution role reads the collector configuration from the SSM parameter, so it needs `ssm:GetParameters` on
-that parameter, along with the `AmazonECSTaskExecutionRolePolicy` managed policy for pulling the image and writing the
-collector's own logs:
+that parameter. It also needs `logs:CreateLogGroup`, because the task definition below sets `awslogs-create-group`.
+Attach these permissions along with the `AmazonECSTaskExecutionRolePolicy` managed policy, which allows pulling the
+image and writing the collector's own logs:
 
 ```json
 {
@@ -302,6 +309,11 @@ collector's own logs:
             "Effect": "Allow",
             "Action": "ssm:GetParameters",
             "Resource": "arn:aws:ssm:us-west-2:123456:parameter/aoc/ecs-prometheus"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "logs:CreateLogGroup",
+            "Resource": "arn:aws:logs:us-west-2:123456:log-group:/adot/collector"
         }
     ]
 }
@@ -314,7 +326,7 @@ NOTE: You need to replace placeholder values with actual value
 - The account id in the example is `123456` and is used in ARN for taskRole and executionRole, replace it with your own AWS account id.
 - `public.ecr.aws/aws-observability/aws-otel-collector:v0.50.0` is the ADOT Collector image in Amazon ECR Public. Use a current release.
 - `/aoc/ecs-prometheus` is the name of [SSM parameter](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/secrets-envvar-ssm-paramstore.html).
-- `networkMode` can be `bridge`, `host`, `awsvpc`. For fargate, it has to be `awsvpc`.
+- `networkMode` is `awsvpc`, which both Fargate and EC2 support. On EC2 you can also use `bridge` or `host`, but then remove `FARGATE` from `requiresCompatibilities`.
 - `logConfiguration` is for logs from the ADOT Collector itself.
 - `requiresCompatibilities` includes both EC2 and Fargate because ADOT Collector is scraping metrics via HTTP and does not need special host level access.
 - `cpu` and `memory` must follow [Fargate's requirement]( https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecs-taskdefinition.html)
@@ -325,7 +337,7 @@ e.g. `cpu 255 memory 511` is invalid pair.
   "family": "adot-ecs-prometheus",
   "taskRoleArn": "arn:aws:iam::123456:role/MyEcsTaskRole",
   "executionRoleArn": "arn:aws:iam::123456:role/MyEcsTaskExecutionRole",
-  "networkMode": "bridge",
+  "networkMode": "awsvpc",
   "containerDefinitions": [
     {
       "name": "adot",
