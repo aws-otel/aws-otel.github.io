@@ -3,7 +3,7 @@ title: 'AWS Distro for OpenTelemetry Lambda'
 description: The AWS Distro for OpenTelemetry now offers AWS Distro for OpenTelemetry Lambda layers with Application Signals support,
     providing a complete Application Performance Monitoring (APM) experience. These optimized ADOT Lambda layers deliver
     a plug-and-play user experience by automatically instrumenting Lambda functions without requiring a dedicated collector.
-    The layers package OpenTelemetry with out-of-the-box configuration for AWS Lambda and AWS X-Ray, enabling simple setup
+    The layers package OpenTelemetry with out-of-the-box configuration for AWS Lambda and Amazon CloudWatch, enabling simple setup
     through a convenient layer. Customers can easily enable or disable OpenTelemetry instrumentation for their Lambda
     functions without modifying any code, streamlining the observability implementation process.
 path: '/docs/getting-started/lambda'
@@ -27,7 +27,7 @@ import { supportedRuntimesConfig } from "config/supportedRuntimes.js"
 The AWS Distro for OpenTelemetry (ADOT) now offers AWS Distro for OpenTelemetry (ADOT) Lambda layers with Application Signals support,
     providing a complete Application Performance Monitoring (APM) experience. These optimized ADOT Lambda layers deliver
     a plug-and-play user experience by automatically instrumenting Lambda functions without requiring a dedicated collector.
-    The layers package OpenTelemetry with out-of-the-box configuration for AWS Lambda and AWS X-Ray, enabling simple setup
+    The layers package OpenTelemetry with out-of-the-box configuration for AWS Lambda and Amazon CloudWatch, enabling simple setup
     through a convenient layer. Customers can easily enable or disable OpenTelemetry instrumentation for their Lambda
     functions without modifying any code, streamlining the observability implementation process.
 
@@ -184,7 +184,7 @@ Set the `OTEL_SERVICE_NAME` environment variable to group multiple Lambda functi
 
 ### Traces Exporter
 
-By default, traces are exported in OTLP format through the Lambda embedded agent to CloudWatch X-Ray.
+By default, traces are exported in OTLP format through the Lambda embedded agent to Amazon CloudWatch.
 No additional configuration is required, and this setup provides the best performance.
 
 If you need to export traces to a custom OTLP endpoint, configure the OTLP exporter settings as described in the [OpenTelemetry documentation](https://opentelemetry.io/docs/languages/sdk-configuration/otlp-exporter/#otel_exporter_otlp_traces_endpoint).

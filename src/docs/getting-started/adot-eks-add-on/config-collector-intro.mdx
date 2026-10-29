@@ -10,7 +10,7 @@ import TipBox from "components/TipBox/TipBox.jsx"
 ## Collector Configuration Introduction
 
 <TipBox
-  textContent="The CloudWatch and X-Ray examples in this guide use the awsemf and awsxray exporters. AWS now recommends sending OpenTelemetry metrics, traces, and logs to the CloudWatch OTLP endpoints (otlphttp exporter with sigv4auth), or using the Amazon CloudWatch Observability EKS add-on for Container Insights and Application Signals."
+  textContent="The CloudWatch examples in this guide use the awsemf and awsxray exporters. AWS now recommends sending OpenTelemetry metrics, traces, and logs to the CloudWatch OTLP endpoints (otlphttp exporter with sigv4auth), or using the Amazon CloudWatch Observability EKS add-on for Container Insights and Application Signals."
   buttonText="Send OpenTelemetry data to CloudWatch OTLP endpoints"
   hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPSimplesetup.html"
 />
@@ -21,7 +21,7 @@ In these instructions, we will deploy a Collector in Deployment mode to perform 
 * Scrape metrics and traces inside your EKS cluster.
 * Ingest the metrics to Amazon Managed Prometheus
 * Ingest metrics for CloudWatch
-* Ingest traces for X-Ray.
+* Ingest traces for Amazon CloudWatch.
 
 Traces are received in OpenTelemetry Protocol (OTLP) format. Metrics are received in Prometheus format.
 Other deployment modes of the Collector, such as the Daemonset or Statefulset mode are called for in more advance use cases. We explore one of these advanced use cases [here](/docs/getting-started/adot-eks-add-on/config-advanced).
@@ -35,7 +35,7 @@ For more information about Collector configuration, as well as OTLP and Promethe
 * [AWS X-Ray Exporter configuration](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/awsxrayexporter#readme)
 * [Sigv4 Authenticator Extension configuration](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/sigv4authextension#readme)
 
-Below, we have our three Collector configurations, one for Amazon Managed Prometheus, CloudWatch, and X-Ray each. Note that it is possible to combine Collector configurations together, i.e. you can have a Collector set up with more than one receiver, processor, or exporter, and multiple pipelines will be built based on that.
+Below, we have our three Collector configurations, one each for Amazon Managed Prometheus, CloudWatch metrics, and CloudWatch traces. Note that it is possible to combine Collector configurations together, i.e. you can have a Collector set up with more than one receiver, processor, or exporter, and multiple pipelines will be built based on that.
 
 ## Previous Topics: 
 

@@ -3,7 +3,7 @@ title: 'Getting Started with the AWS X-Ray Exporter in the Collector'
 description:
     'The OpenTelemetry Collector has three key components: the receiver, exporter, and processor. The receiver in the OpenTelemetry Collector is responsible 
     for receiving data via gRPC or HTTP using the OpenTelemetry protocol (OTLP). The AWS X-Ray exporter available in the OpenTelemetry Collector converts 
-    OTLP formatted trace data to the AWS X-Ray format and then exports this data to the AWS X-Ray service. The processor component pre-processes data 
+    OTLP formatted trace data to the AWS X-Ray format and then exports this data to Amazon CloudWatch. The processor component pre-processes data 
     before it is exported, for example it is able to modify attributes, limit memory usage, or enable retries.'
 path: '/docs/getting-started/x-ray'
 ---
@@ -13,7 +13,7 @@ import img7 from "assets/img/docs/img7.png"
 import TipBox from "components/TipBox/TipBox.jsx"
 
 <TipBox
-  textContent="AWS now recommends sending traces to the X-Ray OTLP endpoint (`https://xray.REGION.amazonaws.com/v1/traces`, OTLP over HTTP with SigV4) with Transaction Search enabled, using the CloudWatch agent or any OpenTelemetry Collector. The X-Ray ID generator is no longer required: X-Ray accepts W3C trace IDs. The X-Ray SDKs and daemon entered maintenance mode on February 25, 2026."
+  textContent="AWS now recommends sending traces to the CloudWatch OTLP traces endpoint (`https://xray.REGION.amazonaws.com/v1/traces`, OTLP over HTTP with SigV4) with Transaction Search enabled, using the CloudWatch agent or any OpenTelemetry Collector. The X-Ray ID generator is no longer required: X-Ray accepts W3C trace IDs. The X-Ray SDKs and daemon entered maintenance mode on February 25, 2026."
   buttonText="Send traces to the OTLP endpoint"
   hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPSimplesetup.html"
 />

@@ -42,14 +42,14 @@ This guide contains:
 * How to set up the ADOT Operator and Collector.
 * How to instrument your applications on Amazon EKS.
 * How to configure the ADOT Collector to collect, and send infrastructure and application metrics from Amazon EKS clusters and applications to either Amazon Managed Service for Prometheus or CloudWatch.
-* How to configure an ADOT Collector to collect and send application traces from workloads running on Amazon EKS to AWS X-Ray.
+* How to configure an ADOT Collector to collect and send application traces from workloads running on Amazon EKS to Amazon CloudWatch.
 * How to update the ADOT EKS add-on
 
 This diagram shows an end-to-end pipeline utilizing the ADOT EKS add-on. It breaks down the different components of the pipeline, as well as splits it up into three smaller pipelines; those three pipelines are configured for:
 
 * Discovering and collecting Prometheus metrics and sending to Amazon Managed Service for Prometheus (AMP)
 * Receiving OTLP metrics, and sending to Amazon Managed Service for Prometheus (AMP) and Amazon CloudWatch
-* Receiving distributed application traces, and sending them to AWS X-Ray
+* Receiving distributed application traces, and sending them to Amazon CloudWatch
 
 <img src={operatorImg2} alt="Diagram" style="margin: 30px 0;" />
 <p style="text-align: center;"><i>Diagram: EKS ADOT Operator end to end pipeline</i></p>

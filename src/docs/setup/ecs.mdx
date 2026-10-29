@@ -2,7 +2,7 @@
 title: 'Setting up the ADOT Collector on Amazon ECS'
 description:
     Run the AWS Distro for OpenTelemetry (ADOT) Collector as a sidecar in Amazon ECS tasks on AWS Fargate or Amazon EC2,
-    and send traces to the AWS X-Ray OTLP endpoint and metrics to the Amazon CloudWatch OTLP endpoint.
+    and send traces and metrics to the Amazon CloudWatch OTLP endpoints.
 path: '/docs/setup/ecs'
 ---
 
@@ -11,8 +11,8 @@ import TipBox from "components/TipBox/TipBox.jsx"
 
 Run the AWS Distro for OpenTelemetry (ADOT) Collector as a sidecar container in your Amazon ECS tasks, on AWS Fargate or
 Amazon EC2. Your applications send telemetry to the collector over OTLP. The
-collector adds ECS and EC2 resource attributes and sends traces to the AWS X-Ray OTLP endpoint and metrics to the
-Amazon CloudWatch OTLP endpoint, where you can query them with PromQL.
+collector adds ECS and EC2 resource attributes and sends traces and metrics to the Amazon CloudWatch OTLP
+endpoints. You can search the traces with Transaction Search and query the metrics with PromQL.
 
 <TipBox
   textContent="This guide is for Amazon ECS. On Amazon EKS, use the Amazon CloudWatch Observability EKS add-on, which runs the CloudWatch agent and provides Container Insights and Application Signals."
@@ -26,7 +26,7 @@ Amazon CloudWatch OTLP endpoint, where you can query them with PromQL.
 
 * An Amazon ECS cluster. To create one, see [Creating an Amazon ECS cluster](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-cluster-console-v2.html).
 * [Transaction Search](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Transaction-Search.html)
-  enabled in CloudWatch. The X-Ray OTLP endpoint requires it.
+  enabled in CloudWatch. The OTLP traces endpoint requires it.
 * A task IAM role that allows the collector to send telemetry, such as one with the `CloudWatchAgentServerPolicy`
   managed policy, or a policy with these actions:
 
@@ -78,7 +78,7 @@ aws cloudformation create-stack --stack-name ADOT-ECS-Fargate-${ClusterName} \
     --region ${Region}
 ```
 
-The task needs a route to the CloudWatch and X-Ray endpoints and to Amazon ECR Public, for example through a public
+The task needs a route to the CloudWatch OTLP endpoints and to Amazon ECR Public, for example through a public
 subnet with a public IP or a NAT gateway.
 
 ### Amazon ECS on Amazon EC2

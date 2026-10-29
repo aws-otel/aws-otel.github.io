@@ -84,7 +84,6 @@ export const sideBarData = [
         {label: "Confmap Providers", link: "/docs/components/confmap-providers"},
         {label: "ECS Container Metrics Receiver", link: "/docs/components/ecs-metrics-receiver"},
         {label: "Processors", link: "/docs/components/processors"},
-        {label: "X-Ray Exporter", link: "/docs/getting-started/x-ray#configuring-the-aws-x-ray-exporter"},
       ],
       link: "/docs/null"
     }

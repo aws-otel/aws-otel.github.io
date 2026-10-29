@@ -56,10 +56,10 @@ Pipelines can be enabled by setting their `enabled` field to `true`.
 ### Traces
 
 - #### xray
-Traces collected by OTLP receiver are sent to AWS X-Ray.
+Traces collected by OTLP receiver are sent to Amazon CloudWatch through the `awsxray` exporter.
 
 <TipBox
-  textContent="The xray pipeline uses the awsxray exporter. AWS now recommends sending OpenTelemetry traces to the X-Ray OTLP endpoint with CloudWatch Transaction Search enabled, or using Application Signals with the Amazon CloudWatch Observability EKS add-on."
+  textContent="The xray pipeline uses the awsxray exporter. AWS now recommends sending OpenTelemetry traces to the CloudWatch OTLP traces endpoint with Transaction Search enabled, or using Application Signals with the Amazon CloudWatch Observability EKS add-on."
   buttonText="Send OpenTelemetry data to CloudWatch OTLP endpoints"
   hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPSimplesetup.html"
 />
