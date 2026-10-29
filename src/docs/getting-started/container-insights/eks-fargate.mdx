@@ -4,7 +4,6 @@ path: '/docs/getting-started/container-insights/eks-fargate'
 ---
 
 import { Link } from "gatsby"
-import designImg from "assets/img/docs/gettingStarted/container-insights/ADOT-design.png"
 import clusterImg from "assets/img/docs/gettingStarted/container-insights/ADOT-cluster.png"
 import logEventImg from "assets/img/docs/gettingStarted/container-insights/ADOT-log-event.png"
 import ADOTMetricsImg from "assets/img/docs/gettingStarted/container-insights/ADOT-metrics.png"
@@ -21,11 +20,9 @@ This section shows the design of components in an ADOT Collector pipeline that e
 
 ## Design of Container Insights support in ADOT Collector for EKS Fargate
 
-<img src={designImg} alt="cloudwatch console log" style="margin: 30px 0;"/>
-
 The kubelet on a worker node in a Kubernetes cluster exposes resource metrics such as CPU, memory, disk, and network usage at the `/metrics/cadvisor` endpoint. However, in EKS Fargate networking architecture, a pod is not allowed to directly reach the kubelet on that worker node. Hence, the ADOT Collector calls the Kubernetes API Server to proxy the connection to the kubelet on a worker node, and collect kubelet’s cAdvisor metrics for workloads on that node. These metrics are made available in Prometheus format. Therefore, the collector uses an instance of [Prometheus Receiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/prometheusreceiver) as a drop-in replacement for a Prometheus server and scrapes these metrics from the Kubernetes API server endpoint. Using Kubernetes service discovery, the receiver can discover the worker nodes in an EKS cluster based on the `role` configured to discover targets, see here: [kubernetes_sd_configs](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config). Hence, a single collector is able to discover all worker nodes in an EKS cluster.
 
-The metrics then go through a series of processors that perform filtering, renaming, data aggregation and conversion etc. The following is the list of processors used in the pipeline of an ADOT Collector instance for EKS Fargate illustrated above.
+The metrics then go through a series of processors that perform filtering, renaming, data aggregation and conversion etc. The following is the list of processors used in the pipeline of an ADOT Collector instance for EKS Fargate.
 
 * [Filter Processor](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/filterprocessor) to include or exclude metrics based on their name
 * [Metrics Transform Processor](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/metricstransformprocessor) to rename metrics as well as perform aggregations on metrics across labels
@@ -33,7 +30,7 @@ The metrics then go through a series of processors that perform filtering, renam
 * [Delta to Rate Processor](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/deltatorateprocessor) to convert delta sum metrics to rate metrics. This rate is a gauge.
 * [Metrics Generation Processor](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/metricsgenerationprocessor) to create new metrics using existing metrics
 
-The final component in the pipeline is [AWS CloudWatch EMF Exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/awsemfexporter) which converts the metrics to embedded metric format (EMF) and then sends them directly to CloudWatch Logs using the [PutLogEvents](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutLogEvents.html) API.
+The final component in the pipeline sends the metrics to CloudWatch as performance log events, and CloudWatch extracts the metrics from them.
 
 The following list of pod metrics is sent to CloudWatch by the ADOT Collector for each of the workloads running on EKS Fargate. Other data points will still be sent to CloudWatch as raw CloudWatch logs but not in Metric format.
 
@@ -138,6 +135,10 @@ kubectl get pods -n golang
 ```
 
 ## Visualizing EKS Fargate resource metrics using CloudWatch Container Insights
+
+If you send the metrics to the CloudWatch OTLP metrics endpoint instead, you can query them with PromQL in Query Studio.
+For details, see [Query metrics with PromQL](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-PromQL.html).
+The deployment manifest above sends the metrics to Container Insights, where you can view them as follows.
 
 The performance log events for the workloads will be found under the log group named
 `/aws/containerinsights/CLUSTER_NAME/performance` as shown below. A separate log stream is created for each pod running on Fargate.
