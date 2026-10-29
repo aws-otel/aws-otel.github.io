@@ -34,22 +34,19 @@ template. if you want to run the example in the other AWS regions, please replac
 
 <SectionSeparator />
 
-## Create IAM Policy
-Create an IAM policy named `AWSDistroOpenTelemetryPolicy` that grants the permissions required by the exporters in your
-ADOT Collector configuration (for example, CloudWatch Logs and X-Ray write permissions for the `awsemf` and `awsxray` exporters).
-If you send data to the CloudWatch OTLP endpoints, see [CloudWatch OTLP setup](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPSimplesetup.html)
-for the required permissions, such as the `CloudWatchAgentServerPolicy` managed policy.
+## Create an IAM role
+To send traces and metrics to the CloudWatch OTLP endpoints, the ADOT Collector signs each request with the credentials
+of the instance's IAM role. Create a role with the `CloudWatchAgentServerPolicy` managed policy, which allows
+`xray:PutTraceSegments` for the OTLP traces endpoint and `cloudwatch:PutMetricData` for the OTLP metrics endpoint.
+Before you send traces, enable [Transaction Search](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Transaction-Search.html).
 
-<SectionSeparator />
-
-## Attach the IAM Policy
 1. Open the [IAM console](https://console.aws.amazon.com/iam/).
 2. In the navigation pane, choose **Roles**, and then choose **Create role**.
-3. In the Select type of trusted entity section, choose **AWS service**.
-4. For **Choose a use case**, select **EC2**, then choose **Next: Permission**.
-5. For **Attach permissions policies**, choose the policy `AWSDistroOpenTelemetryPolicy`, and then choose **Next: Tags**.
-6. Choose **Next: Review**.
-7. On the Review page, type `AWSDistroOpenTelemetryRole` for the Name, and then choose **Create role**.
+3. For **Trusted entity type**, choose **AWS service**. For **Use case**, choose **EC2**, and then choose **Next**.
+4. Search for and select `CloudWatchAgentServerPolicy`, and then choose **Next**.
+5. For **Role name**, enter `AWSDistroOpenTelemetryRole`, and then choose **Create role**.
+
+For more about the endpoints, see [CloudWatch OTLP endpoints](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPEndpoint.html).
 
 <SectionSeparator />
 
