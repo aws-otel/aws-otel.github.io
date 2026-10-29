@@ -55,7 +55,6 @@ export const sideBarData = [
         {label: "Lambda", link: "/docs/getting-started/lambda"},
         {label: "Prometheus Configurations", link: "/docs/getting-started/advanced-prometheus-remote-write-configurations"},
         {label: "CloudWatch Container Insights", link: "/docs/getting-started/container-insights"},
-        {label: "X-Ray", link: "/docs/getting-started/x-ray"},
         {label: "Android", link: "/docs/getting-started/android-sdk"},
         {label: "Swift", link: "/docs/getting-started/swift-sdk"},
 
