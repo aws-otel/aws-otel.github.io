@@ -46,6 +46,7 @@ The CloudWatch OTLP metrics endpoint requires a start time on cumulative datapoi
 time, network I/O, and storage metrics as cumulative sums without a start time, so the endpoint rejects them and the
 collector logs a `Partial success response` warning. The `filter/cloudwatch` processor drops these metrics; the other
 metrics are gauges, which the endpoint accepts. For the full list, see [Available Metrics](#available-metrics).
+This is tracked upstream in [opentelemetry-collector-contrib#52512](https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/52512).
 
 ```yaml lineNumbers=true
 extensions:
