@@ -10,15 +10,16 @@ import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.js
 The AWS Distro for OpenTelemetry (ADOT) Java refers to some components developed to complement the upstream
 [OpenTelemetry (OTel) Java SDK](https://github.com/open-telemetry/opentelemetry-java) and
 [OTel Java Auto-Instrumentation](https://github.com/open-telemetry/opentelemetry-java-instrumentation). Below are links
-to guides that go over how to configure the relevant components of OpenTelemetry to send trace data to the AWS X-Ray
-backend.
+to guides that go over how to use the ADOT Java agent to send traces, metrics, and logs to AWS, including
+Amazon CloudWatch (directly to the CloudWatch OTLP endpoints or through the CloudWatch agent), and CloudWatch Application Signals.
 
 <SectionSeparator />
 
 ## Getting Started
 
 * [Auto-Instrumentation for Traces and Metrics with the Java agent](/docs/getting-started/java-sdk/auto-instr)
-* [Manual Instrumentation for Traces and Metrics with the Java SDK](/docs/getting-started/java-sdk/manual-instr)
+* [Migrating from the X-Ray SDK to OpenTelemetry Java (manual instrumentation)](https://docs.aws.amazon.com/xray/latest/devguide/xray-migration-opentelemetry.html)
+* [Exporting to CloudWatch OTLP endpoints with ADOT SDKs](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLP-UsingADOT.html)
 
 ## Sample Code
 * [Sample Spring App using OpenTelemetry Java Auto-Instrumentation Workshop](https://catalog.us-east-1.prod.workshops.aws/workshops/31676d37-bbe9-4992-9cd1-ceae13c5116c/en-US/aws-managed-oss/adot/javawalkthrough)

@@ -6,7 +6,7 @@ path: '/docs/getting-started/adot-eks-add-on/sample-app'
 ---
 
 The sample application will generate and send OTLP data to a single OTLP receiver endpoint. You can utilize a self managed 
-ADOT Collector deployment or leverage the [otlpIngest](docs/getting-started/adot-eks-add-on/config-otlp-ingest) preconfigured custom resource that is available through the ADOT
+ADOT Collector deployment or leverage the [otlpIngest](/docs/getting-started/adot-eks-add-on/config-otlp-ingest) preconfigured custom resource that is available through the ADOT
 EKS Add-on advanced configuration. 
 
 The sample application and traffic generator were largely taken from an example in the [ADOT Collector repository](https://github.com/aws-observability/aws-otel-collector/blob/main/examples/docker/docker-compose.yaml)\. 
@@ -22,7 +22,7 @@ procedure in [Install the AWS Distro for OpenTelemetry \(ADOT\) Operator](/docs/
    ```
 
 2. In `traffic-generator.yaml`, make sure that the second `kind` value reflects your mode\. For more information, 
-see [Deploy the ADOT Collector](https://aws-otel.github.io/docs/getting-started/adot-eks-add-on/installation#deploy-the-adot-collector) on GitHub\.
+see [Add-on Advanced Configuration: Collector Deployment](/docs/getting-started/adot-eks-add-on/add-on-configuration-collector-deployment)\.
 
    ```
    kind: Deployment
@@ -57,7 +57,7 @@ see [Deploy the ADOT Collector](https://aws-otel.github.io/docs/getting-started/
 
 6. In `sample-app.yaml`, update the `value` for `OTEL_EXPORTER_OTLP_ENDPOINT` to direct traffic to the otlp receiver in your ADOT Collector\.
 
-   If you are using the [otlpIngest](docs/getting-started/adot-eks-add-on/config-otlp-ingest) preconfigured custom resource change the value to `http://adot-col-otlp-ingest-collector:4317`\.
+   If you are using the [otlpIngest](/docs/getting-started/adot-eks-add-on/config-otlp-ingest) preconfigured custom resource change the value to `http://adot-col-otlp-ingest-collector:4317`\.
 
 7. Apply `sample-app.yaml` to your cluster\.
 

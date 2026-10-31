@@ -1,41 +1,23 @@
 ---
 title: 'Run your task on the Amazon Elastic Container Service (Amazon ECS) using daemon service'
 description:
-    In this tutorial, we will demonstrate how to run OpenTelemetry Collector (ADOT Collector) using a daemon service on the
-    Amazon Elastic Container Service (Amazon ECS) in Amazon Elastic Compute Cloud (Amazon EC2).
+    This page is deprecated. It described an earlier ADOT Collector setup on Amazon ECS that used an AWS X-Ray SDK sample application and sent metrics as CloudWatch embedded metric format (EMF). The current guide runs the ADOT Collector as a sidecar that sends traces and metrics to the CloudWatch OTLP endpoints.
 path: '/docs/setup/ecs/run-daemon-service'
 ---
 
-import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
-import { Link } from "gatsby"
-import runservice1 from "assets/img/docs/setup/ecs/run-task/runservice1.png"
-import runservice2 from "assets/img/docs/setup/ecs/run-task/runservice2.png"
-import runservice3 from "assets/img/docs/setup/ecs/run-task/runservice3.png"
-import runservice4 from "assets/img/docs/setup/ecs/run-task/runservice4.png"
+import WarningBox from "components/WarningBox/WarningBox.jsx"
 
-In this tutorial, we will demonstrate how to run your task on the Amazon Elastic Container Service (Amazon ECS).
+<WarningBox
+  warningText="This page is deprecated and is no longer maintained."
+  buttonText="View current documentation →"
+  hyperlink="/docs/setup/ecs"
+/>
 
-<SectionSeparator />
+This page is deprecated. It described an earlier ADOT Collector setup on Amazon ECS that used an AWS X-Ray SDK sample application and sent metrics as CloudWatch embedded metric format (EMF). The current guide runs the ADOT Collector as a sidecar that sends traces and metrics to the CloudWatch OTLP endpoints.
 
-### Deploy the task as a daemon service
+## Use these resources instead
 
-1. Go to the <Link to="https://us-west-2.console.aws.amazon.com/ecs/home?/taskDefinitions#/taskDefinitions">Task Definitions</Link> ,
-and select the task you created, and click actions. Click Create service.
-
-<img src={runservice1} alt="Diagram" style="margin: 30px 0;" />
-
-2. Select EC2 as the Launch type and select the Cluster you created or any old one you use. Type your Service name and select
-DAEMON as the Service type.  Click the Next step:
-
-<img src={runservice2} alt="Diagram" style="margin: 30px 0;" />
-
-3. Continue click the Next step until this page, and click Create Service:
-
-<img src={runservice3} alt="Diagram" style="margin: 30px 0;" />
-
-4. The service will be created:
-
-<img src={runservice4} alt="Diagram" style="margin: 30px 0;" />
-
-
-5. You can go to the cluster to see the service is running, also with the tasks. Visit the <Link to="/docs/setup/ecs#3-results">Results</Link>  section to check the collected metrics.
+- [Setting up the ADOT Collector on Amazon ECS](/docs/setup/ecs)
+- [Container Insights for Amazon ECS](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cloudwatch-container-insights.html)
+- [CloudWatch OTLP endpoints](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPEndpoint.html)
+- [X-Ray SDK and daemon support timeline](https://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-daemon-timeline.html)

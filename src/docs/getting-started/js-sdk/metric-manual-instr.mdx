@@ -1,172 +1,23 @@
 ---
 title: 'Metrics on AWS Distro for OpenTelemetry JavaScript SDK'
 description:
-    Metrics auto instrumentation has not been supported in ADOT/OpenTelemetry yet. We have to manually instrumenting code
-    in the application to generate application metrics. Here is an example with steps for modifying application code to
-    create metrics with JavaScript SDK.
+    This page is deprecated. Metrics with OpenTelemetry JavaScript are documented upstream. The @opentelemetry/api-metrics package used on this page is deprecated; use @opentelemetry/api. To send metrics to CloudWatch, use the CloudWatch OTLP metrics endpoint.
 path: '/docs/getting-started/js-sdk/metric-manual-instr'
 ---
 
-import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
-import img2 from "assets/img/docs/img2.png"
-import { Link } from "gatsby"
+import WarningBox from "components/WarningBox/WarningBox.jsx"
 
-Metrics auto instrumentation has not been supported in ADOT/OpenTelemetry yet. We have to manually instrumenting code in the application to generate application metrics. Here is an example with steps for modifying application code to create metrics with JavaScript SDK.
+<WarningBox
+  warningText="This page is deprecated and is no longer maintained."
+  buttonText="View current documentation →"
+  hyperlink="https://opentelemetry.io/docs/languages/js/"
+/>
 
-OpenTelemetry JavaScript SDK has provided metrics API for metrics instrumentation in applications. You can follow the steps and sample code below to create OpenTelemetry Metrics and send it over to ADOT Collector.
+Metrics with OpenTelemetry JavaScript are documented upstream. The @opentelemetry/api-metrics package used on this page is deprecated; use @opentelemetry/api. To send metrics to CloudWatch, use the CloudWatch OTLP metrics endpoint.
 
-In this tutorial, we will introduce how to use OpenTelemetry JavaScript SDK for metric instrumentation in the application.
+## Use these resources instead
 
-<SectionSeparator />
-
-## Requirements
-
-[Node JS v8.50 (or later)](https://nodejs.org/en/download/) is required to run an application using OpenTelemetry.
-
-Note: You’ll also need to have the AWS Distro for OpenTelemetry Collector running to export metrics to Amazon CloudWatch.
-See the ADOT Collector documentation for setup instructions.
-
-<SectionSeparator />
-
-## Getting the SDK and Dependencies
-
-In order to trace your application, the following OpenTelemetry packages will be required to be installed in your applications main directory.
-
-```bash lineNumbers=true
-$ npm install \
-  @opentelemetry/api \
-  @opentelemetry/sdk-node \
-  @opentelemetry/exporter-metrics-otlp-grpc \
-  @opentelemetry/sdk-metrics \
-  @opentelemetry/api-metrics
-```
-
-## Instrumenting Code
-Once OpenTelemetry Dependencies have been imported to application, we can start to instrument code for creating metrics.
-
-1. Initiate OpenTelemetry Metrics exporter to send metrics to ADOT Collector
-```javascript lineNumbers=true
-const process = require('process');
-const opentelemetry = require("@opentelemetry/sdk-node");
-const { Resource } = require("@opentelemetry/resources");
-const { SemanticResourceAttributes } = require("@opentelemetry/semantic-conventions");
-const { PeriodicExportingMetricReader } = require("@opentelemetry/sdk-metrics");
-const { OTLPMetricExporter } = require("@opentelemetry/exporter-metrics-otlp-grpc");
-
-const _resource = Resource.default().merge(new Resource({
-        [SemanticResourceAttributes.SERVICE_NAME]: "js-sample-app",
-    }));
-}
-const _metricReader = new PeriodicExportingMetricReader({
-    exporter: new OTLPMetricExporter(),
-    exportIntervalMillis: 1000
-});
-```
-
-2. Create a OpenTelemetry Metric Provider for initiating metrics
-```javascript lineNumbers=true
-async function nodeSDKBuilder() {
-    const sdk = new opentelemetry.NodeSDK({
-        metricReader: _metricReader,
-        resource: _resource,
-    });
-    
-    // this enables the API to record telemetry
-    await sdk.start(); 
-    // gracefully shut down the SDK on process exit
-    process.on('SIGTERM', () => {
-    sdk.shutdown()
-      .then(() => console.log('Metrics terminated'))
-      .catch((error) => console.log('Error terminating metrics', error))
-      .finally(() => process.exit(0));
-    });
-}
-```
-
-3. Define metrics and metric labels(dimensions) for the application
-In the following example application we demonstrate how to use the three types of metric instruments that
-are available to record metrics: Counters, Gauges and Histograms.
-
-[Counters](https://opentelemetry.io/docs/reference/specification/metrics/api/#counter):
-```JavaScript
-const metricsApi = require('@opentelemetry/api-metrics');
-const common_attributes = { signal: 'metric',  language: 'javascript', metricType: 'random' };
-
-// acquire meter 
-const meter = metricsApi.metrics.getMeter('js-sample-app-meter');
-
-// synchronous counter metric
-const counterExample = meter.createCounter('counter', {
-    description: 'Creates a counter metric',
-    unit: 's'
-});
-
-// asynchronous updown counter metric
-const observableUpdownCounterExample = meter.createObservableUpDownCounter('updownCounter', {
-    description: 'Creates an asynchronous updown counter metric',
-    unit:'1'
-});
-observableUpdownCounterExample.addCallback((measurement) => {measurement.observe(counterVar, common_attributes)});
-
-// updates updown counter
-function updateObservableCounter() {
-    counterVar += Math.random() * 100;
-}
-```
-
-[Gauges](https://opentelemetry.io/docs/reference/specification/metrics/api/#asynchronous-gauge):
-```JavaScript
-const metricsApi = require('@opentelemetry/api-metrics');
-const common_attributes = { signal: 'metric',  language: 'javascript', metricType: 'random' };
-
-// acquire meter 
-const meter = metricsApi.metrics.getMeter('js-sample-app-meter');
-
-// observable gauge metric
-const observableGaugeExample = meter.createObservableGauge('observableGauge', {
-    description: 'Creates an observable gauge metric',
-    unit: '1'
-});
-observableGaugeExample.addCallback((measurement) => {measurement.observe(gaugeVar, common_attributes)});
-
-// updates observable gauge
-function updateObservableGauge() {
-    gaugeVar = Math.random() * 100;
-}
-```
-
-[Histograms](https://opentelemetry.io/docs/reference/specification/metrics/api/#histogram):
-```JavaScript
-const metricsApi = require('@opentelemetry/api-metrics');
-
-// acquire meter 
-const meter = metricsApi.metrics.getMeter('js-sample-app-meter');
-
-const histogramExample = meter.createHistogram('histogram', {
-    description: "Creates a histogram metric.",
-    unit: 'ms'
-});
-```
-
-4. Send metrics
-```JavaScript
-const common_attributes = { signal: 'metric',  language: 'javascript', metricType: 'random' };
-
-// update metrics
-setInterval(() => {
-    counterExample.add(1, common_attributes);
-    updateObservableCounter();
-    updateObservableGauge();
-    histogramExample.record(Math.random() * 1000, common_attributes);
-}, 1000);
-```
-
-These steps provided the sample code for applications to create application metrics.
-
-Please follow <Link to="/docs/getting-started/cloudwatch-metrics">Getting Started Sending CloudWatch Metrics with AWS OpenTelemetry</Link>
- to setup ADOT Collector for sending metrics to CloudWatch. Once ADOT Collector is installed to collect the metrics data.
- You should see the following metrics present on your CloudWatch Console.
-
-<img src={img2} alt="Diagram" style="margin: 30px 0;" />
-
-Please stay tuned to [AWS Observability Repo](https://github.com/aws-observability) for more updates.
+- [OpenTelemetry JavaScript](https://opentelemetry.io/docs/languages/js/)
+- [Custom metrics with Application Signals](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AppSignals-CustomMetrics.html)
+- [Sending OpenTelemetry data to CloudWatch OTLP endpoints](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPSimplesetup.html)
+- [CloudWatch OTLP endpoints reference](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPEndpoint.html)

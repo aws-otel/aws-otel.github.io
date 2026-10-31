@@ -1,78 +1,21 @@
 ---
 title: 'Build Collector as RPM'
 description:
-    'This page is for building Collector as RPM'
+    This page is deprecated. Build and install instructions for the ADOT Collector are maintained in the ADOT Collector repository.
 path: '/docs/setup/build-collector-as-rpm'
 ---
 
-import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import WarningBox from "components/WarningBox/WarningBox.jsx"
 
-<SectionSeparator />
+<WarningBox
+  warningText="This page is deprecated and is no longer maintained."
+  buttonText="View current documentation →"
+  hyperlink="https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/build-aoc.md"
+/>
 
-## Run ADOT Collector on Amazon EC2 Linux
+Build and install instructions for the ADOT Collector are maintained in the ADOT Collector repository.
 
-To run ADOT Collector on Amazon EC2 Linux host, you can choose to install ADOT Collector RPM on your host by the following steps.
+## Use these resources instead
 
-**Steps,**
-
-1. Login on AWS Linux EC2 host and download aws-otel-collector source code and build RPM file with the following command.
-```
-git clone https://github.com/aws-observability/aws-otel-collector.git
-make package-rpm
-```
-
-Alternatively, you can also choose to download the ADOT Collector rpm package directly from S3:
-    1. Login on Amazon Linux 2 EC2 host and download ADOT Collector installation file.
-    ```
-    wget https://aws-otel-collector.s3.amazonaws.com/amazon_linux/amd64/latest/aws-otel-collector.rpm
-    ```
-    2. (Optional) Verify the package integrity.
-    ```
-    wget https://aws-otel-collector.s3.amazonaws.com/aws-otel-collector.gpg
-    sudo rpm --import aws-otel-collector.gpg
-    rpm --checksig aws-otel-collector.rpm
-    ```
-    If the package is verified correctly, you'll see output similar to:
-    ```
-    aws-otel-collector.rpm: digests signatures OK
-    ```
-    However, if you see output like:
-    ```
-    aws-otel-collector.rpm: digests SIGNATURES NOT OK
-    ```
-    You should stop, and try download the rpm package from the official source again.
-
-2. Install aws-otel-collector RPM by the following command on the host
-```
-sudo rpm -Uvh  ./aws-otel-collector.rpm
-```
-3. Once RPM is installed, it will create ADOT Collector in directory ```/opt/aws/aws-otel-collector/```
-
-4. We provided a control script to manage ADOT Collector. Customer can use it to Start, Stop and Check Status of ADOT Collector.
-
-    * Start ADOT Collector with CTL script. The config.yaml is optional, if it is not provided the default [config](../../config.yaml) will be applied.
-    ```
-        sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -c </path/config.yaml> -a start
-    ```
-    * Stop the running ADOT Collector when finish the testing.
-    ```
-        sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl  -a stop
-    ```
-    * Check the status of ADOT Collector
-    ```
-        sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl  -a status
-    ```
-
-5. Test the data with the running ADOT Collector on EC2. you can run the following command on EC2 host. (Docker app has to be pre-installed)
-```
-docker run --rm -it -e "OTEL_OTLP_ENDPOINT=172.17.0.1:4317" -e "otlp_instance_id=test_insance_rpm" -e "OTEL_RESOURCE_ATTRIBUTES=service.namespace=ADOTCollectorRPMDemo,service.name=ADOTCollectorRPMDemoService" -e S3_REGION=us-west-2 aottestbed/aws-otel-collector-sample-app:java-0.1.0
-```
-
-**View Your Metrics**
-You should now be able to view your metrics in your [CloudWatch console](https://console.aws.amazon.com/cloudwatch/). In the navigation bar, click on **Metrics**. The collected ADOT Collector metrics can be found in the **ADOTCollectorRPMDemo/ADOTCollectorRPMDemoService** namespace.
-
-### Installing ADOT Collector via CloudFormation
-See [this section](/docs/setup/ec2) for detailed information on installing ADOT Collector via CloudFormation on EC2.
-
-### Install ADOT Collector on ECS EC2
-See [this section](/docs/setup/ecs) for detailed information on installing ADOT Collector on ECS.
+- [Build the ADOT Collector](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/build-aoc.md)
+- [Run the ADOT Collector on Linux (RPM)](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/linux-rpm-demo.md)

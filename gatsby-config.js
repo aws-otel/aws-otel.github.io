@@ -19,21 +19,6 @@ module.exports = {
   },
   plugins: [
     {
-      resolve: require.resolve(`./src/plugins/contributorsPlugin`),
-      options: {
-        repos: [
-          "aws-observability/aws-otel-collector",
-          "aws-observability/aws-otel-java-instrumentation",
-          "aws-observability/aws-otel-js",
-          "aws-observability/aws-otel-community",
-          "aws-observability/aws-otel-playground",
-          "aws-observability/aws-otel-test-framework"
-        ],
-        token: process.env.GH_API_KEY,
-        useMockData: process.env.NO_GH_API_KEY,
-      },
-    },
-    {
       resolve: require.resolve(`./src/plugins/websiteAnalyticsPlugin`),
       options: {
         // https://github.com/aws-observability/aws-rum-web/blob/main/docs/configuration.md
@@ -50,12 +35,6 @@ module.exports = {
       },
     },
     `gatsby-transformer-yaml`,
-    {
-      resolve: `gatsby-source-filesystem`,
-      options: {
-        path: `./src/content/Announcements`,
-      },
-    },
     {
       resolve: `gatsby-source-filesystem`,
       options: {
@@ -84,41 +63,6 @@ module.exports = {
       resolve: `gatsby-source-filesystem`,
       options: {
         path: `${__dirname}/src/docs/`,
-      },
-    },
-    {
-      resolve: `@gatsby-contrib/gatsby-plugin-elasticlunr-search`,
-      options: {
-        // Fields to index
-        fields: [`title`, `description`, `path`, `html`, `searchIndex`],
-        // How to resolve each field`s value for a supported node type
-        resolvers: {
-          // For any node of type MarkdownRemark, list how to resolve the fields` values
-          Mdx: {
-            title: node => node.frontmatter.title,
-            description: node => node.frontmatter.description,
-            path: node => node.frontmatter.path,
-            html: node => node.internal.content,
-          },
-          SiteContentYaml: {
-            title: node => node.title,
-            description: node => node.description,
-            path: node => node.path,
-            searchIndex: node => node.searchIndex,
-          },
-          BlogPostsYaml: {
-            title: node => node.title,
-            description: node => node.description,
-            path: node => node.path,
-            searchIndex: node => node.searchIndex,
-          },
-          AnnouncementsYaml: {
-            title: node => node.title,
-            description: node => node.description,
-            path: node => node.path,
-            searchIndex: node => node.searchIndex,
-          }
-        },
       },
     },
     'gatsby-plugin-resolve-src',

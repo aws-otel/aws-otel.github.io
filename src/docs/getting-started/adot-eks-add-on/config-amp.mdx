@@ -16,7 +16,27 @@ The Collector configuration below is set up to receive Prometheus metrics and ex
 ```console
 kubectl apply -f collector-config-amp.yaml
 ```
-to deploy your Collector. Make sure to replace `<YOUR_REMOTE_WRITE_ENDPOINT>` in the `prometheusremoterwite` exporter config, and `<YOUR_AWS_REGION>` in the `sigv4auth` extension config, as per your own target environment. Note that a `ClusterRole` and `ClusterRoleBinding` will also be created, which provide necessary permissions for the `prometheus` receiver during service discovery.
+to deploy your Collector. Make sure to replace `<YOUR_REMOTE_WRITE_ENDPOINT>` in the `prometheusremotewrite` exporter config, and `<YOUR_AWS_REGION>` in the `sigv4auth` extension config, as per your own target environment. Note that a `ClusterRole` and `ClusterRoleBinding` will also be created, which provide necessary permissions for the `prometheus` receiver during service discovery.
+
+**Note:** If you reuse existing Prometheus configurations, replace each `$` with `$$` so the collector doesn't treat the value as an environment variable. This matters most for `replacement` values in `relabel_configs`. For example:
+
+```
+relabel_configs:
+- source_labels: [__meta_kubernetes_ingress_scheme,__address__,__meta_kubernetes_ingress_path]
+  regex: (.+);(.+);(.+)
+  replacement: ${1}://${2}${3}
+  target_label: __param_target
+```
+
+becomes:
+
+```
+relabel_configs:
+- source_labels: [__meta_kubernetes_ingress_scheme,__address__,__meta_kubernetes_ingress_path]
+  regex: (.+);(.+);(.+)
+  replacement: $${1}://$${2}$${3}
+  target_label: __param_target
+```
 
 <details>
   <summary>
@@ -419,9 +439,9 @@ Another way to verify if your metrics data is being sent to Amazon Managed Prome
 
 ## Related Topics:
 
-### [Collector Configuration for Amazon CloudWatch](/docs/getting-started/adot-eks-add-on/config-cloudwatch)
+### [Sending OpenTelemetry data to CloudWatch OTLP endpoints](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPSimplesetup.html)
 
-### [Collector Configuration for AWS X-Ray](/docs/getting-started/adot-eks-add-on/config-xray)
+### [X-Ray and OpenTelemetry](https://docs.aws.amazon.com/xray/latest/devguide/xray-opentelemetry.html)
 
 ### [Advanced Collector Configuration for Amazon Managed Prometheus](/docs/getting-started/adot-eks-add-on/config-advanced)
 

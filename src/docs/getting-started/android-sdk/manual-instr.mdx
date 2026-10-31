@@ -71,12 +71,11 @@ This will initialize the OTel SDKs with the pre-enabled suite of default instrum
 NOTE: If you don't already have an `Application` class defined, you will need to register this new `MyApplication` class in your Android manifest. You can find that in your `AndroidManifest.xml` file. For example:
 
 ```xml lineNumbers=true
-<application>
+<application
     android:name="com.example.MyApplication"
+    android:label="MyApplication">
 
-    <!-- All other attributes, activities, etc -->
-    
-    android:label="MyApplication"
+    <!-- All other activities, services, etc -->
 
 </application>
 ```
@@ -201,7 +200,7 @@ class MyApplication : Application() {
         val credentialsProvider = CredentialsProvider {
             Credentials(
                 accessKeyId = "your-access-key-id",
-                secretAccessKey = "your-secret-access-key"
+                secretAccessKey = "your-secret-access-key",
                 sessionToken = "your-session-token"
             )
         }

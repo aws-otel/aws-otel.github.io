@@ -1,29 +1,23 @@
 ---
 title: 'Results: Check Traces in AWS X-Ray'
 description:
-    In this section, we will check the traces in AWS X-Ray collected using x-ray receiver.
+    This page is deprecated. It described an earlier ADOT Collector setup on Amazon ECS that used an AWS X-Ray SDK sample application and sent metrics as CloudWatch embedded metric format (EMF). The current guide runs the ADOT Collector as a sidecar that sends traces and metrics to the CloudWatch OTLP endpoints.
 path: '/docs/setup/ecs'
 ---
 
-import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
-import { Link } from "gatsby"
-import trace_01 from "assets/img/docs/setup/ecs/results/trace_01.png"
-import trace_02 from "assets/img/docs/setup/ecs/results/trace_02.png"
+import WarningBox from "components/WarningBox/WarningBox.jsx"
 
-In this section, we will check the traces in AWS X-Ray collected using x-ray receiver.
+<WarningBox
+  warningText="This page is deprecated and is no longer maintained."
+  buttonText="View current documentation →"
+  hyperlink="/docs/setup/ecs"
+/>
 
+This page is deprecated. It described an earlier ADOT Collector setup on Amazon ECS that used an AWS X-Ray SDK sample application and sent metrics as CloudWatch embedded metric format (EMF). The current guide runs the ADOT Collector as a sidecar that sends traces and metrics to the CloudWatch OTLP endpoints.
 
-<SectionSeparator />
+## Use these resources instead
 
-1. **Check Trace IDs**
-
-Let’s go to Xray console and click *Traces* in the left list. Trace IDs sent from the x-ray SDK are shown below.
-<img src={trace_01} alt="Diagram" style="margin: 10px 0;" />
-<div style="height: 40px" />
-
-
-2. **Check Trace map and raw data**
-
-Click one trace id to see the Trace map. By clicking the `Raw data` on top, we can see the raw trace data.
-<img src={trace_02} alt="Diagram" style="margin: 10px 0;" />
-<div style="height: 40px" />
+- [Setting up the ADOT Collector on Amazon ECS](/docs/setup/ecs)
+- [Container Insights for Amazon ECS](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cloudwatch-container-insights.html)
+- [CloudWatch OTLP endpoints](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPEndpoint.html)
+- [X-Ray SDK and daemon support timeline](https://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-daemon-timeline.html)

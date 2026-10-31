@@ -1,119 +1,294 @@
 ---
-title: 'Setting up AWS Distro for OpenTelemetry Collector in Amazon Elastic Container Service'
+title: 'Setting up the ADOT Collector on Amazon ECS'
 description:
-    In this tutorial, we will demonstrate how to run AWS Distro for OpenTelemetry Collector (ADOT Collector) as a
-    sidecar on the Amazon Elastic Container Service (Amazon ECS) in Fargate and in Amazon Elastic Compute Cloud
-    (Amazon EC2) mode. We provide a sample application within the same Amazon ECS task to send monitoring data to
-    ADOT Collector. Also, we will demonstrate how to run AWS Distro for OpenTelemetry Collector (ADOT Collector)
-    as a daemon service to collect the EC2 instance metrics from the Amazon Elastic Container Service (Amazon ECS).
+    Run the AWS Distro for OpenTelemetry (ADOT) Collector as a sidecar in Amazon ECS tasks on AWS Fargate or Amazon EC2,
+    and send traces and metrics to the Amazon CloudWatch OTLP endpoints.
 path: '/docs/setup/ecs'
 ---
 
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
-import { Link } from "gatsby"
-import img8 from "assets/img/docs/img8.png"
-import img9 from "assets/img/docs/img9.png"
+import TipBox from "components/TipBox/TipBox.jsx"
 
-In this tutorial, we will demonstrate how to run AWS Distro for OpenTelemetry Collector (ADOT Collector) as a
-sidecar on the Amazon Elastic Container Service (Amazon ECS) in Fargate and in Amazon Elastic Compute Cloud
-(Amazon EC2) mode. We provide a sample application within the same Amazon ECS task to send monitoring data to AWS
-OTel Collector.
+Run the AWS Distro for OpenTelemetry (ADOT) Collector as a sidecar container in your Amazon ECS tasks, on AWS Fargate or
+Amazon EC2. Your applications send telemetry to the collector over OTLP. The
+collector adds ECS and EC2 resource attributes and sends traces and metrics to the Amazon CloudWatch OTLP
+endpoints. You can search the traces with Transaction Search and query the metrics with PromQL.
 
-
-<SectionSeparator />
-
-## 1. Create a Cluster
-
-If you don't have a cluster, follow this <Link to="/docs/setup/ecs/create-cluster">tutorial</Link> to create a new one.
+<TipBox
+  textContent="This guide is for Amazon ECS. On Amazon EKS, use the Amazon CloudWatch Observability EKS add-on, which runs the CloudWatch agent and provides Container Insights and Application Signals."
+  buttonText="CloudWatch Observability EKS add-on"
+  hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/install-CloudWatch-Observability-EKS-addon.html"
+/>
 
 <SectionSeparator />
 
-## 2. Setup the ADOT Collector for Xray, StatsD and ECS Container metrics
+## Prerequisites
 
-There are three different ways to get started by installing ADOT Collector as a sidecar in ECS- using CloudFormation template, using Task 
-Definition, and using AWS Management Console. Follow any of the following three options to setup the collector.
+* An Amazon ECS cluster. To create one, see [Creating an Amazon ECS cluster](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-cluster-console-v2.html).
+* [Transaction Search](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Transaction-Search.html)
+  enabled in CloudWatch. The OTLP traces endpoint requires it.
+* A task IAM role that allows the collector to send telemetry, such as one with the `CloudWatchAgentServerPolicy`
+  managed policy, or a policy with these actions:
 
-### 2.1 Setup using CloudFormation template
-
-The CloudFormation template will create all the necessary resources to get the Collector ready. This option is recommended for the beginners 
-who are new to ECS.
-
-- <Link to="/docs/setup/ecs/cfn-for-ecs-ec2">Deploy ADOT for ECS on EC2</Link>
-- <Link to="/docs/setup/ecs/cfn-for-ecs-fargate">Deploy ADOT for ECS on Fargate</Link>
-
-### 2.2 Setup using ECS Task Definition
-        
-This option is recommended for developers who are familier with ECS and know how to run a task using a given task definition.
-
-- <Link to="/docs/setup/ecs/create-iam-policy">Create IAM Policy</Link> 
-- <Link to="/docs/setup/ecs/create-iam-role">Create IAM Role</Link> 
-- **Create Task Definition**
-    * <Link to="/docs/setup/ecs/task-definition-for-ecs-ec2">Create task definition for ECS on EC2</Link>  
-    * <Link to="/docs/setup/ecs/task-definition-for-ecs-fargate">Create task definition for ECS on Fargate</Link>  
-- <Link to="/docs/setup/ecs/run-task">Deploy Task</Link> 
-
-### 2.3 Setup using AWS Management Console
-
-This option shows the whole process step by step to setup ADOT Collector using AWS Management Console. 
-- <Link to="/docs/setup/ecs/create-iam-policy">Create IAM Policy</Link> 
-- <Link to="/docs/setup/ecs/create-iam-role">Create IAM Role</Link> 
-- <Link to="/docs/setup/ecs/create-task-definition-console">Create Task Definition using AWS Console</Link> 
-- <Link to="/docs/setup/ecs/run-task">Run Task</Link>  
+```json lineNumbers=true
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "cloudwatch:PutMetricData",
+        "xray:PutTraceSegments",
+        "xray:PutTelemetryRecords",
+        "xray:GetSamplingRules",
+        "xray:GetSamplingTargets",
+        "xray:GetSamplingStatisticSummaries"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+```
 
 <SectionSeparator />
 
-## 3. Setup the ADOT Collector for ECS EC2 instance Metrics
+## Option 1: Deploy with AWS CloudFormation
 
-There are three different ways to get started by installing ADOT as a daemon service in ECS - using
-CloudFormation template, using Task Definition, and using AWS Management Console. Follow any of the following
-three options to setup the collector.
+The CloudFormation templates create a task definition and service that run the ADOT Collector next to a sample Java
+application, which is instrumented with the ADOT Java agent, and a traffic generator. With
+`CreateIAMRoles=True`, the templates also create the task role and task execution role.
 
-### 3.1 Setup using CloudFormation template
+### Amazon ECS on AWS Fargate
 
-The CloudFormation template will create all the necessary resources to get the Collector ready. This option is recommended for the beginners
-who are new to ECS.
+```console lineNumbers=true
+curl -O https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/deployment-template/ecs/aws-otel-fargate-sidecar-deployment-cfn.yaml
 
-- <Link to="/docs/setup/ecs/cfn-for-ecs-ec2-instance">Deploy ADOT for ECS EC2 instance metrics</Link>
+ClusterName=<cluster-name>
+Region=<region>
+SecurityGroups=<security-group-id>
+Subnets=<subnet-id-1>\\,<subnet-id-2>
 
-### 3.2 Setup using ECS Task Definition
+aws cloudformation create-stack --stack-name ADOT-ECS-Fargate-${ClusterName} \
+    --template-body file://aws-otel-fargate-sidecar-deployment-cfn.yaml \
+    --parameters ParameterKey=ClusterName,ParameterValue=${ClusterName} \
+                 ParameterKey=CreateIAMRoles,ParameterValue=True \
+                 ParameterKey=SecurityGroups,ParameterValue=${SecurityGroups} \
+                 ParameterKey=Subnets,ParameterValue=${Subnets} \
+    --capabilities CAPABILITY_NAMED_IAM \
+    --region ${Region}
+```
 
-This option is recommended for developers who are familier with ECS and know how to run a task using a given task definition.
+The task needs a route to the CloudWatch OTLP endpoints and to Amazon ECR Public, for example through a public
+subnet with a public IP or a NAT gateway.
 
-- <Link to="/docs/setup/ecs/create-iam-policy">Create IAM Policy</Link>
-- <Link to="/docs/setup/ecs/create-iam-role">Create IAM Role</Link>
-- <Link to="/docs/setup/ecs/task-definition-for-ecs-ec2-instance">Create Task Definition</Link>
-- <Link to="/docs/setup/ecs/run-daemon-service">Deploy Task as a daemon service</Link>
+### Amazon ECS on Amazon EC2
 
-### 3.3 Setup using AWS Management Console
+```console lineNumbers=true
+curl -O https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/deployment-template/ecs/aws-otel-ec2-sidecar-deployment-cfn.yaml
 
-This option shows the whole process step by step to setup ADOT Collector using AWS Management Console.
-- <Link to="/docs/setup/ecs/create-iam-policy">Create IAM Policy</Link>
-- <Link to="/docs/setup/ecs/create-iam-role">Create IAM Role</Link>
-- <Link to="/docs/setup/ecs/create-task-definition-instance-console">Create Task Definition using AWS Console</Link>
-- <Link to="/docs/setup/ecs/run-daemon-service">Deploy task as a daemon service</Link>
+ClusterName=<cluster-name>
+Region=<region>
+
+aws cloudformation create-stack --stack-name ADOT-ECS-EC2-${ClusterName} \
+    --template-body file://aws-otel-ec2-sidecar-deployment-cfn.yaml \
+    --parameters ParameterKey=ClusterName,ParameterValue=${ClusterName} \
+                 ParameterKey=CreateIAMRoles,ParameterValue=True \
+    --capabilities CAPABILITY_NAMED_IAM \
+    --region ${Region}
+```
+
+Leave the `command` parameter empty to use the CloudWatch OTLP configuration in the template. To use a configuration
+that is bundled in the collector image instead, set `command`, for example to `--config=/etc/ecs/ecs-default-config.yaml`.
+See [Moving from the EMF configuration](#moving-from-the-emf-configuration).
 
 <SectionSeparator />
 
-## 4. Results
+## Option 2: Add the collector to your task definition
 
-* <Link to="/docs/setup/ecs/results-metrics">See container metrics in CloudWatch</Link> 
-* <Link to="/docs/setup/ecs/results-traces">See traces in AWS X-Ray</Link>
-* <Link to="/docs/setup/ecs/results-statsd-metrics">See StatsD metrics in CloudWatch</Link>
-* <Link to="/docs/setup/ecs/results-EC2-instance-metrics">See instance metrics in CloudWatch</Link>
+### 1. Store the collector configuration
+
+Save this configuration as `adot-collector-config.yaml`:
+
+```yaml lineNumbers=true
+extensions:
+  health_check:
+  sigv4auth/traces:
+    region: ${env:AWS_REGION}
+    service: xray
+  sigv4auth/metrics:
+    region: ${env:AWS_REGION}
+    service: monitoring
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  # Adds aws.ecs.*, cloud.*, and, on EC2, host.* resource attributes.
+  resource_detection:
+    detectors: [env, ecs, ec2]
+  batch/traces:
+    timeout: 1s
+    send_batch_size: 50
+  batch/metrics:
+    timeout: 60s
+
+exporters:
+  otlp_http/traces:
+    compression: gzip
+    traces_endpoint: https://xray.${env:AWS_REGION}.amazonaws.com/v1/traces
+    auth:
+      authenticator: sigv4auth/traces
+  otlp_http/metrics:
+    compression: gzip
+    metrics_endpoint: https://monitoring.${env:AWS_REGION}.amazonaws.com/v1/metrics
+    auth:
+      authenticator: sigv4auth/metrics
+
+service:
+  extensions: [health_check, sigv4auth/traces, sigv4auth/metrics]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [resource_detection, batch/traces]
+      exporters: [otlp_http/traces]
+    metrics:
+      receivers: [otlp]
+      processors: [resource_detection, batch/metrics]
+      exporters: [otlp_http/metrics]
+```
+
+Store it in an AWS Systems Manager parameter:
+
+```console
+aws ssm put-parameter --name adot-collector-config --type String \
+    --value file://adot-collector-config.yaml --region <region>
+```
+
+The task execution role needs `ssm:GetParameters` on this parameter.
+
+### 2. Add the collector container
+
+Add this container to your task definition. The collector reads its configuration from the `AOT_CONFIG_CONTENT`
+environment variable.
+
+```json lineNumbers=true
+{
+  "name": "aws-otel-collector",
+  "image": "public.ecr.aws/aws-observability/aws-otel-collector:latest",
+  "essential": true,
+  "environment": [
+    { "name": "AWS_REGION", "value": "<region>" }
+  ],
+  "secrets": [
+    { "name": "AOT_CONFIG_CONTENT", "valueFrom": "adot-collector-config" }
+  ],
+  "healthCheck": {
+    "command": ["/healthcheck"],
+    "interval": 5,
+    "timeout": 3,
+    "retries": 2
+  },
+  "logConfiguration": {
+    "logDriver": "awslogs",
+    "options": {
+      "awslogs-create-group": "true",
+      "awslogs-group": "/ecs/aws-otel-collector",
+      "awslogs-region": "<region>",
+      "awslogs-stream-prefix": "ecs"
+    }
+  }
+}
+```
+
+To start your application after the collector, add a `dependsOn` entry with `"condition": "START"` for the
+`aws-otel-collector` container.
 
 <SectionSeparator />
 
-## 5. Custom OpenTelemetry Configuration
+## Send telemetry from your application
 
-<Link to="/docs/setup/ecs/config-through-ssm">[Optional] Use custom OpenTelemetry configuration file from SSM Parameter</Link> 
+| Protocol | Collector port | Use for |
+|---|---|---|
+| OTLP/HTTP | 4318 | OpenTelemetry and ADOT SDKs |
+| OTLP/gRPC | 4317 | OpenTelemetry and ADOT SDKs |
+
+Point your SDK at the collector with `OTEL_EXPORTER_OTLP_ENDPOINT`:
+
+* With the `awsvpc` network mode (always used on Fargate), containers in a task share `localhost`:
+  `http://localhost:4318`.
+* With the `bridge` network mode, add a link to the collector container and use its name:
+  `http://aws-otel-collector:4318`.
+
+The collector only accepts OTLP traces and metrics. Set `OTEL_LOGS_EXPORTER=none` in your application, or the SDK
+reports errors when it tries to export logs.
 
 <SectionSeparator />
 
-## 6. Reference
+## View your telemetry
 
-* [Getting Started with AWS ECS Container Metrics Receiver](https://aws-otel.github.io/docs/components/ecs-metrics-receiver)
-* [Getting Started with AWS X-Ray Receiver](https://aws-otel.github.io/docs/components/x-ray-receiver)
+* **Traces**: In the CloudWatch console, use Transaction Search to search spans and the trace map to see how your
+  services connect. Spans are stored in the `aws/spans` log group.
+* **Metrics**: In the CloudWatch console, open **Query Studio** and query with PromQL. For example, the JVM memory of
+  the sample application from the CloudFormation templates:
 
-**Note:**
-After you finished the tutorial, remember to shut down the new ECS cluster created in the tutorial in order to avoid any charges.
+  ```
+  {"jvm.memory.used", "@resource.service.name"="ecs-otel-sample-app"}
+  ```
 
+  Resource attributes that the collector adds, such as `aws.ecs.cluster.arn` and `aws.ecs.task.family`, are available as
+  `@resource.` labels. For details, see [Query metrics with PromQL](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-PromQL.html).
+
+<SectionSeparator />
+
+## Container and task metrics
+
+For CPU, memory, network, and storage metrics for your tasks and containers, turn on
+[Container Insights with enhanced observability](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cloudwatch-container-insights.html)
+for the cluster. Amazon ECS publishes these metrics without a collector.
+
+If you need task and container metrics as OpenTelemetry metrics in the CloudWatch OTLP endpoint, add the
+[`awsecscontainermetrics`](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/awsecscontainermetricsreceiver)
+receiver to the metrics pipeline. Each collector reports only the task it runs in, so add the collector to every task
+that you want metrics for. The receiver uses CloudWatch-style units, such as `Bytes`, `MiB`, and `Count`, rather than
+OpenTelemetry (UCUM) units.
+
+```yaml lineNumbers=true
+receivers:
+  awsecscontainermetrics:
+    collection_interval: 60s
+
+service:
+  pipelines:
+    metrics:
+      receivers: [otlp, awsecscontainermetrics]
+```
+
+<SectionSeparator />
+
+## Moving from the EMF configuration
+
+Earlier versions of these templates and of this guide used `--config=/etc/ecs/ecs-default-config.yaml`, which sends
+metrics as CloudWatch embedded metric format (EMF) to the `ECS/AWSOTel/Application` namespace and traces through the
+`awsxray` exporter. With the configuration in this guide, metrics go to the CloudWatch OTLP endpoint instead, so
+alarms and dashboards on the `ECS/AWSOTel/Application` metrics stop receiving data. Move them to PromQL queries, or keep
+the EMF configuration by setting the template's `command` parameter to `--config=/etc/ecs/ecs-default-config.yaml`.
+
+The configuration in this guide receives OTLP only. If your applications send StatsD metrics or use the X-Ray SDK, keep
+`--config=/etc/ecs/ecs-default-config.yaml`, which also receives StatsD on UDP port 8125 and X-Ray segments on UDP
+port 2000, or move them to an OpenTelemetry SDK.
+
+<SectionSeparator />
+
+## Clean up
+
+Delete the CloudFormation stack, and the SSM parameter if you created one:
+
+```console
+aws cloudformation delete-stack --stack-name <stack-name> --region <region>
+aws ssm delete-parameter --name adot-collector-config --region <region>
+```

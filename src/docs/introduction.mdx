@@ -4,9 +4,15 @@ description: Welcome to the AWS Distro for OpenTelemetry docs
 path: '/docs/introduction'
 ---
 
-import adotColConcept from "assets/img/docs/img18.png"
+import TipBox from "components/TipBox/TipBox.jsx"
 
 Welcome to the AWS Distro for OpenTelemetry (ADOT) technical docs. 
+
+<TipBox
+  textContent="To send OpenTelemetry data to Amazon CloudWatch, AWS now recommends the CloudWatch agent or any OpenTelemetry Collector exporting to the CloudWatch OTLP endpoints. The ADOT SDKs and auto-instrumentation remain supported, and they power CloudWatch Application Signals, the CloudWatch application performance monitoring (APM) feature. Application Signals uses the traces and metrics that the ADOT SDKs collect to show the health, latency, and errors of your services."
+  buttonText="OpenTelemetry in CloudWatch"
+  hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OpenTelemetry-Sections.html"
+/>
 
 ### About
 
@@ -17,19 +23,22 @@ provides open source APIs, libraries, and agents to collect logs, metrics, and t
 
 With ADOT, you can instrument your applications once and send
 correlated logs, metrics, and traces to one or more observability backends
-such as Amazon Managed Service for Prometheus, Amazon CloudWatch, AWS X-Ray,
-Amazon Open Search, any [OpenTelemetry Protocol (OTLP)](https://opentelemetry.io/docs/specs/otlp/)
-compliant backend, as well as Amazon Managed Streaming for Apache Kafka (MSK):
+such as Amazon Managed Service for Prometheus, Amazon CloudWatch,
+Amazon OpenSearch Service, any [OpenTelemetry Protocol (OTLP)](https://opentelemetry.io/docs/specs/otlp/)
+compliant backend, as well as Amazon Managed Streaming for Apache Kafka (MSK).
 
-<img src={adotColConcept} alt="ADOT collector concept" style="margin: 30px 0;" />
-<p style="text-align: center;"><i>The ADOT collector</i></p>
+The ADOT Collector is one way to route this telemetry. For Amazon CloudWatch, you can instead use the
+CloudWatch agent or any OpenTelemetry Collector with the
+[CloudWatch OTLP endpoints](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPEndpoint.html),
+or export traces and logs directly from the ADOT SDKs
+([collector-less telemetry](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLP-UsingADOT.html)).
 
 Further, you can use auto-instrumentation to generate traces without changing
 your code. ADOT also collects metadata from your AWS resources and
 managed services, so you can correlate application performance data with
 underlying infrastructure data, reducing the mean time to problem resolution.
 
-Use ADOT to instrument your applications running on AWS App Runner, AWS Lambda,
+Use ADOT to instrument your applications running on AWS Lambda,
 Amazon Elastic Compute Cloud (EC2), Amazon Elastic Container Service (ECS), and
 Amazon Elastic Kubernetes Service (EKS) on EC2, and AWS Fargate, as well as 
 in your on-premises datacenter.
@@ -42,7 +51,7 @@ traces without changing your code.
 * **Collect metadata** from your AWS resources and managed services, so you
 can correlate application performance data with underlying infrastructure data,
 reducing the mean time to problem resolution.
-* Enables you to **observe your applications** running on AWS App Runner, 
+* Enables you to **observe your applications** running on
 AWS Lambda, Amazon Elastic Compute Cloud (EC2), Amazon Elastic Container 
 Service (ECS), and Amazon Elastic Kubernetes Service (EKS) on EC2, and AWS
 Fargate, as well as in hybrid cloud and on-prem settings.

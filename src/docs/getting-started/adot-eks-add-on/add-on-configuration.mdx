@@ -31,7 +31,7 @@ aws eks create-addon \
 // configuration-values.json
 {
   "manager": {
-    "resource": {
+    "resources": {
       "limits": {
         "cpu": "200m"
       }
@@ -46,7 +46,7 @@ Each EKS add-on version of ADOT will have it’s own definition of what values a
 aws eks describe-addon-configuration --addon-name adot --addon-version <DESIRED-ADDON-VERSION> 
 ```
 
-Please follow the links below to get an extensive list of all configurable values for the Operator or ADOT Collector, along with descriptions and examples, for the add-on version `v0.88.0-eksbuild.1`.
+Please follow the links below to get an extensive list of all configurable values for the Operator or ADOT Collector, along with descriptions and examples, for the add-on version `v0.158.0-eksbuild.1`.
 
 ## [Previous Topic: Installation](/docs/getting-started/adot-eks-add-on/installation)
 

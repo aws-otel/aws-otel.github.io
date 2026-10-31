@@ -16,7 +16,7 @@ path: '/docs/getting-started/adot-eks-add-on/requirements'
     
 * [eksctl](https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html) is installed
 
-* Your cluster should be on Kubernetes version 1.21 or higher. You can verify the version you’re running with the following command:
+* Your cluster must run a Kubernetes version supported by the add-on version you install (for example, `v0.158.0-eksbuild.1` supports Kubernetes 1.31 through 1.37). To list compatible add-on versions, see [Updating and Cleanup](/docs/getting-started/adot-eks-add-on/update-and-cleanup). You can verify the version you’re running with the following command:
 ```console
 kubectl version | grep "Server Version"
 ```

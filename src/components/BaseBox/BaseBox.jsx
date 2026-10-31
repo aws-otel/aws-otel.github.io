@@ -1,4 +1,5 @@
 import React from "react"
+import { withPrefix } from "gatsby"
 
 class BaseBox extends React.Component {
   parseCodeMarkdown(text) {
@@ -90,7 +91,7 @@ class BaseBox extends React.Component {
             flexShrink: 0
           }}>
             <a
-              href={hyperlink}
+              href={hyperlink.startsWith("/") ? withPrefix(hyperlink) : hyperlink}
               target="_blank"
               rel="noopener noreferrer"
               style={{

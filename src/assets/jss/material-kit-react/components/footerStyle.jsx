@@ -3,21 +3,20 @@ const footerStyle = theme => ({
     display: "flex",
     flexDirection: "column",
     flexWrap: "wrap",
-    padding: "20px 80px",
+    padding: "10px 20px",
     backgroundColor: "#ededed"
   },
   sectionTop: {
     display: "flex",
+    flexWrap: "wrap",
     justifyContent: "center",
-    padding: "20px 10px"
+    gap: "24px",
+    padding: "10px 10px 0"
   },
   sectionBottom: {
     textAlign: "center",
-    padding: "15px 0"
-  },
-  col: { 
-    margin: "0 15px", 
-    width: "25%" 
+    fontSize: "12px",
+    padding: "10px 0"
   },
   link: {
     color: "#425CC7",
@@ -29,19 +28,6 @@ const footerStyle = theme => ({
       color: "#2F428E",
     },
   },
-  verticalSpacing: {
-    margin: "5px 0"
-  },
-  [theme.breakpoints.down("sm")]: {
-    sectionTop: { 
-      flexDirection: "column" 
-    },
-    col: { 
-      textAlign: "center", 
-      width: "100%",
-      margin: "0" 
-    }
-  }  
 });
 
 export default footerStyle;

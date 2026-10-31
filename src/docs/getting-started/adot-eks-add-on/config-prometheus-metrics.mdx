@@ -4,6 +4,9 @@ description:
     This page introduces Collector configuration for Prometheus Metrics for the ADOT Collector.
 path: '/docs/getting-started/adot-eks-add-on/config-prometheus-metrics'
 ---
+
+import TipBox from "components/TipBox/TipBox.jsx"
+
 The Promethes Metrics collector configuration launches a preconfigured OpenTelemetry Collector custom resource 
 to scrape prometheus metrics endpoints. By opting into the 
 [available pipelines](/docs/getting-started/adot-eks-add-on/config-prometheus-metrics/#prometheus-metrics-pipelines)
@@ -26,8 +29,8 @@ service account and namespace.
 | <nobr>adot-col-prom-metrics</nobr> | <nobr>opentelemetry-operator-system</nobr> | AmazonPrometheusRemoteWriteAccess CloudWatchAgentServerPolicy |
 **Note:** Only attach the minimum set of policies necessary for your advanced configuration.
 
-The [IAM Roles for Service Accounts documentation (IRSA)](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.htmlhttps://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html) contains instructions for creating the IAM
-role. The following examples will use [eksctl](https://eksctl.io/usage/iamserviceaccounts/https://eksctl.io/usage/iamserviceaccounts/) to achieve this. 
+The [IAM Roles for Service Accounts documentation (IRSA)](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html) contains instructions for creating the IAM
+role. The following examples will use [eksctl](https://docs.aws.amazon.com/eks/latest/eksctl/iamserviceaccounts.html) to achieve this. 
 
 To create this IAM role, run the following command:
 
@@ -62,7 +65,13 @@ Pipelines can be enabled by setting their `enabled` field to `true`.
 Metrics scraped by a prometheus receiver are routed to a configured AMP workspace. 
 
 - #### emf
-Metrics scraped by a prometheus receiver are sent to Amazon CloudWatch in [Embedded Metric Format (EMF)](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Embedded_Metric_Format_Specification.html). 
+Metrics scraped by a prometheus receiver are sent to Amazon CloudWatch Logs, which extracts them as CloudWatch metrics.
+
+<TipBox
+  textContent="The preconfigured resource has no pipeline for the CloudWatch OTLP metrics endpoint. To send Prometheus metrics to it, deploy your own OpenTelemetryCollector resource with the otlp_http exporter and the sigv4auth extension, or use the Amazon CloudWatch Observability EKS add-on."
+  buttonText="Send OpenTelemetry data to CloudWatch OTLP endpoints"
+  hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPSimplesetup.html"
+/>
 
 ### Prometheus Metrics Advanced Configuration pipelines
 ```yaml
@@ -133,7 +142,7 @@ collector:
         endpoint:
 ```
 *Note that in Fargate, resource requests and limits must be equal, see 
-this [troubleshooting guide](https://docs.aws.amazon.com/eks/latest/userguide/troubleshooting-adot.html) for more information.
+[Fargate Pod configuration details](https://docs.aws.amazon.com/eks/latest/userguide/fargate-pod-configuration.html) for more information.
 
 ## [Previous Topic: Add-on Advanced Configuration: Collector Deployment](/docs/getting-started/adot-eks-add-on/add-on-configuration-collector-deployment)
 

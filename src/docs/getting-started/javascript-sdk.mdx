@@ -8,15 +8,15 @@ path: '/docs/getting-started/js-sdk'
 
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
 
-The AWS Distro for OpenTelemetry (ADOT) JavaScript refers to some components developed to complement the upstream [OpenTelemetry (OTel) JavaScript SDK](https://github.com/open-telemetry/opentelemetry-js) and [OTel JavaScript Auto-Instrumentation for Node.js](https://github.com/open-telemetry/opentelemetry-js-contrib/tree/main/metapackages/auto-instrumentations-node). Below are links to guides that go over how to configure the relevant components of OpenTelemetry to send trace data to the AWS X-Ray backend.
+The AWS Distro for OpenTelemetry (ADOT) JavaScript refers to some components developed to complement the upstream [OpenTelemetry (OTel) JavaScript SDK](https://github.com/open-telemetry/opentelemetry-js) and [OTel JavaScript Auto-Instrumentation for Node.js](https://github.com/open-telemetry/opentelemetry-js-contrib/tree/main/packages/auto-instrumentations-node). Below are links to guides that go over how to use ADOT JavaScript to send traces, metrics, and logs to AWS, including AWS X-Ray, Amazon CloudWatch (directly to the CloudWatch OTLP endpoints or through the CloudWatch agent), and CloudWatch Application Signals.
 
 <SectionSeparator />
 
 ## Getting Started
 
 * [Auto Instrumentation for Traces and Metrics with JavaScript SDK](/docs/getting-started/js-sdk/trace-metric-auto-instr)
-* [Manual Instrumentation on Metrics with JavaScript SDK](/docs/getting-started/js-sdk/metric-manual-instr)
-* [Manual Instrumentation on Traces with JavaScript SDK](/docs/getting-started/js-sdk/trace-manual-instr)
+* [Migrating from the X-Ray SDK to OpenTelemetry Node.js (manual instrumentation)](https://docs.aws.amazon.com/xray/latest/devguide/migrate-xray-to-opentelemetry-nodejs.html)
+* [Exporting to CloudWatch OTLP endpoints with ADOT SDKs](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLP-UsingADOT.html)
 
 
 ## Sample Code with JavaScript SDK

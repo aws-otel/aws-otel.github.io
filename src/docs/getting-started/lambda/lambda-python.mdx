@@ -1,83 +1,22 @@
 ---
 title: 'AWS Distro for OpenTelemetry Lambda Support For Python'
 description:
-    The AWS managed Lambda layer for ADOT Python provides
-    a plug and play user experience by automatically instrumenting a Lambda function,
-    by packaging [OpenTelemetry Python](https://github.com/open-telemetry/opentelemetry-python)
-    together with an out-of-the-box configuration for AWS Lambda and AWS X-Ray.
-    Users can enable and disable OpenTelemetry for their Lambda function without changing code.
+    This page is deprecated. This page described the legacy ADOT Python Lambda layer with an embedded collector. Use the ADOT Lambda layers for Application Signals instead.
 path: '/docs/getting-started/lambda/lambda-python'
 ---
 
-import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
-import SubSectionSeparator from "components/MdxSubSectionSeparator/subsectionSeparator.jsx"
 import WarningBox from "components/WarningBox/WarningBox.jsx"
 
 <WarningBox
-  warningText="This documentation describes the legacy approach to using ADOT with Lambda. For the latest recommended approach, please refer to the updated Python Lambda documentation."
-  buttonText="View Updated Docs →"
+  warningText="This page is deprecated and is no longer maintained."
+  buttonText="View current documentation →"
   hyperlink="/docs/getting-started/lambda"
 />
 
-The AWS managed Lambda layer for ADOT Python provides a plug and play user experience by automatically instrumenting a Lambda function, by packaging [OpenTelemetry Python](https://aws-otel.github.io/docs/getting-started/python-sdk) together with an out-of-the-box configuration for AWS Lambda and AWS X-Ray. Users can enable and disable OpenTelemetry for their Lambda function without changing code.
+This page described the legacy ADOT Python Lambda layer with an embedded collector. Use the ADOT Lambda layers for Application Signals instead.
 
-<SectionSeparator />
+## Use these resources instead
 
-## Requirements
-
-The Lambda layer supports Python [3.8, 3.9, 3.10, 3.11, 3.12 and 3.13] Lambda runtimes. For more information about supported Python versions, see the [OpenTelemetry Python documentation](https://github.com/open-telemetry/opentelemetry-python/blob/master/README.md#supported-runtimes) and the package on [PyPi](https://pypi.org/project/opentelemetry-api/).
-
-### Add the ARN of the Lambda Layer
-
-In this section, we consume the Lambda layer for use with Python Lambda Functions.
- This includes a reduced version of the [AWS Distro for OpenTelemetry Collector (ADOT Collector)](https://github.com/aws-observability/aws-otel-collector),
-  which runs as a Lambda extension.
-
-Note: Lambda layers are a regionalized resource, meaning that they can only be used in the Region in which they are published. Make sure to use the layer in the same region as your Lambda functions.
-
-Find the supported regions and amd64/arm64 layer ARN in the table below for the ARNs to consume. Use `amd64` as architecture [for x86-based processors](https://docs.aws.amazon.com/lambda/latest/dg/foundation-arch.html).
-
-|Supported   Regions  |Lambda layer ARN format  | Contents |
-|---------------------|-------------------------|----------|
-| ap-northeast-1<br/>ap-northeast-2<br/>ap-south-1<br/>ap-southeast-1<br/>ap-southeast-2<br/>ca-central-1<br/>eu-central-1<br/>eu-north-1<br/>eu-west-1<br/>eu-west-2<br/>eu-west-3<br/>sa-east-1<br/>us-east-1<br/>us-east-2<br/>us-west-1<br/>us-west-2 | arn:aws:lambda:<region\>:901920570463:layer:aws-otel-python-<architecture\>-ver-1-32-0:7 | Contains [OpenTelemetry Python v1.32.0](https://github.com/open-telemetry/opentelemetry-python/releases/tag/v1.32.0) <br/><br/> Contains ADOT Collector v0.49.0 |
-
-### Enable auto-instrumentation for your Lambda function
-To enable the AWS Distro for OpenTelemetry in your Lambda function, you need to add and configure the layer, and then enable tracing.
-
-1. Open the Lambda function you intend to instrument in the AWS console.
-2. In the *Layers in Designer* section, choose *Add a layer*.
-3. Under *specify an ARN*, paste the layer ARN, and then choose *Add*.
-4. [Enable active tracing](https://docs.aws.amazon.com/lambda/latest/dg/services-xray.html) for your AWS Lambda function.
-5. Add the environment variable `AWS_LAMBDA_EXEC_WRAPPER` and set it to `/opt/otel-instrument`.
-
-Tips:
-
-* By default, the layer is configured to export traces to AWS X-Ray.
- When you enable active tracing, Lambda will try to automatically add the necessary X-Ray permission to your Lambda role if they are missing.
- In the case it is unsuccessful, make sure your Lambda role has the required AWS X-Ray permissions.
- For more on AWS X-Ray permissions for AWS Lambda, see the [AWS Lambda documentation](https://docs.aws.amazon.com/lambda/latest/dg/services-xray.html#services-xray-permissions).
-
-### Remove OpenTelemetry from your Lambda function
-To disable OpenTelemetry for your Lambda function, remove the Lambda layer,
-remove the environment variable `AWS_LAMBDA_EXEC_WRAPPER`, and disable active tracing, as explained in the section above.
-
-<SectionSeparator />
-
-## Configuration
-
-The ADOT Python layer combines both OpenTelemetry Python and the ADOT Collector.
-The configuration of the ADOT Collector follows the OpenTelemetry standard.
-
-By default, the ADOT Lambda layer uses the [config.yaml](https://github.com/aws-observability/aws-otel-lambda/blob/main/adot/collector/config.yaml),
- which exports telemetry data to AWS X-Ray. To customize the Collector config,
- see the [main Lambda section for custom configuration instructions](/docs/getting-started/lambda#custom-configuration-for-the-adot-collector-on-lambda)
-
-The ADOT Python Lambda Layer can also be configured to set a Meter Provider with an appropriate reader and exporter if the `OTEL_METRICS_EXPORTER` environment variable is set to the values noted [here](https://opentelemetry.io/docs/reference/specification/sdk-environment-variables/#exporter-selection).
-The `OTEL_EXPORTER_OTLP_PROTOCOL` environment variable should also be set in correlation to the metrics exporter with [these supported values](https://opentelemetry.io/docs/reference/specification/protocol/exporter/#specify-protocol).
-If these environment variables are not set, then a default Meter Provider with no readers will be set and cannot be overriden.
-
-<SectionSeparator />
-
-## Additional Instrumentation
-
-For additional instrumentation, see the [OpenTelemetry Python documentation](https://github.com/open-telemetry/opentelemetry-python).
+- [ADOT Lambda layers (Application Signals)](/docs/getting-started/lambda)
+- [Enable Application Signals on Lambda](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Signals-Enable-LambdaMain.html)
+- [OpenTelemetry Lambda (upstream)](https://github.com/open-telemetry/opentelemetry-lambda)

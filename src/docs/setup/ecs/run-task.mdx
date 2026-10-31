@@ -1,32 +1,23 @@
 ---
 title: 'Run your task on the Amazon Elastic Container Service (Amazon ECS)'
 description:
-    In this tutorial, we will demonstrate how to run your task on the Amazon Elastic Container Service (Amazon ECS).
+    This page is deprecated. It described an earlier ADOT Collector setup on Amazon ECS that used an AWS X-Ray SDK sample application and sent metrics as CloudWatch embedded metric format (EMF). The current guide runs the ADOT Collector as a sidecar that sends traces and metrics to the CloudWatch OTLP endpoints.
 path: '/docs/setup/ecs/run-task'
 ---
 
-import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
-import { Link } from "gatsby"
-import runtask1 from "assets/img/docs/setup/ecs/run-task/runtask1.png"
-import runtask2 from "assets/img/docs/setup/ecs/run-task/runtask2.png"
+import WarningBox from "components/WarningBox/WarningBox.jsx"
 
-In this tutorial, we will demonstrate how to run your task on the Amazon Elastic Container Service (Amazon ECS).
+<WarningBox
+  warningText="This page is deprecated and is no longer maintained."
+  buttonText="View current documentation →"
+  hyperlink="/docs/setup/ecs"
+/>
 
-<SectionSeparator />
+This page is deprecated. It described an earlier ADOT Collector setup on Amazon ECS that used an AWS X-Ray SDK sample application and sent metrics as CloudWatch embedded metric format (EMF). The current guide runs the ADOT Collector as a sidecar that sends traces and metrics to the CloudWatch OTLP endpoints.
 
-### Run your task
+## Use these resources instead
 
-1. Go to the <Link to="https://us-west-2.console.aws.amazon.com/ecs/home?/taskDefinitions#/taskDefinitions">Task Definitions</Link> ,
-and select the task you created, and click actions. Click Run task.
-
-<img src={runtask1} alt="Diagram" style="margin: 30px 0;" />
-
-2. Select FARGATE  as the Launch type and select the Cluster VPC you created or any old one you use (This VPC must be same with the one you used in your cluster).
-Also select all the subnets. Click the run task:
-
-<img src={runtask2} alt="Diagram" style="margin: 30px 0;" />
-
-If you selected the EC2 as your launch Type when you created your task definition, you can just select 
-EC2 as your Launch type. Select the cluster you want to use and click the **Run Task** button.
-
-3. You can go to the cluster to see the task running. Visit the <Link to="/docs/setup/ecs#3-results">Results</Link>  section to check the collected metrics and traces. 
+- [Setting up the ADOT Collector on Amazon ECS](/docs/setup/ecs)
+- [Container Insights for Amazon ECS](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cloudwatch-container-insights.html)
+- [CloudWatch OTLP endpoints](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPEndpoint.html)
+- [X-Ray SDK and daemon support timeline](https://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-daemon-timeline.html)

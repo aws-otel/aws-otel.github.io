@@ -7,18 +7,26 @@ path: '/docs/getting-started/container-insights/ecs-prometheus'
 ---
 
 import {Link} from "gatsby"
-import ecssdviewlog from "assets/img/docs/gettingStarted/container-insights/ecssd-view-log.png"
-import ecssdviewmertric from "assets/img/docs/gettingStarted/container-insights/ecssd-view-metric.png"
+import TipBox from "components/TipBox/TipBox.jsx"
 
 <p>
-    GettingStarted / <Link to="/docs/getting-started/container-insights">Container Insights</Link> / <Link to="/docs/getting-started/container-insights#collecting-prometheus-metrics">Container Insights for Prometheus Support</Link>
+    GettingStarted / <Link to="/docs/getting-started/container-insights">Container Insights</Link> / <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights-Prometheus.html">Container Insights for Prometheus Support</a>
 </p>
 
 ## Overview
 
-To collect Prometheus metrics from tasks running on ECS and send it to CloudWatch using AWS Distro for OpenTelemetry Collector (ADOT).
+<TipBox
+  textContent="You can also collect Prometheus metrics from Amazon ECS for Container Insights with the CloudWatch agent instead of the ADOT Collector. The CloudWatch User Guide documents this setup, including the pre-built dashboards."
+  buttonText="Set up Prometheus metrics collection on Amazon ECS with the CloudWatch agent"
+  hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights-Prometheus-Setup-ECS.html"
+/>
+
+The pre-built Container Insights dashboards for Prometheus workloads read metrics in the `ECS/ContainerInsights/Prometheus`
+namespace, which the collector doesn't write when it sends to the OTLP endpoint. You query the metrics with PromQL instead.
+
+This page shows how to collect Prometheus metrics from tasks running on ECS with the AWS Distro for OpenTelemetry (ADOT) Collector and send them to the CloudWatch OTLP metrics endpoint.
 You can either run the collector as a sidecar or deploy the collector as its own ECS service for entire cluster.
-To use the pre-built dashboard in CloudWatch, you need to run a single collector for the entire cluster to attach task and service metadata.
+To attach task and service metadata to the metrics of every task in the cluster, run a single collector for the entire cluster.
 ECS tasks with Prometheus endpoints are discovered using extension [ecsobserver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/observer/ecsobserver).
 (Unlike EKS, there is no builtin discovery for ECS [inside prometheus](https://github.com/prometheus/prometheus/tree/main/discovery/aws))
 
@@ -26,14 +34,13 @@ ECS tasks with Prometheus endpoints are discovered using extension [ecsobserver]
 
 Follow these steps to run the ADOT Collector and Prometheus workload on ECS. You can skip some of them if you already have clusters or tasks running.
 
-- Create an ECS cluster based on <Link to="/docs/setup/ecs/create-cluster">tutorial</Link> or follow Appendix to [Create ECS cluster with EC2 instances using ecs-cli](#create-ecs-cluster-with-ec2-instances)
-- Create <Link to="/docs/setup/ecs/create-iam-role">IAM role</Link> and configure [IAM policy](#iam-policy). Discovery tasks requires extra ECS policies.
-- Create [Configuration](#configuration) as an <Link to="/docs/setup/ecs/config-through-ssm">SSM parameter</Link>
+- Create an ECS cluster based on [tutorial](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-ec2-cluster-console-v2.html) or follow Appendix to [Create ECS cluster with EC2 instances using ecs-cli](#create-ecs-cluster-with-ec2-instances)
+- Create [task IAM role](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-iam-roles.html) and configure [IAM policy](#iam-policy). Discovery tasks requires extra ECS policies.
+- Create [Configuration](#configuration) as an [SSM parameter](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/secrets-envvar-ssm-paramstore.html)
 - Create [ECS Task Definition](#ecs-task-definition)
 - Deploy [ADOT Collector](#deploy-collector) as a replica service with 1 replica
 - Deploy [sample workloads](#sample-workloads)
-- [View logs and metrics in the CloudWatch console](#view-logs-and-metrics-in-the-cloudwatch-console)
-- [View pre-built CloudWatch dashboards](#view-pre-built-cloudwatch-dashboards)
+- [View metrics in the CloudWatch console](#view-metrics-in-the-cloudwatch-console)
 
 ## Permission
 
@@ -42,8 +49,9 @@ For discovering ECS tasks, you need to [config IAM policy](#iam-policy). For scr
 
 ### IAM Policy
 
-Extra IAM policies are required to discover ECS tasks with Prometheus metrics.
-The full document with  <Link to="/docs/setup/ecs/create-iam-policy">existing polices</Link> is included in the appendix [IAM Policy Document](#iam-policy-document).
+The task role needs `cloudwatch:PutMetricData` to send metrics to the CloudWatch OTLP metrics endpoint, and these
+extra permissions to discover ECS tasks with Prometheus metrics.
+The full document is included in the appendix [IAM Policy Document](#iam-policy-document).
 NOTE: The `EC2` policy is required if you use ECS EC2 with `bridge` network mode. You can remove it if all your tasks are fargate or uses `awsvpc` network mode.
 
 ```text
@@ -77,22 +85,28 @@ aws ec2 authorize-security-group-ingress --group-id ${SG} --protocol tcp --port 
 
 Configuring Container Insight Prometheus is similar to normal Prometheus pipeline.The overall flow of pipeline is:
 
-- Extension `ecsobserver` call AWS API and write discovered targets to a file in a [folder that already exists](https://github.com/aws-observability/aws-otel-collector/blob/0134db77f6b4f1c8263e7423179a715cb233b485/cmd/awscollector/Dockerfile#L44) such as `/etc/ecs_sd_targets.yaml`.
+- Extension `ecsobserver` call AWS API and write discovered targets to a file in a folder that the collector can write to. The ADOT Collector image runs as the `aoc` user, so use its home folder, such as `/home/aoc/ecs_sd_targets.yaml`.
 A detailed explanation for `ecsobserver` config is in [its source](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/observer/ecsobserver).
 - The Prometheus receiver includes the output file from `ecsobserver` using `file_sd`.
-- Prometheus relabel and EMF exporter's `metric_declarations` transform and select the right set of labels as CloudWatch dimensions.
+- Prometheus relabeling copies the ECS metadata, such as the cluster, service, and task definition family, into metric labels.
+- The `otlp_http` exporter sends the metrics to the CloudWatch OTLP metrics endpoint, signing requests with the `sigv4auth` extension.
 
 A full example can be found in [examples/ecs/aws-cloudwatch/ecs-container-insights-prometheus.yaml](https://github.com/aws-observability/aws-otel-collector/tree/main/examples/ecs/aws-cloudwatch/ecs-container-insights-prometheus.yaml).
-It contains discovery and metrics extraction rule for all [workloads](#sample-workloads). NOTE: Remember to replace `{{cluster_name}}` in the example file.
+It contains discovery rules for all [workloads](#sample-workloads). It sends the metrics with the `awsemf` exporter, so
+replace its `exporters` section and the `exporters` in its pipeline with the `otlp_http` exporter from the example below,
+and add the `sigv4auth` extension. NOTE: Remember to replace `{{cluster_name}}` in the example file.
 
 Following is a small example for JMX and NGINX using service and docker label based discovery with inline comments.
 
 ```yaml
 extensions:
+  sigv4auth: # signs requests to the CloudWatch OTLP metrics endpoint
+    region: us-west-2
+    service: monitoring
   ecs_observer: # extension type is ecs_observer
     cluster_name: 'my-ecs-cluster' # cluster name need to configured manually
     cluster_region: 'us-west-2' # region can be configured directly or use AWS_REGION env var
-    result_file: '/etc/ecs_sd_targets.yaml' # the directory for file must already exists
+    result_file: '/home/aoc/ecs_sd_targets.yaml' # the directory for file must already exists
     refresh_interval: 60s # format is https://golang.org/pkg/time/#ParseDuration
     # custom name for 'job' so we can rename it back to 'job' using metricstransform processor
     job_label_name: prometheus_job
@@ -113,7 +127,7 @@ receivers:
         - job_name: "ecssd"
           file_sd_configs:
             - files:
-                - '/etc/ecs_sd_targets.yaml' # MUST match the file name in ecs_observer.result_file
+                - '/home/aoc/ecs_sd_targets.yaml' # MUST match the file name in ecs_observer.result_file
           relabel_configs: # Relabel here because label with __ prefix will be dropped by receiver.
             - source_labels: [ __meta_ecs_cluster_name ] # ClusterName
               action: replace
@@ -131,16 +145,11 @@ receivers:
               action: replace
               target_label: container_name
             - action: labelmap # Convert docker labels on container to metric labels
-              regex: ^__meta_ecs_container_labels_(.+)$ # Capture the key using regex, e.g. __meta_ecs_container_labels_Java_EMF_Metrics -> Java_EMF_Metrics
+              regex: ^__meta_ecs_container_labels_(.+)$ # Capture the key using regex, e.g. __meta_ecs_container_labels_app -> app
               replacement: '$$1'
 
 processors:
-  resource:
-    attributes:
-      - key: receiver # Insert receiver: prometheus for CloudWatch EMF Exporter to add prom_metric_type
-        value: "prometheus"
-        action: insert
-  metricstransform:
+  metrics_transform:
     transforms:
       - include: ".*" # Rename customized job label back to job
         match_type: regexp
@@ -149,37 +158,27 @@ processors:
           - label: prometheus_job # must match the value configured in ecs_observer
             new_label: job
             action: update_label
+  filter/cloudwatch: # The CloudWatch OTLP endpoint doesn't accept Prometheus summaries
+    metrics:
+      metric:
+        - type == METRIC_DATA_TYPE_SUMMARY
+  cumulative_to_delta: # Prometheus counters have no start time, which the CloudWatch OTLP endpoint requires
+  batch:
 
 exporters:
-  awsemf:
-    namespace: ECS/ContainerInsights/Prometheus # Use the exact namespace for builtin dashboard to work
-    log_group_name: "/aws/ecs/containerinsights/my-ecs-cluster/prometheus" # Log group name format is fixed as well, the only variable is cluster name
-    dimension_rollup_option: NoDimensionRollup
-    metric_declarations:
-      # NGINX
-      - dimensions: [ [ ClusterName, TaskDefinitionFamily, ServiceName ] ] # dimension names are same as our relabeled keys.
-        label_matchers:
-          - label_names:
-              - ServiceName
-            regex: '^.*nginx-service$'
-        metric_name_selectors:
-          - "^nginx_.*$"
-      # JMX
-      - dimensions: [ [ ClusterName, TaskDefinitionFamily, area ] ]
-        label_matchers:
-          - label_names:
-              - Java_EMF_Metrics # Label in metrics comes from docker label in task definition
-            regex: ^true$
-        metric_name_selectors:
-          - "^jvm_memory_bytes_used$"
+  otlp_http:
+    compression: gzip
+    metrics_endpoint: https://monitoring.us-west-2.amazonaws.com/v1/metrics
+    auth:
+      authenticator: sigv4auth
 
 service:
-  extensions: [ ecs_observer ] # extension is declared outside pipelines
+  extensions: [ sigv4auth, ecs_observer ] # extensions are declared outside pipelines
   pipelines:
     metrics:
       receivers: [ prometheus ]
-      processors: [ resource, metricstransform ]
-      exporters: [ awsemf ]
+      processors: [ metrics_transform, filter/cloudwatch, cumulative_to_delta, batch ]
+      exporters: [ otlp_http ]
 ```
 
 ## Deploy ADOT Collector
@@ -197,7 +196,7 @@ aws ecs create-service \
     --task-definition adot-ecs-prometheus:1 \
     --desired-count 1
 ```
-`
+
 ## Sample Workloads
 
 There are four workloads with pre-built dashboards, [JMX](#jmx) is the easiest to get started with.
@@ -223,23 +222,18 @@ NGINX Plus is similar to [NGINX](#nginx) but requires subscription. Instruction 
 CloudWatch docs has a simple walk through [ECS App Mesh Sample](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights-Prometheus-Sample-Workloads-ECS-appmesh.html).
 Be aware it's not easy to set up Mesh. All the metrics (used in dashboard) are collected from Envoy.
 
-## View logs and metrics in the CloudWatch console
+## View metrics in the CloudWatch console
 
-The log group is named after cluster. For example, `/aws/ecs/containerinsights/my-cluster/prometheus`.
-By default, the log stream name is `otel-stream` with a random suffix added.
-The `_aws` part in log defines which fields are going to be extracted as metrics dimensions.
-You can query all the fields using CloudWatch Logs [filter pattern](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/FilterAndPatternSyntax.html#matching-terms-events)
-or [Logs Insights](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AnalyzingLogData.html).
+In the CloudWatch console, open **Query Studio** and query the metrics with PromQL. For example, the active connections
+of the NGINX sample workload:
 
-<img src={ecssdviewlog} alt="cloudwatch console log" style="margin: 30px 0;"/>
+```
+{"nginx_connections_active", "ClusterName"="my-ecs-cluster", "ServiceName"="nginx-service"}
+```
 
-## View pre-built CloudWatch dashboards
-
-Pre-built dashboards can be found from sidebar `Insights` > `Container Insights`.
-Choose `Performance monitoring` from the drop-down and select your workload e.g. `ECS Prometheus Java/JMX`.
-You should find your cluster on the right dropdown.
-
-<img src={ecssdviewmertric} alt="cloudwatch console metric" style="margin: 30px 0;"/>
+The labels from the relabel rules, such as `ClusterName`, `ServiceName`, and `TaskDefinitionFamily`, are available as
+datapoint labels. Because of the `cumulative_to_delta` processor, counters such as `nginx_http_requests_total` are stored
+as deltas, so each datapoint is the increase since the previous scrape. For details, see [Query metrics with PromQL](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-PromQL.html).
 
 ## Appendix
 
@@ -277,7 +271,8 @@ aws ec2 describe-security-groups --group-ids ${SG}
 
 ### IAM Policy Document
 
-Policy document merged from <Link to="/docs/setup/ecs/create-iam-policy">ECS setup guide</Link> and [Extra IAM Policy](#iam-policy).
+The task role needs permission to send metrics to the CloudWatch OTLP metrics endpoint and the [extra permissions](#iam-policy)
+to discover ECS tasks:
 
 ```json
 {
@@ -286,21 +281,7 @@ Policy document merged from <Link to="/docs/setup/ecs/create-iam-policy">ECS set
         {
             "Effect": "Allow",
             "Action": [
-               "logs:PutLogEvents",
-                "logs:CreateLogGroup",
-                "logs:CreateLogStream",
-                "logs:DescribeLogStreams",
-                "logs:DescribeLogGroups",
-                "logs:PutRetentionPolicy",
-                "xray:PutTraceSegments",
-                "xray:PutTelemetryRecords",
-                "xray:GetSamplingRules",
-                "xray:GetSamplingTargets",
-                "xray:GetSamplingStatisticSummaries",
                 "cloudwatch:PutMetricData",
-                "ec2:DescribeVolumes",
-                "ec2:DescribeTags",
-                "ssm:GetParameters"
                 "ec2:DescribeInstances",
                 "ecs:ListTasks",
                 "ecs:ListServices",
@@ -315,16 +296,38 @@ Policy document merged from <Link to="/docs/setup/ecs/create-iam-policy">ECS set
 }
 ```
 
+The task execution role reads the collector configuration from the SSM parameter, so it needs `ssm:GetParameters` on
+that parameter. It also needs `logs:CreateLogGroup`, because the task definition below sets `awslogs-create-group`.
+Attach these permissions along with the `AmazonECSTaskExecutionRolePolicy` managed policy, which allows pulling the
+image and writing the collector's own logs:
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "ssm:GetParameters",
+            "Resource": "arn:aws:ssm:us-west-2:123456:parameter/aoc/ecs-prometheus"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "logs:CreateLogGroup",
+            "Resource": "arn:aws:logs:us-west-2:123456:log-group:/adot/collector"
+        }
+    ]
+}
+```
+
 ### ECS Task Definition
 
 NOTE: You need to replace placeholder values with actual value
 
 - The account id in the example is `123456` and is used in ARN for taskRole and executionRole, replace it with your own AWS account id.
-- `amazon/aws-otel-collector:v0.11.0` is using dockerhub (potential throttle) and you can use `latest` tag if you don't want to lock version.
-- Collecting infrastructure metrics requires running ADOT Collector with root access and this can be configured through `user` in the container definition.
-- `/aoc/ecs-prometheus` is the name of <Link to="/docs/setup/ecs/config-through-ssm">SSM parameter</Link>.
-- `networkMode` can be `bridge`, `host`, `awsvpc`. For fargate, it has to be `awsvpc`.
-- `logConfiguration` is for log from ADOT Collector itself. Log groups for metrics/log collected by collector is configured using `AOT_CONFIG_CONTENT`.
+- `public.ecr.aws/aws-observability/aws-otel-collector:v0.50.0` is the ADOT Collector image in Amazon ECR Public. Use a current release.
+- `/aoc/ecs-prometheus` is the name of [SSM parameter](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/secrets-envvar-ssm-paramstore.html).
+- `networkMode` is `awsvpc`, which both Fargate and EC2 support. On EC2 you can also use `bridge` or `host`, but then remove `FARGATE` from `requiresCompatibilities`.
+- `logConfiguration` is for logs from the ADOT Collector itself.
 - `requiresCompatibilities` includes both EC2 and Fargate because ADOT Collector is scraping metrics via HTTP and does not need special host level access.
 - `cpu` and `memory` must follow [Fargate's requirement]( https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecs-taskdefinition.html)
 e.g. `cpu 255 memory 511` is invalid pair.
@@ -334,12 +337,11 @@ e.g. `cpu 255 memory 511` is invalid pair.
   "family": "adot-ecs-prometheus",
   "taskRoleArn": "arn:aws:iam::123456:role/MyEcsTaskRole",
   "executionRoleArn": "arn:aws:iam::123456:role/MyEcsTaskExecutionRole",
-  "networkMode": "bridge",
+  "networkMode": "awsvpc",
   "containerDefinitions": [
     {
       "name": "adot",
-      "image": "amazon/aws-otel-collector:v0.11.0",
-      "user": "root",
+      "image": "public.ecr.aws/aws-observability/aws-otel-collector:v0.50.0",
       "secrets": [
         {
           "name": "AOT_CONFIG_CONTENT",

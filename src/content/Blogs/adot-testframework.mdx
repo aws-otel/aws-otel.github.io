@@ -16,7 +16,7 @@ import richardto from "assets/img/blogs/adot-testFramework/richardto.png"
 
 This blog post provides a walk-through of the [ADOT test framework](https://github.com/aws-observability/aws-otel-test-framework) and an example for adding an integrated test case using the framework. In order to add new components to ADOT collector, it is required to include end-to-end integrated test cases. This blog post will discuss how and why this framework helps contributors add test case into ADOT Collector.
 
-* Contributors will be able to utilize current validators that exist within the framework to develop test case(s) in Java. The ADOT Integration test framework consists of validators which can be used for many use cases such as testing logs, metrics (**AMP**, **Amazon Cloudwatch**), and traces (**AWS X-Ray**).
+* Contributors will be able to utilize current validators that exist within the framework to develop test case(s) in Java. The ADOT Integration test framework consists of validators which can be used for many use cases such as testing logs, metrics (**AMP**, **Amazon CloudWatch**), and traces (**AWS X-Ray**).
 
 * Contributors will need to run the tests locally to test their test cases before making a PR. After pushing your test case, all defined test cases in the testcases.json will be automatically picked by the GitHub workflow in the ADOT Collector repository to run tests on AWS platforms such as Amazon EC2, Amazon ECS, Amazon ECS on AWS Fargate, Amazon EKS, and Amazon EKS on AWS Fargate
 
@@ -139,7 +139,7 @@ We have added the following processors into the ADOT collector and built a new A
 * deltatorate processor
 * experimental_metricsgeneration processor
 
-There are many validators that you can utilize to validate logs, metrics and traces. For our use case, we used the ContainerInsightStructuredLogValidator in order to compare our expected test result JSON schema to the actual result in the Amazon Cloudwatch Logs.
+There are many validators that you can utilize to validate logs, metrics and traces. For our use case, we used the ContainerInsightStructuredLogValidator in order to compare our expected test result JSON schema to the actual result in the Amazon CloudWatch Logs.
 
 1. Create a validator or use an existing one in the file:` validator/src/main/java/com/amazon/aoc/validators/ValidatorFactory.java `.
   * Here we will use ` container-insight-eks-logs ` test case because it utilizes the ContainerInsightStructuredLogValidator validator.

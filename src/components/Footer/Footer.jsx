@@ -11,43 +11,12 @@ function Footer({ ...props }) {
   return (
     <footer className={classes.footer}>
       <section className={classes.sectionTop}>
-        <div className={classes.col}>
-          <h3>About</h3>
-          <div className={classes.verticalSpacing}> <Link to="/about" className={classes.link}> AWS Distro for OpenTelemetry </Link></div>
-          {/*<div> <Link to="/coming-soon" className={classes.link}> Components </Link></div>*/}
-          <div className={classes.verticalSpacing}> <Link to="https://github.com/orgs/aws-observability/projects/4" target={"_blank"} className={classes.link} rel="noopener noreferrer"> Roadmap </Link></div>
-          <div className={classes.verticalSpacing}> <Link to="https://opentelemetry.io/" target={"_blank"} className={classes.link} rel="noopener noreferrer"> About OpenTelemetry </Link></div>
-        </div>
-        <div className={classes.col}>
-          <h3>Community</h3>
-          <div className={classes.verticalSpacing}> <Link to="/get-involved" className={classes.link}> Get Involved </Link></div>
-          <div className={classes.verticalSpacing}> <Link to="/contributing" className={classes.link}> Contributing </Link></div>
-          <div className={classes.verticalSpacing}> <Link to="/contributors" className={classes.link}> Contributors </Link></div>
-          <div className={classes.verticalSpacing}> <Link to="/code-of-conduct" className={classes.link}> Code of Conduct </Link></div>
-          <div className={classes.verticalSpacing}> <Link to="/blog" className={classes.link}> Blog Posts </Link></div>
-          <div className={classes.verticalSpacing}> <Link to="https://aws.amazon.com/otel/faqs/" className={classes.link} target="_blank" rel="noopener noreferrer"> FAQ </Link></div>
-          <div className={classes.verticalSpacing}> <Link to="/resources" className={classes.link} target="_blank" rel="noopener noreferrer"> Resources </Link></div>
-        </div>
-        <div className={classes.col}>
-          <h3>Discover</h3>
-          <div className={classes.verticalSpacing}> <Link to="/docs/introduction" className={classes.link}> Documentation </Link></div>
-          <div className={classes.verticalSpacing}> <Link to="https://github.com/aws-observability" className={classes.link} target="_blank" rel="noopener noreferrer"> Code on GitHub </Link></div>
-          <div className={classes.verticalSpacing}> <Link to="/download" className={classes.link}> Download </Link></div>
-        </div>
-        <div className={classes.col}>
-          <h3>Stay Connected</h3>
-          <div className={classes.verticalSpacing}> <Link to="https://twitter.com/awsopen" className={classes.link} target="_blank" rel="noopener noreferrer"> Twitter </Link></div>
-          <div className={classes.verticalSpacing}> <Link to="https://github.com/aws-observability/aws-otel-community" className={classes.link} target="_blank" rel="noopener noreferrer"> GitHub Community </Link></div>
-          {/*<div> <Link to="https://groups.io/g/aws-otel-distro-announce" className={classes.link} target="_blank"> Groups.io </Link></div>*/}
-        </div>
-        <div className={classes.col}>
-          <h3>Other</h3>
-          <div className={classes.verticalSpacing}> <Link to="https://github.com/aws-observability/aws-otel-community/issues" className={classes.link} target="_blank" rel="noopener noreferrer"> Report a Bug </Link></div>
-          <div className={classes.verticalSpacing}> <Link to="https://github.com/aws-observability/aws-otel-community/issues" className={classes.link} target="_blank" rel="noopener noreferrer"> File an Issue </Link></div>
-        </div>
+        <Link to="https://aws.amazon.com/otel/faqs/" className={classes.link} target="_blank" rel="noopener noreferrer"> FAQ </Link>
+        <Link to="https://github.com/aws-observability/aws-otel-community/issues" className={classes.link} target="_blank" rel="noopener noreferrer"> Report an Issue </Link>
+        <Link to="https://twitter.com/awsopen" className={classes.link} target="_blank" rel="noopener noreferrer"> Twitter </Link>
       </section>
       <section className={classes.sectionBottom}>
-        <div>© 2020–2023 Amazon Web Services, Inc. or its affiliates. All rights reserved.</div>
+        <div>© 2020–2026 Amazon Web Services, Inc. or its affiliates. All rights reserved.</div>
       </section>
     </footer>
   );

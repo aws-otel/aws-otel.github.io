@@ -7,6 +7,9 @@ path: '/docs/components/processors'
 ---
 
 import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import TipBox from "components/TipBox/TipBox.jsx"
+
+<TipBox textContent="Each processor is documented in detail in its upstream README in the opentelemetry-collector and opentelemetry-collector-contrib repositories, linked below. The tail sampling example sends the sampled traces to the CloudWatch OTLP traces endpoint; enable Transaction Search before you send traces." buttonText="CloudWatch OTLP endpoints" hyperlink="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPEndpoint.html" />
 
 Processors are used in several stages of an OpenTelemetry collector pipeline. They are used to pre-process the data being passed in the pipeline. In a processor the data can be modified, batched, filtered or sampled. The
 ADOT collector supports a selected list of processors.
@@ -62,13 +65,25 @@ processors:
     timeout: 0s # No need to wait more since this will happen in previous processors
     send_batch_max_size: 8196 # This will still allow us to limit the size of the batches sent to subsequent exporters
 
+extensions:
+  sigv4auth/traces:
+    region: us-west-2
+    service: xray
+
+exporters:
+  otlp_http/traces:
+    compression: gzip
+    traces_endpoint: https://xray.us-west-2.amazonaws.com/v1/traces
+    auth:
+      authenticator: sigv4auth/traces
+
 service:
+  extensions: [sigv4auth/traces]
   pipelines:
     traces/tailsampling:
       receivers: [otlp]
       processors: [groupbytrace, tail_sampling, batch/tracesampling]
-      exporters: [awsxray]
-
+      exporters: [otlp_http/traces]
 ```
 
 The Tail Sampling processor has the functionality to combine sampling policies. For example, to sample traces from a specific path in case of errors you could use the following configuration:
@@ -85,8 +100,8 @@ processors:
             - name: path-policy
               type: string_attribute
               string_attribute:
-                key: http.url
-                values: ["\/users"]
+                key: url.path
+                values: ["/users"]
                 enabled_regex_matching: true
             - name: error-policy
               type: status_code

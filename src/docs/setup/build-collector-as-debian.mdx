@@ -1,47 +1,21 @@
 ---
 title: 'Build Collector as Debian'
 description:
-    'This page is for building Collector as Debian'
+    This page is deprecated. Build and install instructions for the ADOT Collector are maintained in the ADOT Collector repository.
 path: '/docs/setup/build-collector-as-debian'
 ---
 
-import SectionSeparator from "components/MdxSectionSeparator/sectionSeparator.jsx"
+import WarningBox from "components/WarningBox/WarningBox.jsx"
 
-<SectionSeparator />
+<WarningBox
+  warningText="This page is deprecated and is no longer maintained."
+  buttonText="View current documentation →"
+  hyperlink="https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/build-aoc.md"
+/>
 
-## Run ADOTCollector Beta on Amazon EC2 Debian(ubuntu)
+Build and install instructions for the ADOT Collector are maintained in the ADOT Collector repository.
 
-To run ADOTCollector on Amazon EC2 debian host, you can choose to install ADOTCollector Debian on your host by the following steps.
+## Use these resources instead
 
-**Steps,**
-
-1. Login on AWS Debian EC2 host and download aws-otel-collector source code and build Deb file with the following command.
-```
-git clone https://github.com/aws-observability/aws-otel-collector.git
-make package-deb
-```
-2. Install aws-otel-collector DEB by the following command on the host
-```
-sudo dpkg -i -E ./aws-otel-collector.deb
-```
-3. Once DEB is installed, it will create ADOTCollector in directory /opt/aws/aws-otel-collector/
-
-4. We provided a control script to manage ADOTCollector. Customer can use it to Start, Stop and Check Status of ADOTCollector.
-
-    * Start ADOTCollector with CTL script. The config.yaml is optional, if it is not provided the default config will be applied.
-    ```
-        sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -c </path/config.yaml> -a start
-    ```
-    * Stop the running ADOTCollector when finish the testing.
-    ```
-        sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl  -a stop
-    ```
-    * Check the status of ADOTCollector
-    ```
-        sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl  -a status
-    ```
-5. Test the data with the running ADOTCollector on EC2. you can run the following command on EC2 host. (Docker app has to be pre-installed)
-```
-docker run --rm -it -e "otlp_endpoint=172.17.0.1:4317" -e "otlp_instance_id=test_insance" mxiamxia/aws-otel-metric-generator:latest
-```
-
+- [Build the ADOT Collector](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/build-aoc.md)
+- [Run the ADOT Collector on Debian](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/debian-deb-demo.md)
