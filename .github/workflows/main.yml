@@ -1,7 +1,7 @@
 name: Gatsby Publish
 
 env:
-  DELTA_THRESHOLD: .90
+  DELTA_THRESHOLD: ${{ vars.DELTA_THRESHOLD || '.90' }}
 
 permissions:
   contents: write
