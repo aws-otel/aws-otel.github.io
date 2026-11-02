@@ -78,6 +78,8 @@ export default function GlobalStyle() {
 
         code.inline-code {
           display: inline-block;
+          max-width: 100%;
+          overflow-wrap: anywhere;
           vertical-align: middle;
           line-height: 1;
           padding: 0.2em;
