@@ -48,6 +48,7 @@ class BaseBox extends React.Component {
         borderRadius: `${6 * scale}px`,
         border: `1px solid ${this.getBorderColor()}`,
         display: 'flex',
+        flexWrap: 'wrap',
         alignItems: 'stretch',
         gap: `${16 * scale}px`,
         minHeight: `${60 * scale}px`,
@@ -67,9 +68,11 @@ class BaseBox extends React.Component {
           {this.getIcon()}
         </div>
         <div style={{
-          flex: '1',
+          flex: '1 1 200px',
+          minWidth: 0,
           display: 'flex',
-          alignItems: 'center'
+          alignItems: 'center',
+          overflowWrap: 'anywhere'
         }}>
           <div style={{
             fontWeight: 'normal',
@@ -88,7 +91,9 @@ class BaseBox extends React.Component {
           <div style={{
             display: 'flex',
             alignItems: 'center',
-            flexShrink: 0
+            flexShrink: 0,
+            maxWidth: '100%',
+            marginLeft: 'auto'
           }}>
             <a
               href={hyperlink.startsWith("/") ? withPrefix(hyperlink) : hyperlink}
@@ -104,7 +109,9 @@ class BaseBox extends React.Component {
                 fontSize: `${12 * scale}px`,
                 fontWeight: 'normal',
                 transition: 'background-color 0.2s',
-                whiteSpace: 'nowrap'
+                display: 'inline-block',
+                maxWidth: '100%',
+                textAlign: 'center'
               }}
               onMouseOver={(e) => e.target.style.backgroundColor = buttonStyles.hoverBg}
               onMouseOut={(e) => e.target.style.backgroundColor = buttonStyles.backgroundColor}
