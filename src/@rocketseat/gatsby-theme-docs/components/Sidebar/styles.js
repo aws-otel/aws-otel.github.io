@@ -24,8 +24,11 @@ export const Container = styled.aside`
   }
 
   @media (max-width: 780px) {
-    height: calc(100vh - 210px);
+    height: 100vh;
+    height: 100dvh;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
     max-width: 75%;
     min-width: auto;
     z-index: 1001;

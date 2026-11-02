@@ -13,7 +13,7 @@ export const Container = styled.div`
 
   @media (max-width: 780px) {
     padding: 24px;
-    grid-template-columns: 100%;
+    grid-template-columns: minmax(0, 1fr);
   }
 `;
 
@@ -21,6 +21,8 @@ export const Main = styled.main`
   height: 100%;
   padding-top: 36px;
   width: 100%;
+
+  min-width: 0;
 
   display: flex;
   justify-content: flex-start;
@@ -37,6 +39,8 @@ export const Main = styled.main`
 
 export const Children = styled.div`
   width: 100%;
+  min-width: 0;
+  overflow-wrap: break-word;
   max-width: calc(75% - 64px);
   padding-right: 64px;
 
